@@ -1,0 +1,14 @@
+*.aux
+*.log
+*.out
+*.toc
+*.swp
+*~
+
+.metadata
+.classpath
+.directory
+.project
+.settings
+.DS_Store
+Icon
