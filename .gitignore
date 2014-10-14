@@ -5,10 +5,15 @@
 *.swp
 *~
 
-.metadata
+bin/
+gen/
+local.properties
+
+.checkstyle
+.metadata/
 .classpath
 .directory
 .project
 .settings
 .DS_Store
-Icon
+Icon
