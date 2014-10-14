@@ -3,7 +3,7 @@ lameAppInc
 # Authors:
 - Romain Choukroun
 - Pierre Fouche
-- MAxime Coriou
+- Maxime Coriou
 - Matthias Leroy
 - Enea Bell
 - Marc Shär
