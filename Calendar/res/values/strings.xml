@@ -4,5 +4,9 @@
     <string name="app_name">Calendar</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_course_details">CourseDetailsActivity</string>
+    <string name="course_name">Course name: SwEngALot</string>
+    <string name="course_professor">Professor name: Too Muchwork</string>
+    <string name="course_credits">Number of credits: 28</string>
 
 </resources>
