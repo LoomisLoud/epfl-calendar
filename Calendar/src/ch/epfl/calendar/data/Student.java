@@ -10,6 +10,8 @@ public class Student extends Person implements StudentData {
 	
 	public static final int MIN_LENGTH_SCIPER = 5;
 	public static final int MAX_LENGTH_SCIPER = 8;
+	public static final String GET_TIMETABLE_WEEK = "https://isa.epfl.ch/service/secure/student/timetable/week";
+	public static final String GPS_EDOC = "https://isa.epfl.ch/services/gps/EDOC";
 	//TODO Choose type of arguments
 	private String mStudentTimetable;
 	private int mSciper;
@@ -17,6 +19,7 @@ public class Student extends Person implements StudentData {
 	//constructor needs specific argument to fill the data of the object
 	//TODO add arguments needed
 	public Student() {
+		
 	}
 
 	@Override
