@@ -26,6 +26,10 @@
             android:name=".CourseDetailsActivity"
             android:label="@string/title_activity_course_details" >
         </activity>
+        <activity
+            android:name=".CoursesListActivity"
+            android:label="@string/title_activity_courses_list" >
+        </activity>
     </application>
 
 </manifest>

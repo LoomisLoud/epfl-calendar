@@ -8,5 +8,6 @@
     <string name="course_name">Course name: SwEngALot</string>
     <string name="course_professor">Professor name: Too Muchwork</string>
     <string name="course_credits">Number of credits: 28</string>
+    <string name="title_activity_courses_list">CoursesListActivity</string>
 
 </resources>
