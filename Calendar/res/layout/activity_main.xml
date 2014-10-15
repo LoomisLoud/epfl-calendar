@@ -10,7 +10,12 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:onClick="switchToCoursesList"
+        android:text="@string/to_list_course_button" />
 
 </RelativeLayout>
