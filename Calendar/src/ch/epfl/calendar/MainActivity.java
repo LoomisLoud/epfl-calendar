@@ -28,6 +28,8 @@ import android.view.MenuItem;
  */
 public class MainActivity extends Activity {
 
+    private static final String TAG = "MainActivity";
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,7 @@ public class MainActivity extends Activity {
 			httpURLConnection.setReadTimeout(7000);
 	    	httpURLConnection.setConnectTimeout(8000);
 			httpURLConnection.setRequestMethod("GET");
+			httpURLConnection.addRequestProperty("Accept", "application/json");
 			//httpURLConnection.addRequestProperty("Accept", "application/json");
 			//start query - update, this is implicitly done by getInputStream()
 	    	//httpURLConnection.connect();
@@ -63,6 +66,8 @@ public class MainActivity extends Activity {
 	        while ((inputStr = streamReader.readLine()) != null) {
 				responseStrBuilder.append(inputStr);
 			}
+
+            Log.d(TAG, responseStrBuilder.toString());
 	        
 	        JSONObject json = new JSONObject(responseStrBuilder.toString());
 
@@ -71,6 +76,7 @@ public class MainActivity extends Activity {
 	        //inputStreamObject.close();
 	        streamReader.close();
 	        httpURLConnection.disconnect();
+	        Log.d(TAG, json.toString());
 	        return json.toString();
 
 		} catch (ProtocolException e) {
@@ -113,7 +119,7 @@ public class MainActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(String result) {
-			Log.i("result request", result);
+			//Log.i("result request", result);
 		}
 	}
 }
