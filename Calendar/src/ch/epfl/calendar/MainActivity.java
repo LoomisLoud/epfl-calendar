@@ -30,8 +30,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //String sUrl = "https://isa.epfl.ch/services/gps/EDOC";
-        String sUrl = "http://www.google.com";
+        String sUrl = "https://isa.epfl.ch/services/gps/EDOC";
+        sUrl = "http://www.google.com";
         URL url = null;
 		try {
 			url = new URL(sUrl);
@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
 			httpURLConnection.setReadTimeout(7000);
 	    	httpURLConnection.setConnectTimeout(8000);
 			httpURLConnection.setRequestMethod("GET");
+			//httpURLConnection.addRequestProperty("Accept", "application/json");
 			//start query - update, this is implicitly done by getInputStream()
 	    	//httpURLConnection.connect();
 	    	InputStream inputStreamObject = httpURLConnection.getInputStream();
@@ -57,14 +58,13 @@ public class MainActivity extends Activity {
 				responseStrBuilder.append(inputStr);
 			}
 
-	       /* JSONObject json = new JSONObject(responseStrBuilder.toString());
+	        //JSONObject json = new JSONObject(responseStrBuilder.toString());
 	        
 	        //close
 	        //inputStreamObject.close();
 	        streamReader.close();
 	        httpURLConnection.disconnect();
 	        
-	        Log.i("Json value", json.toString());*/
 		} catch (ProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
