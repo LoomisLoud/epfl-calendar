@@ -13,7 +13,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -30,8 +32,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String sUrl = "https://isa.epfl.ch/services/gps/EDOC";
-        sUrl = "http://www.google.com";
+		new FetchRandomQuestionTask().execute();
+      
+    }
+
+    public String doInternetStuff() {
+    	String sUrl = "https://isa.epfl.ch/services/gps/EDOC";
         URL url = null;
 		try {
 			url = new URL(sUrl);
@@ -57,28 +63,28 @@ public class MainActivity extends Activity {
 	        while ((inputStr = streamReader.readLine()) != null) {
 				responseStrBuilder.append(inputStr);
 			}
+	        
+	        JSONObject json = new JSONObject(responseStrBuilder.toString());
 
-	        //JSONObject json = new JSONObject(responseStrBuilder.toString());
 	        
 	        //close
 	        //inputStreamObject.close();
 	        streamReader.close();
 	        httpURLConnection.disconnect();
-	        
+	        return json.toString();
+
 		} catch (ProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} /*catch (JSONException e) {
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-      
+		}
+        return null;
     }
-
- 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,4 +104,16 @@ public class MainActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private class FetchRandomQuestionTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+		protected String doInBackground(String... params) {
+			return doInternetStuff();
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			Log.i("result request", result);
+		}
+	}
 }
