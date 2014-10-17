@@ -27,8 +27,7 @@ public class CoursesListActivity extends Activity {
         coursesListArray.add("Cours 1");
         coursesListArray.add("Cours 2");
         coursesListArray.add("Cours 3");
-        
-        
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, coursesListArray);
 

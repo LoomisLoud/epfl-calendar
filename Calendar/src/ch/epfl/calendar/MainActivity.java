@@ -7,21 +7,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-
 /**
  * 
  * @author lweingart
  *
  */
 public class MainActivity extends Activity {
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-       
+
     }
 
     @Override
@@ -44,7 +41,8 @@ public class MainActivity extends Activity {
     }
 
     public void switchToCoursesList(View view) {
-        Intent coursesListActivityIntent = new Intent(this, CoursesListActivity.class);
+        Intent coursesListActivityIntent = new Intent(this,
+                CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
     }
 }
