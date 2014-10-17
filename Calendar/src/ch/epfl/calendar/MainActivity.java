@@ -10,8 +10,8 @@ import android.view.View;
 
 /**
  * 
- * @author lameAppInc
- * 
+ * @author lweingart
+ *
  */
 public class MainActivity extends Activity {
     
