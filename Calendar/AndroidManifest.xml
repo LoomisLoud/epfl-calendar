@@ -7,7 +7,7 @@
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="19" />
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -24,6 +24,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="ch.epfl.calendar.authentication.AuthenticationActivity"
+            android:label="@string/title_activity_authentication" >
         </activity>
     </application>
 

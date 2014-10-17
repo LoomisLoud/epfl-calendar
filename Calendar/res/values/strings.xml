@@ -4,5 +4,9 @@
     <string name="app_name">Calendar</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_authentication">AuthenticationActivity</string>
+    <string name="login_username_hint">GASPAR username</string>
+    <string name="login_password_hint">GASPAR password</string>
+    <string name="login_submit_text">Login using Tequila</string>
 
 </resources>
