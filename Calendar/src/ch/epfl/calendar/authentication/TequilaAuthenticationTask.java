@@ -16,5 +16,4 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 		return null;
 	}
 
-	
 }

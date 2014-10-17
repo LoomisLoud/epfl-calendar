@@ -8,5 +8,6 @@
     <string name="login_username_hint">GASPAR username</string>
     <string name="login_password_hint">GASPAR password</string>
     <string name="login_submit_text">Login using Tequila</string>
+    <string name="error_empty_credentials">fill username and password</string>
 
 </resources>
