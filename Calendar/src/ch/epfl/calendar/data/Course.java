@@ -1,29 +1,44 @@
 package ch.epfl.calendar.data;
 
+import java.util.List;
+
 /**
- * A course of EPFL
+ * A course of EPFL with its informations :
+ *  - Name
+ *  - Rooms
+ *  - Date
+ *  - StartDate(hour)
+ *  - EndDate(hour)
+ *  - Type (Course, Exercises,...)
  * @author AblionGE
  *
  */
 public class Course {
     private String mName;
-    private String mRoom;
+    private List<String> mRooms;
+    private String mDate;
     private String mStartDate;
     private String mEndDate;
+    private String mType;
     
-    public Course(String name, String room, String startDate, String endDate) {
+    public Course(String name, List<String> rooms, String date, String startDate,
+            String endDate, String type) {
         this.mName = name;
-        this.mRoom = room;
+        this.mRooms = rooms;
+        this.mDate = date;
         this.mStartDate = startDate;
         this.mEndDate = endDate;
+        this.mType = type;
     }
     
-    //TODO : DELETE !!! ???
+    //FIXME : DELETE !!! ???
     public Course(String name) {
         this.mName = name;
-        this.mRoom = null;
+        this.mRooms = null;
+        this.mDate = null;
         this.mStartDate = null;
         this.mEndDate = null;
+        this.mType = null;
     }
 
     /**
@@ -43,15 +58,29 @@ public class Course {
     /**
      * @return the mRoom
      */
-    public String getRoom() {
-        return mRoom;
+    public List<String> getRooms() {
+        return mRooms;
     }
 
     /**
      * @param mRoom the mRoom to set
      */
-    public void setRoom(String room) {
-        this.mRoom = room;
+    public void setRooms(List<String> room) {
+        this.mRooms = room;
+    }
+
+    /**
+     * @return the mDate
+     */
+    public String getDate() {
+        return mDate;
+    }
+
+    /**
+     * @param mDate the mDate to set
+     */
+    public void setDate(String date) {
+        this.mDate = date;
     }
 
     /**
@@ -80,5 +109,19 @@ public class Course {
      */
     public void setEndDate(String endDate) {
         this.mEndDate = endDate;
+    }
+
+    /**
+     * @return the mType
+     */
+    public String getType() {
+        return mType;
+    }
+
+    /**
+     * @param mType the mType to set
+     */
+    public void setType(String type) {
+        this.mType = type;
     }
 }
