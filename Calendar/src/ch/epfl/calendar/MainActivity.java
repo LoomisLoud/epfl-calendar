@@ -1,6 +1,7 @@
 package ch.epfl.calendar;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,9 +10,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
+
+import ch.epfl.calendar.data.Course;
+import ch.epfl.utils.xmlparser.XMLParser;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -40,57 +46,25 @@ public class MainActivity extends Activity {
     }
 
     public String doInternetStuff() {
-        String sUrl = "https://isa.epfl.ch/services/pedaperiods";
-        URL url = null;
+        
+        /*****************************TEST XML PARSER*************************/
+        String contentAsString = "<data status=\"Termine\" date=\"20141017 16:08:36\" key=\"1864682915\" dateFin=\"19.10.2014\" dateDebut=\"13.10.2014\"><study-period><id>1808047617</id><date>13.10.2014</date><duration>105</duration><day>1</day><startTime>14:15</startTime><endTime>16:00</endTime><type><text lang=\"en\">Lecture</text><text lang=\"fr\">Cours</text></type><course><id>2258712</id><name><text lang=\"fr\">Algorithms</text></name></course><room><id>2192131</id><code>CO2</code><name><text lang=\"fr\">CO 2</text></name></room></study-period></data><study-period><id>1808048631</id><date>13.10.2014</date><duration>105</duration><day>1</day><startTime>16:15</startTime><endTime>18:00</endTime><type><text lang=\"en\">Exercises</text><text lang=\"fr\">Exercices</text></type><course><id>2258712</id><name><text lang=\"fr\">Algorithms</text></name></course><room><id>2189182</id><code>GCB331</code><name><text lang=\"fr\">GC B3 31</text></name></room><room><id>2189101</id><code>GCA331</code><name><text lang=\"fr\">GC A3 31</text></name></room><room><id>1614950371</id><code>GCD0386</code><name><text lang=\"fr\">GC D0 386</text></name></room><room><id>2189114</id><code>GCB330</code><name><text lang=\"fr\">GC B3 30</text></name></room></study-period><study-period><id>1808331964</id><date>14.10.2014</date><duration>105</duration><day>2</day><startTime>08:15</startTime><endTime>10:00</endTime><type><text lang=\"en\">Lecture</text><text lang=\"fr\">Cours</text></type><course><id>24092923</id><name><text lang=\"fr\">Software engineering</text></name></course><room><id>4255362</id><code>BC02</code><name><text lang=\"fr\">BC 02</text></name></room><room><id>4255327</id><code>BC01</code><name><text lang=\"fr\">BC 01</text></name></room><room><id>4255386</id><code>BC03</code><name><text lang=\"fr\">BC 03</text></name></room><room><id>4255408</id><code>BC04</code><name><text lang=\"fr\">BC 04</text></name></room></study-period>";
+        Log.d(TAG, contentAsString);
+
         try {
-            url = new URL(sUrl);
-        } catch (MalformedURLException e) {
+            List<Course> courses = new XMLParser().parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
+            for (Course course: courses) {
+                System.out.println(course.getName());
+            }
+        } catch (XmlPullParserException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        HttpURLConnection httpURLConnection = null;
-        try {
-            httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setReadTimeout(READ_TIMEOUT);
-            httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
-            httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.addRequestProperty("Accept", "application/json");
-            //start query - update, this is implicitly done by getInputStream()
-            //httpURLConnection.connect();
-            InputStream inputStreamObject = httpURLConnection.getInputStream();
-            // Convert the InputStream into a string
-            //BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStreamObject, "UTF-8"));
-            //StringBuilder responseStrBuilder = new StringBuilder();
-            String contentAsString = readInput(inputStreamObject, BUFFER_LENGTH);
-            System.out.println(contentAsString);
-            
-            /*while ((inputStr = streamReader.readLine()) != null) {
-                responseStrBuilder.append(inputStr);
-            }*/
-            Log.d(TAG, contentAsString);
-
-            //JSONObject json = new JSONObject(responseStrBuilder.toString()+"}");
-            JSONObject json = new JSONObject(contentAsString);
-
-            //close
-            //inputStreamObject.close();
-            //streamReader.close();
-            httpURLConnection.disconnect();
-            //System.out.println(json.toString());
-            //Log.d(TAG, json.toString());
-            return json.toString();
-
-        } catch (ProtocolException e) {
-        // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
-        return null;
+        return contentAsString;
+        /*********************************************************************/
     }
     
     /**
