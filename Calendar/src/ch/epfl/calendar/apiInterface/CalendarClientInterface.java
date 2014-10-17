@@ -1,7 +1,12 @@
 /**
  * 
  */
-package ch.epfl.calendar;
+package ch.epfl.calendar.apiInterface;
+
+import java.util.List;
+
+import ch.epfl.calendar.mock.MockCourse;
+import ch.epfl.calendar.mock.MockStudent;
 
 /**
  * A client to get student's and classes' informations. This interfaces is meant to abstract the underlying
@@ -13,7 +18,7 @@ package ch.epfl.calendar;
  * @author gilbrechbuhler
  *
  */
-public interface CalendarClient {
+public interface CalendarClientInterface {
     
     /**
      * 
@@ -28,5 +33,5 @@ public interface CalendarClient {
      * @param student
      * @return
      */
-    List<Lecture> fetchLectures(Student student);
+    List<MockCourse> getCoursesFromStudent(MockStudent student);
 }
