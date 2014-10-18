@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
             List<Course> courses = new ISAXMLParser().parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
             System.out.println("Size list : " + courses.size());
             for (Course course: courses) {
-                System.out.println(course.getName());
+                System.out.println(course.toString());
             }
         } catch (XmlPullParserException e) {
             // TODO Auto-generated catch block

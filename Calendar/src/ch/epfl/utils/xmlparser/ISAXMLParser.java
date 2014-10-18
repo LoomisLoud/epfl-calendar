@@ -78,6 +78,11 @@ public class ISAXMLParser {
     private Course readStudyPeriod(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, mNameSpaces, "study-period");
         String course = null;
+        String date = null;
+        String startTime = null;
+        String endTime = null;
+        String type = null;
+        List<String> rooms = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -85,14 +90,22 @@ public class ISAXMLParser {
             String nameParser = parser.getName();
             if (nameParser.equals("course")) {
                 course = readCourse(parser);
-                
-                //TODO : Get other field here !
-                
+            } else if (nameParser.equals("date")) {
+                date = readDate(parser);
+            } else if (nameParser.equals("starttime")) {
+                startTime = readStartTime(parser);
+            } else if (nameParser.equals("endtime")) {
+                endTime = readEndTime(parser);
+            } else if (nameParser.equals("type")) {
+                type = readType(parser);
+            } else if (nameParser.equals("room")) {
+                rooms = readRoom(parser);
             } else {
                 skip(parser);
             }
         }
-        return new Course(course);
+        // TODO : PAS TOP -> quand plusieurs time pour un meme cours -> a gerer
+        return new Course(course, rooms, date, startTime, endTime, type);
     }
 
     
@@ -119,6 +132,106 @@ public class ISAXMLParser {
         }
         return name;
     }
+    
+    /**
+     * Processes date tags.
+     * @param parser
+     * @return
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private String readDate(XmlPullParser parser) throws XmlPullParserException, IOException {
+        String date = "";
+        if (parser.next() == XmlPullParser.TEXT) {
+            date = parser.getText();
+            parser.nextTag();
+        }
+        return date;
+    }
+    
+    /**
+     * Processes StartTime tags.
+     * @param parser
+     * @return
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private String readStartTime(XmlPullParser parser) throws XmlPullParserException, IOException {
+        String startTime = "";
+        if (parser.next() == XmlPullParser.TEXT) {
+            startTime = parser.getText();
+            parser.nextTag();
+        }
+        return startTime;
+    }
+    
+    /**
+     * Processes EndTime tags.
+     * @param parser
+     * @return
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private String readEndTime(XmlPullParser parser) throws XmlPullParserException, IOException {
+        String endTime = "";
+        if (parser.next() == XmlPullParser.TEXT) {
+            endTime = parser.getText();
+            parser.nextTag();
+        }
+        return endTime;
+    }
+    
+    /**
+     * Processes Type tags.
+     * @param parser
+     * @return
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    //TODO : Manage different languages (en-fr)
+    private String readType(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, mNameSpaces, "type");
+        String text = null;
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String nameParser = parser.getName();
+            if (nameParser.equals("text")) {
+                text = readText(parser);
+            } else {
+                skip(parser);
+            }
+        }
+        return text;
+    }
+    
+    /**
+     * Processes room tags.
+     * @param parser
+     * @return
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    //FIXME : Get the name(GC B3 31) instead of code (GCB331)
+    private List<String> readRoom(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, mNameSpaces, "room");
+        List<String> names = new ArrayList<String>();
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String nameParser = parser.getName();
+            if (nameParser.equals("name")) {
+                names.add(readName(parser));
+            } else {
+                skip(parser);
+            }
+        }
+        return names;
+    }
+
+    
     
     /**
      * Processes text tags.
