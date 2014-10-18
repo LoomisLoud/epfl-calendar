@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
-import ch.epfl.utils.xmlparser.XMLParser;
+import ch.epfl.utils.xmlparser.ISAXMLParser;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
         Log.d(TAG, contentAsString);
 
         try {
-            List<Course> courses = new XMLParser().parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
+            List<Course> courses = new ISAXMLParser().parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
             System.out.println("Size list : " + courses.size());
             for (Course course: courses) {
                 System.out.println(course.getName());
