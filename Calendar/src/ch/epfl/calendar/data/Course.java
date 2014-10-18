@@ -89,4 +89,28 @@ public class Course {
     public void setCredits(int credits) {
         this.mCredits = credits;
     }
+
+    /**
+     * @return the mTeacher
+     */
+    public String getTeacher() {
+        return mTeacher;
+    }
+
+    /**
+     * @param mTeacher the mTeacher to set
+     */
+    public void setTeacher(String teacher) {
+        this.mTeacher = teacher;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Course [mName=" + mName + ", mRooms=" + mRooms + ", mPeriods="
+                + mPeriods + ", mTeacher=" + mTeacher + ", mCredits="
+                + mCredits + "]";
+    }
 }
