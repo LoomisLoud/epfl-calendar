@@ -82,7 +82,7 @@ public class ISAXMLParser {
         String startTime = null;
         String endTime = null;
         String type = null;
-        List<String> rooms = null;
+        List<String> rooms = new ArrayList<String>();
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -92,19 +92,19 @@ public class ISAXMLParser {
                 course = readCourse(parser);
             } else if (nameParser.equals("date")) {
                 date = readDate(parser);
-            } else if (nameParser.equals("starttime")) {
+            } else if (nameParser.equals("startTime")) {
                 startTime = readStartTime(parser);
-            } else if (nameParser.equals("endtime")) {
+            } else if (nameParser.equals("endTime")) {
                 endTime = readEndTime(parser);
             } else if (nameParser.equals("type")) {
                 type = readType(parser);
             } else if (nameParser.equals("room")) {
-                rooms = readRoom(parser);
+                rooms.add(readRoom(parser));
             } else {
                 skip(parser);
             }
         }
-        // TODO : PAS TOP -> quand plusieurs time pour un meme cours -> a gerer
+        // TODO : When the course exists, just add the period !
         return new Course(course, rooms, date, startTime, endTime, type);
     }
 
@@ -214,21 +214,21 @@ public class ISAXMLParser {
      * @throws IOException
      */
     //FIXME : Get the name(GC B3 31) instead of code (GCB331)
-    private List<String> readRoom(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private String readRoom(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, mNameSpaces, "room");
-        List<String> names = new ArrayList<String>();
+        String name = "";
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String nameParser = parser.getName();
             if (nameParser.equals("name")) {
-                names.add(readName(parser));
+                name = readName(parser);
             } else {
                 skip(parser);
             }
         }
-        return names;
+        return name;
     }
 
     
