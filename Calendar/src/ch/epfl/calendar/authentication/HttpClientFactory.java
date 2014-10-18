@@ -14,7 +14,7 @@ import org.apache.http.params.HttpParams;
  * @author lweingart
  *
  */
-public class HttpClientFactory {
+public final class HttpClientFactory {
 
     private static AbstractHttpClient httpClient;
     private static final int HTTPS_PORT = 443;
