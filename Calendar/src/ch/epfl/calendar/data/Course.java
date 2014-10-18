@@ -1,5 +1,6 @@
 package ch.epfl.calendar.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,38 +8,30 @@ import java.util.List;
  *  - Name
  *  - Rooms
  *  - Date
- *  - StartDate(hour)
- *  - EndDate(hour)
- *  - Type (Course, Exercises,...)
+ *  - Period classes
  * @author AblionGE
  *
  */
 public class Course {
     private String mName;
     private List<String> mRooms;
-    private String mDate;
-    private String mStartDate;
-    private String mEndDate;
-    private String mType;
+    private List<Period> mPeriods;
+    private String mTeacher;
+    private int mCredits;
     
-    public Course(String name, List<String> rooms, String date, String startDate,
-            String endDate, String type) {
+    public Course(String name, List<String> rooms, String date, String startTime,
+            String endTime, String type) {
         this.mName = name;
         this.mRooms = rooms;
-        this.mDate = date;
-        this.mStartDate = startDate;
-        this.mEndDate = endDate;
-        this.mType = type;
+        this.mPeriods = new ArrayList<Period>();
+        this.mPeriods.add(new Period(date, startTime, endTime, type));
     }
     
     //FIXME : DELETE !!! ???
     public Course(String name) {
         this.mName = name;
         this.mRooms = null;
-        this.mDate = null;
-        this.mStartDate = null;
-        this.mEndDate = null;
-        this.mType = null;
+        this.mPeriods = new ArrayList<Period>();
     }
 
     /**
@@ -70,58 +63,30 @@ public class Course {
     }
 
     /**
-     * @return the mDate
+     * @return the mPeriods
      */
-    public String getDate() {
-        return mDate;
+    public List<Period> getPeriods() {
+        return mPeriods;
     }
 
     /**
-     * @param mDate the mDate to set
+     * @param mPeriods the mPeriods to set
      */
-    public void setDate(String date) {
-        this.mDate = date;
+    public void setPeriods(List<Period> periods) {
+        this.mPeriods = periods;
     }
 
     /**
-     * @return the mStartDate
+     * @return the mCredits
      */
-    public String getStartDate() {
-        return mStartDate;
+    public int getCredits() {
+        return mCredits;
     }
 
     /**
-     * @param mStartDate the mStartDate to set
+     * @param mCredits the mCredits to set
      */
-    public void setStartDate(String startDate) {
-        this.mStartDate = startDate;
-    }
-
-    /**
-     * @return the mEndDate
-     */
-    public String getEndDate() {
-        return mEndDate;
-    }
-
-    /**
-     * @param mEndDate the mEndDate to set
-     */
-    public void setEndDate(String endDate) {
-        this.mEndDate = endDate;
-    }
-
-    /**
-     * @return the mType
-     */
-    public String getType() {
-        return mType;
-    }
-
-    /**
-     * @param mType the mType to set
-     */
-    public void setType(String type) {
-        this.mType = type;
+    public void setCredits(int credits) {
+        this.mCredits = credits;
     }
 }
