@@ -20,7 +20,7 @@ public final class TequilaAuthenticationAPI {
 
     private static TequilaAuthenticationAPI instance;
 
-    private final String isAcademiaURL;
+    private final String isAcademiaLoginURL;
     private final String tequilaAuthenticationURL;
 
     private static final String ISACADEMIA_LOGIN_URL = "";	// to check with is-academia
@@ -35,8 +35,8 @@ public final class TequilaAuthenticationAPI {
 
     // disable the creation of objects
     private TequilaAuthenticationAPI() {
-        this.isAcademiaURL = ISACADEMIA_LOGIN_URL;
-        this.tequilaAuthenticationURL = TEQUILA_AUTHENTICATION_URL;
+        isAcademiaLoginURL = ISACADEMIA_LOGIN_URL;
+        tequilaAuthenticationURL = TEQUILA_AUTHENTICATION_URL;
     }
 
     /**
@@ -81,8 +81,8 @@ public final class TequilaAuthenticationAPI {
         return prefs.getString(AUTHENTICATION_SESSION_ID_KEY, "");
     }
 
-    String getSwengLoginURL() {
-        return this.isAcademiaURL;
+    String getIsAcademiaLoginURL() {
+        return this.isAcademiaLoginURL;
     }
 
     String getTequilaAuthenticationURL() {

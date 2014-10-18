@@ -11,5 +11,10 @@
     <string name="error_empty_credentials">fill username and password</string>
     <string name="be_patient">Please be patient</string>
     <string name="authenticating">Authenticating&#8230;</string>
+    <string name="error_http_protocol">HTTP Protocol error!</string>
+    <string name="error_io">Unknown IO error</string>
+    <string name="error_parse_response">Cannot parse response!</string>
+    <string name="login_success">Successfully logged in!</string>
+    <string name="error_authentication_cancel">Authentication was cancelled!</string>
 
 </resources>
