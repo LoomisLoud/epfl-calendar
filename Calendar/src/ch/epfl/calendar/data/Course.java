@@ -24,7 +24,7 @@ public class Course {
         this.mName = name;
         this.mRooms = rooms;
         this.mPeriods = new ArrayList<Period>();
-        this.mPeriods.add(new Period(date, startTime, endTime, type));
+        this.addPeriod(new Period(date, startTime, endTime, type));
     }
     
     //FIXME : DELETE !!! ???
@@ -34,6 +34,14 @@ public class Course {
         this.mPeriods = new ArrayList<Period>();
     }
 
+    /**
+     * Add a period to the current list of periods
+     * @param period
+     */
+    public void addPeriod(Period period) {
+        this.mPeriods.add(period);
+    }
+    
     /**
      * @return the mName
      */
@@ -109,8 +117,8 @@ public class Course {
      */
     @Override
     public String toString() {
-        return "Course [mName=" + mName + ", mRooms=" + mRooms + ", mPeriods="
-                + mPeriods + ", mTeacher=" + mTeacher + ", mCredits="
-                + mCredits + "]";
+        return mName + ", Rooms : " + mRooms + ", Periods : "
+                + mPeriods + ", Teacher : " + mTeacher + ", nb Credits : "
+                + mCredits;
     }
 }
