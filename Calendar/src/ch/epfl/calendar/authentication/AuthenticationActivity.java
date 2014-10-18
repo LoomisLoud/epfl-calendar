@@ -19,6 +19,8 @@ public class AuthenticationActivity extends Activity {
     private EditText mTxtPassword;
     private Button mBtnLogin;
 
+    private final Activity mThisActivity = this;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,7 +43,10 @@ public class AuthenticationActivity extends Activity {
                     return;
                 }
                 // start the authorization process
-
+                new TequilaAuthenticationTask(
+                        AuthenticationActivity.this.mThisActivity,
+                        username,
+                        password).execute(null, null);
             }
         });
 	}
