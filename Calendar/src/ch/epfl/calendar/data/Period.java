@@ -78,4 +78,13 @@ public class Period {
     public void setType(String type) {
         this.mType = type;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return mDate + " from " + mStartTime
+                + " to " + mEndTime + " of type " + mType;
+    }
 }
