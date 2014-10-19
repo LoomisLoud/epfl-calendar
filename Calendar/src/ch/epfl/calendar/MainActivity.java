@@ -1,14 +1,17 @@
 package ch.epfl.calendar;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +43,8 @@ public class MainActivity extends Activity {
 
     public String doInternetStuff() {
     	String sUrl = "https://isa.epfl.ch/services/gps/EDOC";
+    	sUrl = "https://isa.epfl.ch/services/timetable/2013-2014/course/PHYS-320";
+    	//sUrl = "https://isa.epfl.ch/service/secure/student/timetable/week";
         URL url = null;
 		try {
 			url = new URL(sUrl);
@@ -61,15 +66,21 @@ public class MainActivity extends Activity {
 	    	// Convert the InputStream into a string
 	        BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStreamObject, "UTF-8"));
 	        StringBuilder responseStrBuilder = new StringBuilder();
-
+	       // responseStrBuilder.
+	        //char buffer[] = new char[1024];
 	        String inputStr;
 	        while ((inputStr = streamReader.readLine()) != null) {
+	        //while(streamReader.read(buffer) != -1) {
 				responseStrBuilder.append(inputStr);
 			}
-
-            Log.d(TAG, responseStrBuilder.toString());
+	        responseStrBuilder.append("\n");
+	        Log.i(TAG, "" + responseStrBuilder.toString().length());
+            Log.i(TAG, responseStrBuilder.toString());
+            Log.i(TAG, ""+this.getFilesDir());
+            PrintWriter writer = new PrintWriter(this.getFilesDir() + File.pathSeparator + "the-file-name.txt", "UTF-8");
+            writer.println(responseStrBuilder.toString());
 	        
-	        JSONObject json = new JSONObject(responseStrBuilder.toString());
+	        JSONArray json = new JSONArray(responseStrBuilder.toString());
 
 	        
 	        //close
