@@ -285,7 +285,7 @@ public class ISAXMLParser {
     }
     
     /**
-     * Skip tag don't needed
+     * Skip tags don't needed
      * @param parser
      * @throws XmlPullParserException
      * @throws IOException
