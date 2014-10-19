@@ -36,7 +36,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 	private Context mContext = null;
 	private String mSessionID;
 	private ProgressDialog dialog;
-	private TequilaAuthenticationListener listener = null;
+	private TequilaAuthenticationListener mListener = null;
 	private boolean exceptionOccured = false;
 
 	private final String mUsername;
@@ -61,9 +61,12 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         void onSuccess(String sessionID);
     }
 
-	public TequilaAuthenticationTask(Context context, String username,
-			String password) {
+	public TequilaAuthenticationTask(Context context,
+									 TequilaAuthenticationListener listener,
+									 String username,
+									 String password) {
 		mContext = context;
+		mListener = listener;
 		mUsername = username;
 		mPassword = password;
 	}
@@ -150,7 +153,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         if (dialog != null) {
             dialog.dismiss();
         }
-        listener.onError(mContext.getString(R.string.error_authentication_cancel));
+        mListener.onError(mContext.getString(R.string.error_authentication_cancel));
     }
 
     @Override
@@ -160,10 +163,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         }
         if (exceptionOccured) {
             // notify success listener
-            listener.onError(result);
+            mListener.onError(result);
         } else {
             // notify error listener
-            listener.onSuccess(mSessionID);
+            mListener.onSuccess(mSessionID);
         }
     }
 

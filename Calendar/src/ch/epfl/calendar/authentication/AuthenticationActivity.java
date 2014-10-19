@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 
 /**
  * Authentication activity
@@ -45,10 +46,32 @@ public class AuthenticationActivity extends Activity {
                 // start the authorization process
                 new TequilaAuthenticationTask(
                         AuthenticationActivity.this.mThisActivity,
+                        new TequilaAuthenticationHandler(),
                         username,
                         password).execute(null, null);
             }
         });
 	}
+
+	/**
+	 *
+	 * @author lweingart
+	 *
+	 */
+    private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
+        @Override
+        public void onError(String msg) {
+            AuthenticationActivity.this.mTxtPassword.setText("");
+            AuthenticationActivity.this.mTxtUsername.setText("");
+            Toast.makeText(AuthenticationActivity.this.getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public void onSuccess(String sessionID) {
+            // store the sessionID in the preferences
+            TequilaAuthenticationAPI.getInstance().setSessionID(AuthenticationActivity.this.mThisActivity, sessionID);
+
+            AuthenticationActivity.this.mThisActivity.finish();
+        }
+    }
 
 }
