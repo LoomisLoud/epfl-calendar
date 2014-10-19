@@ -21,7 +21,7 @@ import android.util.Xml;
  */
 public class ISAXMLParser {
     // We don't use namespaces
-    private static final String mNameSpaces = null;
+    private static final String NMP = null;
    
     /**
      * Parse an InputStream
@@ -50,22 +50,32 @@ public class ISAXMLParser {
      * @throws IOException
      */
     private List<Course> readData(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List<Course> entries = new ArrayList<Course>();
+        List<Course> courses = new ArrayList<Course>();
 
-        parser.require(XmlPullParser.START_TAG, mNameSpaces, "data");
+        parser.require(XmlPullParser.START_TAG, NMP, "data");
         while (parser.next() != XmlPullParser.END_TAG) {
+            boolean added = false;
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String nameParser = parser.getName();
             // Starts by looking for the study-period tag
             if (nameParser.equals("study-period")) {
-                entries.add(readStudyPeriod(parser));
+                Course newCourse = readStudyPeriod(parser);
+                for (Course course: courses) {
+                    if (course.getName().equals(newCourse.getName())) {
+                        course.addPeriod(newCourse.getPeriods().get(0));
+                        added = true;
+                    }
+                }
+                if (!added) {
+                    courses.add(newCourse);
+                }
             } else {
                 skip(parser);
             }
         }  
-        return entries;
+        return courses;
     }
     
     /**
@@ -76,7 +86,7 @@ public class ISAXMLParser {
      * @throws IOException
      */
     private Course readStudyPeriod(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, mNameSpaces, "study-period");
+        parser.require(XmlPullParser.START_TAG, NMP, "study-period");
         String course = null;
         String date = null;
         String startTime = null;
@@ -104,7 +114,6 @@ public class ISAXMLParser {
                 skip(parser);
             }
         }
-        // TODO : When the course exists, just add the period !
         return new Course(course, rooms, date, startTime, endTime, type);
     }
 
@@ -117,7 +126,7 @@ public class ISAXMLParser {
      * @throws IOException
      */
     private String readCourse(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, mNameSpaces, "course");
+        parser.require(XmlPullParser.START_TAG, NMP, "course");
         String name = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -190,7 +199,7 @@ public class ISAXMLParser {
      */
     //TODO : Manage different languages (en-fr)
     private String readType(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, mNameSpaces, "type");
+        parser.require(XmlPullParser.START_TAG, NMP, "type");
         String text = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -215,7 +224,7 @@ public class ISAXMLParser {
      */
     //FIXME : Get the name(GC B3 31) instead of code (GCB331)
     private String readRoom(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, mNameSpaces, "room");
+        parser.require(XmlPullParser.START_TAG, NMP, "room");
         String name = "";
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -241,7 +250,7 @@ public class ISAXMLParser {
      * @throws XmlPullParserException
      */
     private String readName(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, mNameSpaces, "name");
+        parser.require(XmlPullParser.START_TAG, NMP, "name");
         String text = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
