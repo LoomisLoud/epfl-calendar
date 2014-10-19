@@ -77,10 +77,10 @@ public class MainActivity extends Activity {
                 System.out.println(course.toString());
             }
         } catch (XmlPullParserException e) {
-            // TODO Auto-generated catch block
+            System.err.println("Exception of parsing during parsing of XML file");
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            System.err.println("Exception IO during parsing of XML file");
             e.printStackTrace();
         }
         return contentAsString;

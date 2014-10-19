@@ -16,6 +16,7 @@ import ch.epfl.calendar.data.Course;
 import android.util.Xml;
 
 /**
+ * XML Parser for ISA timetable
  * @author AblionGE
  *
  */
@@ -303,7 +304,6 @@ public class ISAXMLParser {
                     depth++;
                     break;
                 default:
-                    
             }
         }
     }
