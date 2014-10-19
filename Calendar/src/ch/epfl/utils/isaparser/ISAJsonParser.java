@@ -22,6 +22,8 @@ import android.util.Log;
 public class ISAJsonParser {
     
     private static final String TAG = "ISAJsonParser";
+    private static final int READ_TIMEOUT = 7000;
+    private static final int CONNECT_TIMEOUT = 8000;
     
     public void parseDetailsOfCourse() {
         //get request address
@@ -66,8 +68,8 @@ public class ISAJsonParser {
         try {
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             //TODO store theses in config file
-            httpURLConnection.setReadTimeout(7000);
-            httpURLConnection.setConnectTimeout(8000);
+            httpURLConnection.setReadTimeout(READ_TIMEOUT);
+            httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
             httpURLConnection.setRequestMethod("GET");
             return httpURLConnection;
             //handle protocol exception too
