@@ -1,6 +1,7 @@
 package ch.epfl.calendar.data;
 
 import java.lang.reflect.Array;
+import java.util.List;
 
 /**
  * @author Enea Bell & Marc Shär
@@ -13,8 +14,8 @@ public class Student extends Person implements StudentData {
 	public static final String GET_TIMETABLE_WEEK = "https://isa.epfl.ch/service/secure/student/timetable/week";
 	public static final String GPS_EDOC = "https://isa.epfl.ch/services/gps/EDOC";
 	//TODO Choose type of arguments
-	private String mStudentTimetable;
 	private int mSciper;
+	private List<Course> mCourses;
 	
 	//constructor needs specific argument to fill the data of the object
 	//TODO add arguments needed
@@ -42,4 +43,18 @@ public class Student extends Person implements StudentData {
 		}
 		this.mSciper = sciper;
 	}
+
+    /**
+     * @return the courses
+     */
+    public List<Course> getCourses() {
+        return mCourses;
+    }
+
+    /**
+     * @param courses the courses to set
+     */
+    public void setCourses(List<Course> courses) {
+        this.mCourses = courses;
+    }
 }
