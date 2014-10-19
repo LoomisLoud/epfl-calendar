@@ -3,6 +3,7 @@ package ch.epfl.calendar;
 import java.util.List;
 
 import ch.epfl.calendar.apiInterface.CalendarClient;
+import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.data.Course;
 
@@ -57,7 +58,11 @@ public class MainActivity extends Activity {
         @Override
         protected List<Course> doInBackground(String... params) {
             CalendarClientInterface fetcher = new CalendarClient();
-            return fetcher.getISAInformations();
+            try {
+                return fetcher.getISAInformations();
+            } catch (CalendarClientException e) {
+                return null;
+            }
         }
 
         @Override
