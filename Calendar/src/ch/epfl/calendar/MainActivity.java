@@ -4,18 +4,23 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 /**
- * 
+ *
  * @author lweingart
  *
  */
 public class MainActivity extends Activity {
 
+	private Button btnLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.btnLogin = (Button) this.findViewById(R.id.btnLogin);
     }
 
 
@@ -36,5 +41,19 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Handle button activation based on whether the user is authenticated or not.
+     */
+    private void switchLoginLogout() {
+        Boolean isAuthenticated = GlobalPreferences.isAuthenticated(this);
+        if (isAuthenticated) {
+            this.btnLogin.setText(R.string.logout);
+            this.btnLogin.setOnClickListener(new LogoutListener());
+        } else {
+            this.btnLogin.setText(R.string.login);
+            this.btnLogin.setOnClickListener(new LoginListener());
+        }
     }
 }
