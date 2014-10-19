@@ -5,8 +5,7 @@ package ch.epfl.calendar.apiInterface;
 
 import java.util.List;
 
-import ch.epfl.calendar.mock.MockCourse;
-import ch.epfl.calendar.mock.MockStudent;
+import ch.epfl.calendar.data.Course;
 
 /**
  * A client to get student's and classes' informations. This interfaces is meant to abstract the underlying
@@ -22,16 +21,8 @@ public interface CalendarClientInterface {
     
     /**
      * 
-     * @param username
-     * @param password
-     * @return
-     */
-    void login(String username, String password);
-    
-    /**
-     * 
      * @param student
      * @return
      */
-    List<MockCourse> getCoursesFromStudent(MockStudent student);
+    List<Course> getISAInformations();
 }
