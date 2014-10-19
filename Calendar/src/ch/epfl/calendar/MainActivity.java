@@ -1,24 +1,14 @@
 package ch.epfl.calendar;
 
-import java.io.BufferedReader;
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
-import ch.epfl.utils.xmlparser.ISAXMLParser;
+import ch.epfl.utils.isaparser.ISAJsonParser;
+import ch.epfl.utils.isaparser.ISAXMLParser;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -86,6 +76,12 @@ public class MainActivity extends Activity {
         return contentAsString;
         /*********************************************************************/
     }
+    
+    public String doInternetStuff2() {
+        ISAJsonParser jsonParser = new ISAJsonParser();
+        jsonParser.parseDetailsOfCourse();
+        return "";
+    }
 
     
     /**
@@ -99,7 +95,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-            return doInternetStuff();
+            return doInternetStuff2();
         }
 
         @Override

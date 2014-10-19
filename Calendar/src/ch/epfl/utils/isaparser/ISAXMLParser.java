@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.utils.xmlparser;
+package ch.epfl.utils.isaparser;
 
 import java.io.IOException;
 import java.io.InputStream;
