@@ -23,7 +23,7 @@ public final class TequilaAuthenticationAPI {
     private final String isAcademiaLoginURL;
     private final String tequilaAuthenticationURL;
 
-    private static final String ISACADEMIA_LOGIN_URL = "";	// to check with is-academia
+    private static final String ISACADEMIA_LOGIN_URL = "?????";	// to check with is-academia
     private static final String TEQUILA_AUTHENTICATION_URL = "https://tequila.epfl.ch/cgi-bin/tequila/login";
 
     public static TequilaAuthenticationAPI getInstance() {

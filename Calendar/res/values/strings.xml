@@ -17,5 +17,6 @@
     <string name="login_success">Successfully logged in!</string>
     <string name="error_authentication_cancel">Authentication was cancelled!</string>
     <string name="login">Login</string>
+    <string name="logout">Logout</string>
 
 </resources>

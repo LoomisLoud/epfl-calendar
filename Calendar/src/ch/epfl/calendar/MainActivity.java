@@ -1,10 +1,15 @@
 package ch.epfl.calendar;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
+import ch.epfl.calendar.utils.GlobalPreferences;
 
 /**
  *
@@ -13,16 +18,20 @@ import android.widget.Button;
  */
 public class MainActivity extends Activity {
 
+	private static final int REQUEST_CODE = 1;
+
 	private Button btnLogin;
+	private Activity mThisActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mThisActivity = this;
         this.btnLogin = (Button) this.findViewById(R.id.btnLogin);
-    }
 
+        this.switchLoginLogout();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -49,11 +58,45 @@ public class MainActivity extends Activity {
     private void switchLoginLogout() {
         Boolean isAuthenticated = GlobalPreferences.isAuthenticated(this);
         if (isAuthenticated) {
-            this.btnLogin.setText(R.string.logout);
-            this.btnLogin.setOnClickListener(new LogoutListener());
+            btnLogin.setText(R.string.logout);
+            btnLogin.setOnClickListener(new LogoutListener());
         } else {
-            this.btnLogin.setText(R.string.login);
-            this.btnLogin.setOnClickListener(new LoginListener());
+            btnLogin.setText(R.string.login);
+            btnLogin.setOnClickListener(new LoginListener());
         }
     }
+
+    /**
+     *
+     * @author lweingart
+     *
+     */
+    private class LogoutListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            TequilaAuthenticationAPI.getInstance().clearSessionID(MainActivity.this.mThisActivity);
+
+            MainActivity.this.switchLoginLogout();
+        }
+    }
+
+    /**
+     *
+     * @author lweingart
+     *
+     */
+    private class LoginListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            MainActivity.this.startAuthenticationActivity();
+        }
+    }
+
+    private void startAuthenticationActivity() {
+        Intent displayAuthenticationActivityIntent = new Intent(this,
+                AuthenticationActivity.class);
+        this.startActivityForResult(displayAuthenticationActivityIntent,
+                MainActivity.REQUEST_CODE);
+    }
+
 }

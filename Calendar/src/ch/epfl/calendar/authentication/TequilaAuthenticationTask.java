@@ -91,6 +91,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             HttpGet tokenReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
             ResponseHandler<String> handler = new BasicResponseHandler();
             String tokenResponse = HttpClientFactory.getInstance().execute(tokenReq, handler);
+            Log.d("Token response = ", tokenResponse);
             JSONObject tokenJson= new JSONObject(tokenResponse);
 
             Log.d("Step 1 - AuthenticationTask", tokenResponse);
@@ -99,8 +100,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
             List<NameValuePair> postBody = new ArrayList<NameValuePair>();
             postBody.add(new BasicNameValuePair(REQUEST_KEY, tokenJson.getString(TOKEN)));
-            postBody.add(new BasicNameValuePair(USERNAME, this.mUsername));
-            postBody.add(new BasicNameValuePair(PASSWORD, this.mPassword));
+            postBody.add(new BasicNameValuePair(USERNAME, mUsername));
+            postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
             authReq.setEntity(new UrlEncodedFormEntity(postBody));
             String authResponse = HttpClientFactory.getInstance()
                     .execute(authReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
@@ -121,7 +122,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
             Log.d("Step 3 - AuthenticationTask", sessionResponse);
 
-            this.mSessionID = sessionJson.getString(SESSION);
+            mSessionID = sessionJson.getString(SESSION);
         } catch (ClientProtocolException e) {
             exceptionOccured = true;
             Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::ClientProtocolException", e);
