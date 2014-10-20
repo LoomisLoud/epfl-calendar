@@ -115,7 +115,7 @@ public class ISAXMLParser {
                 skip(parser);
             }
         }
-        return new Course(course, rooms, date, startTime, endTime, type);
+        return new Course(course, date, startTime, endTime, type, rooms);
     }
 
     
