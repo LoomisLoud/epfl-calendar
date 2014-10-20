@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.calendar.test;
+package ch.epfl.calendar.apiInterface.tests;
 
 import java.util.ArrayList;
 import java.util.List;
