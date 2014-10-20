@@ -1,6 +1,5 @@
 package ch.epfl.calendar.data;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +11,8 @@ import java.util.List;
  * @author AblionGE
  *
  */
-public class Course implements Serializable{
+public class Course {
     private String mName;
-    private static final long serialVersionUID = 1L;
     private List<Period> mPeriods;
     private String mTeacher;
     private int mCredits;

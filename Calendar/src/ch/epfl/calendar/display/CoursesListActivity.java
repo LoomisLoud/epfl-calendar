@@ -17,8 +17,7 @@ import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.data.Course;
 
 /**
- * 
- * @author lameAppInc
+ * @author Maxime
  * 
  */
 public class CoursesListActivity extends Activity {
@@ -32,10 +31,8 @@ public class CoursesListActivity extends Activity {
 
         mListView = (ListView) findViewById(R.id.coursesListView);
 
-        
         final ArrayList<Course> coursesList = retrieveCourse();
         final ArrayList<String> coursesNameList = retrieveCourseName(coursesList);
-        
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, coursesNameList);
@@ -47,6 +44,7 @@ public class CoursesListActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
+
                 openCourseDetails(coursesList.get(position));
 
             }
@@ -59,7 +57,9 @@ public class CoursesListActivity extends Activity {
         Intent courseDetailsActivityIntent = new Intent(this,
                 CourseDetailsActivity.class);
 
-        courseDetailsActivityIntent.putExtra("course", course);
+        String[] courseInfo = { course.getName(), course.getTeacher(),
+                Integer.toString(course.getCredits()) };
+        courseDetailsActivityIntent.putExtra("course", courseInfo);
         startActivity(courseDetailsActivityIntent);
     }
 
@@ -79,7 +79,7 @@ public class CoursesListActivity extends Activity {
     }
 
     public ArrayList<String> retrieveCourseName(List<Course> coursesList) {
-        
+
         ArrayList<String> coursesName = new ArrayList<String>();
 
         for (Course cours : coursesList) {
