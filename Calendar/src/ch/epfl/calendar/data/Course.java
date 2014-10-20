@@ -13,26 +13,25 @@ import java.util.List;
  */
 public class Course {
     private String mName;
-    
     private List<Period> mPeriods;
     private String mTeacher;
     private int mCredits;
     
     public Course(String name, String date, String startTime,
             String endTime, String type, List<String> rooms) {
-        this.mName = name;
+        this.setName(name);
         this.mPeriods = new ArrayList<Period>();
         this.addPeriod(new Period(date, startTime, endTime, type, rooms));
-        this.mTeacher = null;
-        this.mCredits = 0;
+        this.setTeacher(null);
+        this.setCredits(0);
     }
     
     //FIXME : DELETE !!! ???
     public Course(String name) {
-        this.mName = name;
+        this.setName(name);
         this.mPeriods = new ArrayList<Period>();
-        this.mTeacher = null;
-        this.mCredits = 0;
+        this.setTeacher(null);
+        this.setCredits(0);
     }
 
     /**
