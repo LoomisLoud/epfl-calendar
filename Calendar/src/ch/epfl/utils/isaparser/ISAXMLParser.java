@@ -111,11 +111,11 @@ public class ISAXMLParser {
             if (nameParser.equals("course")) {
                 course = readCourse(parser);
             } else if (nameParser.equals("date")) {
-                date = readDate(parser);
+                date = readText(parser);
             } else if (nameParser.equals("startTime")) {
-                startTime = readStartTime(parser);
+                startTime = readText(parser);
             } else if (nameParser.equals("endTime")) {
-                endTime = readEndTime(parser);
+                endTime = readText(parser);
             } else if (nameParser.equals("type")) {
                 type = readType(parser);
             } else if (nameParser.equals("room")) {
@@ -153,63 +153,6 @@ public class ISAXMLParser {
             }
         }
         return name;
-    }
-    
-    /**
-     * Processes date tags.
-     * @param parser
-     * @return
-     * @throws XmlPullParserException
-     * @throws IOException
-     */
-    private static String readDate(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser == null) {
-            throw new NullPointerException("Parser is null");
-        }
-        String date = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            date = parser.getText();
-            parser.nextTag();
-        }
-        return date;
-    }
-    
-    /**
-     * Processes StartTime tags.
-     * @param parser
-     * @return
-     * @throws XmlPullParserException
-     * @throws IOException
-     */
-    private static String readStartTime(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser == null) {
-            throw new NullPointerException("Parser is null");
-        }
-        String startTime = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            startTime = parser.getText();
-            parser.nextTag();
-        }
-        return startTime;
-    }
-    
-    /**
-     * Processes EndTime tags.
-     * @param parser
-     * @return
-     * @throws XmlPullParserException
-     * @throws IOException
-     */
-    private static String readEndTime(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser == null) {
-            throw new NullPointerException("Parser is null");
-        }
-        String endTime = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            endTime = parser.getText();
-            parser.nextTag();
-        }
-        return endTime;
     }
     
     /**
@@ -253,7 +196,7 @@ public class ISAXMLParser {
             throw new NullPointerException("Parser is null");
         }
         parser.require(XmlPullParser.START_TAG, NMP, "room");
-        String name = "";
+        String name = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -309,7 +252,7 @@ public class ISAXMLParser {
         if (parser == null) {
             throw new NullPointerException("Parser is null");
         }
-        String result = "";
+        String result = null;
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
             parser.nextTag();
