@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 /**
  * 
- * @author lameAppInc
+ * @author Maxime Coriou
  * 
  */
 public class CoursesListActivity extends Activity {
