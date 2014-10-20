@@ -95,6 +95,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
+            doInternetStuff();
             return doInternetStuff2();
         }
 

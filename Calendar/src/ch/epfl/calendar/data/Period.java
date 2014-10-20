@@ -3,9 +3,11 @@
  */
 package ch.epfl.calendar.data;
 
+import java.util.List;
+
 /**
  * A period is a date, a start time and an end time + the type (exercises, lesson)
- * of a course
+ * and the rooms of a course
  * @author AblionGE
  *
  */
@@ -14,12 +16,15 @@ public class Period {
     private String mStartTime;
     private String mEndTime;
     private String mType;
+    private List<String> mRooms;
     
-    public Period(String date, String startTime, String endTime, String type) {
+    public Period(String date, String startTime, String endTime,
+            String type, List<String> rooms) {
         this.mDate = date;
         this.mStartTime = startTime;
         this.mEndTime = endTime;
         this.mType = type;
+        this.mRooms = rooms;
     }
     
 
@@ -79,12 +84,27 @@ public class Period {
         this.mType = type;
     }
 
+    /**
+     * @return the mRoom
+     */
+    public List<String> getRooms() {
+        return mRooms;
+    }
+
+    /**
+     * @param mRoom the mRoom to set
+     */
+    public void setRooms(List<String> room) {
+        this.mRooms = room;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         return mDate + " from " + mStartTime
-                + " to " + mEndTime + " of type " + mType;
+                + " to " + mEndTime + " of type " + mType + "in rooms : "
+                + mRooms;
     }
 }
