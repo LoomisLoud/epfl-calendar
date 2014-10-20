@@ -5,9 +5,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_course_details">CourseDetailsActivity</string>
-    <string name="course_name">Course name: SwEngALot</string>
-    <string name="course_professor">Professor name: Too Muchwork</string>
-    <string name="course_credits">Number of credits: 28</string>
     <string name="title_activity_courses_list">CoursesListActivity</string>
     <string name="to_list_course_button">To list course</string>
    
