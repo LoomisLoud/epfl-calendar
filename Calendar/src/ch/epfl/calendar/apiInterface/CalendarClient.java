@@ -11,7 +11,7 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
-import ch.epfl.utils.xmlparser.ISAXMLParser;
+import ch.epfl.utils.isaparser.ISAXMLParser;
 
 /**
  * For now uses a pre-built xml string and parses it.
