@@ -1,5 +1,6 @@
 package ch.epfl.calendar;
 
+
 import java.util.List;
 
 import ch.epfl.calendar.apiInterface.CalendarClient;
@@ -27,6 +28,7 @@ public class MainActivity extends Activity {
       
     }
     
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

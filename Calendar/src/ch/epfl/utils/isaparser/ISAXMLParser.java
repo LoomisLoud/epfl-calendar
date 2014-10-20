@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.utils.xmlparser;
+package ch.epfl.utils.isaparser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -285,7 +285,7 @@ public class ISAXMLParser {
     }
     
     /**
-     * Skip tag don't needed
+     * Skip tags don't needed
      * @param parser
      * @throws XmlPullParserException
      * @throws IOException
