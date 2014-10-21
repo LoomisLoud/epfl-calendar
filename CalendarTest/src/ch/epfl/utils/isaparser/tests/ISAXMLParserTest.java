@@ -129,41 +129,27 @@ public class ISAXMLParserTest extends TestCase {
     }
     
     @Test
-    public void testParse() {
+    public void testParse() throws XmlPullParserException, IOException {
         //With null argument
         try {
             ISAXMLParser.parse(null);
-            fail("prase : Fail test null pointer");
+            fail("parse : Fail test null pointer");
         } catch (NullPointerException e) {
             //waited exception
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("parse : Fail test null pointer - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("parse : Fail test null pointer - IOException");
         }
     }
     
     @Test
-    public void testReadData() {
+    public void testReadData() throws IllegalAccessException, IllegalArgumentException, 
+        InvocationTargetException, XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
       //With Null argument
         try {
             readData.invoke(null, new Object[] {null});
             fail("readData : Fail test null pointer");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readData : Fail test null pointer - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readData : Fail test null pointer - Illegal Argument Exception");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("readData : Fail test null pointer - Wrong TargetException");
             }
         }
         
@@ -175,22 +161,7 @@ public class ISAXMLParserTest extends TestCase {
             @SuppressWarnings("unchecked")
             List<Course> courses = (List<Course>) readData.invoke(null, new Object[] {parser});
             assertEquals(0, courses.size());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
         
         //With standard input with 1 Course
         try {
@@ -200,22 +171,7 @@ public class ISAXMLParserTest extends TestCase {
             @SuppressWarnings("unchecked")
             List<Course> courses = (List<Course>) readData.invoke(null, new Object[] {parser});
             assertEquals(1, courses.size());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
         
       //With standard input with 2 Course (3 periods)
         try {
@@ -226,44 +182,21 @@ public class ISAXMLParserTest extends TestCase {
             List<Course> courses = (List<Course>) readData.invoke(null, new Object[] {parser});
             assertEquals(2, courses.size());
             assertEquals(2, courses.get(0).getPeriods().size());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readData : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
     }
     
     
     @Test
-    public void testReadStudyPeriod() {
+    public void testReadStudyPeriod() throws IllegalAccessException, IllegalArgumentException,
+        InvocationTargetException, XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
       //With Null argument
         try {
             readStudyPeriod.invoke(null, new Object[] {null});
             fail("readStudyPeriod : Fail test null pointer");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test null pointer - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test null pointer - Illegal Argument Exception");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("readStudyPeriod : Fail test null pointer - Wrong TargetException");
             }
         }
         
@@ -283,22 +216,7 @@ public class ISAXMLParserTest extends TestCase {
             assertNull(course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(0, course.getPeriods().get(0).getRooms().size());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
         
         //With standard input
         try {
@@ -317,43 +235,20 @@ public class ISAXMLParserTest extends TestCase {
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(1, course.getPeriods().get(0).getRooms().size());
             assertEquals("CO 2", course.getPeriods().get(0).getRooms().get(0));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readStudyPeriod : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
     }
     
     @Test
-    public void testReadCourse() {
+    public void testReadCourse() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
       //With Null argument
         try {
             readCourse.invoke(null, new Object[] {null});
             fail("readCourse : Fail test null pointer");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test null pointer - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test null pointer - Illegal Argument Exception");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("readCourse : Fail test null pointer - Wrong TargetException");
             }
         }
         
@@ -363,22 +258,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadCourse, null);
             parser.nextTag();
             assertEquals("bla bla", readCourse.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
         
         //Without <name></name>
         try {
@@ -386,43 +266,20 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadCourseOther, null);
             parser.nextTag();
             assertNull(readCourse.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input without <name> - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input without <name> - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input without <name> - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input without <name> - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readCourse : Fail test standard input without <name> - Wrong TargetException");
-        }
+        } finally { }
     }
     
     @Test
-    public void testReadRoom() {
+    public void testReadRoom() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+        XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
       //With Null argument
         try {
             readRoom.invoke(null, new Object[] {null});
             fail("readRoom : Fail test null pointer");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test null pointer - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test null pointer - Illegal Argument Exception");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("readRoom : Fail test null pointer - Wrong TargetException");
             }
         }
         
@@ -432,22 +289,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadRoom, null);
             parser.nextTag();
             assertEquals("bla bla", readRoom.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
         
         //Without <name></name>
         try {
@@ -455,43 +297,20 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadRoomOther, null);
             parser.nextTag();
             assertNull(readRoom.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input without <name> - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input without <name> - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input without <name> - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input without <name> - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readRoom : Fail test standard input without <name> - Wrong TargetException");
-        }
+        } finally { }
     }
     
     @Test
-    public void testReadType() {
+    public void testReadType() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+        XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
       //With Null argument
         try {
             readType.invoke(null, new Object[] {null});
             fail("readType : Fail test null pointer");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readType : Fail test null pointer - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readType : Fail test null pointer - Illegal Argument Exception");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("readType : Fail test null pointer - Wrong TargetException");
             }
         }
         
@@ -501,22 +320,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadType, null);
             parser.nextTag();
             assertEquals("bla bla", readType.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
         
         //Without <type></type>
         try {
@@ -524,43 +328,20 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadTypeOther, null);
             parser.nextTag();
             assertNull(readType.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input without <type> - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input without <type> - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input without <type> - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input without <type> - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readType : Fail test standard input without <type> - Wrong TargetException");
-        }
+        } finally { }
     }
 
     @Test
-    public void testReadName() {
+    public void testReadName() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+    XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
       //With Null argument
         try {
             readName.invoke(null, new Object[] {null});
             fail("readName : Fail test null pointer");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readName : Fail test null pointer - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readName : Fail test null pointer - Illegal Argument Exception");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("readName : Fail test null pointer - Wrong TargetException");
             }
         }
         
@@ -570,22 +351,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadName, null);
             parser.nextTag();
             assertEquals("bla bla", readName.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input - Wrong TargetException");
-        }
+        } finally { }
         
         //Without <text></text>
         try {
@@ -593,42 +359,19 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadNameOther, null);
             parser.nextTag();
             assertNull(readName.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input without <text> - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input without <text> - Illegal Argument Exception");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input without <text> - Wrong TargetException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input without <text> - XmlPullParserException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readName : Fail test standard input without <text> - Wrong TargetException");
-        }
+        } finally { }
     }
     
     @Test
-    public void testReadText() {
+    public void testReadText() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+    XmlPullParserException, IOException {
         //With Null argument
         try {
             readText.invoke(null, new Object[] {null});
             fail("readText : Fail test null pointer");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readText : Fail test null pointer - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readText : Fail test null pointer - Illegal Argument Exception");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("readText : Fail test null pointer - IOException");
             }
         }
         
@@ -639,22 +382,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardXml, null);
             parser.nextTag();
             assertNull(readText.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readText : Fail test Tag input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readText : Fail test Tag input - IllegalArgumentException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readText : Fail test Tag input - XmlPullParserException");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readText : Fail test Tag input - Wrong TargetException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readText : Fail test Tag input - IOException");
-        }
+        } finally { }
         
         //With TEXT
         try {
@@ -662,42 +390,19 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(text, null);
             parser.nextTag();
             assertEquals("bla", readText.invoke(null, new Object[] {parser}));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("readText : Fail test text input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("readText : Fail test text input - IllegalArgumentException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("readText : Fail test text input - XmlPullParserException");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("readText : Fail test text input - Wrong TargetException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("readText : Fail test text input - IOException");
-        }
+        } finally { }
     }
     
     @Test
-    public void testSkip() {
+    public void testSkip() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+    XmlPullParserException, IOException {
         //WithArgumentNull
         try {
             skip.invoke(null, new Object[] {null});
             fail("skip : Fail test null pointer");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("skip : Fail test null pointer - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("skip : Fail test null pointer - IllegalArgumentException");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("skip : Fail test null pointer - Wrong TargetException");
             }
         }
         
@@ -706,18 +411,9 @@ public class ISAXMLParserTest extends TestCase {
         try {
             skip.invoke(null, new Object[] {parser});
             fail();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("skip : Fail test empty parser - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("skip : Fail test empty parser - IllegalArgumentException");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof IllegalStateException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("skip : Fail test empty parser - Wrong TargetException");
             }
         }
         
@@ -731,25 +427,10 @@ public class ISAXMLParserTest extends TestCase {
             parser.nextTag();
             skip.invoke(null, parser);
             fail();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("skip : Fail test wrong start tag - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("skip : Fail test wrong start tag - IllegalArgumentException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("skip : Fail test wrong start tag - XmlPullParserException");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof IllegalStateException) {
                 //waited exception
-            } else {
-                e.printStackTrace();
-                fail("skip : Fail test wrong start tag - Wrong TargetException");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("skip : Fail test wrong start tag - IOException");
         }
         
         //With a standard input
@@ -758,22 +439,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardXml, null);
             parser.nextTag();
             skip.invoke(null, new Object[] {parser});
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail("skip : Fail test standard input - IllegalAccessException");
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            fail("skip : Fail test standard input - IllegalArgumentException");
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            fail("skip : Fail test standard input - XmlPullParserException");
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            fail("skip : Fail test standard input - Wrong TargetException");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("skip : Fail test standard input - IOException");
-        }
+        } finally { }
     }
 
 }
