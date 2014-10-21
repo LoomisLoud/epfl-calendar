@@ -25,6 +25,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="ch.epfl.calendar.display.CourseDetailsActivity"
+            android:label="@string/title_activity_course_details" >
+        </activity>
+        <activity
+            android:name="ch.epfl.calendar.display.CoursesListActivity"
+            android:label="@string/title_activity_courses_list" >
+        </activity>
     </application>
 
 </manifest>
