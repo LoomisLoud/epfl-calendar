@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import ch.epfl.calendar.R;
-import ch.epfl.calendar.data.Course;
 
 /**
  * @author LoomisLoud
