@@ -24,6 +24,9 @@ import ch.epfl.utils.isaparser.ISAXMLParser;
 import android.util.Xml;
 
 /**
+ * ISAXMLParserTest tests the behavior of each private/public methods using
+ * introspection.
+ * 
  * @author AblionGE
  *
  */
@@ -72,6 +75,8 @@ public class ISAXMLParserTest extends TestCase {
         readStudyPeriod.setAccessible(true);
         readData = (ISAXMLParser.class).getDeclaredMethod("readData", new Class[] {XmlPullParser.class});
         readData.setAccessible(true);
+        
+        
         xmlEndTag = new ByteArrayInputStream("<test></test><test></test>".getBytes("UTF-8"));
         standardXml = new ByteArrayInputStream("<test><default>bla bla</default></test>".getBytes("UTF-8"));
         standardReadName = new ByteArrayInputStream("<name><text>bla bla</text></name>".getBytes("UTF-8"));
