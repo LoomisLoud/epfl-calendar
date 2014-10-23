@@ -23,6 +23,7 @@ public class ISAJsonParser {
     
     private static final String TAG = "ISAJsonParser";
     
+    //TODO add arg code course
     public void parseDetailsOfCourse() {
         //get request address
         //TODO remove hardcoded arg
@@ -34,6 +35,11 @@ public class ISAJsonParser {
         
     }
     
+    /**
+     * 
+     * @param address
+     * @return null if error, or JSONArray of address url given in argument.
+     */
     private JSONArray getJsonArrayFromAddress(String address) {
         HttpURLConnection httpURLConnection = this.initHttpURLConnectionFromUrl(address);
         this.addJSONHeaderInRequest(httpURLConnection);
@@ -62,6 +68,11 @@ public class ISAJsonParser {
         return null;
     }
     
+    /**
+     * Init (open and set a get request) an url.
+     * @param url Url of isa service wanted.
+     * @return A get request.
+     */
     private HttpURLConnection initHttpURLConnectionFromUrl(URL url) {
         try {
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -78,10 +89,21 @@ public class ISAJsonParser {
         return null;
     }
     
+    /**
+     * Add an header to a get request to ask for json format instead of html/xml...
+     * @param httpURLConnection the connection opened as a get request.
+     * @throws IllegalStateException if the connection isn't correctly initiated.
+     */
     public void addJSONHeaderInRequest(HttpURLConnection httpURLConnection) throws IllegalStateException {
         httpURLConnection.addRequestProperty("Accept", "application/json");
     }
     
+    /**
+     * Read from an opened connection with json header and store it in a string.
+     * @param httpURLConnection The connection opened to remote website with json header.
+     * @return json format of website from connection.
+     * @throws IOException if couldn't read from the connection.
+     */
     private String readInputStreamFromConnection(HttpURLConnection httpURLConnection) throws IOException {
         InputStream inputStreamObject = httpURLConnection.getInputStream();
         // Convert the InputStream into a string
