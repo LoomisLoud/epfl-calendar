@@ -1,10 +1,11 @@
 package ch.epfl.calendar.test;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.*;
+import junit.framework.TestSuite;
 
 import org.junit.Test;
 
-public class MainActivityTest {
+public class MainActivityTest extends TestSuite {
 
 	@Test
 	public void test() {

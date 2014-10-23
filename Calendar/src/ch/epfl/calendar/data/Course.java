@@ -6,7 +6,6 @@ import java.util.List;
 /**
  * A course of EPFL with its informations :
  *  - Name
- *  - Rooms
  *  - Date
  *  - Period classes
  * @author AblionGE
@@ -14,24 +13,25 @@ import java.util.List;
  */
 public class Course {
     private String mName;
-    private List<String> mRooms;
     private List<Period> mPeriods;
     private String mTeacher;
     private int mCredits;
     
-    public Course(String name, List<String> rooms, String date, String startTime,
-            String endTime, String type) {
-        this.mName = name;
-        this.mRooms = rooms;
+    public Course(String name, String date, String startTime,
+            String endTime, String type, List<String> rooms) {
+        this.setName(name);
         this.mPeriods = new ArrayList<Period>();
-        this.addPeriod(new Period(date, startTime, endTime, type));
+        this.addPeriod(new Period(date, startTime, endTime, type, rooms));
+        this.setTeacher(null);
+        this.setCredits(0);
     }
     
     //FIXME : DELETE !!! ???
     public Course(String name) {
-        this.mName = name;
-        this.mRooms = null;
+        this.setName(name);
         this.mPeriods = new ArrayList<Period>();
+        this.setTeacher(null);
+        this.setCredits(0);
     }
 
     /**
@@ -54,20 +54,6 @@ public class Course {
      */
     public void setName(String name) {
         this.mName = name;
-    }
-
-    /**
-     * @return the mRoom
-     */
-    public List<String> getRooms() {
-        return mRooms;
-    }
-
-    /**
-     * @param mRoom the mRoom to set
-     */
-    public void setRooms(List<String> room) {
-        this.mRooms = room;
     }
 
     /**
@@ -117,8 +103,7 @@ public class Course {
      */
     @Override
     public String toString() {
-        return mName + ", Rooms : " + mRooms + ", Periods : "
-                + mPeriods + ", Teacher : " + mTeacher + ", nb Credits : "
-                + mCredits;
+        return mName + ", Periods : " + mPeriods + ", Teacher : " + mTeacher
+                + ", nb Credits : " + mCredits;
     }
 }
