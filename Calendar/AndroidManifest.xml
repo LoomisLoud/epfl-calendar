@@ -10,7 +10,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -28,6 +28,12 @@
         <activity
             android:name="ch.epfl.calendar.authentication.AuthenticationActivity"
             android:label="@string/title_activity_authentication" >
+            android:name="ch.epfl.calendar.display.CourseDetailsActivity"
+            android:label="@string/title_activity_course_details" >
+        </activity>
+        <activity
+            android:name="ch.epfl.calendar.display.CoursesListActivity"
+            android:label="@string/title_activity_courses_list" >
         </activity>
     </application>
 
