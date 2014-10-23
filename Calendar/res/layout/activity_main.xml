@@ -18,6 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login" />
+    
+    <Button
         android:onClick="switchToCoursesList"
         android:text="@string/to_list_course_button" />
 
