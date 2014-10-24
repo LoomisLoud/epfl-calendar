@@ -7,7 +7,7 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
         code = self.request.get('code')
-        ancestor_key = ndb.Key(constants.COURSE_LIST_ANCESTOR_NAME, "test")
+        ancestor_key = ndb.Key(constants.COURSE_LIST_ANCESTOR_NAME, constants.COURSE_LIST_ANCESTOR_ID)
         cm = CourseMatching.CourseMatching.query_by_code(ancestor_key, code).fetch(20)
         self.response.out.write(len(cm))
         for c in cm:
