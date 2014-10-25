@@ -14,12 +14,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login" />
-<<<<<<< HEAD
-    
-    <Button
-        android:onClick="switchToCoursesList"
-        android:text="@string/to_list_course_button" />
-=======
->>>>>>> parent of d97f8b1... Merge branch 'master' into Auth#5
 
 </RelativeLayout>
