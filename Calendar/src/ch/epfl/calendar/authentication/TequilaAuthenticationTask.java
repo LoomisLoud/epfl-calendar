@@ -1,13 +1,12 @@
 package ch.epfl.calendar.authentication;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.http.HttpHost;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -16,12 +15,13 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultRedirectHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.DefaultedHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
@@ -97,7 +97,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
 
             // step 1 - get the authentication token
-            HttpGet tokenReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
+            /*HttpGet tokenReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
             //ResponseHandler<String> handler = new BasicResponseHandler();
             HttpContext localContext = new BasicHttpContext();
             HttpResponse tokenResponse = HttpClientFactory.getInstance().execute(tokenReq, localContext);
@@ -107,7 +107,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             //HttpHost currentHost = (HttpHost)  localContext.getAttribute(
                     //ExecutionContext.HTTP_TARGET_HOST);
             System.out.println(currentReq.getURI().getRawQuery().replace("requestkey=", ""));
-            //System.out.println(currentHost.toURI());
             //System.out.println((currentReq.getURI().isAbsolute()) ?
             //  currentReq.getURI().toString() : (currentHost.toURI() + currentReq.getURI()));
             
@@ -116,37 +115,74 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             
             //JSONObject tokenJson = new JSONObject(tokenResponse);
             String tokenJson = currentReq.getURI().getRawQuery().replace("requestkey=", "");
-            
+            */
 
             //Log.d("Step 1 - AuthenticationTask", tokenResponse);
 
             // step 2 - authenticate the user credentials
             HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
             List<NameValuePair> postBody = new ArrayList<NameValuePair>();
-            postBody.add(new BasicNameValuePair(REQUEST_KEY, tokenJson));
+            //postBody.add(new BasicNameValuePair(REQUEST_KEY, tokenJson));
             postBody.add(new BasicNameValuePair(USERNAME, mUsername));
             postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
             authReq.setEntity(new UrlEncodedFormEntity(postBody));
-            String authResponse = HttpClientFactory.getInstance()
+            /*String authResponse = HttpClientFactory.getInstance()
                     .execute(authReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
-
-            Log.d("Step 2 - AuthenticationTask", authResponse);
+            */
+            DefaultHttpClient client = new DefaultHttpClient();
+            client.execute(authReq).getEntity().getContent().close();
+            
+            
+            String value = "";
+            List<Cookie> lc = HttpClientFactory.getInstance().getCookieStore().getCookies();
+            for (Cookie c : lc) {
+                System.out.println(c.toString());
+                if ("tequila_key".equals(c.getName())) {
+                    value = "tequila_key" + "=" + c.getValue();
+                }
+            }
+            System.out.println(value);
+            
+            
+            
+            authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
+            postBody = new ArrayList<NameValuePair>();
+            postBody.add(new BasicNameValuePair(REQUEST_KEY, value));
+            postBody.add(new BasicNameValuePair(USERNAME, mUsername));
+            postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
+            authReq.setEntity(new UrlEncodedFormEntity(postBody));
+            /*String authResponse = HttpClientFactory.getInstance()
+                    .execute(authReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
+            */
+            HttpResponse resp = client.execute(authReq);
+            Header location = resp.getFirstHeader("Location");
+            for (Header h : resp.getAllHeaders()) {
+                System.out.println(h.toString());
+            }
+            if (location == null) {
+                System.out.println("ON A UN PROBLEME"); 
+            }
+            resp.getEntity().getContent().close();
+            
+            //Log.d("Step 2 - AuthenticationTask", authResponse);
 
             // step 3 - send the token in order to receive the session_id
             HttpPost sessionReq = new HttpPost(tequilaApi.getIsAcademiaLoginURL());
             JSONObject sessionReqJson = new JSONObject();
-            sessionReqJson.put(TOKEN, tokenJson);
+            sessionReqJson.put(TOKEN, value);
             StringEntity sessionReqBody = new StringEntity(sessionReqJson.toString());
             sessionReq.setEntity(sessionReqBody);
             sessionReq.setHeader(ACCEPT, APPLICATION_JSON);
             sessionReq.setHeader(CONTENT_TYPE, APPLICATION_JSON);
-            String sessionResponse = HttpClientFactory.getInstance()
-                    .execute(sessionReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
-            JSONObject sessionJson= new JSONObject(sessionResponse);
+            HttpResponse sessionResponse = client.execute(sessionReq);
+            //JSONObject sessionJson= new JSONObject(sessionResponse.toString());
 
-            Log.d("Step 3 - AuthenticationTask", sessionResponse);
+            //Log.d("Step 3 - AuthenticationTask", sessionResponse);
 
-            mSessionID = sessionJson.getString(SESSION);
+            for (Header h : sessionResponse.getAllHeaders()) { 
+                System.out.println(h.toString());
+            }
+            mSessionID = sessionResponse.toString();//sessionJson.getString(SESSION);
         } catch (ClientProtocolException e) {
             exceptionOccured = true;
             Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::ClientProtocolException", e);
