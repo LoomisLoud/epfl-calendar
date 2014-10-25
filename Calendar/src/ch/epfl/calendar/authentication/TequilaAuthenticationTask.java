@@ -1,20 +1,29 @@
 package ch.epfl.calendar.authentication;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.DefaultedHttpContext;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -89,17 +98,32 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
             // step 1 - get the authentication token
             HttpGet tokenReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
-            ResponseHandler<String> handler = new BasicResponseHandler();
-            String tokenResponse = HttpClientFactory.getInstance().execute(tokenReq, handler);
-            Log.d("Token response = ", tokenResponse);
-            JSONObject tokenJson= new JSONObject(tokenResponse);
+            //ResponseHandler<String> handler = new BasicResponseHandler();
+            HttpContext localContext = new BasicHttpContext();
+            HttpResponse tokenResponse = HttpClientFactory.getInstance().execute(tokenReq, localContext);
+            
+            HttpUriRequest currentReq = (HttpUriRequest) localContext.getAttribute(
+                    ExecutionContext.HTTP_REQUEST);
+            //HttpHost currentHost = (HttpHost)  localContext.getAttribute(
+                    //ExecutionContext.HTTP_TARGET_HOST);
+            System.out.println(currentReq.getURI().getRawQuery().replace("requestkey=", ""));
+            //System.out.println(currentHost.toURI());
+            //System.out.println((currentReq.getURI().isAbsolute()) ?
+            //  currentReq.getURI().toString() : (currentHost.toURI() + currentReq.getURI()));
+            
+            System.out.println("Token response = " + tokenResponse);
+            //Log.d("Token response = ", tokenResponse);
+            
+            //JSONObject tokenJson = new JSONObject(tokenResponse);
+            String tokenJson = currentReq.getURI().getRawQuery().replace("requestkey=", "");
+            
 
-            Log.d("Step 1 - AuthenticationTask", tokenResponse);
+            //Log.d("Step 1 - AuthenticationTask", tokenResponse);
 
             // step 2 - authenticate the user credentials
             HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
             List<NameValuePair> postBody = new ArrayList<NameValuePair>();
-            postBody.add(new BasicNameValuePair(REQUEST_KEY, tokenJson.getString(TOKEN)));
+            postBody.add(new BasicNameValuePair(REQUEST_KEY, tokenJson));
             postBody.add(new BasicNameValuePair(USERNAME, mUsername));
             postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
             authReq.setEntity(new UrlEncodedFormEntity(postBody));
@@ -111,7 +135,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             // step 3 - send the token in order to receive the session_id
             HttpPost sessionReq = new HttpPost(tequilaApi.getIsAcademiaLoginURL());
             JSONObject sessionReqJson = new JSONObject();
-            sessionReqJson.put(TOKEN, tokenJson.getString(TOKEN));
+            sessionReqJson.put(TOKEN, tokenJson);
             StringEntity sessionReqBody = new StringEntity(sessionReqJson.toString());
             sessionReq.setEntity(sessionReqBody);
             sessionReq.setHeader(ACCEPT, APPLICATION_JSON);
