@@ -3,6 +3,9 @@ package ch.epfl.calendar.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * A course of EPFL with its informations :
  *  - Name
@@ -11,7 +14,7 @@ import java.util.List;
  * @author AblionGE
  *
  */
-public class Course {
+public class Course implements Parcelable {
     private String mName;
     private List<Period> mPeriods;
     private String mTeacher;
@@ -105,5 +108,47 @@ public class Course {
     public String toString() {
         return mName + ", Periods : " + mPeriods + ", Teacher : " + mTeacher
                 + ", nb Credits : " + mCredits;
+    }
+    
+    
+    /*
+     * Implementation of Parcelable method
+     */
+    @Override
+    public int describeContents() {
+        
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        
+        dest.writeString(mName);
+        dest.writeString(mTeacher);
+        dest.writeInt(mCredits);
+        
+    }
+    
+    public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
+
+        @Override
+        public Course createFromParcel(Parcel source) {
+            
+            return new Course(source);
+        }
+
+        @Override
+        public Course[] newArray(int size) {
+            
+            return new Course[size];
+        }
+        
+    };
+    
+    public Course(Parcel in){
+        
+        this.setName(in.readString());
+        this.setTeacher(in.readString());
+        this.setCredits(in.readInt());
     }
 }
