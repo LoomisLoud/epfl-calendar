@@ -4,6 +4,7 @@
 *.toc
 *.swp
 *~
+
 *.pyc
 
 bin/
