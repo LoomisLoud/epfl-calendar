@@ -5,5 +5,8 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /
-  script: helloworld.application
+- url: /createCourse
+  script: course.createCourse.application
+
+- url: /getCourse
+  script: course.getCourse.application
