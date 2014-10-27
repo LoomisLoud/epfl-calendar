@@ -52,7 +52,7 @@ public final class HttpClientFactory {
     public static synchronized void setInstance(AbstractHttpClient instance) {
         httpClient = instance;
     }
-    
+
     public static void setNoFollow() {
         httpClient.setRedirectHandler(REDIRECT_NO_FOLLOW);
     }
@@ -60,7 +60,7 @@ public final class HttpClientFactory {
         httpClient.setRedirectHandler(null);
     }
 
-    
+
     private static final RedirectHandler REDIRECT_NO_FOLLOW = new RedirectHandler() {
         @Override
         public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
@@ -72,7 +72,7 @@ public final class HttpClientFactory {
             return null;
         }
     };
-    
+
     private static final RedirectHandler REDIRECT_FOLLOW = new RedirectHandler() {
         @Override
         public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
@@ -129,7 +129,7 @@ public final class HttpClientFactory {
         HttpParams params = new BasicHttpParams();
         ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
         AbstractHttpClient result = new DefaultHttpClient(connManager, params);
-        //result.setRedirectHandler(REDIRECT_NO_FOLLOW);
+        result.setRedirectHandler(REDIRECT_NO_FOLLOW);
         result.setCookieStore(COOKIE_MONSTER);
         result.addRequestInterceptor(LOGGING_REQUEST_INTERCEPTOR);
         result.addResponseInterceptor(LOGGING_RESPONSE_INTERCEPTOR);

@@ -6,17 +6,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +22,6 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.preference.PreferenceActivity.Header;
 import android.util.Log;
 import ch.epfl.calendar.R;
 
@@ -96,25 +93,34 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             HttpGet tokenReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
             //ResponseHandler<String> handler = new BasicResponseHandler();
             HttpContext localContext = new BasicHttpContext();
-            HttpClientFactory.getInstance().execute(tokenReq, localContext);
-            
-            HttpUriRequest currentReq = (HttpUriRequest) localContext.getAttribute(
-                    ExecutionContext.HTTP_REQUEST);
-            
+            HttpResponse resp = HttpClientFactory.getInstance().execute(tokenReq, localContext);
+            for (org.apache.http.Header h : resp.getAllHeaders()) {
+            	System.out.println(h.toString());
+            }
+            Header location = resp.getFirstHeader("Location");
+            resp.getEntity().getContent().close();
+            /*HttpUriRequest currentReq = (HttpUriRequest) localContext.getAttribute(
+                    ExecutionContext.HTTP_REQUEST);*/
+            if (location != null) {
+            	System.out.println(location.getValue());
+            }
+
             //HttpHost currentHost = (HttpHost)  localContext.getAttribute(
                     //ExecutionContext.HTTP_TARGET_HOST);
             //System.out.println(currentReq.getURI().getRawQuery().replace("requestkey=", ""));
             //System.out.println(currentHost.toURI());
             //System.out.println((currentReq.getURI().isAbsolute()) ?
             //  currentReq.getURI().toString() : (currentHost.toURI() + currentReq.getURI()));
-            
+
             //Log.d("Token response = ", tokenResponse);
-            
+
             //JSONObject tokenJson = new JSONObject(tokenResponse);
-            String tokenJson = currentReq.getURI().getRawQuery().replace("requestkey=", "");
-            
-            HttpClientFactory.setNoFollow();
+            String tokenJson = location.getValue();
+            //currentReq.getURI().getRawQuery().replace("requestkey=", "");
+
+            //HttpClientFactory.setNoFollow();
             //Log.d("Step 1 - AuthenticationTask", tokenResponse);
+
             Log.i("INFO : ", "STEP 2");
             // step 2 - authenticate the user credentials
             HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
@@ -138,7 +144,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             StringEntity sessionReqBody = new StringEntity(sessionReqJson.toString());
             sessionReq.setEntity(sessionReqBody);
             sessionReq.setHeader(ACCEPT, APPLICATION_JSON);
-            sessionReq.setHeader(CONTENT_TYPE, APPLICATION_JSON);*/
+            sessionReq.setHeader(CONTENT_TYPE, APPLICATION_JSON);//*/
             List<NameValuePair> post = new ArrayList<NameValuePair>();
             post.add(new BasicNameValuePair(REQUEST_KEY, tokenJson));
             authReq.setEntity(new UrlEncodedFormEntity(post));
