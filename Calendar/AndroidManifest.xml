@@ -7,10 +7,10 @@
     <uses-sdk
         android:minSdkVersion="18"
         android:targetSdkVersion="19" />
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -26,12 +26,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ch.epfl.calendar.display.CourseDetailsActivity"
+            android:name=".display.CourseDetailsActivity"
             android:label="@string/title_activity_course_details" >
         </activity>
         <activity
-            android:name="ch.epfl.calendar.display.CoursesListActivity"
+            android:name=".display.CoursesListActivity"
             android:label="@string/title_activity_courses_list" >
+        </activity>
+        <activity
+            android:name=".DraftActivity"
+            android:label="@string/title_activity_draft" >
         </activity>
     </application>
 
