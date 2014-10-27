@@ -1,15 +1,18 @@
 from google.appengine.ext import ndb
 
+from Period import Period
+
 # Author : gilbrechbuhler
 # Represents a Course in the DB
 class Course(ndb.Model):
     name = ndb.StringProperty()
+    periods = ndb.KeyProperty(repeated=True)
     code = ndb.StringProperty()
     description = ndb.StringProperty()
     numberOfCredits = ndb.IntegerProperty()
     professorName = ndb.StringProperty()
 
-    # Return the object fields in a JSON structure
+    # Return the object's fields in a JSON structure
     def get_as_json(self):
         obj = {
             'name' : self.name,
