@@ -10,6 +10,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -156,46 +157,33 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             authReq.setEntity(new UrlEncodedFormEntity(postBody));
             String authResponse = client
                     .execute(authReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
-            
+            cookie = null;
+            String cookieValue1 = null;
+            lc = client.getCookieStore().getCookies();
+            for (Cookie c : lc) {
+                System.out.println(c.toString());
+                if (c.getName().equals("JSESSIONID")) {
+                    cookie = c;
+                    cookieValue1 = c.getValue();
+                }
+            }
             
             Log.d("Step 2 - AuthenticationTask", authResponse);
 
             Log.i("INFO : ", "STEP 3");
-            //HttpClientFactory.setFollow();
             // step 3 - send the token in order to receive the session_id
-            HttpPost sessionReq = new HttpPost(tequilaApi.getIsAcademiaLoginURL()+"?key="+token);
-            /*JSONObject sessionReqJson = new JSONObject();
-            sessionReqJson.put(TOKEN, tokenJson);
-            StringEntity sessionReqBody = new StringEntity(sessionReqJson.toString());
-            sessionReq.setEntity(sessionReqBody);
-            sessionReq.setHeader(ACCEPT, APPLICATION_JSON);
-            sessionReq.setHeader(CONTENT_TYPE, APPLICATION_JSON);//*/
-            List<NameValuePair> post = new ArrayList<NameValuePair>();
-            post.add(new BasicNameValuePair("key", token));
-            authReq.setEntity(new UrlEncodedFormEntity(post));
+            HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?key="+token);
             sessionReq.addHeader("SetCookie", "JSESSIONID="+cookieValue);
             
             HttpResponse sessionResponse = client
                     .execute(sessionReq, localContext);
-            System.out.println("END HEADER");
             for (Header h : sessionResponse.getAllHeaders()) {
                 System.out.println(h.toString());
             }
-            System.out.println(sessionResponse.toString());
             
-            //Header JSESSIONID = sessionResponse.getFirstHeader("Set-Cookie");
-            //System.out.println(JSESSIONID);
-            //JSONObject sessionJson = new JSONObject(sessionResponse);
-
-            //Log.d("Step 3 - AuthenticationTask", sessionResponse);
-
-            //mSessionID = sessionJson.getString(SESSION);
             
             Log.i("INFO : ", "STEP 4");
-            for (org.apache.http.Header h : sessionResponse.getAllHeaders()) {
-                System.out.println(h.toString());
-            }
-
+            
             location = sessionResponse.getFirstHeader("Location");
             
             String secondTokenHeader = location.getValue();
@@ -203,16 +191,30 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             String secondToken = secondTokenHeader.substring(i+1);
             System.out.println("secondToken = "+secondToken);
             
-            HttpPost authReq2 = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
+            HttpGet authReq2 = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?key="+secondToken);
             List<NameValuePair> postBody2 = new ArrayList<NameValuePair>();
-            postBody2.add(new BasicNameValuePair(REQUEST_KEY, secondToken));
-            postBody2.add(new BasicNameValuePair(USERNAME, mUsername));
-            postBody2.add(new BasicNameValuePair(PASSWORD, mPassword));
-            authReq2.setEntity(new UrlEncodedFormEntity(postBody2));
+            postBody2.add(new BasicNameValuePair("key", secondToken));
+            //postBody2.add(new BasicNameValuePair(USERNAME, mUsername));
+            //postBody2.add(new BasicNameValuePair(PASSWORD, mPassword));
+            //authReq2.setEntity(new UrlEncodedFormEntity(postBody2));
             String authResponse2 = client
-                    .execute(authReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
+                    .execute(authReq2, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
             
             System.out.println(authResponse2);
+            
+            Log.i("INFO : ", "STEP 5");
+            HttpGet timetableReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?key="+token+"&key="+secondToken);
+            timetableReq.addHeader("SetCookie", "JSESSIONID="+cookieValue1);
+            sessionReq.addHeader("SetCookie", "JSESSIONID="+cookieValue1);
+            CookieStore cs = client.getCookieStore();
+            cs.addCookie(cookie);
+            String reponse = client
+                    .execute(timetableReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
+            /*for (Header h : reponse.getAllHeaders()) {
+                System.out.println(h.toString());
+            }*/
+            System.out.println(reponse);
+            
             
         } catch (ClientProtocolException e) {
             exceptionOccured = true;
