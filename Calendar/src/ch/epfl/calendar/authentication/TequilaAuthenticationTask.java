@@ -171,9 +171,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             sessionReq.setHeader(ACCEPT, APPLICATION_JSON);
             sessionReq.setHeader(CONTENT_TYPE, APPLICATION_JSON);//*/
             List<NameValuePair> post = new ArrayList<NameValuePair>();
-            post.add(new BasicNameValuePair(REQUEST_KEY, token));
+            post.add(new BasicNameValuePair("key", token));
             authReq.setEntity(new UrlEncodedFormEntity(post));
-            //sessionReq.addHeader("JSESSIONID", cookieValue);
+            sessionReq.addHeader("SetCookie", "JSESSIONID="+cookieValue);
             
             HttpResponse sessionResponse = client
                     .execute(sessionReq, localContext);
@@ -181,15 +181,39 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             for (Header h : sessionResponse.getAllHeaders()) {
                 System.out.println(h.toString());
             }
-            System.out.println(sessionResponse);
+            System.out.println(sessionResponse.toString());
             
-            Header JSESSIONID = sessionResponse.getFirstHeader("Set-Cookie");
-            System.out.println(JSESSIONID);
+            //Header JSESSIONID = sessionResponse.getFirstHeader("Set-Cookie");
+            //System.out.println(JSESSIONID);
             //JSONObject sessionJson = new JSONObject(sessionResponse);
 
             //Log.d("Step 3 - AuthenticationTask", sessionResponse);
 
             //mSessionID = sessionJson.getString(SESSION);
+            
+            Log.i("INFO : ", "STEP 4");
+            for (org.apache.http.Header h : sessionResponse.getAllHeaders()) {
+                System.out.println(h.toString());
+            }
+
+            location = sessionResponse.getFirstHeader("Location");
+            
+            String secondTokenHeader = location.getValue();
+            i = secondTokenHeader.indexOf("=");
+            String secondToken = secondTokenHeader.substring(i+1);
+            System.out.println("secondToken = "+secondToken);
+            
+            HttpPost authReq2 = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
+            List<NameValuePair> postBody2 = new ArrayList<NameValuePair>();
+            postBody2.add(new BasicNameValuePair(REQUEST_KEY, secondToken));
+            postBody2.add(new BasicNameValuePair(USERNAME, mUsername));
+            postBody2.add(new BasicNameValuePair(PASSWORD, mPassword));
+            authReq2.setEntity(new UrlEncodedFormEntity(postBody2));
+            String authResponse2 = client
+                    .execute(authReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
+            
+            System.out.println(authResponse2);
+            
         } catch (ClientProtocolException e) {
             exceptionOccured = true;
             Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::ClientProtocolException", e);
