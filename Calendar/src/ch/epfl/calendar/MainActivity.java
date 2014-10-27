@@ -18,16 +18,15 @@ import ch.epfl.calendar.display.CoursesListActivity;
 /**
  * 
  * @author lweingart
- *
+ * 
  */
 public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-		new FetchInformations().execute();
+        new FetchInformations().execute();
     }
-    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -53,15 +52,16 @@ public class MainActivity extends Activity {
                 CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
     }
-    
+
     /**
-     * Fetch the informations of a student
-     * !!!!!!!!!!Works as a Mock for the moment!!!!!!!!!!!!!
-     * -> no connection, just an XML string
+     * Fetch the informations of a student !!!!!!!!!!Works as a Mock for the
+     * moment!!!!!!!!!!!!! -> no connection, just an XML string
+     * 
      * @author AblionGE
-     *
+     * 
      */
-    private class FetchInformations extends AsyncTask<String, Void, List<Course>> {
+    private class FetchInformations extends
+            AsyncTask<String, Void, List<Course>> {
 
         @Override
         protected List<Course> doInBackground(String... params) {
@@ -75,8 +75,8 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(List<Course> result) {
-            //Log.i("result request", result);
-            for (Course course: result) {
+            // Log.i("result request", result);
+            for (Course course : result) {
                 System.out.println(course.toString());
             }
         }

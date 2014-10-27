@@ -7,29 +7,27 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * A course of EPFL with its informations :
- *  - Name
- *  - Date
- *  - Period classes
+ * A course of EPFL with its informations : - Name - Date - Period classes
+ * 
  * @author AblionGE
- *
+ * 
  */
 public class Course implements Parcelable {
     private String mName;
     private List<Period> mPeriods;
     private String mTeacher;
     private int mCredits;
-    
-    public Course(String name, String date, String startTime,
-            String endTime, String type, List<String> rooms) {
+
+    public Course(String name, String date, String startTime, String endTime,
+            String type, List<String> rooms) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
         this.addPeriod(new Period(date, startTime, endTime, type, rooms));
         this.mTeacher = null;
         this.mCredits = 0;
     }
-    
-    //FIXME : DELETE !!! ???
+
+    // FIXME : DELETE !!! ???
     public Course(String name) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
@@ -39,12 +37,13 @@ public class Course implements Parcelable {
 
     /**
      * Add a period to the current list of periods
+     * 
      * @param period
      */
     public void addPeriod(Period period) {
         this.mPeriods.add(period);
     }
-    
+
     /**
      * @return the mName
      */
@@ -53,7 +52,8 @@ public class Course implements Parcelable {
     }
 
     /**
-     * @param mName the mName to set
+     * @param mName
+     *            the mName to set
      */
     public void setName(String name) {
         this.mName = name;
@@ -67,7 +67,8 @@ public class Course implements Parcelable {
     }
 
     /**
-     * @param mPeriods the mPeriods to set
+     * @param mPeriods
+     *            the mPeriods to set
      */
     public void setPeriods(List<Period> periods) {
         this.mPeriods = periods;
@@ -81,7 +82,8 @@ public class Course implements Parcelable {
     }
 
     /**
-     * @param mCredits the mCredits to set
+     * @param mCredits
+     *            the mCredits to set
      */
     public void setCredits(int credits) {
         this.mCredits = credits;
@@ -95,13 +97,16 @@ public class Course implements Parcelable {
     }
 
     /**
-     * @param mTeacher the mTeacher to set
+     * @param mTeacher
+     *            the mTeacher to set
      */
     public void setTeacher(String teacher) {
         this.mTeacher = teacher;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
@@ -109,45 +114,47 @@ public class Course implements Parcelable {
         return mName + ", Periods : " + mPeriods + ", Teacher : " + mTeacher
                 + ", nb Credits : " + mCredits;
     }
-    
-    
+
     /*
      * Implementation of Parcelable method
      */
     @Override
     public int describeContents() {
-        
+
         return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        
+
         dest.writeString(mName);
+        dest.writeList(mPeriods);
         dest.writeString(mTeacher);
         dest.writeInt(mCredits);
-        
+
     }
-    
+
     public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
 
         @Override
         public Course createFromParcel(Parcel source) {
-            
+
             return new Course(source);
         }
 
         @Override
         public Course[] newArray(int size) {
-            
+
             return new Course[size];
         }
-        
+
     };
-    
-    public Course(Parcel in){
-        
+
+    public Course(Parcel in) {
+
         this.setName(in.readString());
+        mPeriods = new ArrayList<Period>();
+        in.readList(mPeriods, Period.class.getClassLoader());
         this.setTeacher(in.readString());
         this.setCredits(in.readInt());
     }

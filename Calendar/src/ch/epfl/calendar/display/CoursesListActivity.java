@@ -57,7 +57,6 @@ public class CoursesListActivity extends Activity {
         Intent courseDetailsActivityIntent = new Intent(this,
                 CourseDetailsActivity.class);
 
-        
         courseDetailsActivityIntent.putExtra("course", course);
         startActivity(courseDetailsActivityIntent);
     }

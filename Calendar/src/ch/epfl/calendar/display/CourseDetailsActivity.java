@@ -21,7 +21,7 @@ public class CourseDetailsActivity extends Activity {
         // get the intent that started the Activity
         Intent startingIntent = getIntent();
 
-        Course course =  startingIntent.getParcelableExtra("course");
+        Course course = startingIntent.getParcelableExtra("course");
         String courseName = course.getName();
         String courseProfessor = course.getTeacher();
         String courseCredits = Integer.toString(course.getCredits());
