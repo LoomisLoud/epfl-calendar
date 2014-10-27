@@ -34,6 +34,9 @@ public class Period {
     public String getDate() {
         return mDate;
     }
+    
+    
+    
 
     /**
      * @param mDate the mDate to set
@@ -47,6 +50,14 @@ public class Period {
      */
     public String getStartTime() {
         return mStartTime;
+    }
+    public int getHourStartTime(){
+        String tab[]=mStartTime.split(":");
+        return Integer.parseInt(tab[0]);
+    }
+    public int getMinuteStartTime(){
+        String tab[]=mStartTime.split(":");
+        return Integer.parseInt(tab[1]);
     }
 
     /**
@@ -62,6 +73,7 @@ public class Period {
     public String getEndTime() {
         return mEndTime;
     }
+   
 
     /**
      * @param mEndTime the mEndTime to set
