@@ -1,8 +1,8 @@
 import requests
 import json
 
-#url = "http://versatile-hull-742.appspot.com"
-url = "http://localhost:8080"
+url = "http://versatile-hull-742.appspot.com"
+# url = "http://localhost:8080"
 
 payload = {'name': 'Advanced computer architecture', 'code' : 'CS-470', 'description' : 'mock description', 'numberOfCredits' : '4', 'professorName' : 'Pr. Ienne'}
 r = requests.post(url + "/createCourse", data=json.dumps(payload))
