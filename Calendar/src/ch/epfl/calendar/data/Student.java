@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 /**
- * @author Enea Bell & Marc Shär
+ * @author Enea Bell
  *
  */
 public class Student extends Person implements StudentData {
