@@ -80,8 +80,7 @@ public final class HttpClientFactory {
         }
 
         @Override
-        public URI getLocationURI(HttpResponse arg0, HttpContext arg1)
-                throws ProtocolException {
+        public URI getLocationURI(HttpResponse arg0, HttpContext arg1) throws ProtocolException {
             return null;
         }
     };

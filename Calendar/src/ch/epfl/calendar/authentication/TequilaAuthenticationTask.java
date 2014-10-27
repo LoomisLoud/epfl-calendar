@@ -115,7 +115,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             //Log.d("Token response = ", tokenResponse);
 
             //JSONObject tokenJson = new JSONObject(tokenResponse);
-            String tokenJson = location.getValue();
+            String tokenHeader = location.getValue();
+            int i = tokenHeader.indexOf("=");
+            String token = tokenHeader.substring(i+1);
+            System.out.println("token = "+token);
             //currentReq.getURI().getRawQuery().replace("requestkey=", "");
 
             //HttpClientFactory.setNoFollow();
@@ -125,7 +128,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             // step 2 - authenticate the user credentials
             HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
             List<NameValuePair> postBody = new ArrayList<NameValuePair>();
-            postBody.add(new BasicNameValuePair(REQUEST_KEY, tokenJson));
+            postBody.add(new BasicNameValuePair(REQUEST_KEY, token));
             postBody.add(new BasicNameValuePair(USERNAME, mUsername));
             postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
             authReq.setEntity(new UrlEncodedFormEntity(postBody));
@@ -136,7 +139,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
             Log.i("INFO : ", "STEP 3");
 
-            HttpClientFactory.setFollow();
+            //HttpClientFactory.setFollow();
             // step 3 - send the token in order to receive the session_id
             HttpPost sessionReq = new HttpPost(tequilaApi.getIsAcademiaLoginURL());
             /*JSONObject sessionReqJson = new JSONObject();
@@ -146,7 +149,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             sessionReq.setHeader(ACCEPT, APPLICATION_JSON);
             sessionReq.setHeader(CONTENT_TYPE, APPLICATION_JSON);//*/
             List<NameValuePair> post = new ArrayList<NameValuePair>();
-            post.add(new BasicNameValuePair(REQUEST_KEY, tokenJson));
+            post.add(new BasicNameValuePair(REQUEST_KEY, token));
             authReq.setEntity(new UrlEncodedFormEntity(post));
             String sessionResponse = HttpClientFactory.getInstance()
                     .execute(sessionReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
