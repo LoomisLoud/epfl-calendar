@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
         actionBar.setDisplayShowHomeEnabled(false);
         
         initializeCalendar();
+
     }
 
     @Override

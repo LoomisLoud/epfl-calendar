@@ -41,9 +41,12 @@ public class ISAJsonParser {
         this.addJSONHeaderInRequest(httpURLConnection);
         try {
             return new JSONArray(this.readInputStreamFromConnection(httpURLConnection));
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+        catch (JSONException e) {
+        	e.printStackTrace();
         }
         return null;
     }

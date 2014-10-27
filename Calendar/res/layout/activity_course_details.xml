@@ -21,4 +21,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/courseProfessor" />
 
+     <TextView
+        android:id="@+id/coursePeriods"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/courseCredits" />
+
 </RelativeLayout>
