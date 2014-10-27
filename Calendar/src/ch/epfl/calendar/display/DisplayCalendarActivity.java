@@ -1,54 +1,49 @@
 package ch.epfl.calendar.display;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.CalendarContract;
-import android.provider.CalendarContract.Events;
+import android.widget.CalendarView;
+import android.widget.CalendarView.OnDateChangeListener;
+import android.widget.Toast;
 import ch.epfl.calendar.R;
-import ch.epfl.calendar.data.Course;
 
 public class DisplayCalendarActivity extends Activity {
-    List<String> algorithmRoomCourse = new ArrayList<String>();
-
-    Course algorithm;
-
+    CalendarView calendar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_calendar);
-        algorithmRoomCourse.add("CO2");
-       algorithm = new Course("Algorithm", "monday", "14h15", "16h", "Course",algorithmRoomCourse );
-       
-       Intent intent = new Intent(Intent.ACTION_INSERT);  
-       intent.setType("vnd.android.cursor.item/event");  
-       intent.putExtra(Events.TITLE, algorithm.getName());  
-       intent.putExtra(Events.EVENT_LOCATION, algorithm.getPeriods().get(0).getRooms().get(0));  
-       intent.putExtra(Events.DESCRIPTION, "Course");  
- 
-       GregorianCalendar beginTime = new GregorianCalendar(2014, 27, 10,
-               algorithm.getPeriods().get(0).getHourStartTime(),algorithm.getPeriods().get(0).getMinuteStartTime());
-       GregorianCalendar endTime = new GregorianCalendar(2014, 27, 10,
-               algorithm.getPeriods().get(0).getHourEndTime(),algorithm.getPeriods().get(0).getMinuteEndTime());
-       
-       intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,  
-               beginTime.getTimeInMillis());  
-       intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,  
-               endTime.getTimeInMillis());  
- 
-       intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, false);  
- 
-       intent.putExtra(Events.RRULE,  
-               "FREQ=WEEKLY;COUNT=11;BYDAY=MO");  
- 
-       intent.putExtra(Events.ACCESS_LEVEL, Events.ACCESS_PRIVATE);  
-       intent.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);  
- 
-       startActivity(intent);  
- 
+        initializeCalendar();
+    }
+    public void initializeCalendar() {
+        calendar = (CalendarView) findViewById(R.id.calendar);
+
+        // sets whether to show the week number.
+        calendar.setShowWeekNumber(false);
+
+        // sets the first day of week according to Calendar.
+        // here we set Monday as the first day of the Calendar
+        calendar.setFirstDayOfWeek(2);
+
+        //The background color for the selected week.
+        calendar.setSelectedWeekBackgroundColor(getResources().getColor(R.color.green));
+        
+        //sets the color for the dates of an unfocused month. 
+        calendar.setUnfocusedMonthDateColor(getResources().getColor(R.color.transparent));
+    
+        //sets the color for the separator line between weeks.
+        calendar.setWeekSeparatorLineColor(getResources().getColor(R.color.transparent));
+        
+        //sets the color for the vertical bar shown at the beginning and at the end of the selected date.
+        calendar.setSelectedDateVerticalBar(R.color.darkgreen);
+        
+        //sets the listener to be notified upon selected date change.
+        calendar.setOnDateChangeListener(new OnDateChangeListener() {
+                       //show the selected date as a toast
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
+                Toast.makeText(getApplicationContext(), day + "/" + month + "/" + year, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
