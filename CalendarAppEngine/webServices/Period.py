@@ -16,7 +16,7 @@ class Period(ndb.Model):
             'startTime' : self.startTime.strftime('%H:%M'),
             'endTime' : self.endTime.strftime('%H:%M'),
             'periodType' : self.periodType,
-            #'rooms' : self.rooms
+            'rooms' : self.rooms
         }
         return obj
 

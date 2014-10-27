@@ -1,5 +1,6 @@
 import webapp2
 from google.appengine.ext import ndb
+from webapp2_extras import json
 
 from Course import Course
 
@@ -7,16 +8,17 @@ from Course import Course
 # Web service used to create a course entity in the database
 class createCourse(webapp2.RequestHandler):
     def post(self):
-        codeGet = self.request.get('code')
+        values = json.decode(self.request.body)
+        codeGet = values['code']
         if not(Course.isCodeUnique(codeGet)):
             self.response.headers['Content-Type'] = 'text/plain'
             self.response.write('error')
         else:
-            nameGet = self.request.get('name')
-            #descriptionGet = self.request.get('description')
+            nameGet = values['name']
+            #descriptionGet = values('description')
             descriptionGet = ''
-            numberOfCreditsGet = self.request.get('numberOfCredits')
-            professorNameGet = self.request.get('professorName')
+            numberOfCreditsGet = values['numberOfCredits']
+            professorNameGet = values['professorName']
             course = Course(name = nameGet, periods = [], code = codeGet, description = descriptionGet, 
                 numberOfCredits = int(numberOfCreditsGet), professorName = professorNameGet)
             course.put()
