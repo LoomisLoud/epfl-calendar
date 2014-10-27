@@ -16,8 +16,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -97,6 +95,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             for (org.apache.http.Header h : resp.getAllHeaders()) {
             	System.out.println(h.toString());
             }
+
             Header location = resp.getFirstHeader("Location");
             resp.getEntity().getContent().close();
             /*HttpUriRequest currentReq = (HttpUriRequest) localContext.getAttribute(
@@ -126,6 +125,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
             Log.i("INFO : ", "STEP 2");
             // step 2 - authenticate the user credentials
+            //HttpClientFactory.setFollow();
             HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
             List<NameValuePair> postBody = new ArrayList<NameValuePair>();
             postBody.add(new BasicNameValuePair(REQUEST_KEY, token));
@@ -133,32 +133,31 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
             authReq.setEntity(new UrlEncodedFormEntity(postBody));
             String authResponse = HttpClientFactory.getInstance()
-                    .execute(authReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
+                    .execute(authReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
 
             Log.d("Step 2 - AuthenticationTask", authResponse);
 
             Log.i("INFO : ", "STEP 3");
-
-            //HttpClientFactory.setFollow();
-            // step 3 - send the token in order to receive the session_id
-            HttpPost sessionReq = new HttpPost(tequilaApi.getIsAcademiaLoginURL());
-            /*JSONObject sessionReqJson = new JSONObject();
-            sessionReqJson.put(TOKEN, tokenJson);
-            StringEntity sessionReqBody = new StringEntity(sessionReqJson.toString());
-            sessionReq.setEntity(sessionReqBody);
-            sessionReq.setHeader(ACCEPT, APPLICATION_JSON);
-            sessionReq.setHeader(CONTENT_TYPE, APPLICATION_JSON);//*/
-            List<NameValuePair> post = new ArrayList<NameValuePair>();
-            post.add(new BasicNameValuePair(REQUEST_KEY, token));
-            authReq.setEntity(new UrlEncodedFormEntity(post));
-            String sessionResponse = HttpClientFactory.getInstance()
-                    .execute(sessionReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
-            System.out.println(sessionResponse);
-            JSONObject sessionJson = new JSONObject(sessionResponse);
-
-            Log.d("Step 3 - AuthenticationTask", sessionResponse);
-
-            mSessionID = sessionJson.getString(SESSION);
+//
+//            // step 3 - send the token in order to receive the session_id
+//            HttpPost sessionReq = new HttpPost(tequilaApi.getIsAcademiaLoginURL());
+//            /*JSONObject sessionReqJson = new JSONObject();
+//            sessionReqJson.put(TOKEN, tokenJson);
+//            StringEntity sessionReqBody = new StringEntity(sessionReqJson.toString());
+//            sessionReq.setEntity(sessionReqBody);
+//            sessionReq.setHeader(ACCEPT, APPLICATION_JSON);
+//            sessionReq.setHeader(CONTENT_TYPE, APPLICATION_JSON);//*/
+//            List<NameValuePair> post = new ArrayList<NameValuePair>();
+//            post.add(new BasicNameValuePair(REQUEST_KEY, token));
+//            authReq.setEntity(new UrlEncodedFormEntity(post));
+//            String sessionResponse = HttpClientFactory.getInstance()
+//                    .execute(sessionReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
+//            System.out.println(sessionResponse);
+//            JSONObject sessionJson = new JSONObject(sessionResponse);
+//
+//            Log.d("Step 3 - AuthenticationTask", sessionResponse);
+//
+//            mSessionID = sessionJson.getString(SESSION);
         } catch (ClientProtocolException e) {
             exceptionOccured = true;
             Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::ClientProtocolException", e);
@@ -167,11 +166,12 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             exceptionOccured = true;
             Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::IOException", e);
             return mContext.getString(R.string.error_io);
-        } catch (JSONException e) {
-            exceptionOccured = true;
-            Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::JSONException", e);
-            return mContext.getString(R.string.error_parse_response);
         }
+//        } catch (JSONException e) {
+//            exceptionOccured = true;
+//            Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::JSONException", e);
+//            return mContext.getString(R.string.error_parse_response);
+//        }
 
         if (!this.isCancelled()) {
             return mContext.getString(R.string.login_success);

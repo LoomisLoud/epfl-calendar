@@ -16,8 +16,8 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
@@ -32,7 +32,7 @@ import android.util.Log;
  */
 public final class HttpClientFactory {
 
-    private static AbstractHttpClient httpClient;
+    private static DefaultHttpClient httpClient;
     private static final int HTTP_PORT = 80;
     private static final int HTTPS_PORT = 443;
 
@@ -40,7 +40,7 @@ public final class HttpClientFactory {
         // do nothing but needs to be private
     }
 
-    public static synchronized AbstractHttpClient getInstance() {
+    public static synchronized DefaultHttpClient getInstance() {
         if (httpClient == null) {
             httpClient = create();
         }
@@ -48,7 +48,7 @@ public final class HttpClientFactory {
         return httpClient;
     }
 
-    public static synchronized void setInstance(AbstractHttpClient instance) {
+    public static synchronized void setInstance(DefaultHttpClient instance) {
         httpClient = instance;
     }
 
@@ -56,7 +56,7 @@ public final class HttpClientFactory {
         httpClient.setRedirectHandler(REDIRECT_NO_FOLLOW);
     }
     public static void setFollow() {
-        httpClient.setRedirectHandler(null);
+        httpClient.setRedirectHandler(new DefaultRedirectHandler());
     }
 
 
@@ -64,6 +64,18 @@ public final class HttpClientFactory {
         @Override
         public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
             return false;
+        }
+
+        @Override
+        public URI getLocationURI(HttpResponse response, HttpContext context) throws org.apache.http.ProtocolException {
+            return null;
+        }
+    };
+
+    private static final RedirectHandler REDIRECT_FOLLOW = new RedirectHandler() {
+        @Override
+        public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
+            return true;
         }
 
         @Override
@@ -108,17 +120,17 @@ public final class HttpClientFactory {
         }
     };
 
-    private static AbstractHttpClient create() {
+    private static DefaultHttpClient create() {
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), HTTP_PORT));
         schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), HTTPS_PORT));
         HttpParams params = new BasicHttpParams();
         ThreadSafeClientConnManager connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
-        AbstractHttpClient result = new DefaultHttpClient(connManager, params);
-        result.setRedirectHandler(REDIRECT_NO_FOLLOW);
-        result.setCookieStore(COOKIE_MONSTER);
-        result.addRequestInterceptor(LOGGING_REQUEST_INTERCEPTOR);
-        result.addResponseInterceptor(LOGGING_RESPONSE_INTERCEPTOR);
+        DefaultHttpClient result = new DefaultHttpClient(connManager, params);
+//        result.setRedirectHandler(REDIRECT_NO_FOLLOW);
+//        result.setCookieStore(COOKIE_MONSTER);
+//        result.addRequestInterceptor(LOGGING_REQUEST_INTERCEPTOR);
+//        result.addResponseInterceptor(LOGGING_RESPONSE_INTERCEPTOR);
         return result;
     }
 }
