@@ -23,8 +23,9 @@ public class Course implements Parcelable {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
         this.addPeriod(new Period(date, startTime, endTime, type, rooms));
-        this.mTeacher = null;
-        this.mCredits = 0;
+        //TODO implement teacher and credits
+        this.mTeacher = "John Doe";
+        this.mCredits = 24;
     }
 
     // FIXME : DELETE !!! ???

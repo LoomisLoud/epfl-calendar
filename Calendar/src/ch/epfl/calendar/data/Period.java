@@ -115,7 +115,7 @@ public class Period implements Parcelable {
     @Override
     public String toString() {
         return mDate + " from " + mStartTime + " to " + mEndTime + " of type "
-                + mType + "in rooms : " + mRooms;
+                + mType + " in rooms : " + mRooms + "\n";
     }
 
     @Override

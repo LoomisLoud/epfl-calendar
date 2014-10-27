@@ -31,6 +31,7 @@ public class CourseDetailsActivity extends Activity {
         String courseName = course.getName();
         String courseProfessor = course.getTeacher();
         String courseCredits = Integer.toString(course.getCredits());
+        String coursePeriods = course.getPeriods().toString();
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
@@ -41,6 +42,10 @@ public class CourseDetailsActivity extends Activity {
 
         textView = (TextView) findViewById(R.id.courseCredits);
         textView.setText(bodyToSpannable(courseCredits + " crédits"));
+
+        textView = (TextView) findViewById(R.id.coursePeriods);
+        textView.setText(bodyToSpannable("\n\nPeriods for this course: \n" + coursePeriods));
+
     }
 
 
