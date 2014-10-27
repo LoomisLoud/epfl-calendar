@@ -154,7 +154,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             String sessionResponse = HttpClientFactory.getInstance()
                     .execute(sessionReq, new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_OK));
             System.out.println(sessionResponse);
-            JSONObject sessionJson= new JSONObject(sessionResponse);
+            JSONObject sessionJson = new JSONObject(sessionResponse);
 
             Log.d("Step 3 - AuthenticationTask", sessionResponse);
 

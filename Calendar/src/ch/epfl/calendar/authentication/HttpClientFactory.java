@@ -9,7 +9,6 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
-import org.apache.http.ProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.RedirectHandler;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -69,18 +68,6 @@ public final class HttpClientFactory {
 
         @Override
         public URI getLocationURI(HttpResponse response, HttpContext context) throws org.apache.http.ProtocolException {
-            return null;
-        }
-    };
-
-    private static final RedirectHandler REDIRECT_FOLLOW = new RedirectHandler() {
-        @Override
-        public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
-            return true;
-        }
-
-        @Override
-        public URI getLocationURI(HttpResponse arg0, HttpContext arg1) throws ProtocolException {
             return null;
         }
     };
