@@ -90,8 +90,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 	protected String doInBackground(Void... params) {
 
         try {
+            int httpCode = 0;
             String tokenList = "?";
             HttpResponse respGetTimetable = null;
+            boolean firstTry = true;
             AbstractHttpClient client = HttpClientFactory.getInstance();
             TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
 
@@ -100,21 +102,17 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             HttpContext localContext = new BasicHttpContext();
             respGetTimetable = client.execute(getTimetable, localContext);
             
-            
             if (respGetTimetable.getStatusLine().getStatusCode() == TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                System.out.println(InputStreamUtils.readInputStream(respGetTimetable.getEntity().getContent()));
+                httpCode = TequilaAuthenticationAPI.STATUS_CODE_OK;
             } else if (respGetTimetable.getStatusLine().getStatusCode()
                     == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE) {
                 
-                int code = 0;
-                while (code != TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
                     Header location = respGetTimetable.getFirstHeader("Location");
                     
                     String tokenHeader = location.getValue();
                     int i = tokenHeader.indexOf("=");
                     String token = tokenHeader.substring(i+1);
-                    
-                    //System.out.println("token = "+token);
                     
                     Cookie cookie = null;
                     String cookieValue = null;
@@ -133,11 +131,16 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
                     List<NameValuePair> postBody = new ArrayList<NameValuePair>();
                     postBody.add(new BasicNameValuePair(REQUEST_KEY, token));
-                    postBody.add(new BasicNameValuePair(USERNAME, mUsername));
-                    postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
+                    if (firstTry) {
+                        postBody.add(new BasicNameValuePair(USERNAME, mUsername));
+                        postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
+                        firstTry = false;
+                    }
                     authReq.setEntity(new UrlEncodedFormEntity(postBody));
                     client.execute(authReq, 
                             new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
+                    
+                    authReq.getEntity().getContent().close();
                     
                     
                     Log.i("INFO : ", "Try getting Timetable with the last token");
@@ -146,7 +149,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                     nameValuePairs.add(new BasicNameValuePair("key", token));
                     respGetTimetable = client.execute(sessionReq, localContext);
-                    
                     if (respGetTimetable.getStatusLine().getStatusCode() != TequilaAuthenticationAPI.STATUS_CODE_OK) {
                         if (!tokenList.equals("?")) {
                             Log.i("INFO : ", "Try getting Timetable with all token");
@@ -154,22 +156,21 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                             sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+tokenList);
                             sessionReq.addHeader("Set-Cookie", "JSESSIONID="+cookieValue);
                             client.getCookieStore().addCookie(cookie);
+                            respGetTimetable = client
+                                    .execute(sessionReq, localContext);
                         }
-                        
-                        respGetTimetable = client
-                                .execute(sessionReq, localContext);
                         if (!tokenList.equals("?")) {
                             tokenList = tokenList + "&key=" +token;
                         } else {
                             tokenList = tokenList + "key=" + token;
                         }
                     }
-                    code = respGetTimetable.getStatusLine().getStatusCode();
+                    httpCode = respGetTimetable.getStatusLine().getStatusCode();
                 }
             }
             
-            System.out.println(InputStreamUtils.readInputStream(respGetTimetable.getEntity().getContent()));
-            
+            String result = InputStreamUtils.readInputStream(respGetTimetable.getEntity().getContent());
+            System.out.println(result);
             
             
             
