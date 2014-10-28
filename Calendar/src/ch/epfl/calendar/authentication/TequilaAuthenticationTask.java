@@ -148,7 +148,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     respGetTimetable = client.execute(sessionReq, localContext);
                     
                     if (respGetTimetable.getStatusLine().getStatusCode() != TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                        if (tokenList.equals("?")) {
+                        if (!tokenList.equals("?")) {
                             Log.i("INFO : ", "Try getting Timetable with all token");
                             Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+tokenList);
                             sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+tokenList);
