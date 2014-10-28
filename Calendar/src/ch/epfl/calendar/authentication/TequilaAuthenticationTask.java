@@ -140,17 +140,17 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     client.execute(authReq, 
                             new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
                     
-                    authReq.getEntity().getContent().close();
-                    
                     
                     Log.i("INFO : ", "Try getting Timetable with the last token");
                     Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?key="+token);
                     HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?key="+token);
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                     nameValuePairs.add(new BasicNameValuePair("key", token));
+                    respGetTimetable.getEntity().getContent().close();
                     respGetTimetable = client.execute(sessionReq, localContext);
                     if (respGetTimetable.getStatusLine().getStatusCode() != TequilaAuthenticationAPI.STATUS_CODE_OK) {
                         if (!tokenList.equals("?")) {
+                            tokenList = tokenList + "&key=" +token;
                             Log.i("INFO : ", "Try getting Timetable with all token");
                             Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+tokenList);
                             sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+tokenList);
@@ -159,9 +159,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                             respGetTimetable = client
                                     .execute(sessionReq, localContext);
                         }
-                        if (!tokenList.equals("?")) {
-                            tokenList = tokenList + "&key=" +token;
-                        } else {
+                        if (tokenList.equals("?")) {
                             tokenList = tokenList + "key=" + token;
                         }
                     }
