@@ -21,5 +21,5 @@ public interface CalendarClientInterface {
      * @param student
      * @return a list of courses
      */
-    List<Course> getISAInformations() throws CalendarClientException;
+    List<String> getISAInformations() throws CalendarClientException;
 }
