@@ -90,7 +90,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 	protected String doInBackground(Void... params) {
 
         try {
-            String tokenList = "";
+            String tokenList = "?";
             HttpResponse respGetTimetable = null;
             AbstractHttpClient client = HttpClientFactory.getInstance();
             TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
@@ -113,11 +113,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     String tokenHeader = location.getValue();
                     int i = tokenHeader.indexOf("=");
                     String token = tokenHeader.substring(i+1);
-                    if (!tokenList.equals("?")) {
-                        tokenList = tokenList + "&key=" +token;
-                    } else {
-                        tokenList = tokenList + "key=" + token;
-                    }
                     
                     //System.out.println("token = "+token);
                     
@@ -145,13 +140,30 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                             new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
                     
                     
-                    Log.i("INFO : ", "Try getting Timetable with token");
-                    HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+tokenList);
-                    sessionReq.addHeader("SetCookie", "JSESSIONID="+cookieValue);
-                    client.getCookieStore().addCookie(cookie);
+                    Log.i("INFO : ", "Try getting Timetable with the last token");
+                    Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?key="+token);
+                    HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?key="+token);
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                    nameValuePairs.add(new BasicNameValuePair("key", token));
+                    respGetTimetable = client.execute(sessionReq, localContext);
                     
-                    respGetTimetable = client
-                            .execute(sessionReq, localContext);
+                    if (respGetTimetable.getStatusLine().getStatusCode() != TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                        if (tokenList.equals("?")) {
+                            Log.i("INFO : ", "Try getting Timetable with all token");
+                            Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+tokenList);
+                            sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+tokenList);
+                            sessionReq.addHeader("Set-Cookie", "JSESSIONID="+cookieValue);
+                            client.getCookieStore().addCookie(cookie);
+                        }
+                        
+                        respGetTimetable = client
+                                .execute(sessionReq, localContext);
+                        if (!tokenList.equals("?")) {
+                            tokenList = tokenList + "&key=" +token;
+                        } else {
+                            tokenList = tokenList + "key=" + token;
+                        }
+                    }
                     code = respGetTimetable.getStatusLine().getStatusCode();
                 }
             }
