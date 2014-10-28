@@ -204,6 +204,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadStudyPeriodNull, null);
             parser.nextTag();
             Course course = (Course) readStudyPeriod.invoke(null, new Object[] {parser});
+            System.out.println(course.getCredits());
             assertEquals(0, course.getCredits());
             assertNull(course.getTeacher());
             assertNull(course.getName());
