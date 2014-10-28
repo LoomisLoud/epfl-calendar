@@ -33,7 +33,7 @@ class createPeriod(webapp2.RequestHandler):
             period.rooms.append(rooms[str(i)])
             i = i + 1
         period.put()
-        course.periods.append(period.key)
+        course.periodsKeys.append(period.key)
         course.put()
 
 

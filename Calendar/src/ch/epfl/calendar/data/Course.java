@@ -3,6 +3,8 @@ package ch.epfl.calendar.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -34,6 +36,19 @@ public class Course implements Parcelable {
         this.mPeriods = new ArrayList<Period>();
         this.setTeacher(null);
         this.setCredits(0);
+    }
+    
+    /**
+     * Builds a course from a parcel.
+     * @param in a Parcel ?
+     */
+    public Course(Parcel in) {
+
+        this.setName(in.readString());
+        mPeriods = new ArrayList<Period>();
+        in.readList(mPeriods, Period.class.getClassLoader());
+        this.setTeacher(in.readString());
+        this.setCredits(in.readInt());
     }
 
     /**
@@ -150,13 +165,18 @@ public class Course implements Parcelable {
         }
 
     };
-
-    public Course(Parcel in) {
-
-        this.setName(in.readString());
-        mPeriods = new ArrayList<Period>();
-        in.readList(mPeriods, Period.class.getClassLoader());
-        this.setTeacher(in.readString());
-        this.setCredits(in.readInt());
+    
+    public static Course getFromJSON(JSONObject jsonObject) {
+        {"numberOfCredits":4,"code":"CS-473","professorName":"Pr. Beuchat","name":"Embedded systems","description":""}
+        
+        int code = jsonObject.getInt("code");
+        String name = jsonObject.getString("name");
+        String description = jsonObject.getString("descritpion");
+        String professorName = jsonObject.getString("professorName");
+        int numberOfCredits = jsonObject.getInt("numberOfCredits");
+        
+        System.out.println(code + " : " + name + " " + description + ". " + professorName + "; " + numberOfCredits);
+        
+        Course course = new Course
     }
 }

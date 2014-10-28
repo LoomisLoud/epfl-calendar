@@ -25,6 +25,7 @@ class getCourse(webapp2.RequestHandler):
             for course in courseList:   
                 courseJson = course.get_as_json()
                 periods = Period.query_by_parent(course.key).fetch(4)
+                print(periods)
         self.response.out.write(json.encode(courseJson))
 
 
