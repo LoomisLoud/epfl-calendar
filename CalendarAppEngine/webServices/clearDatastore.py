@@ -16,5 +16,5 @@ class clearDatastore(webapp2.RequestHandler):
             course.key.delete()
 
 application = webapp2.WSGIApplication([
-    ('/clearDatastore', clearDatastore),
+    ('/clear/datastore', clearDatastore),
 ], debug=True)

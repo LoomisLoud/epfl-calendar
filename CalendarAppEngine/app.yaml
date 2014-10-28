@@ -5,17 +5,17 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /createCourse
+- url: /course/create
   script: webServices.createCourse.application
 
-- url: /getCourse
+- url: /course/get
   script: webServices.getCourse.application
 
-- url: /createPeriod
+- url: /period/create
   script: webServices.createPeriod.application
 
-- url: /getPeriods
+- url: /period/get
   script: webServices.getPeriods.application
 
-- url: /clearDatastore
+- url: /clear/datastore
   script: webServices.clearDatastore.application

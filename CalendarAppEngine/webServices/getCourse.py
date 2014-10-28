@@ -30,5 +30,5 @@ class getCourse(webapp2.RequestHandler):
 
 
 application = webapp2.WSGIApplication([
-    ('/getCourse', getCourse),
+    ('/course/get', getCourse),
 ], debug=True)

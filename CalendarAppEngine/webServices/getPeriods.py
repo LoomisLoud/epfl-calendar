@@ -28,5 +28,5 @@ class getPeriods(webapp2.RequestHandler):
 
 
 application = webapp2.WSGIApplication([
-    ('/getPeriods', getPeriods),
+    ('/period/get', getPeriods),
 ], debug=True)

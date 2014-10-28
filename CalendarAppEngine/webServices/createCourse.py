@@ -25,5 +25,5 @@ class createCourse(webapp2.RequestHandler):
 
 
 application = webapp2.WSGIApplication([
-    ('/createCourse', createCourse),
+    ('/course/create', createCourse),
 ], debug=True)

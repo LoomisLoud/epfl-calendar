@@ -38,5 +38,5 @@ class createPeriod(webapp2.RequestHandler):
 
 
 application = webapp2.WSGIApplication([
-    ('/createPeriod', createPeriod)
+    ('/period/create', createPeriod)
 ], debug=True)
