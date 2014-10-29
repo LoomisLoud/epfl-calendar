@@ -10,6 +10,7 @@ from Period import Period
 class getCourse(webapp2.RequestHandler):
     def get(self):
         get_values = self.request.GET
+        courseJson = {}
         if ('name' in get_values):
             name = self.request.get('name')
             courseList = Course.query_by_name(name).fetch(1)
@@ -17,11 +18,7 @@ class getCourse(webapp2.RequestHandler):
             code = self.request.get('code')
             courseList = Course.query_by_code(code).fetch(1)
         self.response.headers['Content-Type'] = 'application/json'
-        if (len(courseList) != 1):
-            courseJson = {
-                'success': 'false',
-              }
-        else:
+        if (len(courseList) >= 1):
             for course in courseList:   
                 courseJson = course.get_as_json()
                 periods = Period.query_by_parent(course.key).fetch(4)

@@ -6,6 +6,10 @@ package ch.epfl.calendar.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -38,9 +42,6 @@ public class Period implements Parcelable {
     public String getDate() {
         return mDate;
     }
-    
-    
-    
 
     /**
      * @param mDate
@@ -56,12 +57,14 @@ public class Period implements Parcelable {
     public String getStartTime() {
         return mStartTime;
     }
-    public int getHourStartTime(){
-        String tab[]=mStartTime.split(":");
+
+    public int getHourStartTime() {
+        String[] tab = mStartTime.split(":");
         return Integer.parseInt(tab[0]);
     }
-    public int getMinuteStartTime(){
-        String tab[]=mStartTime.split(":");
+
+    public int getMinuteStartTime() {
+        String[] tab = mStartTime.split(":");
         return Integer.parseInt(tab[1]);
     }
 
@@ -79,7 +82,6 @@ public class Period implements Parcelable {
     public String getEndTime() {
         return mEndTime;
     }
-   
 
     /**
      * @param mEndTime
@@ -171,5 +173,63 @@ public class Period implements Parcelable {
         in.readList(mRooms, String.class.getClassLoader());
 
     }
+    
+    public JSONObject getJSONFromPeriod(String courseCode) throws JSONException {
+        JSONObject jsonPeriod = new JSONObject();
+        
+        jsonPeriod.put("code", courseCode);
+        jsonPeriod.put("date", this.mDate);
+        jsonPeriod.put("startTime", this.mStartTime);
+        jsonPeriod.put("endTime", this.mEndTime);
+        jsonPeriod.put("type", this.mType);
+        
+        JSONObject jsonRooms = new JSONObject();
+        for (int i = 0; i < this.mRooms.size(); i++) {
+            jsonRooms.put(Integer.toString(i), this.mRooms.get(i));
+        }
+        jsonPeriod.put("rooms", jsonRooms);
+        
+        return jsonPeriod;
+    }
 
+    /**
+     * 
+     * @param jsonObject
+     *            the JSONObject to parse.
+     * @return A Period filled with the informations from the JSON
+     * @throws JSONException
+     */
+    public static List<Period> parseFromJSON(JSONObject jsonObject) throws JSONException {
+        List<Period> periodsList = new ArrayList<Period>();
+        for (int i = 0; i < jsonObject.length(); i++) {
+            JSONObject tempJSONObject = jsonObject.getJSONObject(Integer
+                    .toString(i));
+            String date = tempJSONObject.getString("date");
+            String startTime = tempJSONObject.getString("startTime");
+            String endTime = tempJSONObject.getString("endTime");
+            String periodType = tempJSONObject.getString("periodType");
+            List<String> rooms = getStringListFromJSONArray(tempJSONObject.getJSONArray("rooms"));
+            Period period = new Period(date, startTime, endTime, periodType,
+                    rooms);
+            periodsList.add(period);
+        }
+
+        return periodsList;
+    }
+
+    /**
+     * Taken from my homework 2. Returns a String List
+     * 
+     * @param jsonArray
+     * @return
+     * @throws JSONException
+     */
+    private static List<String> getStringListFromJSONArray(JSONArray jsonArray) throws JSONException {
+        List<String> stringList = new ArrayList<String>(jsonArray.length());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            stringList.add(jsonArray.getString(i));
+        }
+
+        return stringList;
+    }
 }

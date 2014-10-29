@@ -19,7 +19,7 @@ class createCourse(webapp2.RequestHandler):
             descriptionGet = ''
             numberOfCreditsGet = values['numberOfCredits']
             professorNameGet = values['professorName']
-            course = Course(name = nameGet, periods = [], code = codeGet, description = descriptionGet, 
+            course = Course(name = nameGet, periodsKeys = [], code = codeGet, description = descriptionGet, 
                 numberOfCredits = int(numberOfCreditsGet), professorName = professorNameGet)
             course.put()
 
