@@ -1,5 +1,7 @@
 package ch.epfl.calendar;
 
+import ch.epfl.calendar.apiInterface.AppEngineClient;
+import ch.epfl.calendar.apiInterface.DatabaseInterface;
 import ch.epfl.calendar.display.CoursesListActivity;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -30,7 +32,6 @@ public class MainActivity extends Activity {
         actionBar.setDisplayShowHomeEnabled(false);
         
         initializeCalendar();
-
     }
 
     @Override

@@ -3,6 +3,7 @@ package ch.epfl.calendar.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Parcel;
@@ -19,6 +20,8 @@ public class Course implements Parcelable {
     private List<Period> mPeriods;
     private String mTeacher;
     private int mCredits;
+    private String mCode;
+    private String mDescription;
     
     public Course(String name, String date, String startTime, String endTime,
             String type, List<String> rooms) {
@@ -49,6 +52,22 @@ public class Course implements Parcelable {
         in.readList(mPeriods, Period.class.getClassLoader());
         this.setTeacher(in.readString());
         this.setCredits(in.readInt());
+    }
+    
+    /**
+     * Builds a full course. Used in {@link ch.epfl.calendar.data.Course#parseFromJSON(JSONObject)}
+     * @param code the code of the course
+     * @param name the name of the course
+     * @param description the description of the course
+     * @param professorName the name of the Professor teahcing the course
+     * @param numberOfCredits the number of credits for the course
+     */
+    public Course(String code, String name, String description, String professorName, int numberOfCredits) {
+        mCode = code;
+        mName = name;
+        mDescription = description;
+        mTeacher = professorName;
+        mCredits = numberOfCredits;
     }
 
     /**
@@ -120,6 +139,34 @@ public class Course implements Parcelable {
         this.mTeacher = teacher;
     }
 
+    /**
+     * @return the mCode
+     */
+    public String getCode() {
+        return mCode;
+    }
+
+    /**
+     * @param mCode the mCode to set
+     */
+    public void setCode(String code) {
+        mCode = code;
+    }
+
+    /**
+     * @return the mDescription
+     */
+    public String getDescription() {
+        return mDescription;
+    }
+
+    /**
+     * @param mDescription the mDescription to set
+     */
+    public void setDescription(String description) {
+        mDescription = description;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -166,17 +213,19 @@ public class Course implements Parcelable {
 
     };
     
-    public static Course getFromJSON(JSONObject jsonObject) {
-        {"numberOfCredits":4,"code":"CS-473","professorName":"Pr. Beuchat","name":"Embedded systems","description":""}
-        
-        int code = jsonObject.getInt("code");
+    /**
+     * 
+     * @param jsonObject the JSONObject to parse.
+     * @return A Course filled with the informations from the JSON
+     * @throws JSONException
+     */
+    public static Course parseFromJSON(JSONObject jsonObject) throws JSONException {
+        String code = jsonObject.getString("code");
         String name = jsonObject.getString("name");
-        String description = jsonObject.getString("descritpion");
+        String description = jsonObject.getString("description");
         String professorName = jsonObject.getString("professorName");
         int numberOfCredits = jsonObject.getInt("numberOfCredits");
-        
-        System.out.println(code + " : " + name + " " + description + ". " + professorName + "; " + numberOfCredits);
-        
-        Course course = new Course
+                
+        return new Course(code, name, description, professorName, numberOfCredits);
     }
 }
