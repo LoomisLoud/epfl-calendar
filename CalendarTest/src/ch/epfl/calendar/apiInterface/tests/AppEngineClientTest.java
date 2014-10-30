@@ -34,8 +34,8 @@ public class AppEngineClientTest extends TestCase {
             System.out.println("An error occured.");
         }
         
-        dbInterface = new AppEngineClient("http://10.0:8080");
         try {
+            dbInterface = new AppEngineClient("http://10.0:8080");
             dbInterface.getCourseByCode("CS-470");
             fail("Missing exception");
         } catch (CalendarClientException calendarClientExc) {

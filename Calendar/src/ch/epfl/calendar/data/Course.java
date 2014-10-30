@@ -97,7 +97,7 @@ public class Course implements Parcelable {
      * @return the mPeriods
      */
     public List<Period> getPeriods() {
-        return mPeriods;
+        return new ArrayList<Period>(mPeriods);
     }
 
     /**
@@ -105,7 +105,7 @@ public class Course implements Parcelable {
      *            the mPeriods to set
      */
     public void setPeriods(List<Period> periods) {
-        this.mPeriods = periods;
+        this.mPeriods = new ArrayList<Period>(periods);
     }
 
     /**

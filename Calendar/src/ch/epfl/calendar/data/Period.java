@@ -110,15 +110,14 @@ public class Period implements Parcelable {
      * @return the mRoom
      */
     public List<String> getRooms() {
-        return mRooms;
+        return new ArrayList<String>(mRooms);
     }
 
     /**
-     * @param mRoom
-     *            the mRoom to set
+     * @param mRoom the mRoom to set
      */
     public void setRooms(List<String> room) {
-        this.mRooms = room;
+        this.mRooms = new ArrayList<String>(room);
     }
 
     /*
