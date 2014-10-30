@@ -25,10 +25,9 @@ public class AppEngineClientTest extends TestCase {
     
     private DatabaseInterface dbInterface;
     
-    /*public void testGetCourseErrors() {
-        dbInterface = new AppEngineClient("http://10.0.2.2:8080");
-        
+    /*public void testGetCourseErrors() {        
         try {
+            dbInterface = new AppEngineClient("http://10.0.2.2:8080");
             Course course = dbInterface.getCourseByCode("notExisitingCode");
             assertNull(course);
         } catch (CalendarClientException calendarClientException) {
@@ -44,8 +43,8 @@ public class AppEngineClientTest extends TestCase {
     }
     
     public void testGetCourseByCode() {
-        dbInterface = new AppEngineClient("http://10.0.2.2:8080");
         try {
+            dbInterface = new AppEngineClient("http://10.0.2.2:8080");
             Course course = dbInterface.getCourseByCode("CS-470");
             assertEquals("CS-470", course.getCode());
             assertEquals("", course.getDescription());
@@ -58,8 +57,8 @@ public class AppEngineClientTest extends TestCase {
     }
     
     public void testGetPeriodsByCourseCode() {
-        dbInterface = new AppEngineClient("http://10.0.2.2:8080");
         try {
+            dbInterface = new AppEngineClient("http://10.0.2.2:8080");
             Course course = dbInterface.getCourseByCode("CS-470");
             assertEquals(2, course.getPeriods().size());
             assertEquals("08.10.2014", course.getPeriods().get(0).getDate());
@@ -85,10 +84,9 @@ public class AppEngineClientTest extends TestCase {
         }
     }
     
-    public void testCreatePeriod() {
-        dbInterface = new AppEngineClient("http://10.0.2.2:8080");
-        
+    public void testCreatePeriod() {        
         try {
+            dbInterface = new AppEngineClient("http://10.0.2.2:8080");
             Course course = dbInterface.getCourseByCode("CS-472");
             List<String> rooms = new ArrayList<String>();
             rooms.add("CO2");
@@ -108,8 +106,8 @@ public class AppEngineClientTest extends TestCase {
     }*/
     
     public void testOnlineURL() {
-        dbInterface = new AppEngineClient("http://versatile-hull-742.appspot.com");
         try {
+            dbInterface = new AppEngineClient("http://versatile-hull-742.appspot.com");
             Course course = dbInterface.getCourseByCode("CS-470");
             assertEquals("CS-470", course.getCode());
             assertEquals("", course.getDescription());

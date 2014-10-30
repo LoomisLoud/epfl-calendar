@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,12 @@ public class AppEngineClient implements DatabaseInterface {
      * 
      * @param dbUrl = http://versatile-hull-742.appspot.com to access app engine
      */
-    public AppEngineClient(String dbUrl) {
+    public AppEngineClient(String dbUrl) throws CalendarClientException {
+        try {
+            new URL(dbUrl);
+        } catch (MalformedURLException malformedUrlException) {
+            throw new CalendarClientException(malformedUrlException);
+        }
         mDBUrl = dbUrl;
     }
     
