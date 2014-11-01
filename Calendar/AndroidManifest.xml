@@ -29,6 +29,18 @@
             android:name="ch.epfl.calendar.authentication.AuthenticationActivity"
             android:label="@string/title_activity_authentication" >
         </activity>
+        <activity
+            android:name=".display.CourseDetailsActivity"
+            android:label="@string/title_activity_course_details" >
+        </activity>
+        <activity
+            android:name=".display.CoursesListActivity"
+            android:label="@string/title_activity_courses_list" >
+        </activity>
+        <activity
+            android:name=".DraftActivity"
+            android:label="@string/title_activity_draft" >
+        </activity>
     </application>
 
 </manifest>

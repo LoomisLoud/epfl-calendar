@@ -1,0 +1,21 @@
+application: versatile-hull-742 
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /course/create
+  script: webServices.createCourse.application
+
+- url: /course/get
+  script: webServices.getCourse.application
+
+- url: /period/create
+  script: webServices.createPeriod.application
+
+- url: /period/get
+  script: webServices.getPeriods.application
+
+- url: /clear/datastore
+  script: webServices.clearDatastore.application

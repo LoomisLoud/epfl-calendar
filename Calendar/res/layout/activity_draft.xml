@@ -7,18 +7,15 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ch.epfl.calendar.MainActivity" >
-    
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <Button
-        android:id="@+id/btnLogin"
-        style="@style/AppTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login" />
-
-    <CalendarView
-        android:id="@+id/calendar"
-        android:layout_margin="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" /> 
+        android:onClick="switchToCoursesList"
+        android:text="@string/to_list_course_button" />
 
 </RelativeLayout>
