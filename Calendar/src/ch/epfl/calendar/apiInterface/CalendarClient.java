@@ -8,10 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.xmlpull.v1.XmlPullParserException;
-
 import ch.epfl.calendar.data.Course;
 import ch.epfl.utils.isaparser.ISAXMLParser;
+import ch.epfl.utils.isaparser.ParsingException;
 
 /**
  * For now uses a pre-built xml string and parses it.
@@ -57,8 +56,8 @@ public class CalendarClient implements CalendarClientInterface {
 
         try {
             coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
-        } catch (XmlPullParserException e) {
-            System.out.println(contentAsString);
+        } catch (ParsingException e) {
+            System.out.println(e.getMessage() + "contentAsString : " + contentAsString);
             throw new CalendarClientException();
         } catch (IOException e) {
             System.out.println("IO");
