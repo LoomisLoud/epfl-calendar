@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.Toast;
@@ -15,8 +14,6 @@ import android.widget.CalendarView.OnDateChangeListener;
 
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
-import ch.epfl.calendar.utils.GlobalPreferences;
 
 
 /**
@@ -40,7 +37,7 @@ public class MainActivity extends Activity {
         mThisActivity = this;
         this.btnLogin = (Button) this.findViewById(R.id.btnLogin);
 
-        this.switchLoginLogout();
+        //this.switchLoginLogout();
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
@@ -71,6 +68,9 @@ public class MainActivity extends Activity {
             case R.id.action_settings:
                 Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.action_authentication_activity:
+                switchToAuthenticationActivity();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
     /**
      * Handle button activation based on whether the user is authenticated or not.
      */
-    private void switchLoginLogout() {
+    /*private void switchLoginLogout() {
         Boolean isAuthenticated = GlobalPreferences.isAuthenticated(this);
         if (isAuthenticated) {
             btnLogin.setText(R.string.logout);
@@ -88,33 +88,33 @@ public class MainActivity extends Activity {
             btnLogin.setText(R.string.login);
             btnLogin.setOnClickListener(new LoginListener());
         }
-    }
+    }*/
 
     /**
      *
      * @author lweingart
      *
      */
-    private class LogoutListener implements View.OnClickListener {
+    /*private class LogoutListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             TequilaAuthenticationAPI.getInstance().clearSessionID(MainActivity.this.mThisActivity);
 
             MainActivity.this.switchLoginLogout();
         }
-    }
+    }*/
 
     /**
      *
      * @author lweingart
      *
      */
-    private class LoginListener implements View.OnClickListener {
+    /*private class LoginListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             MainActivity.this.startAuthenticationActivity();
         }
-    }
+    }*/
     
     public void switchToCoursesList() {
         Intent coursesListActivityIntent = new Intent(this,
@@ -126,6 +126,13 @@ public class MainActivity extends Activity {
         Intent draftActivityIntent = new Intent(this,
                 DraftActivity.class);
         startActivity(draftActivityIntent);
+    }
+    
+    private void switchToAuthenticationActivity() {
+        Intent displayAuthenticationActivityIntent = new Intent(this,
+                AuthenticationActivity.class);
+        this.startActivityForResult(displayAuthenticationActivityIntent,
+                MainActivity.REQUEST_CODE);
     }
     
     public void initializeCalendar() {
@@ -159,12 +166,4 @@ public class MainActivity extends Activity {
             }
         });
     }
-
-    private void startAuthenticationActivity() {
-        Intent displayAuthenticationActivityIntent = new Intent(this,
-                AuthenticationActivity.class);
-        this.startActivityForResult(displayAuthenticationActivityIntent,
-                MainActivity.REQUEST_CODE);
-    }
-
 }

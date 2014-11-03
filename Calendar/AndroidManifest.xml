@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ch.epfl.calendar.authentication.AuthenticationActivity"
+            android:name=".authentication.AuthenticationActivity"
             android:label="@string/title_activity_authentication" >
         </activity>
         <activity
