@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.utils.isaparser;
+package ch.epfl.calendar.utils.isaparser;
 
 /**
  * This class represents the Exception when a Parsing fails.

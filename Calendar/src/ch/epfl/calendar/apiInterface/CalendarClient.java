@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.epfl.calendar.data.Course;
-import ch.epfl.utils.isaparser.ISAXMLParser;
-import ch.epfl.utils.isaparser.ParsingException;
+import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
+import ch.epfl.calendar.utils.isaparser.ParsingException;
 
 /**
  * For now uses a pre-built xml string and parses it.
