@@ -16,7 +16,7 @@ class createCourse(webapp2.RequestHandler):
         else:
             nameGet = values['name']
             #descriptionGet = values('description')
-            descriptionGet = ''
+            descriptionGet = value['description']
             numberOfCreditsGet = values['numberOfCredits']
             professorNameGet = values['professorName']
             course = Course(name = nameGet, periodsKeys = [], code = codeGet, description = descriptionGet, 
