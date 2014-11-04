@@ -28,7 +28,9 @@ public class CustomResponseHandler implements ResponseHandler<String> {
     @Override
     public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
         if (response.getStatusLine().getStatusCode() != this.mStatusCodeExpected) {
-            System.out.println("Get : " + response.getStatusLine().getStatusCode() + " and expected : " + this.mStatusCodeExpected);
+            System.out.println("Get : " + response.getStatusLine().getStatusCode()
+            		+ " and expected : "
+            		+ this.mStatusCodeExpected);
             throw new ClientProtocolException();
         }
         HttpEntity entity = response.getEntity();
