@@ -1,4 +1,4 @@
-package ch.epfl.utils.isaparser;
+package ch.epfl.calendar.utils.isaparser;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.utils.isaparser;
+package ch.epfl.calendar.utils.isaparser;
 
 import java.io.IOException;
 import java.io.InputStream;
