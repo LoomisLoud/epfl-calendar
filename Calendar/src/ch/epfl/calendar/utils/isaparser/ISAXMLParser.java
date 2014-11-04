@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.utils.isaparser;
+package ch.epfl.calendar.utils.isaparser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +31,7 @@ public class ISAXMLParser {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    public static List<Course> parse(InputStream in) throws XmlPullParserException, IOException {
+    public static List<Course> parse(InputStream in) {
         if (in == null) {
             throw new NullPointerException("InputStream is null");
         }
@@ -41,8 +41,16 @@ public class ISAXMLParser {
             parser.setInput(in, null);
             parser.nextTag();
             return readData(parser);
+        } catch (XmlPullParserException e) {
+            throw new ParsingException("Parsing Error during XML Parsing");
+        } catch (IOException e) {
+            throw new ParsingException("IO Error during XML Parsing");
         } finally {
-            in.close();
+            try {
+                in.close();
+            } catch (IOException e) {
+                throw new ParsingException("Closing IO Error during XML Parsing");
+            }
         }
     }
     
@@ -53,36 +61,41 @@ public class ISAXMLParser {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private static List<Course> readData(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static List<Course> readData(XmlPullParser parser) {
         if (parser == null) {
             throw new NullPointerException("Parser is null");
         }
         List<Course> courses = new ArrayList<Course>();
-
-        parser.require(XmlPullParser.START_TAG, NMP, "data");
-        while (parser.next() != XmlPullParser.END_TAG) {
-            boolean added = false;
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String nameParser = parser.getName();
-            // Starts by looking for the study-period tag
-            if (nameParser.equals("study-period")) {
-                Course newCourse = readStudyPeriod(parser);
-                for (Course course: courses) {
-                    if (course.getName().equals(newCourse.getName())) {
-                        course.addPeriod(newCourse.getPeriods().get(0));
-                        added = true;
+        try {
+            parser.require(XmlPullParser.START_TAG, NMP, "data");
+            while (parser.next() != XmlPullParser.END_TAG) {
+                boolean added = false;
+                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                    continue;
+                }
+                String nameParser = parser.getName();
+                // Starts by looking for the study-period tag
+                if (nameParser.equals("study-period")) {
+                    Course newCourse = readStudyPeriod(parser);
+                    for (Course course: courses) {
+                        if (course.getName().equals(newCourse.getName())) {
+                            course.addPeriod(newCourse.getPeriods().get(0));
+                            added = true;
+                        }
                     }
+                    if (!added) {
+                        courses.add(newCourse);
+                    }
+                } else {
+                    skip(parser);
                 }
-                if (!added) {
-                    courses.add(newCourse);
-                }
-            } else {
-                skip(parser);
-            }
-        }  
-        return courses;
+            }  
+            return courses;
+        }  catch (XmlPullParserException e) {
+            throw new ParsingException("Parsing Error during XML Parsing");
+        } catch (IOException e) {
+            throw new ParsingException("IO Error during XML Parsing");
+        }
     }
     
     /**

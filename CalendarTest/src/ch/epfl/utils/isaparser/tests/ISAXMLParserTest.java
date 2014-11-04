@@ -18,6 +18,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
 import ch.epfl.utils.isaparser.ISAXMLParser;
+import ch.epfl.utils.isaparser.ParsingException;
 
 import android.util.Xml;
 
@@ -30,30 +31,30 @@ import android.util.Xml;
  */
 public class ISAXMLParserTest extends TestCase {
     
-    private Method skip;
-    private Method readText;
-    private Method readName;
-    private Method readType;
-    private Method readRoom;
-    private Method readCourse;
-    private Method readStudyPeriod;
-    private Method readData;
-    private InputStream xmlEndTag;
-    private InputStream standardXml;
-    private InputStream text;
-    private InputStream standardReadName;
-    private InputStream standardReadNameOther;
-    private InputStream standardReadType;
-    private InputStream standardReadTypeOther;
-    private InputStream standardReadRoom;
-    private InputStream standardReadRoomOther;
-    private InputStream standardReadCourse;
-    private InputStream standardReadCourseOther;
-    private InputStream standardReadStudyPeriod;
-    private InputStream standardReadStudyPeriodNull;
-    private InputStream standardReadData;
-    private InputStream standardReadDataNull;
-    private InputStream standardInput;
+    private static Method skip;
+    private static Method readText;
+    private static Method readName;
+    private static Method readType;
+    private static Method readRoom;
+    private static Method readCourse;
+    private static Method readStudyPeriod;
+    private static Method readData;
+    private static InputStream xmlEndTag;
+    private static InputStream standardXml;
+    private static InputStream text;
+    private static InputStream standardReadName;
+    private static InputStream standardReadNameOther;
+    private static InputStream standardReadType;
+    private static InputStream standardReadTypeOther;
+    private static InputStream standardReadRoom;
+    private static InputStream standardReadRoomOther;
+    private static InputStream standardReadCourse;
+    private static InputStream standardReadCourseOther;
+    private static InputStream standardReadStudyPeriod;
+    private static InputStream standardReadStudyPeriodNull;
+    private static InputStream standardReadData;
+    private static InputStream standardReadDataNull;
+    private static InputStream standardInput;
 
     public void setUp() throws NoSuchMethodException, UnsupportedEncodingException {
         skip = (ISAXMLParser.class).getDeclaredMethod("skip", new Class[] {XmlPullParser.class});
@@ -130,7 +131,7 @@ public class ISAXMLParserTest extends TestCase {
         text = new ByteArrayInputStream("<start>bla</start>".getBytes("UTF-8"));
     }
 
-    public void testParse() throws XmlPullParserException, IOException {
+    public void testParse() throws ParsingException {
         //With null argument
         try {
             ISAXMLParser.parse(null);
@@ -141,7 +142,7 @@ public class ISAXMLParserTest extends TestCase {
     }
 
     public void testReadData() throws IllegalAccessException, IllegalArgumentException, 
-        InvocationTargetException, XmlPullParserException, IOException {
+        InvocationTargetException, ParsingException, XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
       //With Null argument
         try {
