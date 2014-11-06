@@ -69,7 +69,5 @@ public class CalendarClient implements CalendarClientInterface {
         }
             
         return coursesList;
-        /*********************************************************************/
     }
-
 }

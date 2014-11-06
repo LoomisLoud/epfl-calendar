@@ -40,6 +40,12 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private ProgressDialog dialog;
     private TequilaAuthenticationListener mListener = null;
     private boolean exceptionOccured = false;
+    
+    private HttpContext mLocalContext = null;
+    private HttpResponse mRespGetTimetable = null;
+    private Cookie mCookieWithSessionID = null;
+    private TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
+    private AbstractHttpClient client = HttpClientFactory.getInstance();
 
     private final String mUsername;
     private final String mPassword;
@@ -83,83 +89,48 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         try {
             int httpCode = 0;
-            String tokenList = "?";
-            HttpResponse respGetTimetable = null;
-            boolean firstTry = true;
-            AbstractHttpClient client = HttpClientFactory.getInstance();
-            TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
+            mLocalContext = new BasicHttpContext();
 
-            Log.i("INFO : ", "Get Timetable :");
-            HttpGet getTimetable = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
-            HttpContext localContext = new BasicHttpContext();
-            respGetTimetable = client.execute(getTimetable, localContext);
+            String token = getToken(mRespGetTimetable);
+            String tokenList = token;
+            System.out.println("TOKEN : " + token);
             
-            if (respGetTimetable.getStatusLine().getStatusCode() == TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                httpCode = TequilaAuthenticationAPI.STATUS_CODE_OK;
-            } else if (respGetTimetable.getStatusLine().getStatusCode()
-                    == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE) {
+            httpCode = mRespGetTimetable.getStatusLine().getStatusCode();
+            
+            if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                Log.i("INFO : ", "Try to authenticate but already did");
+            } else if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE) {
+                boolean firstTry = true;
                 
-                while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                    Header location = respGetTimetable.getFirstHeader("Location");
+                //while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                String sessionID = authenticateOnTequila(token, firstTry);
+                if (firstTry) {
+                    firstTry = false;
+                } else {
+                    token = getToken(mRespGetTimetable);
+                    tokenList = tokenList + "&" + KEY + "=" + token;
+                    System.out.println("TOKEN : " + token);
                     
-                    String tokenHeader = location.getValue();
-                    int i = tokenHeader.indexOf("=");
-                    String token = tokenHeader.substring(i+1);
-                    
-                    Cookie cookie = null;
-                    String cookieValue = null;
-                    List<Cookie> lc = client.getCookieStore().getCookies();
-                    for (Cookie c : lc) {
-                        System.out.println(c.toString());
-                        if (c.getName().equals("JSESSIONID")) {
-                            cookie = c;
-                            cookieValue = c.getValue();
-                        }
-                    }
-                    
-                    Log.i("INFO : ", "Authentication to Tequila");
-                    
-                    HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
-                    List<NameValuePair> postBody = new ArrayList<NameValuePair>();
-                    postBody.add(new BasicNameValuePair(REQUEST_KEY, token));
-                    if (firstTry) {
-                        postBody.add(new BasicNameValuePair(USERNAME, mUsername));
-                        postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
-                        firstTry = false;
-                    }
-                    authReq.setEntity(new UrlEncodedFormEntity(postBody));
-                    client.execute(authReq, 
-                            new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
-                    
-                    
-                    Log.i("INFO : ", "Try getting Timetable with the last token");
-                    Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+token);
-                    HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+token);
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                    nameValuePairs.add(new BasicNameValuePair("key", token));
-                    respGetTimetable.getEntity().getContent().close();
-                    respGetTimetable = client.execute(sessionReq, localContext);
-                    if (respGetTimetable.getStatusLine().getStatusCode() != TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                        if (!tokenList.equals("?")) {
-                            tokenList = tokenList + "&key=" +token;
-                            Log.i("INFO : ", "Try getting Timetable with all token");
-                            Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+tokenList);
-                            sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+tokenList);
-                            sessionReq.addHeader("Set-Cookie", "JSESSIONID="+cookieValue);
-                            client.getCookieStore().addCookie(cookie);
-                            respGetTimetable = client
-                                    .execute(sessionReq, localContext);
-                        }
-                        if (tokenList.equals("?")) {
-                            tokenList = tokenList + "key=" + token;
-                        }
-                    }
-                    httpCode = respGetTimetable.getStatusLine().getStatusCode();
                 }
+                
+                Log.i("INFO : ", "Try getting access to ISA Services");
+                Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
+                HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
+                sessionReq.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
+                client.getCookieStore().addCookie(mCookieWithSessionID);
+                mRespGetTimetable = client
+                        .execute(sessionReq, mLocalContext);
+                Log.i("INFO : ", "Http code received when trying access to ISA Service : " + 
+                        mRespGetTimetable.getStatusLine().getStatusCode());
+                
+                httpCode = mRespGetTimetable.getStatusLine().getStatusCode();
+                //}
+            } else {
+                throw new TequilaAuthenticationException("Wrong Http code");
             }
             
-            String result = InputStreamUtils.readInputStream(respGetTimetable.getEntity().getContent());
-            
+            //FIXME : Needs to be removed - keep for testing manually
+            String result = InputStreamUtils.readInputStream(mRespGetTimetable.getEntity().getContent());
             System.out.println(result);
             
         } catch (ClientProtocolException e) {
@@ -178,7 +149,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             // onCancelled() will be called instead of onPostExecute()
             return null;
         }
-	}
+    }
 
     @Override
     protected void onCancelled(String result) {
@@ -204,6 +175,67 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             // notify error listener
             mListener.onSuccess(mSessionID);
         }
+        
+    }
+    
+    
+    private String authenticateOnTequila(String token, boolean firstTry) throws ClientProtocolException, IOException {
+        Log.i("INFO : ", "Authentication to Tequila");
+        
+        HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
+        List<NameValuePair> postBody = new ArrayList<NameValuePair>();
+        postBody.add(new BasicNameValuePair(REQUEST_KEY, token));
+        if (firstTry) {
+            postBody.add(new BasicNameValuePair(USERNAME, mUsername));
+            postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
+            firstTry = false;
+        }
+        authReq.setEntity(new UrlEncodedFormEntity(postBody));
+        client.execute(authReq,
+                new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
+        
+        List<Cookie> lc = client.getCookieStore().getCookies();
+        for (Cookie c : lc) {
+            System.out.println(c.toString());
+            if (c.getName().equals("JSESSIONID")) {
+                mCookieWithSessionID = c;
+            }
+        }
+        
+        return mCookieWithSessionID.getValue();
+    }
+    
+    private String getToken(HttpResponse respGetTimetable) 
+        throws ClientProtocolException, IOException {
+        
+        Log.i("INFO : ", "Get Timetable :");
+        
+        HttpGet getTimetable = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
+        mRespGetTimetable = client.execute(getTimetable, mLocalContext);
+        
+        String token = parseToken(mRespGetTimetable.getFirstHeader("Location"));
+        
+        //FIXME : Needs to be verified
+        //Useless if used at the beginning of the process
+        /*List<Cookie> lc = client.getCookieStore().getCookies();
+        for (Cookie c : lc) {
+            System.out.println(c.toString());
+            if (c.getName().equals("JSESSIONID")) {
+                mCookieWithSessionID = c;
+            }
+        }*/
+        
+        return token;
+    }
+    
+    private String parseToken(Header location) {
+        if (location == null) {
+            throw new TequilaAuthenticationException("Try to get token, but already authenticated");
+        }
+        
+        String tokenHeader = location.getValue();
+        int i = tokenHeader.indexOf("=");
+        return tokenHeader.substring(i+1);
     }
 
 }
