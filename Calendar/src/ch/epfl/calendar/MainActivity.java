@@ -1,5 +1,8 @@
 package ch.epfl.calendar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -12,8 +15,15 @@ import android.widget.CalendarView;
 import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
 
+import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.utils.GlobalPreferences;
+import ch.epfl.calendar.apiInterface.CalendarClient;
+import ch.epfl.calendar.apiInterface.CalendarClientException;
+import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
+import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 
 
 /**
@@ -43,6 +53,11 @@ public class MainActivity extends Activity {
         actionBar.setDisplayShowHomeEnabled(false);
         
         initializeCalendar();
+        
+        //FIXME: Remove
+        TequilaAuthenticationAPI.getInstance().clearSessionID(this);
+        
+        populateCalendar();
     }
 
     @Override
@@ -69,7 +84,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_authentication_activity:
-                switchToAuthenticationActivity();
+                populateCalendar();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -165,5 +180,21 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(), day + "/" + month + "/" + year, Toast.LENGTH_LONG).show();
             }
         });
+    }
+    
+    public List<Course> populateCalendar() throws TequilaAuthenticationException {
+        CalendarClient cal = new CalendarClient(this);
+        List<Course> courses = new ArrayList<Course>();
+        if (!GlobalPreferences.isAuthenticated(this)) {
+            switchToAuthenticationActivity();
+        } else {
+            try {
+                courses = cal.getISAInformations();
+            } catch (CalendarClientException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return courses;
     }
 }

@@ -81,11 +81,11 @@ public final class TequilaAuthenticationAPI {
         return prefs.getString(AUTHENTICATION_SESSION_ID_KEY, "");
     }
 
-    String getIsAcademiaLoginURL() {
+    public String getIsAcademiaLoginURL() {
         return this.isAcademiaLoginURL;
     }
 
-    String getTequilaAuthenticationURL() {
+    public String getTequilaAuthenticationURL() {
         return this.tequilaAuthenticationURL;
     }
 }

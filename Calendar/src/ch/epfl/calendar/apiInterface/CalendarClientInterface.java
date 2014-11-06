@@ -5,6 +5,8 @@ package ch.epfl.calendar.apiInterface;
 
 import java.util.List;
 
+import android.content.Context;
+
 import ch.epfl.calendar.data.Course;
 
 /**

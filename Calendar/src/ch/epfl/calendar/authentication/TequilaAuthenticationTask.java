@@ -91,40 +91,29 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             int httpCode = 0;
             mLocalContext = new BasicHttpContext();
 
-            String token = getToken(mRespGetTimetable);
+            String token = getToken(mRespGetTimetable, null, null);
             String tokenList = token;
             System.out.println("TOKEN : " + token);
             
             httpCode = mRespGetTimetable.getStatusLine().getStatusCode();
             
             if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                Log.i("INFO : ", "Try to authenticate but already did");
+                Log.i("INFO : ", "Try to authenticate but already done");
             } else if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE) {
                 boolean firstTry = true;
                 
-                //while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                String sessionID = authenticateOnTequila(token, firstTry);
-                if (firstTry) {
-                    firstTry = false;
-                } else {
-                    token = getToken(mRespGetTimetable);
-                    tokenList = tokenList + "&" + KEY + "=" + token;
-                    System.out.println("TOKEN : " + token);
-                    
+                while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                    mSessionID = authenticateOnTequila(token, firstTry);
+                    if (firstTry) {
+                        firstTry = false;
+                    } else {
+                        token = parseToken(mRespGetTimetable.getFirstHeader("Location"));
+                        tokenList = tokenList + "&" + KEY + "=" + token;
+                        System.out.println("TOKEN : " + token);
+                        
+                    }
+                    httpCode = useAuthenticationOnIsa(mSessionID, tokenList);
                 }
-                
-                Log.i("INFO : ", "Try getting access to ISA Services");
-                Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
-                HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
-                sessionReq.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
-                client.getCookieStore().addCookie(mCookieWithSessionID);
-                mRespGetTimetable = client
-                        .execute(sessionReq, mLocalContext);
-                Log.i("INFO : ", "Http code received when trying access to ISA Service : " + 
-                        mRespGetTimetable.getStatusLine().getStatusCode());
-                
-                httpCode = mRespGetTimetable.getStatusLine().getStatusCode();
-                //}
             } else {
                 throw new TequilaAuthenticationException("Wrong Http code");
             }
@@ -205,27 +194,54 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         return mCookieWithSessionID.getValue();
     }
     
-    private String getToken(HttpResponse respGetTimetable) 
+    private String getToken(HttpResponse respGetTimetable, String sessionID, String tokenList) 
         throws ClientProtocolException, IOException {
         
-        Log.i("INFO : ", "Get Timetable :");
+        Log.i("INFO : ", "Get Token");
+        HttpGet getTimetable = null;
+        if (tokenList == null) {
+            Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL());
+            getTimetable = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
+        } else {
+            Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
+            getTimetable = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
+            if (sessionID != null) {
+                getTimetable.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
+            }
+        }
         
-        HttpGet getTimetable = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
         mRespGetTimetable = client.execute(getTimetable, mLocalContext);
         
         String token = parseToken(mRespGetTimetable.getFirstHeader("Location"));
         
         //FIXME : Needs to be verified
         //Useless if used at the beginning of the process
-        /*List<Cookie> lc = client.getCookieStore().getCookies();
+        List<Cookie> lc = client.getCookieStore().getCookies();
         for (Cookie c : lc) {
             System.out.println(c.toString());
             if (c.getName().equals("JSESSIONID")) {
                 mCookieWithSessionID = c;
             }
-        }*/
+        }
         
         return token;
+    }
+    
+    private int useAuthenticationOnIsa(String sessionID, String tokenList)
+        throws ClientProtocolException, IOException {
+        
+        Log.i("INFO : ", "Try getting access to ISA Services");
+        Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
+        HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
+        sessionReq.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
+        client.getCookieStore().addCookie(mCookieWithSessionID);
+        mRespGetTimetable.getEntity().getContent().close();
+        mRespGetTimetable = client
+                .execute(sessionReq, mLocalContext);
+        Log.i("INFO : ", "Http code received when trying access to ISA Service : "
+                + mRespGetTimetable.getStatusLine().getStatusCode());
+        
+        return mRespGetTimetable.getStatusLine().getStatusCode();
     }
     
     private String parseToken(Header location) {

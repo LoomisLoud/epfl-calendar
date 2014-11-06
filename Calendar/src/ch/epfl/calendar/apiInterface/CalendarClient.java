@@ -3,12 +3,28 @@
  */
 package ch.epfl.calendar.apiInterface;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.protocol.BasicHttpContext;
+
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import ch.epfl.calendar.authentication.HttpClientFactory;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
+import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
 import ch.epfl.calendar.utils.isaparser.ParsingException;
 
@@ -19,13 +35,19 @@ import ch.epfl.calendar.utils.isaparser.ParsingException;
  *
  */
 public class CalendarClient implements CalendarClientInterface {   
-
+    
+    private Context mContext = null;
+    
+    public CalendarClient(Context context) {
+        this.mContext = context;
+    }
+    
     /* (non-Javadoc)
      * @see ch.epfl.calendar.apiInterface.CalendarClientInterface#getCoursesFromStudent(
      * ch.epfl.calendar.mock.MockStudent)
      */
     @Override
-    public List<Course> getISAInformations() throws CalendarClientException {
+    public List<Course> getISAInformations() throws CalendarClientException, TequilaAuthenticationException {
         /*****************************TEST XML PARSER*************************/
         String contentAsString = "<data status=\"Termine\" date=\"20141017 16:08:36\" "
                 + "key=\"1864682915\" dateFin=\"19.10.2014\" dateDebut=\"13.10.2014\">"
@@ -55,13 +77,12 @@ public class CalendarClient implements CalendarClientInterface {
         List<String> namesOfCourses = new ArrayList<String>();
 
         try {
-            coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
+            //coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
+            coursesList = ISAXMLParser.parse(getIsaTimetableOnline(this.mContext));
         } catch (ParsingException e) {
-            System.out.println(e.getMessage() + "contentAsString : " + contentAsString);
             throw new CalendarClientException();
-        } catch (IOException e) {
-            System.out.println("IO");
-            throw new CalendarClientException();
+        } catch (TequilaAuthenticationException e) {
+            throw new TequilaAuthenticationException();
         }
         
         for (Course course : coursesList) {
@@ -69,5 +90,84 @@ public class CalendarClient implements CalendarClientInterface {
         }
             
         return coursesList;
+    }
+    
+    private InputStream getIsaTimetableOnline(Context context) {
+        
+        try {
+            InputStream result = new DownloadHttpPage().execute(context).get();
+            return result;
+            //FIXME : Manage exceptions
+        } catch (InterruptedException e) {
+            System.out.println("INTERRUPTED");
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            System.out.println("EXECUTION");
+            throw new TequilaAuthenticationException();
+        }
+        return null;
+    }
+    
+    /**
+     * This class is used to load an http content
+     * @author AblionGE
+     *
+     */
+    private class DownloadHttpPage extends AsyncTask<Context, Void, InputStream> {
+        @Override
+        protected InputStream doInBackground(Context... params) {
+            String sessionID = null;
+            System.out.println("AUTHENTICATED : "+GlobalPreferences.isAuthenticated(params[0]));
+            if (GlobalPreferences.isAuthenticated(params[0])) {
+                sessionID = TequilaAuthenticationAPI.getInstance().getSessionID(params[0]);
+                if (sessionID.equals("")) {
+                    throw new TequilaAuthenticationException("Need to be authenticated");
+                }
+                return downloadUrl(TequilaAuthenticationAPI.getInstance().getIsAcademiaLoginURL(),
+                        params[0], sessionID);
+            } else {
+                throw new TequilaAuthenticationException("Need to be authenticated");
+            }
+        }
+        
+        
+        /**
+         * Download the data from the given URL and return a QuizQuestion Object
+         * @param url
+         * @return QuizQuestion object
+         * 
+         * @author AblionGE
+         */
+        private InputStream downloadUrl(String url, Context context, String sessionID) {
+            AbstractHttpClient client = HttpClientFactory.getInstance();
+            TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
+            HttpResponse mRespGetTimetable = null;
+            try {
+                Log.i("INFO : ", "Try getting access to ISA Services");
+                Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL());
+                
+                
+                System.out.println("SESSION ID : " + sessionID);
+                
+                
+                HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
+                sessionReq.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
+                client.getCookieStore().addCookie(new BasicClientCookie("JSESSIONID", sessionID));
+                mRespGetTimetable = client
+                        .execute(sessionReq, new BasicHttpContext());
+                Log.i("INFO : ", "Http code received when trying access to ISA Service : "
+                        + mRespGetTimetable.getStatusLine().getStatusCode());
+                
+                return mRespGetTimetable.getEntity().getContent();
+                //FIXME : MANAGE exceptions
+            } catch (ClientProtocolException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

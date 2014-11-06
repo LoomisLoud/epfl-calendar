@@ -30,9 +30,6 @@ public class AuthenticationActivity extends Activity {
         mTxtUsername = (EditText) this.findViewById(R.id.txtUsername);
         mTxtPassword = (EditText) this.findViewById(R.id.txtPassword);
         mBtnLogin = (Button) this.findViewById(R.id.btnLogin);
-        
-        //FIXME : TO DELETE !!!!!
-        TequilaAuthenticationAPI.getInstance().clearSessionID(this);
 
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override

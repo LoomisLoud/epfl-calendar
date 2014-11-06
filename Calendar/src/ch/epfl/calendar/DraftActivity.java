@@ -67,12 +67,12 @@ public class DraftActivity extends Activity {
 
         @Override
         protected List<Course> doInBackground(String... params) {
-            CalendarClientInterface fetcher = new CalendarClient();
+            /*CalendarClientInterface fetcher = new CalendarClient();
             try {
                 return fetcher.getISAInformations();
-            } catch (CalendarClientException e) {
+            } catch (CalendarClientException e) {*/
                 return null;
-            }
+            //}
         }
 
         @Override

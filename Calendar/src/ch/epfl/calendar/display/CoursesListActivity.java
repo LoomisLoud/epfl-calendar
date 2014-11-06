@@ -63,7 +63,7 @@ public class CoursesListActivity extends Activity {
 
     public ArrayList<Course> retrieveCourse() {
 
-        CalendarClient calendarClient = new CalendarClient();
+        CalendarClient calendarClient = new CalendarClient(this);
         ArrayList<Course> retrieveData = null;
 
         try {
