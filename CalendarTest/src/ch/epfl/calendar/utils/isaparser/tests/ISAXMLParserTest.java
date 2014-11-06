@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.utils.isaparser.tests;
+package ch.epfl.calendar.utils.isaparser.tests;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,8 +17,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
-import ch.epfl.utils.isaparser.ISAXMLParser;
-import ch.epfl.utils.isaparser.ParsingException;
+import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
+import ch.epfl.calendar.utils.isaparser.ParsingException;
 
 import android.util.Xml;
 
