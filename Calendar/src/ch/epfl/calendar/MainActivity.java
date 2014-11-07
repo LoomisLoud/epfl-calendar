@@ -20,10 +20,8 @@ import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
-import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 
 
 /**
@@ -53,9 +51,6 @@ public class MainActivity extends Activity {
         actionBar.setDisplayShowHomeEnabled(false);
         
         initializeCalendar();
-        
-        //FIXME: Remove
-        TequilaAuthenticationAPI.getInstance().clearSessionID(this);
         
         populateCalendar();
     }
@@ -182,8 +177,8 @@ public class MainActivity extends Activity {
         });
     }
     
-    public List<Course> populateCalendar() throws TequilaAuthenticationException {
-        CalendarClient cal = new CalendarClient(this);
+    public List<Course> populateCalendar() {
+        CalendarClient cal = new CalendarClient(MainActivity.this.mThisActivity);
         List<Course> courses = new ArrayList<Course>();
         if (!GlobalPreferences.isAuthenticated(this)) {
             switchToAuthenticationActivity();
@@ -191,13 +186,15 @@ public class MainActivity extends Activity {
             try {
                 courses = cal.getISAInformations();
             } catch (CalendarClientException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                //We have a problem...
             }
         }
+        
+        //To see if it works
         for (Course c : courses) {
             System.out.println(c.toString());
         }
         return courses;
     }
+    
 }

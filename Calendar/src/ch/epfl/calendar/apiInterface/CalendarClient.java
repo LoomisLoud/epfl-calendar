@@ -22,11 +22,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.HttpClientFactory;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
+import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
+import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.InputStreamUtils;
@@ -42,7 +45,6 @@ import ch.epfl.calendar.utils.isaparser.ParsingException;
 public class CalendarClient implements CalendarClientInterface {   
     
     private Context mContext = null;
-    private List<Course> courseList = null;
     
     public CalendarClient(Context context) {
         this.mContext = context;
@@ -131,7 +133,7 @@ public class CalendarClient implements CalendarClientInterface {
         protected void onPreExecute() {
             dialog = new ProgressDialog(mContext);
             dialog.setTitle(mContext.getString(R.string.be_patient));
-            dialog.setMessage(mContext.getString(R.string.authenticating));
+            dialog.setMessage(mContext.getString(R.string.loading));
             dialog.setCancelable(false);
             dialog.show();
         }
@@ -175,22 +177,34 @@ public class CalendarClient implements CalendarClientInterface {
             TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
             HttpResponse mRespGetTimetable = null;
             try {
-                Log.i("INFO : ", "Try getting access to ISA Services");
-                Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL());
-                
-                
-                System.out.println("SESSION ID : " + sessionID);
-                
-                
+                Log.i("INFO : ", "Try getting access to ISA Services to get the timetable");
+
                 HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
                 sessionReq.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
                 client.getCookieStore().addCookie(new BasicClientCookie("JSESSIONID", sessionID));
                 mRespGetTimetable = client
                         .execute(sessionReq, new BasicHttpContext());
-                Log.i("INFO : ", "Http code received when trying access to ISA Service : "
-                        + mRespGetTimetable.getStatusLine().getStatusCode());
-                InputStream result = mRespGetTimetable.getEntity().getContent();
-                return InputStreamUtils.readInputStream(result);
+                
+                int httpCode = mRespGetTimetable.getStatusLine().getStatusCode();
+                Log.i("INFO : ", "Http code received when trying access to ISA Service : " + httpCode);
+                
+                if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                    InputStream result = mRespGetTimetable.getEntity().getContent();
+                    return InputStreamUtils.readInputStream(result);
+                } else if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE) {
+                    
+                    //FIXME : It doesn't work !!!! See how to do that !
+                    //Apparently : it doesn't like the two dialogs at the same time !
+                    new TequilaAuthenticationTask(
+                            context,
+                            new TequilaAuthenticationHandler(),
+                            null,
+                            null).execute(null, null);
+                    
+                    downloadUrl(url, context, tequilaApi.getSessionID(context));
+                } else {
+                    throw new CalendarClientException("HttpError");
+                }
                 //FIXME : MANAGE exceptions
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block
@@ -198,8 +212,28 @@ public class CalendarClient implements CalendarClientInterface {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            } catch (CalendarClientException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
             return null;
         }
     }
+    
+    /**
+    *
+    * @author AblionGE
+    *
+    */
+    private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
+        @Override
+        public void onError(String msg) {
+            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public void onSuccess(String sessionID) {
+            Toast.makeText(mContext, "Updated", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
