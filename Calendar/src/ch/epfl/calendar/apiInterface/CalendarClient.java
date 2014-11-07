@@ -3,8 +3,10 @@
  */
 package ch.epfl.calendar.apiInterface;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -16,15 +18,18 @@ import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.protocol.BasicHttpContext;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.HttpClientFactory;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.utils.GlobalPreferences;
+import ch.epfl.calendar.utils.InputStreamUtils;
 import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
 import ch.epfl.calendar.utils.isaparser.ParsingException;
 
@@ -37,6 +42,7 @@ import ch.epfl.calendar.utils.isaparser.ParsingException;
 public class CalendarClient implements CalendarClientInterface {   
     
     private Context mContext = null;
+    private List<Course> courseList = null;
     
     public CalendarClient(Context context) {
         this.mContext = context;
@@ -78,11 +84,15 @@ public class CalendarClient implements CalendarClientInterface {
 
         try {
             //coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
-            coursesList = ISAXMLParser.parse(getIsaTimetableOnline(this.mContext));
+            coursesList = ISAXMLParser.parse(new ByteArrayInputStream(
+                    (getIsaTimetableOnline(this.mContext)).getBytes("UTF-8")));
         } catch (ParsingException e) {
-            throw new CalendarClientException();
+            throw new CalendarClientException("Parsing Exception");
         } catch (TequilaAuthenticationException e) {
             throw new TequilaAuthenticationException();
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         
         for (Course course : coursesList) {
@@ -92,10 +102,10 @@ public class CalendarClient implements CalendarClientInterface {
         return coursesList;
     }
     
-    private InputStream getIsaTimetableOnline(Context context) {
+    private String getIsaTimetableOnline(Context context) {
         
         try {
-            InputStream result = new DownloadHttpPage().execute(context).get();
+            String result = new DownloadHttpPage().execute(context).get();
             return result;
             //FIXME : Manage exceptions
         } catch (InterruptedException e) {
@@ -113,13 +123,35 @@ public class CalendarClient implements CalendarClientInterface {
      * @author AblionGE
      *
      */
-    private class DownloadHttpPage extends AsyncTask<Context, Void, InputStream> {
+    private class DownloadHttpPage extends AsyncTask<Context, Void, String> {
+        
+        private ProgressDialog dialog;
+        
         @Override
-        protected InputStream doInBackground(Context... params) {
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(mContext);
+            dialog.setTitle(mContext.getString(R.string.be_patient));
+            dialog.setMessage(mContext.getString(R.string.authenticating));
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+        
+        @Override
+        protected void onPostExecute(String timetable) {
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            
+            //courseList = 
+        }
+        
+        @Override
+        protected String doInBackground(Context... params) {
             String sessionID = null;
             System.out.println("AUTHENTICATED : "+GlobalPreferences.isAuthenticated(params[0]));
             if (GlobalPreferences.isAuthenticated(params[0])) {
                 sessionID = TequilaAuthenticationAPI.getInstance().getSessionID(params[0]);
+                System.out.println("SESSION ID : " + sessionID);
                 if (sessionID.equals("")) {
                     throw new TequilaAuthenticationException("Need to be authenticated");
                 }
@@ -132,13 +164,13 @@ public class CalendarClient implements CalendarClientInterface {
         
         
         /**
-         * Download the data from the given URL and return a QuizQuestion Object
+         * Download the data from the given URL and return a String with the content
          * @param url
-         * @return QuizQuestion object
-         * 
-         * @author AblionGE
+         * @param context
+         * @param sessionID
+         * @return
          */
-        private InputStream downloadUrl(String url, Context context, String sessionID) {
+        private String downloadUrl(String url, Context context, String sessionID) {
             AbstractHttpClient client = HttpClientFactory.getInstance();
             TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
             HttpResponse mRespGetTimetable = null;
@@ -157,8 +189,8 @@ public class CalendarClient implements CalendarClientInterface {
                         .execute(sessionReq, new BasicHttpContext());
                 Log.i("INFO : ", "Http code received when trying access to ISA Service : "
                         + mRespGetTimetable.getStatusLine().getStatusCode());
-                
-                return mRespGetTimetable.getEntity().getContent();
+                InputStream result = mRespGetTimetable.getEntity().getContent();
+                return InputStreamUtils.readInputStream(result);
                 //FIXME : MANAGE exceptions
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block

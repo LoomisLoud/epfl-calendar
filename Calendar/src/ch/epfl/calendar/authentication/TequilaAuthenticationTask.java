@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -94,16 +95,18 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             String token = getToken(mRespGetTimetable, null, null);
             String tokenList = token;
             System.out.println("TOKEN : " + token);
+            mSessionID = getCookie().getValue();
             
             httpCode = mRespGetTimetable.getStatusLine().getStatusCode();
             
-            if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                Log.i("INFO : ", "Try to authenticate but already done");
-            } else if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE) {
+            
+            if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE
+                    || httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                
                 boolean firstTry = true;
                 
                 while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                    mSessionID = authenticateOnTequila(token, firstTry);
+                    authenticateOnTequila(token, firstTry);
                     if (firstTry) {
                         firstTry = false;
                     } else {
@@ -113,6 +116,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                         
                     }
                     httpCode = useAuthenticationOnIsa(mSessionID, tokenList);
+                    mSessionID = mCookieWithSessionID.getValue();
                 }
             } else {
                 throw new TequilaAuthenticationException("Wrong Http code");
@@ -164,11 +168,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             // notify error listener
             mListener.onSuccess(mSessionID);
         }
-        
     }
     
     
-    private String authenticateOnTequila(String token, boolean firstTry) throws ClientProtocolException, IOException {
+    private void authenticateOnTequila(String token, boolean firstTry) throws ClientProtocolException, IOException {
         Log.i("INFO : ", "Authentication to Tequila");
         
         HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
@@ -182,16 +185,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         authReq.setEntity(new UrlEncodedFormEntity(postBody));
         client.execute(authReq,
                 new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
-        
-        List<Cookie> lc = client.getCookieStore().getCookies();
-        for (Cookie c : lc) {
-            System.out.println(c.toString());
-            if (c.getName().equals("JSESSIONID")) {
-                mCookieWithSessionID = c;
-            }
-        }
-        
-        return mCookieWithSessionID.getValue();
     }
     
     private String getToken(HttpResponse respGetTimetable, String sessionID, String tokenList) 
@@ -214,14 +207,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         
         String token = parseToken(mRespGetTimetable.getFirstHeader("Location"));
         
-        //FIXME : Needs to be verified
-        //Useless if used at the beginning of the process
-        List<Cookie> lc = client.getCookieStore().getCookies();
-        for (Cookie c : lc) {
-            System.out.println(c.toString());
-            if (c.getName().equals("JSESSIONID")) {
-                mCookieWithSessionID = c;
-            }
+        //FIXME : works ?
+        if (tokenList == null) {
+            getCookie();
         }
         
         return token;
@@ -234,14 +222,28 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
         HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
         sessionReq.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
-        client.getCookieStore().addCookie(mCookieWithSessionID);
+        //client.getCookieStore().addCookie(mCookieWithSessionID);
+        client.getCookieStore().addCookie(new BasicClientCookie("JSESSIONID", sessionID));
         mRespGetTimetable.getEntity().getContent().close();
         mRespGetTimetable = client
                 .execute(sessionReq, mLocalContext);
         Log.i("INFO : ", "Http code received when trying access to ISA Service : "
                 + mRespGetTimetable.getStatusLine().getStatusCode());
         
+        getCookie();
+        
         return mRespGetTimetable.getStatusLine().getStatusCode();
+    }
+    
+    private Cookie getCookie() {
+        List<Cookie> lc = client.getCookieStore().getCookies();
+        for (Cookie c : lc) {
+            System.out.println(c.toString());
+            if (c.getName().equals("JSESSIONID")) {
+                mCookieWithSessionID = c;
+            }
+        }
+        return mCookieWithSessionID;
     }
     
     private String parseToken(Header location) {

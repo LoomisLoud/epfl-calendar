@@ -195,6 +195,9 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        for (Course c : courses) {
+            System.out.println(c.toString());
+        }
         return courses;
     }
 }
