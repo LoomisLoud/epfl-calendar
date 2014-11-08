@@ -27,6 +27,6 @@
     <string name="action_courses_list">Courses</string>
     <string name="action_add_events">Add Events</string>
     <string name="action_draft_activity">Draft Activity</string>
-    <string name="action_authentication_activity">Authentification</string>
+    <string name="action_update_activity">Update data</string>
 
 </resources>

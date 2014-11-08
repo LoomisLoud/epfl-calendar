@@ -52,6 +52,9 @@ public class MainActivity extends Activity {
         
         initializeCalendar();
         
+        //FIXME : At the beginning of the application, we "logout" the user
+        TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
+        
         populateCalendar();
     }
 
@@ -78,7 +81,7 @@ public class MainActivity extends Activity {
             case R.id.action_settings:
                 Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.action_authentication_activity:
+            case R.id.action_update_activity:
                 populateCalendar();
                 return true;
             default:
