@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
     }
 
     public List<Course> populateCalendar() {
-        CalendarClient cal = new CalendarClient(MainActivity.this.mThisActivity);
+        CalendarClient cal = new CalendarClient(mThisActivity);
         List<Course> courses = new ArrayList<Course>();
 
         try {

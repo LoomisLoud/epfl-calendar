@@ -87,11 +87,12 @@ public class CalendarClient implements CalendarClientInterface {
 //                + "<code>BC03</code><name><text lang=\"fr\">BC 03</text></name></room><room><id>4255408</id>"
 //                + "<code>BC04</code><name><text lang=\"fr\">BC 04</text></name></room></study-period></data>";
 
-        List<Course> coursesList = new ArrayList<Course>();
-        List<String> namesOfCourses = new ArrayList<String>();
 
-        if (!GlobalPreferences.isAuthenticated(mContext)) {
-        	switchToAuthenticationActivity();
+    	List<Course> coursesList = new ArrayList<Course>();
+    	List<String> namesOfCourses = new ArrayList<String>();
+
+    	if (!GlobalPreferences.isAuthenticated(mContext)) {
+			switchToAuthenticationActivity();
 		} else {
 	        try {
 	            //coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
@@ -110,7 +111,7 @@ public class CalendarClient implements CalendarClientInterface {
         return coursesList;
     }
 
-    /**
+	/**
 	 *
 	 */
 	private void switchToAuthenticationActivity() {
