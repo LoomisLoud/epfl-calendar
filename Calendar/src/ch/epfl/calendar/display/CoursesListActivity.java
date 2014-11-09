@@ -45,7 +45,7 @@ public class CoursesListActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
 
-                openCourseDetails(coursesList.get(position));
+                openCourseDetails(coursesNameList.get(position));
 
             }
 
@@ -53,11 +53,11 @@ public class CoursesListActivity extends Activity {
 
     }
 
-    public void openCourseDetails(Course course) {
+    public void openCourseDetails(String courseName) {
         Intent courseDetailsActivityIntent = new Intent(this,
                 CourseDetailsActivity.class);
 
-        courseDetailsActivityIntent.putExtra("course", course);
+        courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
     }
 

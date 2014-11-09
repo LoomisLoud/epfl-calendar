@@ -10,9 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * A period is a date, a start time and an end time + the type (exercises,
  * lesson) and the rooms of a course
@@ -20,7 +17,7 @@ import android.os.Parcelable;
  * @author AblionGE
  * 
  */
-public class Period implements Parcelable {
+public class Period {
     private String mDate;
     private String mStartTime;
     private String mEndTime;
@@ -131,47 +128,6 @@ public class Period implements Parcelable {
                 + mType + " in rooms : " + mRooms + "\n";
     }
 
-    @Override
-    public int describeContents() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        // TODO Auto-generated method stub
-        dest.writeString(mDate);
-        dest.writeString(mStartTime);
-        dest.writeString(mEndTime);
-        dest.writeString(mType);
-        dest.writeList(mRooms);
-    }
-
-    public static final Parcelable.Creator<Period> CREATOR = new Parcelable.Creator<Period>() {
-
-        @Override
-        public Period createFromParcel(Parcel source) {
-            // TODO Auto-generated method stub
-            return new Period(source);
-        }
-
-        @Override
-        public Period[] newArray(int size) {
-            // TODO Auto-generated method stub
-            return new Period[size];
-        }
-    };
-
-    public Period(Parcel in) {
-
-        this.setDate(in.readString());
-        this.setStartTime(in.readString());
-        this.setEndTime(in.readString());
-        this.setType(in.readString());
-        mRooms = new ArrayList<String>();
-        in.readList(mRooms, String.class.getClassLoader());
-
-    }
     
     public JSONObject getJSONFromPeriod(String courseCode) throws JSONException {
         JSONObject jsonPeriod = new JSONObject();
