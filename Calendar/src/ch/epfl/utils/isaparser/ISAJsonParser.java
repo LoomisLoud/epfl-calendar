@@ -53,9 +53,6 @@ public class ISAJsonParser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        catch (JSONException e) {
-        	e.printStackTrace();
-        }
         return null;
     }
     
