@@ -12,7 +12,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.message.BasicNameValuePair;
@@ -24,6 +23,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.HttpUtils;
 import ch.epfl.calendar.utils.InputStreamUtils;
 
@@ -44,11 +44,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
     private HttpContext mLocalContext = null;
     private HttpResponse mRespGetTimetable = null;
-    private Cookie mCookieWithSessionID = null;
-    private Cookie mCookieWithTequilaUsername = null;
-    private Cookie mCookieWithTequilaKey = null;
     private TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
     private AbstractHttpClient client = HttpClientFactory.getInstance();
+    private GlobalPreferences globalPrefs = GlobalPreferences.getInstance();
 
     private String mUsername;
     private String mPassword;
@@ -61,7 +59,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private static final String SESSIONID = "JSESSIONID";
     private static final String TEQUILA_KEY = "tequila_key";
     private static final String TEQUILA_USER = "tequila_user";
-
     private static final int TIMEOUT_AUTHENTICATION = 10;
 
     /**
@@ -129,7 +126,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     httpCode = getAccessToIsa(mSessionID, tokenList);
                     /************************************************************************/
 
-                    mSessionID = mCookieWithSessionID.getValue();
+                    mSessionID = globalPrefs.getSessionIDCookie().getValue();
                 }
             } else {
                 throw new TequilaAuthenticationException("Wrong Http code");
@@ -205,8 +202,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         } else {
             //We set the cookies for Tequila
             client.setCookieStore(new BasicCookieStore());
-            client.getCookieStore().addCookie(this.mCookieWithTequilaKey);
-            client.getCookieStore().addCookie(this.mCookieWithTequilaUsername);
+            client.getCookieStore().addCookie(globalPrefs.getTequilaKeyCookie());
+            client.getCookieStore().addCookie(globalPrefs.getTequilaUsernameCookie());
 
         }
         authReq.setEntity(new UrlEncodedFormEntity(postBody));
@@ -215,8 +212,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         //We get the cookies for tequila
         if (firstTry) {
-            this.mCookieWithTequilaUsername = HttpUtils.getCookie(client, TEQUILA_USER);
-            this.mCookieWithTequilaKey = HttpUtils.getCookie(client, TEQUILA_KEY);
+            globalPrefs.setTequilaUsernameCookie(HttpUtils.getCookie(client, TEQUILA_USER));
+            globalPrefs.setTequilaKeyCookie(HttpUtils.getCookie(client, TEQUILA_KEY));
         }
     }
 
@@ -243,7 +240,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         if (sessionID != null) {
             getTimetable.addHeader("Set-Cookie", SESSIONID + "=" +sessionID);
             client.setCookieStore(new BasicCookieStore());
-            client.getCookieStore().addCookie(this.mCookieWithSessionID);
+            client.getCookieStore().addCookie(globalPrefs.getSessionIDCookie());
             mRespGetTimetable.getEntity().getContent().close();
         }
 
@@ -251,7 +248,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 .execute(getTimetable, mLocalContext);
         Log.i("INFO : ", "Http code received when trying access to ISA Service : "
                 + mRespGetTimetable.getStatusLine().getStatusCode());
-        this.mCookieWithSessionID = HttpUtils.getCookie(client, SESSIONID);
+        globalPrefs.setSessionIDCookie(HttpUtils.getCookie(client, SESSIONID));
 
         return mRespGetTimetable.getStatusLine().getStatusCode();
     }
