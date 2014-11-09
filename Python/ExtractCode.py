@@ -5,15 +5,33 @@ import re
 import os
 import json
 
+def getContentDetailsFromUrl(url):
+	headers = {'Accept': 'application/json'}
+	r=requests.get(url, headers=headers)
+	#check status of response
+	jsonResume = ''
+	if (r.status_code == requests.codes.ok):
+		#decodeRes = r.text.decode('utf-8')
+		data = json.loads(r.text)
+		#print 'INDENT:', json.dumps(data, sort_keys=True, indent=2)
+		jsonObj = data[0]
+		jsonResume = jsonObj['courseBook']['paragraphs'][0]['content']
 
+		#jsonResume = re.sub('(<br />)?(<br />)?','',jsonResume)
+		#jsonResume = re.sub('(<p>)?(</p>)?','', jsonResume)
+		jsonResume = re.sub('(<[a-z/ ]*>)','',jsonResume)
+	return jsonResume
+   
 colCodeCourse = 0
 colCourseName = 1
 colCredit = -1
-url = "http://versatile-hull-742.appspot.com"
+urlAppEngine = "http://versatile-hull-742.appspot.com"
 regex = '(^[A-Z]+)-([0-9]+\(?[a-z]*\)?]*$)'
 regexCode = '^Code[s]?$'
 regexEnseignant = '.*(Enseignants).*'
 credit = 0
+#url details
+urlDetails = 'https://isa.epfl.ch/services/books/2013-2014/course/'
 #for each .xls
 for fn in os.listdir('.'):
 	if os.path.isfile(fn):
@@ -56,8 +74,15 @@ for fn in os.listdir('.'):
 						#payload = {'code': worksheet.cell(x, colCodeCourse).value.encode('utf8'), 'name': worksheet.cell(x, colCourseName).value.encode('utf8')}
 						#r = requests.post("http://localhost:8080/", data=payload)
 						#payload = {'name': 'Embedded systems', 'code' : 'CS-473', 'description' : 'mock description', 'numberOfCredits' : '4', 'professorName' : 'Pr. Beuchat'}
-						payload = {'name': worksheet.cell(x,colCourseName).value.encode('utf8'), 'code' : worksheet.cell(x,colCodeCourse).value.encode('utf8'), 'description' : 'mock description','numberOfCredits' : credit, 'professorName' : enseignant}
-						r = requests.post(url + "/createCourse", data=json.dumps(payload))	
+						#json from website
+						urlDetailsFinal = urlDetails + worksheet.cell(x,colCodeCourse).value.encode('utf8')
+						details = getContentDetailsFromUrl(urlDetailsFinal)
+						print details.encode('utf8')
+						#TODO ADD TO PAYLOAD
+						payload = {'name': worksheet.cell(x,colCourseName).value.encode('utf8'), 'code' : worksheet.cell(x,colCodeCourse).value.encode('utf8'), 'description' : details.encode('utf8'),'numberOfCredits' : credit, 'professorName' : enseignant}
+						r = requests.post(urlAppEngine + "/course/create", data=json.dumps(payload))
+						if (r.status_code != requests.codes.ok):
+							print 'Error in request to app engine, failed to post payload'
 				#unload sheet
 				book.unload_sheet(worksheet_name)
 				#reset var
