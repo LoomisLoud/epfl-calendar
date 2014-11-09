@@ -58,9 +58,7 @@ public class MainActivity extends Activity {
         case R.id.action_courses_list:
             switchToCoursesList();
             return true;
-        case R.id.action_add_events:
-            Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
-            return true;
+       
         case R.id.action_draft_activity:
             switchToDraftActivity();
             return true;
