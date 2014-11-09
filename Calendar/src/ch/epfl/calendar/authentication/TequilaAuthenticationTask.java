@@ -135,7 +135,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             /************************/
             //FIXME : Needs to be removed - keep for testing manually
             String result = InputStreamUtils.readInputStream(mRespGetTimetable.getEntity().getContent());
+            System.out.println("HERE STARTS THE PRINT OF THE ANSWER!!!");
             System.out.println(result);
+            System.out.println(".... AND HERE IT ENDS");
             /************************/
 
         } catch (ClientProtocolException e) {
