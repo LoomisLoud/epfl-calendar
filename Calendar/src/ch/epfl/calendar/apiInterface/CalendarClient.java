@@ -20,11 +20,13 @@ import org.apache.http.protocol.BasicHttpContext;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.HttpClientFactory;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
@@ -88,24 +90,35 @@ public class CalendarClient implements CalendarClientInterface {
         List<Course> coursesList = new ArrayList<Course>();
         List<String> namesOfCourses = new ArrayList<String>();
 
-        try {
-            //coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
-            coursesList = ISAXMLParser.parse(new ByteArrayInputStream(
-                    (getIsaTimetableOnline(this.mContext)).getBytes("UTF-8")));
-        } catch (ParsingException e) {
-            throw new CalendarClientException("Parsing Exception");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        if (!GlobalPreferences.isAuthenticated(mContext)) {
+        	switchToAuthenticationActivity();
+		} else {
+	        try {
+	            //coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
+	            coursesList = ISAXMLParser.parse(new ByteArrayInputStream(
+	                    (getIsaTimetableOnline(this.mContext)).getBytes("UTF-8")));
+	        } catch (ParsingException e) {
+	            throw new CalendarClientException("Parsing Exception");
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+	        }
 
-        for (Course course : coursesList) {
-            namesOfCourses.add(course.getName());
-        }
-
+	        for (Course course : coursesList) {
+	            namesOfCourses.add(course.getName());
+	        }
+		}
         return coursesList;
     }
 
-    private String getIsaTimetableOnline(Context context) {
+    /**
+	 *
+	 */
+	private void switchToAuthenticationActivity() {
+		Intent displayAuthenticationActivityIntent = new Intent(mContext, AuthenticationActivity.class);
+		mContext.startActivity(displayAuthenticationActivityIntent);
+	}
+
+	private String getIsaTimetableOnline(Context context) {
 
         try {
             String result = new DownloadHttpPage().execute(context).get();

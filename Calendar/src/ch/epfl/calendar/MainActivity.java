@@ -16,11 +16,9 @@ import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.display.CoursesListActivity;
-import ch.epfl.calendar.utils.GlobalPreferences;
 
 
 /**
@@ -31,8 +29,6 @@ import ch.epfl.calendar.utils.GlobalPreferences;
 public class MainActivity extends Activity {
 
 	public static final String TAG = "MainActivity::";
-
-	private static final int REQUEST_CODE = 1;
 
 	private Activity mThisActivity;
     private CalendarView mCalendar;
@@ -97,13 +93,6 @@ public class MainActivity extends Activity {
         startActivity(draftActivityIntent);
     }
 
-    private void switchToAuthenticationActivity() {
-        Intent displayAuthenticationActivityIntent = new Intent(this,
-                AuthenticationActivity.class);
-        this.startActivityForResult(displayAuthenticationActivityIntent,
-                MainActivity.REQUEST_CODE);
-    }
-
     public void initializeCalendar() {
         mCalendar = (CalendarView) findViewById(R.id.calendar);
 
@@ -140,15 +129,11 @@ public class MainActivity extends Activity {
         CalendarClient cal = new CalendarClient(MainActivity.this.mThisActivity);
         List<Course> courses = new ArrayList<Course>();
 
-        if (!GlobalPreferences.isAuthenticated(this)) {
-            switchToAuthenticationActivity();
-        } else {
-            try {
-                courses = cal.getISAInformations();
-            } catch (CalendarClientException e) {
-                //We have a problem...
-            	e.printStackTrace();
-            }
+        try {
+            courses = cal.getISAInformations();
+        } catch (CalendarClientException e) {
+            //We have a problem...
+        	e.printStackTrace();
         }
 
         //To see if it works
