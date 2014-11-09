@@ -25,6 +25,7 @@ def getContentDetailsFromUrl(url):
 colCodeCourse = 0
 colCourseName = 1
 colCredit = -1
+colEnseignant = -1
 urlAppEngine = "http://versatile-hull-742.appspot.com"
 regex = '(^[A-Z]+)-([0-9]+\(?[a-z]*\)?]*$)'
 regexCode = '^Code[s]?$'
