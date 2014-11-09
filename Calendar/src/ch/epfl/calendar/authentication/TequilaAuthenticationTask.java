@@ -188,7 +188,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         if (firstTry && mUsername != null && mPassword != null) {
             postBody.add(new BasicNameValuePair(USERNAME, mUsername));
             postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
-            firstTry = false;
         }
         authReq.setEntity(new UrlEncodedFormEntity(postBody));
         client.execute(authReq,
