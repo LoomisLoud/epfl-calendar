@@ -14,21 +14,26 @@ def getContentDetailsFromUrl(url):
 		#decodeRes = r.text.decode('utf-8')
 		data = json.loads(r.text)
 		#print 'INDENT:', json.dumps(data, sort_keys=True, indent=2)
-		jsonObj = data[0]
-		jsonResume = jsonObj['courseBook']['paragraphs'][0]['content']
+		try :
+			jsonObj = data[0]
+			jsonResume = jsonObj['courseBook']['paragraphs'][0]['content']
 
-		#jsonResume = re.sub('(<br />)?(<br />)?','',jsonResume)
-		#jsonResume = re.sub('(<p>)?(</p>)?','', jsonResume)
-		jsonResume = re.sub('(<[a-z/ ]*>)','',jsonResume)
+			#jsonResume = re.sub('(<br />)?(<br />)?','',jsonResume)
+			#jsonResume = re.sub('(<p>)?(</p>)?','', jsonResume)
+			jsonResume = re.sub('(<[a-z/ ]*>)','',jsonResume)
+		except IndexError :
+			print('no description for now...')
 	return jsonResume
    
 colCodeCourse = 0
 colCourseName = 1
 colCredit = -1
 colEnseignant = -1
-urlAppEngine = "http://versatile-hull-742.appspot.com"
+#urlAppEngine = "http://versatile-hull-742.appspot.com"
+urlAppEngine = "http://localhost:8080"
 regex = '(^[A-Z]+)-([0-9]+\(?[a-z]*\)?]*$)'
 regexCode = '^Code[s]?$'
+regexCodeMulCols = '^2ème$'
 regexEnseignant = '.*(Enseignants).*'
 credit = 0
 #url details
@@ -41,7 +46,12 @@ for fn in os.listdir('.'):
 			book = open_workbook(fn,on_demand=True)
 			worksheets = book.sheet_names()
 			for worksheet_name in worksheets:
+				mulColCredit = False
+				rowCredit = 0
 				worksheet = book.sheet_by_name(worksheet_name)
+				if(worksheet.visibility == 1 or worksheet.visibility == 2) :
+					continue
+				print(worksheet_name)
 				print('Doing sheet ' + worksheet_name + ' \n')
 				for x in range(0,worksheet.nrows):
 					#print('Row ' + str(x))
@@ -49,18 +59,25 @@ for fn in os.listdir('.'):
 					matchObj = re.match(regexCode, worksheet.cell(x, colCodeCourse).value.encode('utf8'))
 					if matchObj:
 						#search for the index of crédits
-						print('Searching for index of crédits')
+						#print('Searching for index of crédits')
 						for y in range(0,worksheet.ncols):
 							nameCol = worksheet.cell(x,y).value.encode('utf8')
 							matchObjEnseignant = re.match(regexEnseignant, worksheet.cell(x,y).value.encode('utf8'))
 							#print('col '+str(y)+' = '+ nameCol)
 							if (nameCol == 'Crédits' or nameCol == 'Coeff.'):
 								colCredit = y
-								print('Found colCredit = '+str(colCredit))
+								rowCredit = x
+								#print('Found colCredit = '+str(colCredit))
 							if matchObjEnseignant:
 								colEnseignant = y
-								print('Found colEnseignant = '+str(colEnseignant))
+								#print('Found colEnseignant = '+str(colEnseignant))
 					#REGEX, check if line has a code-course
+					if (x == rowCredit+2) :
+						if (isinstance(worksheet.cell(x, colCredit).value, unicode)) :
+							matchObj = re.match(regexCodeMulCols, worksheet.cell(x, colCredit).value.encode('utf8'))
+							if matchObj:
+								mulColCredit = True
+								print("mulColCredit : true")
 					matchObj = re.match(regex, worksheet.cell(x, colCodeCourse).value.encode('utf8'))
 					if matchObj:
 						if (colCredit == -1):
@@ -68,9 +85,16 @@ for fn in os.listdir('.'):
 						else:
 							credit = worksheet.cell(x,colCredit).value
 						if (colEnseignant == -1):
-							enseignant = -1
+							enseignant = ""
 						else:
 							enseignant = worksheet.cell(x,colEnseignant).value.encode('utf8')
+						if (isinstance(credit, str) or isinstance(credit, unicode)) :
+							if (mulColCredit == True) :
+								credit = worksheet.cell(x,colCredit+1).value
+						
+						if (isinstance(credit, str) or isinstance(credit, unicode)) :
+							credit = -1
+
 						#print('credit = ' + str(credit))
 						#payload = {'code': worksheet.cell(x, colCodeCourse).value.encode('utf8'), 'name': worksheet.cell(x, colCourseName).value.encode('utf8')}
 						#r = requests.post("http://localhost:8080/", data=payload)
@@ -78,12 +102,13 @@ for fn in os.listdir('.'):
 						#json from website
 						urlDetailsFinal = urlDetails + worksheet.cell(x,colCodeCourse).value.encode('utf8')
 						details = getContentDetailsFromUrl(urlDetailsFinal)
-						print details.encode('utf8')
+						#print details.encode('utf8')
 						#TODO ADD TO PAYLOAD
 						payload = {'name': worksheet.cell(x,colCourseName).value.encode('utf8'), 'code' : worksheet.cell(x,colCodeCourse).value.encode('utf8'), 'description' : details.encode('utf8'),'numberOfCredits' : credit, 'professorName' : enseignant}
 						r = requests.post(urlAppEngine + "/course/create", data=json.dumps(payload))
 						if (r.status_code != requests.codes.ok):
 							print 'Error in request to app engine, failed to post payload'
+							exit(1)
 				#unload sheet
 				book.unload_sheet(worksheet_name)
 				#reset var
