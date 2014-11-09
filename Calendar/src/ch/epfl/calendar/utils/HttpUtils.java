@@ -15,16 +15,15 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationException;
  */
 public class HttpUtils {
 
-    public static Cookie getCookieSessionID(AbstractHttpClient client) {
+    public static Cookie getCookie(AbstractHttpClient client, String field) {
         List<Cookie> lc = client.getCookieStore().getCookies();
-        Cookie cookieSessionID = null;
         for (Cookie c : lc) {
             System.out.println(c.toString());
-            if (c.getName().equals("JSESSIONID")) {
-                cookieSessionID = c;
+            if (c.getName().equals(field)) {
+                return c;
             }
         }
-        return cookieSessionID;
+        return null;
     }
     
     public static String getTokenFromHeader(Header location) {

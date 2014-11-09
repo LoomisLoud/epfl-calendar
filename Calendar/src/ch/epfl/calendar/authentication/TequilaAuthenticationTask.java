@@ -14,7 +14,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -45,6 +45,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private HttpContext mLocalContext = null;
     private HttpResponse mRespGetTimetable = null;
     private Cookie mCookieWithSessionID = null;
+    private Cookie mCookieWithTequilaUsername = null;
+    private Cookie mCookieWithTequilaKey = null;
     private TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
     private AbstractHttpClient client = HttpClientFactory.getInstance();
 
@@ -57,6 +59,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private static final String KEY = "key";
     private static final String USERNAME = "username";
     private static final String SESSIONID = "JSESSIONID";
+    private static final String TEQUILA_KEY = "tequila_key";
+    private static final String TEQUILA_USER = "tequila_user";
 
     private static final int TIMEOUT_AUTHENTICATION = 10;
 
@@ -198,10 +202,22 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         if (firstTry && mUsername != null && mPassword != null) {
             postBody.add(new BasicNameValuePair(USERNAME, mUsername));
             postBody.add(new BasicNameValuePair(PASSWORD, mPassword));
+        } else {
+            //We set the cookies for Tequila
+            client.setCookieStore(new BasicCookieStore());
+            client.getCookieStore().addCookie(this.mCookieWithTequilaKey);
+            client.getCookieStore().addCookie(this.mCookieWithTequilaUsername);
+            
         }
         authReq.setEntity(new UrlEncodedFormEntity(postBody));
         client.execute(authReq,
                 new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
+        
+        //We get the cookies for tequila
+        if (firstTry) {
+            this.mCookieWithTequilaUsername = HttpUtils.getCookie(client, TEQUILA_USER);
+            this.mCookieWithTequilaKey = HttpUtils.getCookie(client, TEQUILA_KEY);
+        }
     }
 
     /**
@@ -226,8 +242,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         
         if (sessionID != null) {
             getTimetable.addHeader("Set-Cookie", SESSIONID + "=" +sessionID);
-            //client.getCookieStore().addCookie(mCookieWithSessionID);
-            client.getCookieStore().addCookie(new BasicClientCookie(SESSIONID, sessionID));
+            client.setCookieStore(new BasicCookieStore());
+            client.getCookieStore().addCookie(this.mCookieWithSessionID);
             mRespGetTimetable.getEntity().getContent().close();
         }
         
@@ -235,7 +251,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 .execute(getTimetable, mLocalContext);
         Log.i("INFO : ", "Http code received when trying access to ISA Service : "
                 + mRespGetTimetable.getStatusLine().getStatusCode());
-        this.mCookieWithSessionID = HttpUtils.getCookieSessionID(client);
+        this.mCookieWithSessionID = HttpUtils.getCookie(client, SESSIONID);
         
         return mRespGetTimetable.getStatusLine().getStatusCode();
     }
