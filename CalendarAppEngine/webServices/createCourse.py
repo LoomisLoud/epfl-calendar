@@ -15,7 +15,6 @@ class createCourse(webapp2.RequestHandler):
             self.response.write('error')
         else:
             nameGet = values['name']
-            #descriptionGet = values('description')
             descriptionGet = values['description']
             numberOfCreditsGet = values['numberOfCredits']
             professorNameGet = values['professorName']
