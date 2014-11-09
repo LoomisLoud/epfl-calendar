@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,11 +30,11 @@ import ch.epfl.calendar.utils.GlobalPreferences;
  */
 public class MainActivity extends Activity {
 
+	public static final String TAG = "MainActivity::";
+
 	private static final int REQUEST_CODE = 1;
 
-//	private Button btnLogin;
 	private Activity mThisActivity;
-
     private CalendarView mCalendar;
 
     @Override
@@ -41,9 +42,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mThisActivity = this;
-//        this.btnLogin = (Button) this.findViewById(R.id.btnLogin);
-
-        //this.switchLoginLogout();
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
@@ -86,46 +84,6 @@ public class MainActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    /**
-     * Handle button activation based on whether the user is authenticated or not.
-     */
-    /*private void switchLoginLogout() {
-        Boolean isAuthenticated = GlobalPreferences.isAuthenticated(this);
-        if (isAuthenticated) {
-            btnLogin.setText(R.string.logout);
-            btnLogin.setOnClickListener(new LogoutListener());
-        } else {
-            btnLogin.setText(R.string.login);
-            btnLogin.setOnClickListener(new LoginListener());
-        }
-    }*/
-
-    /**
-     *
-     * @author lweingart
-     *
-     */
-    /*private class LogoutListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            TequilaAuthenticationAPI.getInstance().clearSessionID(MainActivity.this.mThisActivity);
-
-            MainActivity.this.switchLoginLogout();
-        }
-    }*/
-
-    /**
-     *
-     * @author lweingart
-     *
-     */
-    /*private class LoginListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            MainActivity.this.startAuthenticationActivity();
-        }
-    }*/
 
     public void switchToCoursesList() {
         Intent coursesListActivityIntent = new Intent(this,
@@ -181,6 +139,7 @@ public class MainActivity extends Activity {
     public List<Course> populateCalendar() {
         CalendarClient cal = new CalendarClient(MainActivity.this.mThisActivity);
         List<Course> courses = new ArrayList<Course>();
+
         if (!GlobalPreferences.isAuthenticated(this)) {
             switchToAuthenticationActivity();
         } else {
@@ -193,6 +152,7 @@ public class MainActivity extends Activity {
         }
 
         //To see if it works
+        Log.i(TAG, "list of courses:");
         for (Course c : courses) {
             System.out.println(c.toString());
         }
