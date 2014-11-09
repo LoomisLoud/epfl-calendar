@@ -3,6 +3,9 @@ package ch.epfl.calendar.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,15 +20,16 @@ public class Course implements Parcelable {
     private List<Period> mPeriods;
     private String mTeacher;
     private int mCredits;
+    private String mCode;
+    private String mDescription;
     
     public Course(String name, String date, String startTime, String endTime,
             String type, List<String> rooms) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
         this.addPeriod(new Period(date, startTime, endTime, type, rooms));
-        //TODO implement teacher and credits
-        this.mTeacher = "John Doe";
-        this.mCredits = 24;
+        this.mTeacher = null;
+        this.mCredits = 0;
     }
 
     // FIXME : DELETE !!! ???
@@ -34,6 +38,35 @@ public class Course implements Parcelable {
         this.mPeriods = new ArrayList<Period>();
         this.setTeacher(null);
         this.setCredits(0);
+    }
+    
+    /**
+     * Builds a course from a parcel.
+     * @param in a Parcel ?
+     */
+    public Course(Parcel in) {
+
+        this.setName(in.readString());
+        mPeriods = new ArrayList<Period>();
+        in.readList(mPeriods, Period.class.getClassLoader());
+        this.setTeacher(in.readString());
+        this.setCredits(in.readInt());
+    }
+    
+    /**
+     * Builds a full course. Used in {@link ch.epfl.calendar.data.Course#parseFromJSON(JSONObject)}
+     * @param code the code of the course
+     * @param name the name of the course
+     * @param description the description of the course
+     * @param professorName the name of the Professor teahcing the course
+     * @param numberOfCredits the number of credits for the course
+     */
+    public Course(String code, String name, String description, String professorName, int numberOfCredits) {
+        mCode = code;
+        mName = name;
+        mDescription = description;
+        mTeacher = professorName;
+        mCredits = numberOfCredits;
     }
 
     /**
@@ -64,7 +97,7 @@ public class Course implements Parcelable {
      * @return the mPeriods
      */
     public List<Period> getPeriods() {
-        return mPeriods;
+        return new ArrayList<Period>(mPeriods);
     }
 
     /**
@@ -72,7 +105,7 @@ public class Course implements Parcelable {
      *            the mPeriods to set
      */
     public void setPeriods(List<Period> periods) {
-        this.mPeriods = periods;
+        this.mPeriods = new ArrayList<Period>(periods);
     }
 
     /**
@@ -103,6 +136,34 @@ public class Course implements Parcelable {
      */
     public void setTeacher(String teacher) {
         this.mTeacher = teacher;
+    }
+
+    /**
+     * @return the mCode
+     */
+    public String getCode() {
+        return mCode;
+    }
+
+    /**
+     * @param mCode the mCode to set
+     */
+    public void setCode(String code) {
+        mCode = code;
+    }
+
+    /**
+     * @return the mDescription
+     */
+    public String getDescription() {
+        return mDescription;
+    }
+
+    /**
+     * @param mDescription the mDescription to set
+     */
+    public void setDescription(String description) {
+        mDescription = description;
     }
 
     /*
@@ -150,13 +211,20 @@ public class Course implements Parcelable {
         }
 
     };
-
-    public Course(Parcel in) {
-
-        this.setName(in.readString());
-        mPeriods = new ArrayList<Period>();
-        in.readList(mPeriods, Period.class.getClassLoader());
-        this.setTeacher(in.readString());
-        this.setCredits(in.readInt());
+    
+    /**
+     * 
+     * @param jsonObject the JSONObject to parse.
+     * @return A Course filled with the informations from the JSON
+     * @throws JSONException
+     */
+    public static Course parseFromJSON(JSONObject jsonObject) throws JSONException {
+        String code = jsonObject.getString("code");
+        String name = jsonObject.getString("name");
+        String description = jsonObject.getString("description");
+        String professorName = jsonObject.getString("professorName");
+        int numberOfCredits = jsonObject.getInt("numberOfCredits");
+                
+        return new Course(code, name, description, professorName, numberOfCredits);
     }
 }

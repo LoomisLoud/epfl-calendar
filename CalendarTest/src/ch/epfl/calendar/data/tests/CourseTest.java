@@ -3,12 +3,10 @@
  */
 package ch.epfl.calendar.data.tests;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import junit.framework.TestCase;
 
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
@@ -19,9 +17,8 @@ import ch.epfl.calendar.data.Period;
  * @author gilbrechbuhler
  *
  */
-public class CourseTest {
+public class CourseTest extends TestCase {
 
-    @Test
     public void testAddPeriod() {
         Course course = new Course("test", "date", "startTime", "endTime", "cours", new ArrayList<String>());
         Period period = new Period("date2", "startTime2", "endTime2", "exercice", new ArrayList<String>());

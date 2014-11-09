@@ -16,14 +16,14 @@ class createCourse(webapp2.RequestHandler):
         else:
             nameGet = values['name']
             #descriptionGet = values('description')
-            descriptionGet = ''
+            descriptionGet = values['description']
             numberOfCreditsGet = values['numberOfCredits']
             professorNameGet = values['professorName']
-            course = Course(name = nameGet, periods = [], code = codeGet, description = descriptionGet, 
+            course = Course(name = nameGet, periodsKeys = [], code = codeGet, description = descriptionGet, 
                 numberOfCredits = int(numberOfCreditsGet), professorName = professorNameGet)
             course.put()
 
 
 application = webapp2.WSGIApplication([
-    ('/createCourse', createCourse),
+    ('/course/create', createCourse),
 ], debug=True)

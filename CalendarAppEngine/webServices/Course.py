@@ -6,7 +6,7 @@ from Period import Period
 # Represents a Course in the DB
 class Course(ndb.Model):
     name = ndb.StringProperty()
-    periods = ndb.KeyProperty(repeated=True)
+    periodsKeys = ndb.KeyProperty(repeated=True)
     code = ndb.StringProperty()
     description = ndb.StringProperty()
     numberOfCredits = ndb.IntegerProperty()

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.utils.isaparser.tests;
+package ch.epfl.calendar.utils.isaparser.tests;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,13 +13,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
-import ch.epfl.utils.isaparser.ISAXMLParser;
+import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
+import ch.epfl.calendar.utils.isaparser.ParsingException;
 
 import android.util.Xml;
 
@@ -32,32 +31,31 @@ import android.util.Xml;
  */
 public class ISAXMLParserTest extends TestCase {
     
-    private Method skip;
-    private Method readText;
-    private Method readName;
-    private Method readType;
-    private Method readRoom;
-    private Method readCourse;
-    private Method readStudyPeriod;
-    private Method readData;
-    private InputStream xmlEndTag;
-    private InputStream standardXml;
-    private InputStream text;
-    private InputStream standardReadName;
-    private InputStream standardReadNameOther;
-    private InputStream standardReadType;
-    private InputStream standardReadTypeOther;
-    private InputStream standardReadRoom;
-    private InputStream standardReadRoomOther;
-    private InputStream standardReadCourse;
-    private InputStream standardReadCourseOther;
-    private InputStream standardReadStudyPeriod;
-    private InputStream standardReadStudyPeriodNull;
-    private InputStream standardReadData;
-    private InputStream standardReadDataNull;
-    private InputStream standardInput;
-    
-    @Before
+    private static Method skip;
+    private static Method readText;
+    private static Method readName;
+    private static Method readType;
+    private static Method readRoom;
+    private static Method readCourse;
+    private static Method readStudyPeriod;
+    private static Method readData;
+    private static InputStream xmlEndTag;
+    private static InputStream standardXml;
+    private static InputStream text;
+    private static InputStream standardReadName;
+    private static InputStream standardReadNameOther;
+    private static InputStream standardReadType;
+    private static InputStream standardReadTypeOther;
+    private static InputStream standardReadRoom;
+    private static InputStream standardReadRoomOther;
+    private static InputStream standardReadCourse;
+    private static InputStream standardReadCourseOther;
+    private static InputStream standardReadStudyPeriod;
+    private static InputStream standardReadStudyPeriodNull;
+    private static InputStream standardReadData;
+    private static InputStream standardReadDataNull;
+    private static InputStream standardInput;
+
     public void setUp() throws NoSuchMethodException, UnsupportedEncodingException {
         skip = (ISAXMLParser.class).getDeclaredMethod("skip", new Class[] {XmlPullParser.class});
         skip.setAccessible(true);
@@ -132,9 +130,8 @@ public class ISAXMLParserTest extends TestCase {
                 + "</data>").getBytes("UTF-8"));
         text = new ByteArrayInputStream("<start>bla</start>".getBytes("UTF-8"));
     }
-    
-    @Test
-    public void testParse() throws XmlPullParserException, IOException {
+
+    public void testParse() throws ParsingException {
         //With null argument
         try {
             ISAXMLParser.parse(null);
@@ -143,10 +140,9 @@ public class ISAXMLParserTest extends TestCase {
             //waited exception
         }
     }
-    
-    @Test
+
     public void testReadData() throws IllegalAccessException, IllegalArgumentException, 
-        InvocationTargetException, XmlPullParserException, IOException {
+        InvocationTargetException, ParsingException, XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
       //With Null argument
         try {
@@ -189,9 +185,7 @@ public class ISAXMLParserTest extends TestCase {
             assertEquals(2, courses.get(0).getPeriods().size());
         } finally { }
     }
-    
-    
-    @Test
+
     public void testReadStudyPeriod() throws IllegalAccessException, IllegalArgumentException,
         InvocationTargetException, XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
@@ -242,8 +236,7 @@ public class ISAXMLParserTest extends TestCase {
             assertEquals("CO 2", course.getPeriods().get(0).getRooms().get(0));
         } finally { }
     }
-    
-    @Test
+
     public void testReadCourse() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
@@ -273,8 +266,7 @@ public class ISAXMLParserTest extends TestCase {
             assertNull(readCourse.invoke(null, new Object[] {parser}));
         } finally { }
     }
-    
-    @Test
+
     public void testReadRoom() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
         XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
@@ -304,8 +296,7 @@ public class ISAXMLParserTest extends TestCase {
             assertNull(readRoom.invoke(null, new Object[] {parser}));
         } finally { }
     }
-    
-    @Test
+
     public void testReadType() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
         XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
@@ -336,7 +327,6 @@ public class ISAXMLParserTest extends TestCase {
         } finally { }
     }
 
-    @Test
     public void testReadName() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
     XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
@@ -366,8 +356,7 @@ public class ISAXMLParserTest extends TestCase {
             assertNull(readName.invoke(null, new Object[] {parser}));
         } finally { }
     }
-    
-    @Test
+
     public void testReadText() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
     XmlPullParserException, IOException {
         //With Null argument
@@ -397,8 +386,7 @@ public class ISAXMLParserTest extends TestCase {
             assertEquals("bla", readText.invoke(null, new Object[] {parser}));
         } finally { }
     }
-    
-    @Test
+
     public void testSkip() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
     XmlPullParserException, IOException {
         //WithArgumentNull

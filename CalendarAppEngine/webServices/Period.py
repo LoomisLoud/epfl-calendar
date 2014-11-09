@@ -12,7 +12,7 @@ class Period(ndb.Model):
     # Return the object fields in a JSON structure
     def get_as_json(self):
         obj = {
-            'date' : self.date.strftime('%d/%m/%Y'),
+            'date' : self.date.strftime('%d.%m.%Y'),
             'startTime' : self.startTime.strftime('%H:%M'),
             'endTime' : self.endTime.strftime('%H:%M'),
             'periodType' : self.periodType,

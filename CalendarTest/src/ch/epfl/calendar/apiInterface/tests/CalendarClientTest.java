@@ -8,8 +8,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Test;
-
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
@@ -21,7 +19,6 @@ import ch.epfl.calendar.data.Course;
  */
 public class CalendarClientTest extends TestCase {
 
-    @Test
     public void testGetISAInformation() {
         CalendarClientInterface fetcher = new CalendarClient();
         List<Course> result = new ArrayList<Course>();

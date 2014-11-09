@@ -24,7 +24,7 @@ class createPeriod(webapp2.RequestHandler):
             course = c
         period = Period(parent=course.key)
         # Setup the period
-        period.date = datetime.datetime.strptime(dateGet, '%d/%m/%Y').date()
+        period.date = datetime.datetime.strptime(dateGet, '%d.%m.%Y').date()
         period.startTime = datetime.datetime.strptime(startTimeGet, '%H:%M').time()
         period.endTime = datetime.datetime.strptime(endTimeGet, '%H:%M').time()
         period.periodType = periodTypeGet
@@ -33,10 +33,10 @@ class createPeriod(webapp2.RequestHandler):
             period.rooms.append(rooms[str(i)])
             i = i + 1
         period.put()
-        course.periods.append(period.key)
+        course.periodsKeys.append(period.key)
         course.put()
 
 
 application = webapp2.WSGIApplication([
-    ('/createPeriod', createPeriod)
+    ('/period/create', createPeriod)
 ], debug=True)
