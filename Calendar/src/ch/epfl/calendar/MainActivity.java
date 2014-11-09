@@ -10,51 +10,49 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
-
-import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.display.CoursesListActivity;
-import ch.epfl.calendar.utils.GlobalPreferences;
+import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
+import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.utils.GlobalPreferences;
 
 
 /**
  *
  * @author lweingart
- * 
+ *
  */
 public class MainActivity extends Activity {
 
 	private static final int REQUEST_CODE = 1;
 
-	private Button btnLogin;
+//	private Button btnLogin;
 	private Activity mThisActivity;
-    
+
     private CalendarView mCalendar;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mThisActivity = this;
-        this.btnLogin = (Button) this.findViewById(R.id.btnLogin);
+//        this.btnLogin = (Button) this.findViewById(R.id.btnLogin);
 
         //this.switchLoginLogout();
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
-        
+
         initializeCalendar();
-        
+
         //FIXME : At the beginning of the application, we "logout" the user
         TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
-        
+
         populateCalendar();
     }
 
@@ -128,26 +126,26 @@ public class MainActivity extends Activity {
             MainActivity.this.startAuthenticationActivity();
         }
     }*/
-    
+
     public void switchToCoursesList() {
         Intent coursesListActivityIntent = new Intent(this,
                 CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
     }
-    
+
     public void switchToDraftActivity() {
         Intent draftActivityIntent = new Intent(this,
                 DraftActivity.class);
         startActivity(draftActivityIntent);
     }
-    
+
     private void switchToAuthenticationActivity() {
         Intent displayAuthenticationActivityIntent = new Intent(this,
                 AuthenticationActivity.class);
         this.startActivityForResult(displayAuthenticationActivityIntent,
                 MainActivity.REQUEST_CODE);
     }
-    
+
     public void initializeCalendar() {
         mCalendar = (CalendarView) findViewById(R.id.calendar);
 
@@ -160,16 +158,16 @@ public class MainActivity extends Activity {
 
         //The background color for the selected week.
         mCalendar.setSelectedWeekBackgroundColor(getResources().getColor(R.color.green));
-        
-        //sets the color for the dates of an unfocused month. 
+
+        //sets the color for the dates of an unfocused month.
         mCalendar.setUnfocusedMonthDateColor(getResources().getColor(R.color.transparent));
-    
+
         //sets the color for the separator line between weeks.
         mCalendar.setWeekSeparatorLineColor(getResources().getColor(R.color.transparent));
-        
+
         //sets the color for the vertical bar shown at the beginning and at the end of the selected date.
         mCalendar.setSelectedDateVerticalBar(R.color.darkgreen);
-        
+
         //sets the listener to be notified upon selected date change.
         mCalendar.setOnDateChangeListener(new OnDateChangeListener() {
                        //show the selected date as a toast
@@ -179,7 +177,7 @@ public class MainActivity extends Activity {
             }
         });
     }
-    
+
     public List<Course> populateCalendar() {
         CalendarClient cal = new CalendarClient(MainActivity.this.mThisActivity);
         List<Course> courses = new ArrayList<Course>();
@@ -190,14 +188,15 @@ public class MainActivity extends Activity {
                 courses = cal.getISAInformations();
             } catch (CalendarClientException e) {
                 //We have a problem...
+            	e.printStackTrace();
             }
         }
-        
+
         //To see if it works
         for (Course c : courses) {
             System.out.println(c.toString());
         }
         return courses;
     }
-    
+
 }

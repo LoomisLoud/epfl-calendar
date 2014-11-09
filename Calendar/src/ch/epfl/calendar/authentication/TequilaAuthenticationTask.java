@@ -24,7 +24,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import ch.epfl.calendar.R;
-import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.HttpUtils;
 import ch.epfl.calendar.utils.InputStreamUtils;
 
@@ -42,7 +41,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private ProgressDialog dialog;
     private TequilaAuthenticationListener mListener = null;
     private boolean exceptionOccured = false;
-    
+
     private HttpContext mLocalContext = null;
     private HttpResponse mRespGetTimetable = null;
     private Cookie mCookieWithSessionID = null;
@@ -57,7 +56,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private static final String KEY = "key";
     private static final String USERNAME = "username";
     private static final String SESSIONID = "JSESSIONID";
-    
+
     private static final int TIMEOUT_AUTHENTICATION = 10;
 
     /**
@@ -65,7 +64,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
      * @author lweingart
      *
      */
-    public interface TequilaAuthenticationListener{
+    public interface TequilaAuthenticationListener {
         void onError(String msg);
         void onSuccess(String sessionID);
     }
@@ -73,13 +72,14 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     public TequilaAuthenticationTask(Context context,
                                     TequilaAuthenticationListener listener,
                                     String username,
-                                    String password) {
+                                    String password)
+    {
         mContext = context;
         mListener = listener;
         mUsername = username;
         mPassword = password;
     }
-    
+
     @Override
     protected void onPreExecute() {
         dialog = new ProgressDialog(mContext);
@@ -95,21 +95,21 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         try {
             mLocalContext = new BasicHttpContext();
             int httpCode = 0;
-            
+
             //Try to access to ISA to get a token
             String token = getToken(mRespGetTimetable, null, null);
             String tokenList = token;
-            
+
             httpCode = mRespGetTimetable.getStatusLine().getStatusCode();
-            
+
             if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE
                     || httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                
+
                 boolean firstTry = true;
                 int timeoutAuthentication = TIMEOUT_AUTHENTICATION;
-                
+
                 while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK && timeoutAuthentication > 0) {
-                    timeoutAuthentication = timeoutAuthentication - 1;
+                    timeoutAuthentication--;
                     //Authentication on Tequila needed the token + to know if
                     //it is the first authentication (to know if use username+pwd)
                     authenticateOnTequila(token, firstTry);
@@ -121,19 +121,19 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     }
                     //Try to get the page on Isa
                     httpCode = useAuthenticationOnIsa(mSessionID, tokenList);
-                    
+
                     mSessionID = mCookieWithSessionID.getValue();
                 }
             } else {
                 throw new TequilaAuthenticationException("Wrong Http code");
             }
-            
+
             /************************/
             //FIXME : Needs to be removed - keep for testing manually
             String result = InputStreamUtils.readInputStream(mRespGetTimetable.getEntity().getContent());
             System.out.println(result);
             /************************/
-            
+
         } catch (ClientProtocolException e) {
             exceptionOccured = true;
             Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::ClientProtocolException", e);
@@ -177,11 +177,11 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             mListener.onSuccess(mSessionID);
         }
     }
-    
-    
+
+
     private void authenticateOnTequila(String token, boolean firstTry) throws ClientProtocolException, IOException {
         Log.i("INFO : ", "Authentication to Tequila");
-        
+
         HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
         List<NameValuePair> postBody = new ArrayList<NameValuePair>();
         postBody.add(new BasicNameValuePair(REQUEST_KEY, token));
@@ -194,10 +194,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         client.execute(authReq,
                 new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
     }
-    
-    private String getToken(HttpResponse respGetTimetable, String sessionID, String tokenList) 
+
+    private String getToken(HttpResponse respGetTimetable, String sessionID, String tokenList)
         throws ClientProtocolException, IOException {
-        
+
         Log.i("INFO : ", "Get Token");
         HttpGet getTimetable = null;
         if (tokenList == null) {
@@ -207,27 +207,27 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
             getTimetable = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
         }
-        
+
         if (sessionID != null) {
             getTimetable.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
             client.getCookieStore().addCookie(new BasicClientCookie(SESSIONID, mSessionID));
         }
-        
+
         mRespGetTimetable = client.execute(getTimetable, mLocalContext);
-        
+
         String token = HttpUtils.getTokenFromHeader(mRespGetTimetable.getFirstHeader("Location"));
-        
+
         //FIXME : works ?
         if (tokenList == null) {
             this.mCookieWithSessionID = HttpUtils.getCookieSessionID(client);
         }
-        
+
         return token;
     }
-    
+
     private int useAuthenticationOnIsa(String sessionID, String tokenList)
         throws ClientProtocolException, IOException {
-        
+
         Log.i("INFO : ", "Try getting access to ISA Services");
         Log.i("INFO : ", "Address : " + tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
         HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL()+"?"+KEY+"="+tokenList);
@@ -239,9 +239,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 .execute(sessionReq, mLocalContext);
         Log.i("INFO : ", "Http code received when trying access to ISA Service : "
                 + mRespGetTimetable.getStatusLine().getStatusCode());
-        
+
         this.mCookieWithSessionID = HttpUtils.getCookieSessionID(client);
-        
+
         return mRespGetTimetable.getStatusLine().getStatusCode();
     }
 }
