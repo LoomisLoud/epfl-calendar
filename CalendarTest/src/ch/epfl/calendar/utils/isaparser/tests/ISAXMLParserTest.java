@@ -227,8 +227,9 @@ public class ISAXMLParserTest extends TestCase {
             assertNull(course.getTeacher());
             assertEquals("Algorithms", course.getName());
             assertNotNull(course.getPeriods());
-            assertEquals(new GregorianCalendar(2014, 10, 13, 14, 15), course.getPeriods().get(0).getStartDate());
-            assertEquals(new GregorianCalendar(2014, 10, 13, 16, 00), course.getPeriods().get(0).getEndDate());
+            //Month is actual month - 1
+            assertEquals(new GregorianCalendar(2014, 9, 13, 14, 15), course.getPeriods().get(0).getStartDate());
+            assertEquals(new GregorianCalendar(2014, 9, 13, 16, 00), course.getPeriods().get(0).getEndDate());
             assertEquals("Cours", course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(1, course.getPeriods().get(0).getRooms().size());
