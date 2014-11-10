@@ -22,7 +22,7 @@ import ch.epfl.calendar.data.Course;
  * 
  */
 public class CoursesListActivity extends Activity {
-    private ProgressDialog dialog;
+    private ProgressDialog mDialog;
     private ListView mListView;
 
     @Override
@@ -67,9 +67,10 @@ public class CoursesListActivity extends Activity {
 
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
-        dialog = new ProgressDialog(this);
-        dialog.setMessage("Charging course details");
-        dialog.show();
+        
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage("Charging course details");
+        mDialog.show();
 
     }
 
@@ -100,8 +101,8 @@ public class CoursesListActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (dialog != null) {
-            dialog.dismiss();
+        if (mDialog != null) {
+            mDialog.dismiss();
         }
     }
 }

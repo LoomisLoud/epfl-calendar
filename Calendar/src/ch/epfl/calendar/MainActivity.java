@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
@@ -27,6 +28,7 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AddEventActivity;
+import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.display.WeekView;
 import ch.epfl.calendar.display.WeekViewEvent;
@@ -47,6 +49,7 @@ public class MainActivity extends Activity implements
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private List<Course> listCourses = null;
+    private ProgressDialog mDialog;
 
     public static final String TAG = "MainActivity::";
     public static final int AUTH_ACTIVITY_CODE = 1;
@@ -195,6 +198,19 @@ public class MainActivity extends Activity implements
         startActivity(coursesListActivityIntent);
     }
 
+    public void switchToCourseDetails(String courseName) {
+        
+        Intent courseDetailsActivityIntent = new Intent(this,
+                CourseDetailsActivity.class);
+        
+        courseDetailsActivityIntent.putExtra("course", courseName);
+        startActivity(courseDetailsActivityIntent);
+        
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage("Charging course details");
+        mDialog.show();
+    }
+
     public void switchToAddEventsActivity() {
         Intent addEventsActivityIntent = new Intent(this,
                 AddEventActivity.class);
@@ -212,24 +228,24 @@ public class MainActivity extends Activity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_courses_list:
-                switchToCoursesList();
-                return true;
-            case R.id.action_settings:
-                Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT)
-                        .show();
-                return true;
-            case R.id.add_event:
-                switchToAddEventsActivity();
-                return true;
-            case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            case R.id.action_update_activity:
-                populateCalendar();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case R.id.action_courses_list:
+            switchToCoursesList();
+            return true;
+        case R.id.action_settings:
+            Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT)
+                    .show();
+            return true;
+        case R.id.add_event:
+            switchToAddEventsActivity();
+            return true;
+        case R.id.action_today:
+            mWeekView.goToToday();
+            return true;
+        case R.id.action_update_activity:
+            populateCalendar();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -271,8 +287,7 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(MainActivity.this, "Clicked " + event.getName(),
-                Toast.LENGTH_SHORT).show();
+        switchToCourseDetails(event.getName());
     }
 
     @Override
@@ -301,5 +316,13 @@ public class MainActivity extends Activity implements
             e.printStackTrace();
         }
         return courses;
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
     }
 }
