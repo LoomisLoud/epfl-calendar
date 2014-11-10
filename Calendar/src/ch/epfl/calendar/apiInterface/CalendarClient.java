@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 import ch.epfl.calendar.MainActivity;
+import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
@@ -106,7 +107,7 @@ public class CalendarClient implements CalendarClientInterface {
 	private String getIsaTimetableOnline(Context context) {
 
         try {
-            String result = 
+            String result =
                     new TequilaAuthenticationTask(
                             mParentActivity,
                             new TequilaAuthenticationHandler(),
@@ -122,7 +123,7 @@ public class CalendarClient implements CalendarClientInterface {
         }
         return null;
     }
-	
+
 	/**
 	 * A Handler that manage the onError and onSuccess function for Tequila Authentication
 	 * @author AblionGE
@@ -137,7 +138,7 @@ public class CalendarClient implements CalendarClientInterface {
         public void onSuccess(String sessionID) {
             // store the sessionID in the preferences
             TequilaAuthenticationAPI.getInstance().setSessionID(mParentActivity, sessionID);
-            Toast.makeText(mParentActivity, "Updated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mParentActivity, R.string.updated, Toast.LENGTH_SHORT).show();
         }
     }
 }
