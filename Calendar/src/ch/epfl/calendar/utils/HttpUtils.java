@@ -18,7 +18,6 @@ public class HttpUtils {
     public static Cookie getCookie(AbstractHttpClient client, String field) {
         List<Cookie> lc = client.getCookieStore().getCookies();
         for (Cookie c : lc) {
-            System.out.println(c.toString());
             if (c.getName().equals(field)) {
                 return c;
             }

@@ -128,8 +128,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     authenticateOnTequila(mCurrentToken, firstTry);
                     if (firstTry) {
                         firstTry = false;
+                        tokenList = mCurrentToken;
                     } else {
-                        //mCurrentToken = HttpUtils.getTokenFromHeader(mRespGetTimetable.getFirstHeader("Location"));
                         if (!tokenList.equals("")) {
                             tokenList = tokenList + "&" + KEY + "=" + mCurrentToken;
                         } else {
@@ -230,7 +230,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     }
 
     /**
-     * THIS PURPOSE SHOULD BE AIMED IN CALENDARCLIENT
      * @param sessionID
      * @param tokenList
      * @return
@@ -253,7 +252,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             getTimetable.addHeader("Set-Cookie", SESSIONID + "=" +sessionID);
             client.setCookieStore(new BasicCookieStore());
             client.getCookieStore().addCookie(globalPrefs.getSessionIDCookie());
-            //mRespGetTimetable.getEntity().getContent().close();
+            if (mRespGetTimetable != null) {
+                mRespGetTimetable.getEntity().getContent().close();
+            }
         }
 
         mRespGetTimetable = client
