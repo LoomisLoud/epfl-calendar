@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +22,7 @@ import ch.epfl.calendar.data.Course;
  * 
  */
 public class CoursesListActivity extends Activity {
-
+    private ProgressDialog dialog;
     private ListView mListView;
 
     @Override
@@ -45,7 +46,7 @@ public class CoursesListActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
 
-                openCourseDetails(coursesList.get(position));
+                openCourseDetails(coursesNameList.get(position));
 
             }
 
@@ -53,15 +54,26 @@ public class CoursesListActivity extends Activity {
 
     }
 
-    public void openCourseDetails(Course course) {
+    /**
+     * Launches the CourseDetailsActivity of a specific courseName
+     * 
+     * @param courseName
+     *            the name of the course from which we want the details
+     */
+    private void openCourseDetails(String courseName) {
+
         Intent courseDetailsActivityIntent = new Intent(this,
                 CourseDetailsActivity.class);
 
-        courseDetailsActivityIntent.putExtra("course", course);
+        courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Charging course details");
+        dialog.show();
+
     }
 
-    public ArrayList<Course> retrieveCourse() {
+    private ArrayList<Course> retrieveCourse() {
 
         CalendarClient calendarClient = new CalendarClient(this);
         ArrayList<Course> retrieveData = null;
@@ -70,13 +82,12 @@ public class CoursesListActivity extends Activity {
             retrieveData = new ArrayList<Course>(
                     calendarClient.getISAInformations());
         } catch (CalendarClientException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return retrieveData;
     }
 
-    public ArrayList<String> retrieveCourseName(List<Course> coursesList) {
+    private ArrayList<String> retrieveCourseName(List<Course> coursesList) {
 
         ArrayList<String> coursesName = new ArrayList<String>();
 
@@ -84,5 +95,13 @@ public class CoursesListActivity extends Activity {
             coursesName.add(cours.getName());
         }
         return coursesName;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 }

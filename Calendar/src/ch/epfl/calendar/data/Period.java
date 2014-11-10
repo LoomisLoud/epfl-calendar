@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+
 /**
  * A period is a date, a start time and an end time + the type (exercises,
  * lesson) and the rooms of a course
@@ -15,7 +16,9 @@ import java.util.List;
  * @author AblionGE
  * 
  */
+
 public class Period{
+
     private String mType;
     private Calendar mStartDate;
     private Calendar mEndDate;
@@ -109,6 +112,7 @@ public class Period{
 
     public Calendar getEndDate() {
         return mEndDate;
+
     }
 
     public void setEndDate(Calendar endDate) {

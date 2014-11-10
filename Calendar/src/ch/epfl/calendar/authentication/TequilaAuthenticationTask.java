@@ -44,7 +44,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
     private AbstractHttpClient client = HttpClientFactory.getInstance();
     private GlobalPreferences globalPrefs = GlobalPreferences.getInstance();
-    private ProgressDialog dialog;
+    private ProgressDialog mDialog;
     private String mSessionID;
     private String mUsername;
     private String mPassword;
@@ -80,11 +80,11 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        dialog = new ProgressDialog(mContext);
-        dialog.setTitle(mContext.getString(R.string.be_patient));
-        dialog.setMessage(mContext.getString(R.string.authenticating));
-        dialog.setCancelable(false);
-        dialog.show();
+        mDialog = new ProgressDialog(mContext);
+        mDialog.setTitle(mContext.getString(R.string.be_patient));
+        mDialog.setMessage(mContext.getString(R.string.authenticating));
+        mDialog.setCancelable(false);
+        mDialog.show();
     }
 
 	@Override
@@ -138,7 +138,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             } else {
                 throw new TequilaAuthenticationException("Wrong Http code");
             }
-
+            
             result = InputStreamUtils.readInputStream(mRespGetTimetable.getEntity().getContent());
 
         } catch (ClientProtocolException e) {
@@ -165,16 +165,16 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     }
     @Override
     protected void onCancelled() {
-        if (dialog != null) {
-            dialog.dismiss();
+        if (mDialog != null) {
+            mDialog.dismiss();
         }
         mListener.onError(mContext.getString(R.string.error_authentication_cancel));
     }
 
     @Override
     protected void onPostExecute(String result) {
-        if (dialog != null) {
-            dialog.dismiss();
+        if (mDialog != null) {
+            mDialog.dismiss();
         }
         if (mExceptionOccured) {
             // notify success listener

@@ -206,29 +206,30 @@ public class MainActivity extends Activity implements
                 AuthenticationActivity.class);
         mThisActivity.startActivityForResult(
                 displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.action_courses_list:
-            switchToCoursesList();
-            return true;
-        case R.id.action_settings:
-            Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT)
-                    .show();
-            return true;
-        case R.id.add_event:
-            switchToAddEventsActivity();
-            return true;
-        case R.id.action_today:
-            mWeekView.goToToday();
-            return true;
-        case R.id.action_update_activity:
-            populateCalendar();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_courses_list:
+                switchToCoursesList();
+                return true;
+            case R.id.action_settings:
+                Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT)
+                        .show();
+                return true;
+            case R.id.add_event:
+                switchToAddEventsActivity();
+                return true;
+            case R.id.action_today:
+                mWeekView.goToToday();
+                return true;
+            case R.id.action_update_activity:
+                populateCalendar();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -249,14 +250,12 @@ public class MainActivity extends Activity implements
         // Populate the week view with some events.
         List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
 
-        
-
         int idEvent = 0;
         for (Course c : listCourses) {
 
             for (Period p : c.getPeriods()) {
-                events.add(new WeekViewEvent(idEvent, c.getName(), p.getStartDate(),
-                        p.getEndDate()));
+                events.add(new WeekViewEvent(idEvent, c.getName(), p
+                        .getStartDate(), p.getEndDate()));
             }
             idEvent++;
         }
