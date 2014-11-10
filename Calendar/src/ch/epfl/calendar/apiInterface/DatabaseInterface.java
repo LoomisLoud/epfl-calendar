@@ -36,5 +36,5 @@ public interface DatabaseInterface {
      * @param courseCode the code of the course of which the period belongs.
      * @throws CalendarClientException
      */
-    void createPeriod(Period period, String courseCode) throws CalendarClientException;
+    //void createPeriod(Period period, String courseCode) throws CalendarClientException;
 }

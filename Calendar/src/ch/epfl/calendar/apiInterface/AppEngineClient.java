@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,13 @@ public class AppEngineClient implements DatabaseInterface {
      */
     @Override
     public Course getCourseByName(String name) throws CalendarClientException {
-        String url = mDBUrl + AppEngineURLs.GET_COURSE + "?name=" + name;
+        String nameUrlized;
+        try {
+            nameUrlized = URLEncoder.encode(name, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new CalendarClientException();
+        }
+        String url = mDBUrl + AppEngineURLs.GET_COURSE + "?name=" + nameUrlized;
         return getCourse(url);
     }
 
@@ -73,7 +80,7 @@ public class AppEngineClient implements DatabaseInterface {
      * {@see ch.epfl.calendar.apiInterface.databaseInterface#createPeriod(ch.epfl.calendar.data.Period, 
      * java.lang.String)}
      */
-    public void createPeriod(Period period, String courseCode) throws CalendarClientException {
+    /*public void createPeriod(Period period, String courseCode) throws CalendarClientException {
         String url = mDBUrl + AppEngineURLs.CREATE_PERIOD;
         JSONObject jsonPeriod = null;
         try {
@@ -102,7 +109,7 @@ public class AppEngineClient implements DatabaseInterface {
         } catch (IOException ioException) {
             throw new CalendarClientException(ioException);
         }
-    }
+    }*/
     
 
     /**
@@ -145,16 +152,16 @@ public class AppEngineClient implements DatabaseInterface {
             throw new CalendarClientException(jsonException);
         }
         
-        if (course != null) {
+        /*if (course != null) {
             List<Period> periods = getPeriodsByCourseCode(course.getCode());
             course.setPeriods(periods);
-        }
+        }*/
         
         return course;
     }
     
     
-    private List<Period> getPeriodsByCourseCode(String code) throws CalendarClientException {
+    /*private List<Period> getPeriodsByCourseCode(String code) throws CalendarClientException {
         String fullUrl = mDBUrl + AppEngineURLs.GET_PERIODS + "?code=" + code;
         List<Period> periodsList = new ArrayList<Period>();
         InputStream inputStream;
@@ -181,5 +188,5 @@ public class AppEngineClient implements DatabaseInterface {
         }
         
         return periodsList;
-    }
+    }*/
 }
