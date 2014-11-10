@@ -25,6 +25,7 @@ public class AppEngineClientTest extends TestCase {
     
     private DatabaseInterface dbInterface;
     
+    
     /*public void testGetCourseErrors() {        
         try {
             dbInterface = new AppEngineClient("http://10.0.2.2:8080");
@@ -109,9 +110,22 @@ public class AppEngineClientTest extends TestCase {
         try {
             dbInterface = new AppEngineClient("http://versatile-hull-742.appspot.com");
             Course course = dbInterface.getCourseByCode("CS-470");
+            /*System.out.println(course.getDescription());
+            System.out.println("GET DESCRIPTION");
+            System.out.println(course.getDescription());*/
             assertEquals("CS-470", course.getCode());
-            assertEquals("", course.getDescription());
-            assertEquals("Advanced computer architecture", course.getName());
+            assertEquals("Augmenter au maximum la performance :\n"
+                +"\n\n\nPrincipes de parallelisme au niveau des instructions.\n"
+                + "\"Register renaming\".\n"
+                +"Prediction et speculation.\n"
+                +"\"Simultaneous multithreading\".\n"
+                + "VLIWs et techniques de compilation pour ILP.\n"
+                +"\"Dynamic binary translation\". \n"
+                +"\nProcesseurs embarqués :\n"
+                + "\n\n\n"
+                +"Particularités par rapport aux processeurs non-embarqués.\n"
+                +"Survol des DSP et de leur défis pour la compilation.\n"
+                +"Processeurs configurables et customisation.\n", course.getDescription());
             assertEquals("Ienne", course.getTeacher());
             assertEquals(4, course.getCredits());
         } catch (CalendarClientException calendarClientException) {

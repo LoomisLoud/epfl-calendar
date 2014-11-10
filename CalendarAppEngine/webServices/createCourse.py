@@ -12,11 +12,10 @@ class createCourse(webapp2.RequestHandler):
         codeGet = values['code']
         if not(Course.isCodeUnique(codeGet)):
             self.response.headers['Content-Type'] = 'text/plain'
-            self.response.write('error')
+            self.response.write('Already exists')
         else:
             nameGet = values['name']
-            #descriptionGet = values('description')
-            descriptionGet = ''
+            descriptionGet = values['description']
             numberOfCreditsGet = values['numberOfCredits']
             professorNameGet = values['professorName']
             course = Course(name = nameGet, periodsKeys = [], code = codeGet, description = descriptionGet, 

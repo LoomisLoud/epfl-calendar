@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.utils.isaparser.tests;
+package ch.epfl.calendar.utils.isaparser.tests;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -209,9 +210,8 @@ public class ISAXMLParserTest extends TestCase {
             assertNull(course.getTeacher());
             assertNull(course.getName());
             assertNotNull(course.getPeriods());
-            assertNull(course.getPeriods().get(0).getDate());
-            assertNull(course.getPeriods().get(0).getEndTime());
-            assertNull(course.getPeriods().get(0).getStartTime());
+            assertNull(course.getPeriods().get(0).getStartDate());
+            assertNull(course.getPeriods().get(0).getEndDate());
             assertNull(course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(0, course.getPeriods().get(0).getRooms().size());
@@ -227,9 +227,8 @@ public class ISAXMLParserTest extends TestCase {
             assertNull(course.getTeacher());
             assertEquals("Algorithms", course.getName());
             assertNotNull(course.getPeriods());
-            assertEquals("13.10.2014", course.getPeriods().get(0).getDate());
-            assertEquals("14:15", course.getPeriods().get(0).getStartTime());
-            assertEquals("16:00", course.getPeriods().get(0).getEndTime());
+            assertEquals(new GregorianCalendar(2014, 10, 13, 14, 15), course.getPeriods().get(0).getStartDate());
+            assertEquals(new GregorianCalendar(2014, 10, 13, 16, 00), course.getPeriods().get(0).getEndDate());
             assertEquals("Cours", course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(1, course.getPeriods().get(0).getRooms().size());

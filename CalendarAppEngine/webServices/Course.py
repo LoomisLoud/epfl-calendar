@@ -8,7 +8,7 @@ class Course(ndb.Model):
     name = ndb.StringProperty()
     periodsKeys = ndb.KeyProperty(repeated=True)
     code = ndb.StringProperty()
-    description = ndb.StringProperty()
+    description = ndb.TextProperty()
     numberOfCredits = ndb.IntegerProperty()
     professorName = ndb.StringProperty()
 

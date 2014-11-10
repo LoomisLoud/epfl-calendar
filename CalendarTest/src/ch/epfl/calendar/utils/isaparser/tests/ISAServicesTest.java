@@ -1,4 +1,4 @@
-package ch.epfl.utils.isaparser.tests;
+package ch.epfl.calendar.utils.isaparser.tests;
 
 import junit.framework.TestCase;
 

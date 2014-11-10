@@ -4,14 +4,9 @@
 package ch.epfl.calendar.data;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 /**
  * A period is a date, a start time and an end time + the type (exercises,
@@ -20,75 +15,50 @@ import android.os.Parcelable;
  * @author AblionGE
  * 
  */
-public class Period implements Parcelable {
-    private String mDate;
-    private String mStartTime;
-    private String mEndTime;
+public class Period{
     private String mType;
+    private Calendar mStartDate;
+    private Calendar mEndDate;
     private List<String> mRooms;
+    
+    private static final int DATE_PARTS_LENGTH = 3;
+    private static final int HOUR_PARTS_LENGTH = 2;
 
     public Period(String date, String startTime, String endTime, String type,
             List<String> rooms) {
-        this.mDate = date;
-        this.mStartTime = startTime;
-        this.mEndTime = endTime;
+        this.mStartDate = createCalendar(date, startTime);
+        this.mEndDate = createCalendar(date, endTime);
+        if (this.mStartDate != null && this.mEndDate != null) {
+            if (mStartDate.after(mEndDate)) {
+                Calendar temp = mStartDate;
+                mStartDate = mEndDate;
+                mEndDate = temp;
+            }
+        }
         this.mType = type;
         this.mRooms = rooms;
     }
-
-    /**
-     * @return the mDate
-     */
-    public String getDate() {
-        return mDate;
-    }
-
-    /**
-     * @param mDate
-     *            the mDate to set
-     */
-    public void setDate(String date) {
-        this.mDate = date;
-    }
-
-    /**
-     * @return the mStartTime
-     */
-    public String getStartTime() {
-        return mStartTime;
-    }
-
-    public int getHourStartTime() {
-        String[] tab = mStartTime.split(":");
-        return Integer.parseInt(tab[0]);
-    }
-
-    public int getMinuteStartTime() {
-        String[] tab = mStartTime.split(":");
-        return Integer.parseInt(tab[1]);
-    }
-
-    /**
-     * @param mStartTime
-     *            the mStartTime to set
-     */
-    public void setStartTime(String startTime) {
-        this.mStartTime = startTime;
-    }
-
-    /**
-     * @return the mEndTime
-     */
-    public String getEndTime() {
-        return mEndTime;
-    }
-
-    /**
-     * @param mEndTime
-     *            the mEndTime to set
-     */
-    public void setEndTime(String endTime) {
-        this.mEndTime = endTime;
+    
+    private Calendar createCalendar(String date, String hour) {
+        if (date != null && hour != null) {
+            //Format of date : dd.mm.yyyy
+            String[] dateParts = date.split("\\.");
+            if (dateParts.length != DATE_PARTS_LENGTH) {
+                return null;
+            }
+            //Format of hour : hh:mm
+            String[] timeParts = hour.split("\\:");
+            if (timeParts.length != HOUR_PARTS_LENGTH) {
+                return null;
+            }
+            return new GregorianCalendar(Integer.parseInt(dateParts[2]),
+                                        Integer.parseInt(dateParts[1]),
+                                        Integer.parseInt(dateParts[0]),
+                                        Integer.parseInt(timeParts[0]),
+                                        Integer.parseInt(timeParts[1]));
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -103,6 +73,9 @@ public class Period implements Parcelable {
      *            the mType to set
      */
     public void setType(String type) {
+        if (type == null) {
+            throw new NullPointerException();
+        }
         this.mType = type;
     }
 
@@ -117,7 +90,32 @@ public class Period implements Parcelable {
      * @param mRoom the mRoom to set
      */
     public void setRooms(List<String> room) {
+        if (room == null) {
+            throw new NullPointerException();
+        }
         this.mRooms = new ArrayList<String>(room);
+    }
+
+    public Calendar getStartDate() {
+        return mStartDate;
+    }
+
+    public void setStartDate(Calendar startDate) {
+        if (startDate == null) {
+            throw new NullPointerException();
+        }
+        this.mStartDate = startDate;
+    }
+
+    public Calendar getEndDate() {
+        return mEndDate;
+    }
+
+    public void setEndDate(Calendar endDate) {
+        if (endDate == null) {
+            throw new NullPointerException();
+        }
+        this.mEndDate = endDate;
     }
 
     /*
@@ -127,108 +125,7 @@ public class Period implements Parcelable {
      */
     @Override
     public String toString() {
-        return mDate + " from " + mStartTime + " to " + mEndTime + " of type "
+        return "From " + mStartDate.toString() + " to " + mEndDate.toString() + " of type "
                 + mType + " in rooms : " + mRooms + "\n";
-    }
-
-    @Override
-    public int describeContents() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        // TODO Auto-generated method stub
-        dest.writeString(mDate);
-        dest.writeString(mStartTime);
-        dest.writeString(mEndTime);
-        dest.writeString(mType);
-        dest.writeList(mRooms);
-    }
-
-    public static final Parcelable.Creator<Period> CREATOR = new Parcelable.Creator<Period>() {
-
-        @Override
-        public Period createFromParcel(Parcel source) {
-            // TODO Auto-generated method stub
-            return new Period(source);
-        }
-
-        @Override
-        public Period[] newArray(int size) {
-            // TODO Auto-generated method stub
-            return new Period[size];
-        }
-    };
-
-    public Period(Parcel in) {
-
-        this.setDate(in.readString());
-        this.setStartTime(in.readString());
-        this.setEndTime(in.readString());
-        this.setType(in.readString());
-        mRooms = new ArrayList<String>();
-        in.readList(mRooms, String.class.getClassLoader());
-
-    }
-    
-    public JSONObject getJSONFromPeriod(String courseCode) throws JSONException {
-        JSONObject jsonPeriod = new JSONObject();
-        
-        jsonPeriod.put("code", courseCode);
-        jsonPeriod.put("date", this.mDate);
-        jsonPeriod.put("startTime", this.mStartTime);
-        jsonPeriod.put("endTime", this.mEndTime);
-        jsonPeriod.put("type", this.mType);
-        
-        JSONObject jsonRooms = new JSONObject();
-        for (int i = 0; i < this.mRooms.size(); i++) {
-            jsonRooms.put(Integer.toString(i), this.mRooms.get(i));
-        }
-        jsonPeriod.put("rooms", jsonRooms);
-        
-        return jsonPeriod;
-    }
-
-    /**
-     * 
-     * @param jsonObject
-     *            the JSONObject to parse.
-     * @return A Period filled with the informations from the JSON
-     * @throws JSONException
-     */
-    public static List<Period> parseFromJSON(JSONObject jsonObject) throws JSONException {
-        List<Period> periodsList = new ArrayList<Period>();
-        for (int i = 0; i < jsonObject.length(); i++) {
-            JSONObject tempJSONObject = jsonObject.getJSONObject(Integer
-                    .toString(i));
-            String date = tempJSONObject.getString("date");
-            String startTime = tempJSONObject.getString("startTime");
-            String endTime = tempJSONObject.getString("endTime");
-            String periodType = tempJSONObject.getString("periodType");
-            List<String> rooms = getStringListFromJSONArray(tempJSONObject.getJSONArray("rooms"));
-            Period period = new Period(date, startTime, endTime, periodType,
-                    rooms);
-            periodsList.add(period);
-        }
-
-        return periodsList;
-    }
-
-    /**
-     * Taken from my homework 2. Returns a String List
-     * 
-     * @param jsonArray
-     * @return
-     * @throws JSONException
-     */
-    private static List<String> getStringListFromJSONArray(JSONArray jsonArray) throws JSONException {
-        List<String> stringList = new ArrayList<String>(jsonArray.length());
-        for (int i = 0; i < jsonArray.length(); i++) {
-            stringList.add(jsonArray.getString(i));
-        }
-
-        return stringList;
     }
 }
