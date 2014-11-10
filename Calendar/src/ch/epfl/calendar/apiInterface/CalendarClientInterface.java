@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.content.Context;
 
+import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.data.Course;
 
 /**
@@ -23,5 +24,5 @@ public interface CalendarClientInterface {
      * @param student
      * @return a list of courses
      */
-    List<Course> getISAInformations() throws CalendarClientException;
+    List<Course> getISAInformations() throws CalendarClientException, TequilaAuthenticationException;
 }

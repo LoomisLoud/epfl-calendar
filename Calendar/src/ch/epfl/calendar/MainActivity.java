@@ -16,6 +16,7 @@ import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
+import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
@@ -149,7 +150,7 @@ public class MainActivity extends Activity {
     }
 
     public List<Course> populateCalendar() {
-        CalendarClient cal = new CalendarClient(mThisActivity);
+        CalendarClientInterface cal = new CalendarClient(mThisActivity);
         List<Course> courses = new ArrayList<Course>();
 
         try {
@@ -166,7 +167,6 @@ public class MainActivity extends Activity {
             System.out.println(c.toString());
         }
         return courses;
-
     }
 
 }
