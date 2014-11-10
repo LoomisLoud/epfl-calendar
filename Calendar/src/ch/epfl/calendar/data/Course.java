@@ -179,7 +179,8 @@ public class Course {
      * @throws JSONException
      */
     public static Course parseFromJSON(JSONObject jsonObject)
-            throws JSONException {
+        throws JSONException {
+        
         String code = jsonObject.getString("code");
         String name = jsonObject.getString("name");
         String description = jsonObject.getString("description");

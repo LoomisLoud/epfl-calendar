@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +22,7 @@ import ch.epfl.calendar.data.Course;
  * 
  */
 public class CoursesListActivity extends Activity {
-
+    private ProgressDialog dialog;
     private ListView mListView;
 
     @Override
@@ -55,14 +56,20 @@ public class CoursesListActivity extends Activity {
 
     /**
      * Launches the CourseDetailsActivity of a specific courseName
-     *
-     * @param courseName the name of the course from which we want the details
+     * 
+     * @param courseName
+     *            the name of the course from which we want the details
      */
-    public void openCourseDetails(String courseName) {
-        Intent courseDetailsActivityIntent = new Intent(this, CourseDetailsActivity.class);
+    private void openCourseDetails(String courseName) {
+
+        Intent courseDetailsActivityIntent = new Intent(this,
+                CourseDetailsActivity.class);
 
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
+        dialog = new ProgressDialog(this);
+        dialog.show();
+
     }
 
     private ArrayList<Course> retrieveCourse() {
@@ -87,5 +94,13 @@ public class CoursesListActivity extends Activity {
             coursesName.add(cours.getName());
         }
         return coursesName;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 }

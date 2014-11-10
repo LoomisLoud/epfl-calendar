@@ -3,13 +3,12 @@ package ch.epfl.calendar.display;
 import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ import ch.epfl.calendar.data.Course;
 
 public class CourseDetailsActivity extends Activity {
 
-    private Context mDetailsActivityContext = this;
     private static final float SIZE_OF_TITLE = 1.5f;
 
     @Override
@@ -52,12 +50,12 @@ public class CourseDetailsActivity extends Activity {
 
         if (course == null) {
             TextView textView = (TextView) findViewById(R.id.courseName);
-            textView.setText(courseName);
+            textView.setText(courseName + "not found in data base.");
         } else {
 
             String courseProfessor = course.getTeacher();
             String courseCredits = Integer.toString(course.getCredits());
-            String coursePeriods = course.getPeriods().toString();
+            String courseDescription = course.getDescription();
 
             // get the TextView and update it
             TextView textView = (TextView) findViewById(R.id.courseName);
@@ -68,10 +66,10 @@ public class CourseDetailsActivity extends Activity {
 
             textView = (TextView) findViewById(R.id.courseCredits);
             textView.setText(bodyToSpannable(courseCredits + " crédits"));
-
-            textView = (TextView) findViewById(R.id.coursePeriods);
-            textView.setText(bodyToSpannable("\n\nPeriods for this course: \n"
-                    + coursePeriods));
+            
+            textView = (TextView) findViewById(R.id.courseDescription);
+            textView.setText(bodyToSpannable("Description: " + courseDescription));
+            textView.setMovementMethod(new ScrollingMovementMethod());
 
         }
     }
@@ -99,21 +97,6 @@ public class CourseDetailsActivity extends Activity {
      * 
      */
     private class DownloadCourseTask extends AsyncTask<String, Void, Course> {
-
-        private ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(mDetailsActivityContext);
-            this.dialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(Course result) {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-        }
 
         @Override
         protected Course doInBackground(String... courseName) {

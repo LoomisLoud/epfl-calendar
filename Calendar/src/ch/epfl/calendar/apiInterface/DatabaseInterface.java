@@ -4,7 +4,6 @@
 package ch.epfl.calendar.apiInterface;
 
 import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.data.Period;
 
 /**
  * This interface is used to access the database in a transparent way.
