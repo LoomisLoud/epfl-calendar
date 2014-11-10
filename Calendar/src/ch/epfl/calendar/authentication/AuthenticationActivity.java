@@ -48,7 +48,8 @@ public class AuthenticationActivity extends Activity {
                         AuthenticationActivity.this.mThisActivity,
                         new TequilaAuthenticationHandler(),
                         username,
-                        password).execute(null, null);
+                        password)
+                	.execute(null, null);
                 setResult(RESULT_OK, getIntent());
             }
         });
