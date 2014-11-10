@@ -18,6 +18,7 @@ import ch.epfl.calendar.data.Course;
 public interface CalendarClientInterface {
 
     /**
+     * This method gets informations obtained at https://isa.epfl.ch/service/
      *
      * @param student
      * @return a list of courses
