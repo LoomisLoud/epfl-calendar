@@ -31,6 +31,7 @@ regex = '(^[A-Z]+)-([0-9]+\(?[a-z]*\)?]*$)'
 regexCode = '^Code[s]?$'
 regexEnseignant = '.*(Enseignants).*'
 credit = 0
+twoColCredit = false
 #url details
 urlDetails = 'https://isa.epfl.ch/services/books/2013-2014/course/'
 #for each .xls
@@ -55,6 +56,10 @@ for fn in os.listdir('.'):
 							matchObjEnseignant = re.match(regexEnseignant, worksheet.cell(x,y).value.encode('utf8'))
 							#print('col '+str(y)+' = '+ nameCol)
 							if (nameCol == 'Crédits' or nameCol == 'Coeff.'):
+								#check if we have 2 column (2ème and 3ème)
+								nameColSub = worksheet.cell(x+2,y).value.encode('utf8')
+								if (nameColSub == '2ème' or nameColSub == '3ème'):
+									twoColCredit = true
 								colCredit = y
 								print('Found colCredit = '+str(colCredit))
 							if matchObjEnseignant:
@@ -89,4 +94,5 @@ for fn in os.listdir('.'):
 				#reset var
 				colCredit = -1
 				colEnseignant = -1
+				twoColCredit = false
 			print('Done doing book ' + fn + ' \n')
