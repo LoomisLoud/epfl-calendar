@@ -15,7 +15,7 @@ public final class InputStreamUtils {
     private static final int BUF_SIZE = 1024;
     
     public static String readInputStream(InputStream is) throws IOException {
-        Reader in = new InputStreamReader(is, "UTF-8");
+        Reader in = new InputStreamReader(is, "ISO-8859-1");
         char[] buffer = new char[BUF_SIZE];
         int read = in.read(buffer);
         StringBuilder sb = new StringBuilder();

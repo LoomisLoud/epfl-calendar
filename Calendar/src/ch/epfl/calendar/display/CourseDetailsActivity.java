@@ -50,7 +50,7 @@ public class CourseDetailsActivity extends Activity {
 
         if (course == null) {
             TextView textView = (TextView) findViewById(R.id.courseName);
-            textView.setText(courseName + "not found in data base.");
+            textView.setText(courseName + " not found in data base.");
         } else {
 
             String courseProfessor = course.getTeacher();

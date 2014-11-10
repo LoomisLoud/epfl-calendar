@@ -68,6 +68,7 @@ public class CoursesListActivity extends Activity {
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
         dialog = new ProgressDialog(this);
+        dialog.setMessage("Charging course details");
         dialog.show();
 
     }
