@@ -1,17 +1,9 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.apiInterface.tests;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.TestCase;
-
-import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.apiInterface.CalendarClientInterface;
-import ch.epfl.calendar.data.Course;
 
 /**
  * @author gilbrechbuhler
