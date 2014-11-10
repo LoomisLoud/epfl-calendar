@@ -36,7 +36,6 @@ regexCode = '^Code[s]?$'
 regexCodeMulCols = '^2ème$'
 regexEnseignant = '.*(Enseignants).*'
 credit = 0
-twoColCredit = false
 #url details
 urlDetails = 'https://isa.epfl.ch/services/books/2013-2014/course/'
 #for each .xls
@@ -47,6 +46,9 @@ for fn in os.listdir('.'):
 			book = open_workbook(fn,on_demand=True)
 			worksheets = book.sheet_names()
 			for worksheet_name in worksheets:
+				#reset var
+				colCredit = -1
+				colEnseignant = -1
 				mulColCredit = False
 				rowCredit = 0
 				worksheet = book.sheet_by_name(worksheet_name)
@@ -66,23 +68,19 @@ for fn in os.listdir('.'):
 							matchObjEnseignant = re.match(regexEnseignant, worksheet.cell(x,y).value.encode('utf8'))
 							#print('col '+str(y)+' = '+ nameCol)
 							if (nameCol == 'Crédits' or nameCol == 'Coeff.'):
-								#check if we have 2 column (2ème and 3ème)
-								nameColSub = worksheet.cell(x+2,y).value.encode('utf8')
-								if (nameColSub == '2ème' or nameColSub == '3ème'):
-									twoColCredit = true
 								colCredit = y
 								rowCredit = x
 								#print('Found colCredit = '+str(colCredit))
 							if matchObjEnseignant:
 								colEnseignant = y
 								#print('Found colEnseignant = '+str(colEnseignant))
-					#REGEX, check if line has a code-course
 					if (x == rowCredit+2) :
 						if (isinstance(worksheet.cell(x, colCredit).value, unicode)) :
 							matchObj = re.match(regexCodeMulCols, worksheet.cell(x, colCredit).value.encode('utf8'))
 							if matchObj:
 								mulColCredit = True
 								print("mulColCredit : true")
+					#REGEX, check if line has a code-course
 					matchObj = re.match(regex, worksheet.cell(x, colCodeCourse).value.encode('utf8'))
 					if matchObj:
 						if (colCredit == -1):
@@ -116,8 +114,4 @@ for fn in os.listdir('.'):
 							exit(1)
 				#unload sheet
 				book.unload_sheet(worksheet_name)
-				#reset var
-				colCredit = -1
-				colEnseignant = -1
-				twoColCredit = false
 			print('Done doing book ' + fn + ' \n')
