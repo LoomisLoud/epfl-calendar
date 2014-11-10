@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import ch.epfl.calendar.display.AddEventActivity;
-import ch.epfl.calendar.display.CoursesListActivity;
-import ch.epfl.calendar.display.WeekView;
-import ch.epfl.calendar.display.WeekViewEvent;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -23,11 +19,23 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import ch.epfl.calendar.apiInterface.CalendarClient;
+import ch.epfl.calendar.apiInterface.CalendarClientException;
+import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
+import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.display.AddEventActivity;
+import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.display.WeekView;
+import ch.epfl.calendar.display.WeekViewEvent;
+import ch.epfl.calendar.utils.GlobalPreferences;
+
 
 /**
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
@@ -38,11 +46,17 @@ public class MainActivity extends Activity implements
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
+    
+    public static final String TAG = "MainActivity::";
+    public static final int AUTH_ACTIVITY_CODE = 1;
 
+    private Activity mThisActivity;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mThisActivity = this;
 
         // *************************************************
 
@@ -156,9 +170,19 @@ public class MainActivity extends Activity implements
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
 
+        
+        //TODO : At the beginning of the application, we "logout" the user
+        TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
+
+        if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
+			switchToAuthenticationActivity();
+		} else {
+			populateCalendar();
+		}
     }
 
-    @Override
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
@@ -177,25 +201,35 @@ public class MainActivity extends Activity implements
                 AddEventActivity.class);
         startActivity(addEventsActivityIntent);
     }
+    
+    private void switchToAuthenticationActivity() {
+        Intent displayAuthenticationActivtyIntent =
+                new Intent(mThisActivity, AuthenticationActivity.class);
+        mThisActivity.startActivityForResult(displayAuthenticationActivtyIntent,
+                                             AUTH_ACTIVITY_CODE);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.action_courses_list:
-            switchToCoursesList();
-            return true;
-        case R.id.action_settings:
-            Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT)
-                    .show();
-            return true;
-        case R.id.add_event:
-            switchToAddEventsActivity();
-            return true;
-        case R.id.action_today:
-            mWeekView.goToToday();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_courses_list:
+                switchToCoursesList();
+                return true;
+            case R.id.action_settings:
+                Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT)
+                        .show();
+                return true;
+            case R.id.add_event:
+                switchToAddEventsActivity();
+                return true;
+            case R.id.action_today:
+                mWeekView.goToToday();
+                return true;
+            case R.id.action_update_activity:
+                populateCalendar();
+                return true;
+            default: 
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -236,4 +270,27 @@ public class MainActivity extends Activity implements
                 "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT)
                 .show();
     }
+
+    @Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
+            populateCalendar();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public List<Course> populateCalendar() {
+        CalendarClientInterface cal = new CalendarClient(mThisActivity);
+        List<Course> courses = new ArrayList<Course>();
+
+        try {
+            courses = cal.getISAInformations();
+        } catch (CalendarClientException e) {
+        	// TODO catch exceptions and manage
+        	e.printStackTrace();
+        }
+
+        return courses;
+    }
+
 }

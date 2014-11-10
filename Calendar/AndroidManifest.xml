@@ -26,6 +26,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".authentication.AuthenticationActivity"
+            android:label="@string/title_activity_authentication" >
+        </activity>
+        <activity
             android:name=".display.CourseDetailsActivity"
             android:label="@string/title_activity_course_details" >
         </activity>

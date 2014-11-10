@@ -1,32 +1,26 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.apiInterface.tests;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONException;
-
+import junit.framework.TestCase;
 import ch.epfl.calendar.apiInterface.AppEngineClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.DatabaseInterface;
 import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.data.Period;
-import junit.framework.TestCase;
 
 /**
  * Test class for {@link ch.epfl.calendar.apiInterface.AppEngineClient}
- * 
+ *
  * @author gilbrechbuhler
  *
  */
 public class AppEngineClientTest extends TestCase {
-    
+
     private DatabaseInterface dbInterface;
-    
-    
-    /*public void testGetCourseErrors() {        
+
+
+    /*public void testGetCourseErrors() {
         try {
             dbInterface = new AppEngineClient("http://10.0.2.2:8080");
             Course course = dbInterface.getCourseByCode("notExisitingCode");
@@ -34,7 +28,7 @@ public class AppEngineClientTest extends TestCase {
         } catch (CalendarClientException calendarClientException) {
             System.out.println("An error occured.");
         }
-        
+
         try {
             dbInterface = new AppEngineClient("http://10.0:8080");
             dbInterface.getCourseByCode("CS-470");
@@ -42,7 +36,7 @@ public class AppEngineClientTest extends TestCase {
         } catch (CalendarClientException calendarClientExc) {
         }
     }
-    
+
     public void testGetCourseByCode() {
         try {
             dbInterface = new AppEngineClient("http://10.0.2.2:8080");
@@ -56,7 +50,7 @@ public class AppEngineClientTest extends TestCase {
             fail("An error occured.");
         }
     }
-    
+
     public void testGetPeriodsByCourseCode() {
         try {
             dbInterface = new AppEngineClient("http://10.0.2.2:8080");
@@ -73,7 +67,7 @@ public class AppEngineClientTest extends TestCase {
             } catch (JSONException jsonException) {
                 jsonException.printStackTrace();
             }
-            
+
             assertEquals("05.10.2014", course.getPeriods().get(1).getDate());
             assertEquals("12:00", course.getPeriods().get(1).getStartTime());
             assertEquals("14:00", course.getPeriods().get(1).getEndTime());
@@ -84,8 +78,8 @@ public class AppEngineClientTest extends TestCase {
             fail("Exception occured");
         }
     }
-    
-    public void testCreatePeriod() {        
+
+    public void testCreatePeriod() {
         try {
             dbInterface = new AppEngineClient("http://10.0.2.2:8080");
             Course course = dbInterface.getCourseByCode("CS-472");
@@ -94,7 +88,7 @@ public class AppEngineClientTest extends TestCase {
             Period period = new Period("25.12.2014", "14:00", "16:00", "Labs", rooms);
             course.addPeriod(period);
             dbInterface.createPeriod(period, course.getCode());
-            
+
             Course newCourse = dbInterface.getCourseByCode("CS-472");
             assertEquals("25.12.2014", newCourse.getPeriods().get(0).getDate());
             assertEquals("14:00", newCourse.getPeriods().get(0).getStartTime());
@@ -105,7 +99,7 @@ public class AppEngineClientTest extends TestCase {
             fail("Exception occured");
         }
     }*/
-    
+
     public void testOnlineURL() {
         try {
             dbInterface = new AppEngineClient("http://versatile-hull-742.appspot.com");

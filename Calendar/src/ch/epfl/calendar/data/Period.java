@@ -20,25 +20,37 @@ public class Period{
     private Calendar mStartDate;
     private Calendar mEndDate;
     private List<String> mRooms;
+    
+    private static final int DATE_PARTS_LENGTH = 3;
+    private static final int HOUR_PARTS_LENGTH = 2;
 
     public Period(String date, String startTime, String endTime, String type,
             List<String> rooms) {
         this.mStartDate = createCalendar(date, startTime);
         this.mEndDate = createCalendar(date, endTime);
+        if (this.mStartDate != null && this.mEndDate != null) {
+            if (mStartDate.after(mEndDate)) {
+                Calendar temp = mStartDate;
+                mStartDate = mEndDate;
+                mEndDate = temp;
+            }
+        }
         this.mType = type;
         this.mRooms = rooms;
     }
     
-    //FIXME : Check exception etc
     private Calendar createCalendar(String date, String hour) {
         if (date != null && hour != null) {
             //Format of date : dd.mm.yyyy
             String[] dateParts = date.split("\\.");
-            for (String s : dateParts) {
-                System.out.println(s);
+            if (dateParts.length != DATE_PARTS_LENGTH) {
+                return null;
             }
             //Format of hour : hh:mm
             String[] timeParts = hour.split("\\:");
+            if (timeParts.length != HOUR_PARTS_LENGTH) {
+                return null;
+            }
             return new GregorianCalendar(Integer.parseInt(dateParts[2]),
                                         Integer.parseInt(dateParts[1]),
                                         Integer.parseInt(dateParts[0]),
@@ -61,6 +73,9 @@ public class Period{
      *            the mType to set
      */
     public void setType(String type) {
+        if (type == null) {
+            throw new NullPointerException();
+        }
         this.mType = type;
     }
 
@@ -75,22 +90,31 @@ public class Period{
      * @param mRoom the mRoom to set
      */
     public void setRooms(List<String> room) {
+        if (room == null) {
+            throw new NullPointerException();
+        }
         this.mRooms = new ArrayList<String>(room);
     }
 
-    public Calendar getmStartDate() {
+    public Calendar getStartDate() {
         return mStartDate;
     }
 
-    public void setmStartDate(Calendar startDate) {
+    public void setStartDate(Calendar startDate) {
+        if (startDate == null) {
+            throw new NullPointerException();
+        }
         this.mStartDate = startDate;
     }
 
-    public Calendar getmEndDate() {
+    public Calendar getEndDate() {
         return mEndDate;
     }
 
-    public void setmEndDate(Calendar endDate) {
+    public void setEndDate(Calendar endDate) {
+        if (endDate == null) {
+            throw new NullPointerException();
+        }
         this.mEndDate = endDate;
     }
 

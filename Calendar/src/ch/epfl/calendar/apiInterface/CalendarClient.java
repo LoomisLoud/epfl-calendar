@@ -1,24 +1,40 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.apiInterface;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import android.app.Activity;
+import android.content.Context;
+import android.widget.Toast;
+import ch.epfl.calendar.R;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
+import ch.epfl.calendar.authentication.TequilaAuthenticationException;
+import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
+import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
-import ch.epfl.calendar.utils.isaparser.ParsingException;
 
 /**
  * For now uses a pre-built xml string and parses it.
- * 
+ *
  * @author gilbrechbuhler
  *
  */
-public class CalendarClient implements CalendarClientInterface {   
+public class CalendarClient implements CalendarClientInterface {
+
+	public static final String TAG = "CalendarClient Class::";
+
+    private Activity mParentActivity = null;
+
+    public CalendarClient(Activity activity) {
+        this.mParentActivity = activity;
+    }
 
     /* (non-Javadoc)
      * @see ch.epfl.calendar.apiInterface.CalendarClientInterface#getCoursesFromStudent(
@@ -26,50 +42,66 @@ public class CalendarClient implements CalendarClientInterface {
      */
     @Override
     public List<Course> getISAInformations() throws CalendarClientException {
-        /*****************************TEST XML PARSER*************************/
-        String contentAsString = "<data status=\"Termine\" date=\"20141017 16:08:36\" "
-                + "key=\"1864682915\" dateFin=\"19.10.2014\" dateDebut=\"13.10.2014\">"
-                + "<study-period><id>1808047617</id><date>13.10.2014</date><duration>105</duration>"
-                + "<day>1</day><startTime>14:15</startTime><endTime>16:00</endTime>"
-                + "<type><text lang=\"en\">Lecture</text><text lang=\"fr\">Cours</text></type>"
-                + "<course><id>2258712</id><name><text lang=\"fr\">Algorithms</text></name></course>"
-                + "<room><id>2192131</id><code>CO2</code><name><text lang=\"fr\">CO 2</text>"
-                + "</name></room></study-period><study-period><id>1808048631</id><date>13.10.2014</date>"
-                + "<duration>105</duration><day>1</day><startTime>16:15</startTime><endTime>18:00</endTime>"
-                + "<type><text lang=\"en\">Exercises</text><text lang=\"fr\">Exercices</text></type><course>"
-                + "<id>2258712</id><name><text lang=\"fr\">Algorithms</text></name></course><room><id>2189182</id>"
-                + "<code>GCB331</code><name><text lang=\"fr\">GC B3 31</text></name></room><room><id>2189101</id>"
-                + "<code>GCA331</code><name><text lang=\"fr\">GC A3 31</text></name></room><room><id>1614950371</id>"
-                + "<code>GCD0386</code><name><text lang=\"fr\">GC D0 386</text></name></room><room><id>2189114</id>"
-                + "<code>GCB330</code><name><text lang=\"fr\">GC B3 30</text></name></room></study-period>"
-                + "<study-period><id>1808331964</id><date>14.10.2014</date><duration>105</duration><day>2</day>"
-                + "<startTime>08:15</startTime><endTime>10:00</endTime><type><text lang=\"en\">Lecture</text>"
-                + "<text lang=\"fr\">Cours</text></type><course><id>24092923</id><name>"
-                + "<text lang=\"fr\">Software engineering</text></name></course><room><id>4255362</id>"
-                + "<code>BC02</code><name><text lang=\"fr\">BC 02</text></name></room><room><id>4255327</id>"
-                + "<code>BC01</code><name><text lang=\"fr\">BC 01</text></name></room><room><id>4255386</id>"
-                + "<code>BC03</code><name><text lang=\"fr\">BC 03</text></name></room><room><id>4255408</id>"
-                + "<code>BC04</code><name><text lang=\"fr\">BC 04</text></name></room></study-period></data>";
-        
-        List<Course> coursesList = new ArrayList<Course>();
-        List<String> namesOfCourses = new ArrayList<String>();
+
+    	List<Course> coursesList = new ArrayList<Course>();
+    	List<String> namesOfCourses = new ArrayList<String>();
 
         try {
-            coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
-        } catch (ParsingException e) {
-            System.out.println(e.getMessage() + "contentAsString : " + contentAsString);
-            throw new CalendarClientException();
-        } catch (IOException e) {
-            System.out.println("IO");
-            throw new CalendarClientException();
+        	byte[] timeTableBytes = getIsaTimetableOnline(mParentActivity).getBytes("UTF-8");
+            coursesList = ISAXMLParser.parse(new ByteArrayInputStream(timeTableBytes));
+        } catch (UnsupportedEncodingException e) {
+        	throw new CalendarClientException("Parsing Exception", e);
         }
-        
+
         for (Course course : coursesList) {
             namesOfCourses.add(course.getName());
         }
-            
         return coursesList;
-        /*********************************************************************/
     }
 
+	private String getIsaTimetableOnline(Context context) {
+		boolean exceptionOccured = false;
+		String errMessage = "";
+		Exception ex = new Exception();
+		String result = null;
+        try {
+            result = new TequilaAuthenticationTask(mParentActivity,
+                            							  new TequilaAuthenticationHandler(),
+                            							  null,
+                            							  null)
+            						.execute(null, null)
+            						.get();
+        } catch (InterruptedException e) {
+        	exceptionOccured = true;
+        	errMessage = "INTERRUPTED";
+        	ex = e;
+        } catch (ExecutionException e) {
+        	exceptionOccured = true;
+        	errMessage = "EXECUTION";
+        	ex = e;
+        } finally {
+        	if (exceptionOccured) {
+				throw new TequilaAuthenticationException(errMessage, ex);
+			}
+        }
+        return result;
+    }
+
+	/**
+	 * A Handler that manage the onError and onSuccess function for Tequila Authentication
+	 * @author AblionGE
+	 *
+	 */
+	private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
+        @Override
+        public void onError(String msg) {
+            Toast.makeText(mParentActivity, msg, Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public void onSuccess(String sessionID) {
+            // store the sessionID in the preferences
+            TequilaAuthenticationAPI.getInstance().setSessionID(mParentActivity, sessionID);
+            Toast.makeText(mParentActivity, R.string.updated, Toast.LENGTH_SHORT).show();
+        }
+    }
 }
