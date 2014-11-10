@@ -20,7 +20,6 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
-import ch.epfl.calendar.utils.isaparser.ParsingException;
 
 /**
  * For now uses a pre-built xml string and parses it.
@@ -43,19 +42,16 @@ public class CalendarClient implements CalendarClientInterface {
      * ch.epfl.calendar.mock.MockStudent)
      */
     @Override
-    public List<Course> getISAInformations()
-    	throws CalendarClientException, TequilaAuthenticationException {
+    public List<Course> getISAInformations() throws CalendarClientException {
 
     	List<Course> coursesList = new ArrayList<Course>();
     	List<String> namesOfCourses = new ArrayList<String>();
 
         try {
-            coursesList = ISAXMLParser.
-            		parse(new ByteArrayInputStream((getIsaTimetableOnline(mParentActivity)).getBytes("UTF-8")));
-        } catch (ParsingException e) {
-            throw new CalendarClientException("Parsing Exception");
+        	byte[] timeTableBytes = getIsaTimetableOnline(mParentActivity).getBytes("UTF-8");
+            coursesList = ISAXMLParser.parse(new ByteArrayInputStream(timeTableBytes));
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        	throw new CalendarClientException("Parsing Exception", e);
         }
 
         for (Course course : coursesList) {
