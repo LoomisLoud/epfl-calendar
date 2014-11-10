@@ -16,10 +16,10 @@
     <string name="add_event">Add an Event</string>
     <string name="title_activity_add_event">AddEventActivity</string>
     <string name="name_event">Name of the Event</string>
-    <string name="start_event">Start of the Event</string>
-    <string name="start_event_text">dd/mm/yyyy hours:minutes</string>
-    <string name="end_event">End of the Event</string>
-    <string name="end_event_text">dd/mm/yyyy hours:minutes</string>
+    <string name="start_event_text_date">Start of the Event (Date)</string>
+    <string name="start_event_text_hour">Start of the Event (Hour)</string>
+    <string name="end_event_text_date">End of the Event (Date)</string>
+    <string name="end_event_text_hour">End of the Event (Hour)</string>
     <string name="valid_event">Create the event</string>
     <string name="hello_world">Hello world!</string>
 

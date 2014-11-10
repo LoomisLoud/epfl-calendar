@@ -1229,8 +1229,8 @@ public class WeekView extends View {
      * 
      * @param length
      *            Supported values are
-     *            {@link com.alamkanak.weekview.WeekView#LENGTH_SHORT} and
-     *            {@link com.alamkanak.weekview.WeekView#LENGTH_LONG}.
+     *            {@link ch.epfl.calendar.display.alamkanak.weekview.WeekView#LENGTH_SHORT} and
+     *            {@link ch.epfl.calendar.display.alamkanak.weekview.WeekView#LENGTH_LONG}.
      */
     public void setDayNameLength(int length) {
         if (length != LENGTH_LONG && length != LENGTH_SHORT) {
