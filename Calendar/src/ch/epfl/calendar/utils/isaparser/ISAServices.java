@@ -1,4 +1,4 @@
-package ch.epfl.utils.isaparser;
+package ch.epfl.calendar.utils.isaparser;
 
 /**
  * Contains adress of differents services of isa for request.

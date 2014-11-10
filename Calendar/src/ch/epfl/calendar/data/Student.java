@@ -1,6 +1,7 @@
 package ch.epfl.calendar.data;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,13 +49,13 @@ public class Student extends Person implements StudentData {
      * @return the courses
      */
     public List<Course> getCourses() {
-        return mCourses;
+        return new ArrayList<Course>(mCourses);
     }
 
     /**
      * @param courses the courses to set
      */
     public void setCourses(List<Course> courses) {
-        this.mCourses = courses;
+        this.mCourses = new ArrayList<Course>(courses);
     }
 }

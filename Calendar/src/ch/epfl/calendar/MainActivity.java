@@ -172,11 +172,6 @@ public class MainActivity extends Activity implements
         startActivity(coursesListActivityIntent);
     }
 
-    public void switchToDraftActivity() {
-        Intent draftActivityIntent = new Intent(this, DraftActivity.class);
-        startActivity(draftActivityIntent);
-    }
-
     public void switchToAddEventsActivity() {
         Intent AddEventsActivityIntent = new Intent(this,
                 AddEventActivity.class);
@@ -188,9 +183,6 @@ public class MainActivity extends Activity implements
         switch (item.getItemId()) {
         case R.id.action_courses_list:
             switchToCoursesList();
-            return true;
-        case R.id.action_draft_activity:
-            switchToDraftActivity();
             return true;
         case R.id.action_settings:
             Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT)
