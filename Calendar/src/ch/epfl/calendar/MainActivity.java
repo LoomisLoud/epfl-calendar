@@ -75,9 +75,6 @@ public class MainActivity extends Activity {
             case R.id.action_add_events:
                 Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.action_draft_activity:
-                switchToDraftActivity();
-                return true;
             case R.id.action_settings:
                 Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
                 return true;
@@ -100,11 +97,6 @@ public class MainActivity extends Activity {
     public void switchToCoursesList() {
         Intent coursesListActivityIntent = new Intent(this, CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
-    }
-
-    public void switchToDraftActivity() {
-        Intent draftActivityIntent = new Intent(this, DraftActivity.class);
-        startActivity(draftActivityIntent);
     }
 
     private void switchToAuthenticationActivity() {
