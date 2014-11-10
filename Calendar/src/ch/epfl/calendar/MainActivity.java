@@ -20,6 +20,7 @@ import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.utils.GlobalPreferences;
 
 
 /**
@@ -49,10 +50,15 @@ public class MainActivity extends Activity {
         //FIXME : At the beginning of the application, we "logout" the user
         TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
 
-        populateCalendar();
+        if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
+			switchToAuthenticationActivity();
+		} else {
+			populateCalendar();
+		}
     }
 
-    @Override
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
@@ -82,8 +88,9 @@ public class MainActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    @Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             populateCalendar();
         }
@@ -100,6 +107,13 @@ public class MainActivity extends Activity {
         Intent draftActivityIntent = new Intent(this,
                 DraftActivity.class);
         startActivity(draftActivityIntent);
+    }
+
+    private void switchToAuthenticationActivity() {
+    	Intent displayAuthenticationActivtyIntent =
+    			new Intent(mThisActivity, AuthenticationActivity.class);
+    	mThisActivity.startActivityForResult(displayAuthenticationActivtyIntent,
+    										 AUTH_ACTIVITY_CODE);
     }
 
     public void initializeCalendar() {
@@ -152,7 +166,7 @@ public class MainActivity extends Activity {
             System.out.println(c.toString());
         }
         return courses;
-        
+
     }
 
 }
