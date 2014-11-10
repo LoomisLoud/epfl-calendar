@@ -35,10 +35,10 @@ public class CalendarClient implements CalendarClientInterface {
 
 	public static final String TAG = "CalendarClient Class::";
 
-    private Activity mContext = null;
+    private Activity mParentActivity = null;
 
     public CalendarClient(Activity activity) {
-        this.mContext = activity;
+        this.mParentActivity = activity;
     }
 
     /* (non-Javadoc)
@@ -78,13 +78,13 @@ public class CalendarClient implements CalendarClientInterface {
     	List<Course> coursesList = new ArrayList<Course>();
     	List<String> namesOfCourses = new ArrayList<String>();
     	
-    	if (!GlobalPreferences.isAuthenticated(mContext)) {
+    	if (!GlobalPreferences.isAuthenticated(mParentActivity)) {
 			switchToAuthenticationActivity();
 		} else {
 	        try {
 	            //coursesList = ISAXMLParser.parse(new ByteArrayInputStream(contentAsString.getBytes("UTF-8")));
 	            coursesList = ISAXMLParser.parse(new ByteArrayInputStream(
-	                    (getIsaTimetableOnline(this.mContext)).getBytes("UTF-8")));
+	                    (getIsaTimetableOnline(this.mParentActivity)).getBytes("UTF-8")));
 	        } catch (ParsingException e) {
 	            throw new CalendarClientException("Parsing Exception");
 	        } catch (UnsupportedEncodingException e) {
@@ -99,8 +99,8 @@ public class CalendarClient implements CalendarClientInterface {
     }
 
 	private void switchToAuthenticationActivity() {
-        Intent displayAuthenticationActivityIntent = new Intent(mContext, AuthenticationActivity.class);
-        mContext.startActivityForResult(displayAuthenticationActivityIntent, MainActivity.AUTH_ACTIVITY_CODE);
+        Intent displayAuthenticationActivityIntent = new Intent(mParentActivity, AuthenticationActivity.class);
+        mParentActivity.startActivityForResult(displayAuthenticationActivityIntent, MainActivity.AUTH_ACTIVITY_CODE);
     }
 
 	private String getIsaTimetableOnline(Context context) {
@@ -108,7 +108,7 @@ public class CalendarClient implements CalendarClientInterface {
         try {
             String result = 
                     new TequilaAuthenticationTask(
-                            mContext,
+                            mParentActivity,
                             new TequilaAuthenticationHandler(),
                             null,
                             null).execute(null, null).get();
@@ -131,13 +131,13 @@ public class CalendarClient implements CalendarClientInterface {
 	private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
         @Override
         public void onError(String msg) {
-            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mParentActivity, msg, Toast.LENGTH_SHORT).show();
         }
         @Override
         public void onSuccess(String sessionID) {
             // store the sessionID in the preferences
-            TequilaAuthenticationAPI.getInstance().setSessionID(mContext, sessionID);
-            Toast.makeText(mContext, "Updated", Toast.LENGTH_SHORT).show();
+            TequilaAuthenticationAPI.getInstance().setSessionID(mParentActivity, sessionID);
+            Toast.makeText(mParentActivity, "Updated", Toast.LENGTH_SHORT).show();
         }
     }
 }
