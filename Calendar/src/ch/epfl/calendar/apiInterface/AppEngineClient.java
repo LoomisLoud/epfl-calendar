@@ -10,7 +10,9 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import java.net.URLEncoder;
+
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -73,36 +75,38 @@ public class AppEngineClient implements DatabaseInterface {
      * {@see ch.epfl.calendar.apiInterface.databaseInterface#createPeriod(ch.epfl.calendar.data.Period, 
      * java.lang.String)}
      */
-    /*public void createPeriod(Period period, String courseCode) throws CalendarClientException {
-        String url = mDBUrl + AppEngineURLs.CREATE_PERIOD;
-        JSONObject jsonPeriod = null;
-        try {
-            jsonPeriod = period.getJSONFromPeriod(courseCode);
-        } catch (JSONException jsonException) {
-            throw new CalendarClientException(jsonException);
-        }
-        
-        if (jsonPeriod == null) {
-            throw new CalendarClientException();
-        }
-        
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(url);
-            StringEntity jsonAsString = new StringEntity(jsonPeriod.toString());
-            httpPost.setEntity(jsonAsString);
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-            BasicResponseHandler responseHandler = new BasicResponseHandler();
-            httpClient.execute(httpPost, responseHandler);
-        } catch (UnsupportedEncodingException unsupportedEncException) {
-            throw new CalendarClientException(unsupportedEncException);
-        } catch (ClientProtocolException clientProtoException) {
-            throw new CalendarClientException(clientProtoException);
-        } catch (IOException ioException) {
-            throw new CalendarClientException(ioException);
-        }
-    }*/
+
+//    public void createPeriod(Period period, String courseCode) throws CalendarClientException {
+//        String url = mDBUrl + AppEngineURLs.CREATE_PERIOD;
+//        JSONObject jsonPeriod = null;
+//        try {
+//            jsonPeriod = period.getJSONFromPeriod(courseCode);
+//        } catch (JSONException jsonException) {
+//            throw new CalendarClientException(jsonException);
+//        }
+//        
+//        if (jsonPeriod == null) {
+//            throw new CalendarClientException();
+//        }
+//        
+//        try {
+//            HttpClient httpClient = new DefaultHttpClient();
+//            HttpPost httpPost = new HttpPost(url);
+//            StringEntity jsonAsString = new StringEntity(jsonPeriod.toString());
+//            httpPost.setEntity(jsonAsString);
+//            httpPost.setHeader("Accept", "application/json");
+//            httpPost.setHeader("Content-type", "application/json");
+//            BasicResponseHandler responseHandler = new BasicResponseHandler();
+//            httpClient.execute(httpPost, responseHandler);
+//        } catch (UnsupportedEncodingException unsupportedEncException) {
+//            throw new CalendarClientException(unsupportedEncException);
+//        } catch (ClientProtocolException clientProtoException) {
+//            throw new CalendarClientException(clientProtoException);
+//        } catch (IOException ioException) {
+//            throw new CalendarClientException(ioException);
+//        }
+//    }
+
     
 
     /**
@@ -145,41 +149,45 @@ public class AppEngineClient implements DatabaseInterface {
             throw new CalendarClientException(jsonException);
         }
         
-        /*if (course != null) {
-            List<Period> periods = getPeriodsByCourseCode(course.getCode());
-            course.setPeriods(periods);
-        }*/
+
+//        if (course != null) {
+//            List<Period> periods = getPeriodsByCourseCode(course.getCode());
+//            course.setPeriods(periods);
+//        }
+
         
         return course;
     }
     
     
-    /*private List<Period> getPeriodsByCourseCode(String code) throws CalendarClientException {
-        String fullUrl = mDBUrl + AppEngineURLs.GET_PERIODS + "?code=" + code;
-        List<Period> periodsList = new ArrayList<Period>();
-        InputStream inputStream;
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpClient.execute(new HttpGet(fullUrl));
-            inputStream = httpResponse.getEntity().getContent();
-            if (inputStream != null) {
-                String responseBody = readStream(inputStream);
-                JSONObject jsonObject = new JSONObject(responseBody);
-                if (jsonObject.length() >= 1) {
-                    periodsList = Period.parseFromJSON(jsonObject);
-                }
-            }
-        } catch (IllegalArgumentException illegalArgExc) {
-            illegalArgExc.printStackTrace();
-            throw new CalendarClientException(illegalArgExc);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-            throw new CalendarClientException(ioException);
-        } catch (JSONException jsonException) {
-            jsonException.printStackTrace();
-            throw new CalendarClientException(jsonException);
-        }
-        
-        return periodsList;
-    }*/
+
+//    private List<Period> getPeriodsByCourseCode(String code) throws CalendarClientException {
+//        String fullUrl = mDBUrl + AppEngineURLs.GET_PERIODS + "?code=" + code;
+//        List<Period> periodsList = new ArrayList<Period>();
+//        InputStream inputStream;
+//        try {
+//            HttpClient httpClient = new DefaultHttpClient();
+//            HttpResponse httpResponse = httpClient.execute(new HttpGet(fullUrl));
+//            inputStream = httpResponse.getEntity().getContent();
+//            if (inputStream != null) {
+//                String responseBody = readStream(inputStream);
+//                JSONObject jsonObject = new JSONObject(responseBody);
+//                if (jsonObject.length() >= 1) {
+//                    periodsList = Period.parseFromJSON(jsonObject);
+//                }
+//            }
+//        } catch (IllegalArgumentException illegalArgExc) {
+//            illegalArgExc.printStackTrace();
+//            throw new CalendarClientException(illegalArgExc);
+//        } catch (IOException ioException) {
+//            ioException.printStackTrace();
+//            throw new CalendarClientException(ioException);
+//        } catch (JSONException jsonException) {
+//            jsonException.printStackTrace();
+//            throw new CalendarClientException(jsonException);
+//        }
+//        
+//        return periodsList;
+//    }
+
 }

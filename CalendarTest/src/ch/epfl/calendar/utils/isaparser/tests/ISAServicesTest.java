@@ -1,10 +1,10 @@
-package ch.epfl.utils.isaparser.tests;
+package ch.epfl.calendar.utils.isaparser.tests;
 
 import junit.framework.TestCase;
 
-import ch.epfl.utils.isaparser.ISAServices;
-import ch.epfl.utils.isaparser.ISAServices.Sections;
-import ch.epfl.utils.isaparser.ISAServices.Term;
+import ch.epfl.calendar.utils.isaparser.ISAServices;
+import ch.epfl.calendar.utils.isaparser.ISAServices.Sections;
+import ch.epfl.calendar.utils.isaparser.ISAServices.Term;
 
 /**
  * Can be run as a junit test instead of android (not using any android features)
