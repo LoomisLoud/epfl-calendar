@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
 
         initializeCalendar();
 
-        //FIXME : At the beginning of the application, we "logout" the user
+        //TODO : At the beginning of the application, we "logout" the user
         TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
 
         if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
@@ -98,14 +98,12 @@ public class MainActivity extends Activity {
     }
 
     public void switchToCoursesList() {
-        Intent coursesListActivityIntent = new Intent(this,
-                CoursesListActivity.class);
+        Intent coursesListActivityIntent = new Intent(this, CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
     }
 
     public void switchToDraftActivity() {
-        Intent draftActivityIntent = new Intent(this,
-                DraftActivity.class);
+        Intent draftActivityIntent = new Intent(this, DraftActivity.class);
         startActivity(draftActivityIntent);
     }
 
@@ -155,8 +153,7 @@ public class MainActivity extends Activity {
         try {
             courses = cal.getISAInformations();
         } catch (CalendarClientException e) {
-            //FIXME : Manage Exception
-            //We have a problem...
+        	// TODO catch exceptions and manage
         	e.printStackTrace();
         }
 
