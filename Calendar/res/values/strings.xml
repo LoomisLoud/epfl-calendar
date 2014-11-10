@@ -5,11 +5,9 @@
     <string name="title_activity_course_details">CourseDetailsActivity</string>
     <string name="title_activity_courses_list">CoursesListActivity</string>
     <string name="to_list_course_button">To list course</string>
-    <string name="title_activity_draft">DraftActivity</string>
     
     <string name="action_courses_list">Courses</string>
     <string name="action_add_events">Add Events</string>
-    <string name="action_draft_activity">Draft Activity</string>
     <string name="action_settings">Settings</string>
 
 </resources>

@@ -46,12 +46,6 @@ public class MainActivity extends Activity {
         startActivity(coursesListActivityIntent);
     }
     
-    public void switchToDraftActivity() {
-        Intent draftActivityIntent = new Intent(this,
-                DraftActivity.class);
-        startActivity(draftActivityIntent);
-    }
-    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -60,9 +54,6 @@ public class MainActivity extends Activity {
                 return true;
             case R.id.action_add_events:
                 Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_draft_activity:
-                switchToDraftActivity();
                 return true;
             case R.id.action_settings:
                 Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
