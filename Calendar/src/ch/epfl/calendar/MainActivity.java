@@ -80,6 +80,16 @@ public class MainActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            //Display the modified values
+//            txtVal1.setText(data.getExtras().getString("Val1"));
+//            txtVal2.setText(data.getExtras().getString("Val2"));
+            populateCalendar();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     public void switchToCoursesList() {
         Intent coursesListActivityIntent = new Intent(this,
@@ -133,6 +143,7 @@ public class MainActivity extends Activity {
             courses = cal.getISAInformations();
         } catch (CalendarClientException e) {
             //We have a problem...
+            System.out.println("WE HAVE A PROBLEM");
         	e.printStackTrace();
         }
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -33,10 +34,10 @@ public class CalendarClient implements CalendarClientInterface {
 
 	public static final String TAG = "CalendarClient Class::";
 
-    private Context mContext = null;
+    private Activity mContext = null;
 
-    public CalendarClient(Context context) {
-        this.mContext = context;
+    public CalendarClient(Activity activity) {
+        this.mContext = activity;
     }
 
     /* (non-Javadoc)
@@ -98,7 +99,9 @@ public class CalendarClient implements CalendarClientInterface {
 
 	private void switchToAuthenticationActivity() {
         Intent displayAuthenticationActivityIntent = new Intent(mContext, AuthenticationActivity.class);
-        mContext.startActivity(displayAuthenticationActivityIntent);
+//        mContext.startActivity(displayAuthenticationActivityIntent);
+        mContext.startActivityForResult(displayAuthenticationActivityIntent, 0);
+        System.out.println("COUCOU");
         //return getIsaTimetableOnline(mContext);
     }
 
