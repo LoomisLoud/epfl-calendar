@@ -6,6 +6,13 @@ import org.apache.http.Header;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.AbstractHttpClient;
 
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.widget.Toast;
+
+import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 
 /**
@@ -15,7 +22,22 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationException;
  */
 public class HttpUtils {
     
+    public static boolean isNetworkWorking(Activity activity) {
+        ConnectivityManager connMgr = (ConnectivityManager) 
+                activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        } else {
+            errorNetwork(activity);
+            return false;
+        }
+    }
     
+    public static void errorNetwork(Context context) {
+        Toast.makeText(context, R.string.network_unreachable,
+                Toast.LENGTH_SHORT).show();
+    }
 
     public static Cookie getCookie(AbstractHttpClient client, String field) {
         List<Cookie> lc = client.getCookieStore().getCookies();
