@@ -53,15 +53,19 @@ public class CoursesListActivity extends Activity {
 
     }
 
+    /**
+     * Launches the CourseDetailsActivity of a specific courseName
+     *
+     * @param courseName the name of the course from which we want the details
+     */
     public void openCourseDetails(String courseName) {
-        Intent courseDetailsActivityIntent = new Intent(this,
-                CourseDetailsActivity.class);
+        Intent courseDetailsActivityIntent = new Intent(this, CourseDetailsActivity.class);
 
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
     }
 
-    public ArrayList<Course> retrieveCourse() {
+    private ArrayList<Course> retrieveCourse() {
 
         CalendarClient calendarClient = new CalendarClient();
         ArrayList<Course> retrieveData = null;
@@ -70,13 +74,12 @@ public class CoursesListActivity extends Activity {
             retrieveData = new ArrayList<Course>(
                     calendarClient.getISAInformations());
         } catch (CalendarClientException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return retrieveData;
     }
 
-    public ArrayList<String> retrieveCourseName(List<Course> coursesList) {
+    private ArrayList<String> retrieveCourseName(List<Course> coursesList) {
 
         ArrayList<String> coursesName = new ArrayList<String>();
 

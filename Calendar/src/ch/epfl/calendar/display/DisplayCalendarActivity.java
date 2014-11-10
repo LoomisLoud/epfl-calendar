@@ -20,6 +20,11 @@ public class DisplayCalendarActivity extends Activity {
         setContentView(R.layout.activity_display_calendar);
         initializeCalendar();
     }
+
+    /**
+     *  Initializes the Calendar by setting colors and default components
+     *
+     */
     public void initializeCalendar() {
         mCalendar = (CalendarView) findViewById(R.id.calendar);
 
