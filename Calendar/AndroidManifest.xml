@@ -38,8 +38,12 @@
             android:label="@string/title_activity_courses_list" >
         </activity>
         <activity
-            android:name="ch.epfl.calendar.display.AddEventActivity"
+            android:name=".display.AddEventActivity"
             android:label="@string/title_activity_add_event" >
+        </activity>
+        <activity
+            android:name=".CreditsActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog" >
         </activity>
     </application>
 

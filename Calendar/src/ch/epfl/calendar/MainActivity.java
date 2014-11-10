@@ -35,9 +35,9 @@ import ch.epfl.calendar.display.WeekViewEvent;
 import ch.epfl.calendar.utils.GlobalPreferences;
 
 /**
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
@@ -93,7 +93,8 @@ public class MainActivity extends Activity implements
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, spinnerList) {
 
-            public View getView(int position, View convertView, ViewGroup parent) {
+            @Override
+			public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView text = (TextView) view
                         .findViewById(android.R.id.text1);
@@ -101,7 +102,8 @@ public class MainActivity extends Activity implements
                 return view;
             }
 
-            public View getDropDownView(int position, View convertView,
+            @Override
+			public View getDropDownView(int position, View convertView,
                     ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView text = (TextView) view
@@ -199,13 +201,13 @@ public class MainActivity extends Activity implements
     }
 
     public void switchToCourseDetails(String courseName) {
-        
+
         Intent courseDetailsActivityIntent = new Intent(this,
                 CourseDetailsActivity.class);
-        
+
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
-        
+
         mDialog = new ProgressDialog(this);
         mDialog.setMessage("Charging course details");
         mDialog.show();
@@ -225,6 +227,12 @@ public class MainActivity extends Activity implements
 
     }
 
+    private void switchToCreditsActivity() {
+    	Intent i = new Intent(mThisActivity, CreditsActivity.class);
+    	startActivity(i);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -232,8 +240,7 @@ public class MainActivity extends Activity implements
             switchToCoursesList();
             return true;
         case R.id.action_settings:
-            Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT)
-                    .show();
+            switchToCreditsActivity();
             return true;
         case R.id.add_event:
             switchToAddEventsActivity();
@@ -249,7 +256,8 @@ public class MainActivity extends Activity implements
         }
     }
 
-    public Calendar createCalendar(int year, int month, int day, int hour,
+
+	public Calendar createCalendar(int year, int month, int day, int hour,
             int minute) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_WEEK, day);
@@ -317,7 +325,7 @@ public class MainActivity extends Activity implements
         }
         return courses;
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
