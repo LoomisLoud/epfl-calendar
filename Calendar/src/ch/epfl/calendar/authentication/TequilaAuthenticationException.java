@@ -1,6 +1,5 @@
 package ch.epfl.calendar.authentication;
 
-import java.util.concurrent.ExecutionException;
 
 /**
  * Exception when Authentication on Tequila fails
@@ -10,17 +9,21 @@ import java.util.concurrent.ExecutionException;
 public class TequilaAuthenticationException extends RuntimeException{
 
     private static final long serialVersionUID = 1L;
-    
+
     public TequilaAuthenticationException() {
         super();
     }
-    
+
     public TequilaAuthenticationException(String message) {
         super(message);
     }
 
-    public TequilaAuthenticationException(ExecutionException e) {
+    public TequilaAuthenticationException(Throwable e) {
         super(e);
+    }
+
+    public TequilaAuthenticationException(String message, Throwable e) {
+    	super(message, e);
     }
 
 }

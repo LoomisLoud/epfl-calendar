@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
@@ -61,25 +60,31 @@ public class CalendarClient implements CalendarClientInterface {
     }
 
 	private String getIsaTimetableOnline(Context context) {
-
+		boolean exceptionOccured = false;
+		String errMessage = "";
+		Exception ex = new Exception();
+		String result = null;
         try {
-            String result =
-                    new TequilaAuthenticationTask(
-                            mParentActivity,
-                            new TequilaAuthenticationHandler(),
-                            null,
-                            null)
-            			.execute(null, null)
-            			.get();
-            return result;
+            result = new TequilaAuthenticationTask(mParentActivity,
+                            							  new TequilaAuthenticationHandler(),
+                            							  null,
+                            							  null)
+            						.execute(null, null)
+            						.get();
         } catch (InterruptedException e) {
-            Log.e(TAG, "INTERRUPTED");
-            e.printStackTrace();
+        	exceptionOccured = true;
+        	errMessage = "INTERRUPTED";
+        	ex = e;
         } catch (ExecutionException e) {
-            Log.e(TAG, "EXECUTION");
-            throw new TequilaAuthenticationException(e);
+        	exceptionOccured = true;
+        	errMessage = "EXECUTION";
+        	ex = e;
+        } finally {
+        	if (exceptionOccured) {
+				throw new TequilaAuthenticationException(errMessage, ex);
+			}
         }
-        return null;
+        return result;
     }
 
 	/**
