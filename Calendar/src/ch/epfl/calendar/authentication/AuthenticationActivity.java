@@ -70,7 +70,10 @@ public class AuthenticationActivity extends Activity {
         public void onSuccess(String sessionID) {
             // store the sessionID in the preferences
             TequilaAuthenticationAPI.getInstance().setSessionID(AuthenticationActivity.this.mThisActivity, sessionID);
-            Toast.makeText(AuthenticationActivity.this.mThisActivity, "Updated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AuthenticationActivity.this.mThisActivity,
+            			   R.string.authenticated,
+            			   Toast.LENGTH_SHORT)
+            	.show();
             AuthenticationActivity.this.mThisActivity.finish();
         }
     }
