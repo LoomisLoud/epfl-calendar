@@ -3,8 +3,6 @@ package ch.epfl.calendar.authentication;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -36,18 +34,18 @@ import ch.epfl.calendar.utils.InputStreamUtils;
  */
 public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
+	public static final String TAG = "AuthenticationTas Class::";
+
     private Context mContext = null;
-    private String mSessionID;
-    private ProgressDialog dialog;
     private TequilaAuthenticationListener mListener = null;
     private boolean mExceptionOccured = false;
-
     private HttpContext mLocalContext = null;
     private HttpResponse mRespGetTimetable = null;
     private TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
     private AbstractHttpClient client = HttpClientFactory.getInstance();
     private GlobalPreferences globalPrefs = GlobalPreferences.getInstance();
-
+    private ProgressDialog dialog;
+    private String mSessionID;
     private String mUsername;
     private String mPassword;
     private String mCurrentToken;
@@ -62,7 +60,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private static final int TIMEOUT_AUTHENTICATION = 10;
 
     /**
-     * The interface pf the authentication task
      * @author lweingart
      *
      */
@@ -99,22 +96,20 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             boolean firstTry = true;
             String tokenList = "";
 
-            System.out.println("AUTHENTICATED : "+GlobalPreferences.isAuthenticated(mContext));
+            Log.d(TAG, "AUTHENTICATED : "+GlobalPreferences.isAuthenticated(mContext));
             if (GlobalPreferences.isAuthenticated(mContext)) {
                 mSessionID = TequilaAuthenticationAPI.getInstance().getSessionID(mContext);
-                System.out.println("SESSION ID : " + mSessionID);
+                Log.i(TAG, "SESSION ID : " + mSessionID);
                 if (mSessionID.equals("")) {
                     throw new TequilaAuthenticationException("Need to be authenticated");
                 }
                 //Try to access to ISA to get a token
                 httpCode = getAccessToIsa(mSessionID, null);
                 firstTry = false;
-                System.out.println("NOT FIRST TRY");
             } else {
-                System.out.println("FIRST TRY");
                 httpCode = getAccessToIsa(null, null);
             }
-            
+
             if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE
                     || httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
 
@@ -145,18 +140,14 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             }
 
             result = InputStreamUtils.readInputStream(mRespGetTimetable.getEntity().getContent());
-            /************************/
-            //FIXME : Needs to be removed - keep for testing manually
-            System.out.println(result);
-            /************************/
 
         } catch (ClientProtocolException e) {
             mExceptionOccured = true;
-            Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::ClientProtocolException", e);
+            Log.e("AuthTask::ClientProtocolException", e.getMessage());
             return mContext.getString(R.string.error_http_protocol);
         } catch (IOException e) {
             mExceptionOccured = true;
-            Logger.getAnonymousLogger().log(Level.SEVERE, "AuthTask::IOException", e);
+            Log.e("AuthTask::IOException", e.getMessage());
             return mContext.getString(R.string.error_io);
         }
 
