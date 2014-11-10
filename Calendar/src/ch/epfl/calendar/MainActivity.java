@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
         	// TODO catch exceptions and manage
         	e.printStackTrace();
         }
-
+        
         return courses;
     }
 

@@ -52,7 +52,7 @@ public class Period{
                 return null;
             }
             return new GregorianCalendar(Integer.parseInt(dateParts[2]),
-                                        Integer.parseInt(dateParts[1]),
+                                        Integer.parseInt(dateParts[1])-1,
                                         Integer.parseInt(dateParts[0]),
                                         Integer.parseInt(timeParts[0]),
                                         Integer.parseInt(timeParts[1]));
@@ -125,7 +125,13 @@ public class Period{
      */
     @Override
     public String toString() {
-        return "From " + mStartDate.toString() + " to " + mEndDate.toString() + " of type "
+        return "From " + mStartDate.get(Calendar.DATE) + "." + mStartDate.get(Calendar.MONTH) + "." 
+                + mStartDate.get(Calendar.YEAR) + " at "
+                + mStartDate.get(Calendar.HOUR_OF_DAY) + ":" + mStartDate.get(Calendar.MINUTE)
+                + " to " + mEndDate.get(Calendar.DATE) + "."
+                + mEndDate.get(Calendar.MONTH) + "." 
+                + mEndDate.get(Calendar.YEAR) + " at "
+                + mEndDate.get(Calendar.HOUR_OF_DAY) + ":" + mEndDate.get(Calendar.MINUTE) + " of type "
                 + mType + " in rooms : " + mRooms + "\n";
     }
 }
