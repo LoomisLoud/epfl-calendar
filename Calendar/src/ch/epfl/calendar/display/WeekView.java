@@ -721,7 +721,7 @@ public class WeekView extends View {
         int nextMonth = (day.get(Calendar.MONTH) + 2 == 13 ? 1 : day
                 .get(Calendar.MONTH) + 2);
         int[] lastFetchedMonth = mFetchedMonths.clone();
-        if (mFetchedMonths[0] < 1 || mFetchedMonths[0] != previousMonth
+     /*   if (mFetchedMonths[0] < 1 || mFetchedMonths[0] != previousMonth
                 || mRefreshEvents) {
             if (!containsValue(lastFetchedMonth, previousMonth)
                     && !isInEditMode()) {
@@ -735,7 +735,7 @@ public class WeekView extends View {
                 }
             }
             mFetchedMonths[0] = previousMonth;
-        }
+        }*/
 
         // Get events of this month.
         if (mFetchedMonths[1] < 1
@@ -755,7 +755,7 @@ public class WeekView extends View {
         }
 
         // Get events of next month.
-        if (mFetchedMonths[2] < 1 || mFetchedMonths[2] != nextMonth
+      /*  if (mFetchedMonths[2] < 1 || mFetchedMonths[2] != nextMonth
                 || mRefreshEvents) {
             if (!containsValue(lastFetchedMonth, nextMonth) && !isInEditMode()) {
                 List<WeekViewEvent> events = mMonthChangeListener
@@ -768,7 +768,7 @@ public class WeekView extends View {
                 }
             }
             mFetchedMonths[2] = nextMonth;
-        }
+        }*/
 
         // Prepare to calculate positions of each events.
         ArrayList<EventRect> tempEvents = new ArrayList<EventRect>(mEventRects);

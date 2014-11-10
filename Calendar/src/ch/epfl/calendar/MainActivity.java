@@ -25,6 +25,7 @@ import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.display.WeekView;
@@ -248,13 +249,18 @@ public class MainActivity extends Activity implements
         // Populate the week view with some events.
         List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
 
-        for (int i = 0; i < listCourses.size(); i++) {
-            for (int j = 0; j < listCourses.get(i).getPeriods().size(); j++) {
-                events.add(new WeekViewEvent(i, listCourses.get(i).getName(),
-                        listCourses.get(i).getPeriods().get(j).getStartDate(),
-                        listCourses.get(i).getPeriods().get(j).getEndDate()));
+        
+
+        int idEvent = 0;
+        for (Course c : listCourses) {
+
+            for (Period p : c.getPeriods()) {
+                events.add(new WeekViewEvent(idEvent, c.getName(), p.getStartDate(),
+                        p.getEndDate()));
             }
+            idEvent++;
         }
+
         return events;
     }
 
