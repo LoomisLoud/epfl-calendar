@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
+import ch.epfl.calendar.MainActivity;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
@@ -99,10 +100,7 @@ public class CalendarClient implements CalendarClientInterface {
 
 	private void switchToAuthenticationActivity() {
         Intent displayAuthenticationActivityIntent = new Intent(mContext, AuthenticationActivity.class);
-//        mContext.startActivity(displayAuthenticationActivityIntent);
-        mContext.startActivityForResult(displayAuthenticationActivityIntent, 0);
-        System.out.println("COUCOU");
-        //return getIsaTimetableOnline(mContext);
+        mContext.startActivityForResult(displayAuthenticationActivityIntent, MainActivity.AUTH_ACTIVITY_CODE);
     }
 
 	private String getIsaTimetableOnline(Context context) {
@@ -142,121 +140,4 @@ public class CalendarClient implements CalendarClientInterface {
             Toast.makeText(mContext, "Updated", Toast.LENGTH_SHORT).show();
         }
     }
-
-//    /**
-//     * This class is used to load an http content
-//     * @author AblionGE
-//     *
-//     */
-//    private class DownloadHttpPage extends AsyncTask<Context, Void, String> {
-//
-//        private ProgressDialog dialog;
-//
-//        @Override
-//        protected void onPreExecute() {
-//            dialog = new ProgressDialog(mContext);
-//            dialog.setTitle(mContext.getString(R.string.be_patient));
-//            dialog.setMessage(mContext.getString(R.string.loading));
-//            dialog.setCancelable(false);
-//            dialog.show();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String timetable) {
-//            if (dialog != null) {
-//                dialog.dismiss();
-//            }
-//
-//            //courseList =
-//        }
-//
-//        @Override
-//        protected String doInBackground(Context... params) {
-//            String sessionID = null;
-//            System.out.println("AUTHENTICATED : "+GlobalPreferences.isAuthenticated(params[0]));
-//            if (GlobalPreferences.isAuthenticated(params[0])) {
-//                sessionID = TequilaAuthenticationAPI.getInstance().getSessionID(params[0]);
-//                System.out.println("SESSION ID : " + sessionID);
-//                if (sessionID.equals("")) {
-//                    throw new TequilaAuthenticationException("Need to be authenticated");
-//                }
-//                return downloadUrl(TequilaAuthenticationAPI.getInstance().getIsAcademiaLoginURL(),
-//                        params[0], sessionID);
-//            } else {
-//                throw new TequilaAuthenticationException("Need to be authenticated");
-//            }
-//        }
-//
-//
-//        /**
-//         * Download the data from the given URL and return a String with the content
-//         * @param url
-//         * @param context
-//         * @param sessionID
-//         * @return
-//         */
-//        private String downloadUrl(String url, Context context, String sessionID) {
-//            AbstractHttpClient client = HttpClientFactory.getInstance();
-//            TequilaAuthenticationAPI tequilaApi = TequilaAuthenticationAPI.getInstance();
-//            HttpResponse mRespGetTimetable = null;
-//            try {
-//                Log.i("INFO : ", "Try getting access to ISA Services to get the timetable");
-//
-//                HttpGet sessionReq = new HttpGet(tequilaApi.getIsAcademiaLoginURL());
-//                sessionReq.addHeader("Set-Cookie", "JSESSIONID="+sessionID);
-//                client.getCookieStore().addCookie(new BasicClientCookie("JSESSIONID", sessionID));
-//                mRespGetTimetable = client
-//                        .execute(sessionReq, new BasicHttpContext());
-//
-//                int httpCode = mRespGetTimetable.getStatusLine().getStatusCode();
-//                Log.i("INFO : ", "Http code received when trying access to ISA Service : " + httpCode);
-//
-//                if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
-//                    InputStream result = mRespGetTimetable.getEntity().getContent();
-//                    return InputStreamUtils.readInputStream(result);
-//                } else if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE) {
-//
-//                    //FIXME : It doesn't work !!!! See how to do that !
-//                    //Apparently : it doesn't like the two dialogs at the same time !
-//                    new TequilaAuthenticationTask(
-//                            context,
-//                            new TequilaAuthenticationHandler(),
-//                            null,
-//                            null).execute(null, null);
-//
-//                    downloadUrl(url, context, tequilaApi.getSessionID(context));
-//                } else {
-//                    throw new CalendarClientException("HttpError");
-//                }
-//                //FIXME : MANAGE exceptions
-//            } catch (ClientProtocolException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            } catch (CalendarClientException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//    }
-//
-//    /**
-//    *
-//    * @author AblionGE
-//    *
-//    */
-//    private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
-//        @Override
-//        public void onError(String msg) {
-//            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-//        }
-//        @Override
-//        public void onSuccess(String sessionID) {
-//            Toast.makeText(mContext, "Updated", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
 }

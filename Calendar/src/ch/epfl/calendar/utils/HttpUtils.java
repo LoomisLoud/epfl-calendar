@@ -14,6 +14,8 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationException;
  *
  */
 public class HttpUtils {
+    
+    
 
     public static Cookie getCookie(AbstractHttpClient client, String field) {
         List<Cookie> lc = client.getCookieStore().getCookies();

@@ -16,6 +16,7 @@ import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.display.CoursesListActivity;
@@ -29,6 +30,7 @@ import ch.epfl.calendar.display.CoursesListActivity;
 public class MainActivity extends Activity {
 
 	public static final String TAG = "MainActivity::";
+	public static final int AUTH_ACTIVITY_CODE = 1;
 
 	private Activity mThisActivity;
     private CalendarView mCalendar;
@@ -82,10 +84,7 @@ public class MainActivity extends Activity {
     }
     
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            //Display the modified values
-//            txtVal1.setText(data.getExtras().getString("Val1"));
-//            txtVal2.setText(data.getExtras().getString("Val2"));
+        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             populateCalendar();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -142,8 +141,8 @@ public class MainActivity extends Activity {
         try {
             courses = cal.getISAInformations();
         } catch (CalendarClientException e) {
+            //FIXME : Manage Exception
             //We have a problem...
-            System.out.println("WE HAVE A PROBLEM");
         	e.printStackTrace();
         }
 
