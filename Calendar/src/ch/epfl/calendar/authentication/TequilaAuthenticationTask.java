@@ -92,25 +92,36 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
 	@Override
 	protected String doInBackground(Void... params) {
-
+	    String result;
         try {
             mLocalContext = new BasicHttpContext();
             int httpCode = 0;
+            boolean firstTry = true;
+            String tokenList = "";
 
-            /***************SHOULD BE IN CALENDARCLIENT************/
-            //Try to access to ISA to get a token
-            httpCode = getAccessToIsa(null, null);
-
-            mCurrentToken = HttpUtils.getTokenFromHeader(mRespGetTimetable.getFirstHeader("Location"));
-            String tokenList = mCurrentToken;
-            /******************************************************/
+            System.out.println("AUTHENTICATED : "+GlobalPreferences.isAuthenticated(mContext));
+            if (GlobalPreferences.isAuthenticated(mContext)) {
+                mSessionID = TequilaAuthenticationAPI.getInstance().getSessionID(mContext);
+                System.out.println("SESSION ID : " + mSessionID);
+                if (mSessionID.equals("")) {
+                    throw new TequilaAuthenticationException("Need to be authenticated");
+                }
+                //Try to access to ISA to get a token
+                httpCode = getAccessToIsa(mSessionID, null);
+                firstTry = false;
+                System.out.println("NOT FIRST TRY");
+            } else {
+                System.out.println("FIRST TRY");
+                httpCode = getAccessToIsa(null, null);
+            }
+            
             if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE
                     || httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
 
-                boolean firstTry = true;
                 int timeoutAuthentication = TIMEOUT_AUTHENTICATION;
 
                 while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK && timeoutAuthentication > 0) {
+                    mCurrentToken = HttpUtils.getTokenFromHeader(mRespGetTimetable.getFirstHeader("Location"));
                     timeoutAuthentication--;
                     //Authentication on Tequila needed the token + to know if
                     //it is the first authentication (to know if use username+pwd)
@@ -118,23 +129,24 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     if (firstTry) {
                         firstTry = false;
                     } else {
-                        mCurrentToken = HttpUtils.getTokenFromHeader(mRespGetTimetable.getFirstHeader("Location"));
-                        tokenList = tokenList + "&" + KEY + "=" + mCurrentToken;
+                        //mCurrentToken = HttpUtils.getTokenFromHeader(mRespGetTimetable.getFirstHeader("Location"));
+                        if (!tokenList.equals("")) {
+                            tokenList = tokenList + "&" + KEY + "=" + mCurrentToken;
+                        } else {
+                            tokenList = mCurrentToken;
+                        }
                     }
-                    /***********************SHOULD BE IN CALENDARCLIENT*********************/
                     //Try to get the page on Isa
                     httpCode = getAccessToIsa(mSessionID, tokenList);
-                    /************************************************************************/
-
                     mSessionID = globalPrefs.getSessionIDCookie().getValue();
                 }
             } else {
                 throw new TequilaAuthenticationException("Wrong Http code");
             }
 
+            result = InputStreamUtils.readInputStream(mRespGetTimetable.getEntity().getContent());
             /************************/
             //FIXME : Needs to be removed - keep for testing manually
-            String result = InputStreamUtils.readInputStream(mRespGetTimetable.getEntity().getContent());
             System.out.println(result);
             /************************/
 
@@ -149,7 +161,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         }
 
         if (!this.isCancelled()) {
-            return mContext.getString(R.string.login_success);
+            return result;
         } else {
             // onCancelled() will be called instead of onPostExecute()
             return null;
@@ -241,7 +253,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             getTimetable.addHeader("Set-Cookie", SESSIONID + "=" +sessionID);
             client.setCookieStore(new BasicCookieStore());
             client.getCookieStore().addCookie(globalPrefs.getSessionIDCookie());
-            mRespGetTimetable.getEntity().getContent().close();
+            //mRespGetTimetable.getEntity().getContent().close();
         }
 
         mRespGetTimetable = client

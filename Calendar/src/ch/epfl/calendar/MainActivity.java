@@ -137,11 +137,12 @@ public class MainActivity extends Activity {
         }
 
         //To see if it works
-        Log.i(TAG, "list of courses:");
+        /*Log.i(TAG, "list of courses:");
         for (Course c : courses) {
             System.out.println(c.toString());
-        }
+        }*/
         return courses;
+        
     }
 
 }

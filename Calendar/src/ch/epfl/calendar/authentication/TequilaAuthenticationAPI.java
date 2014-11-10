@@ -47,7 +47,7 @@ public final class TequilaAuthenticationAPI {
      * @param context
      * @param sessionID
      */
-    void setSessionID(Context context, String sessionID) {
+    public void setSessionID(Context context, String sessionID) {
         SharedPreferences prefs = context.
                 getSharedPreferences(TequilaAuthenticationAPI.AUTHENTICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
         Editor editor = prefs.edit();

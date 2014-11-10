@@ -1,5 +1,7 @@
 package ch.epfl.calendar.authentication;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * Exception when Authentication on Tequila fails
  * @author AblionGE
@@ -15,6 +17,10 @@ public class TequilaAuthenticationException extends RuntimeException{
     
     public TequilaAuthenticationException(String message) {
         super(message);
+    }
+
+    public TequilaAuthenticationException(ExecutionException e) {
+        super(e);
     }
 
 }
