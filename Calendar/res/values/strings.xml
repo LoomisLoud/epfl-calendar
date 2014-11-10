@@ -21,5 +21,6 @@
     <string name="end_event_text_hour">End of the Event (Hour)</string>
     <string name="valid_event">Create the event</string>
     <string name="hello_world">Hello world!</string>
+    <string name="name_event_edit">Enter here the name of the event</string>
 
 </resources>

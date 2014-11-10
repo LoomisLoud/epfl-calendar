@@ -1,85 +1,91 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="${relativePackage}.${activityClass}" >
+    android:layout_height="match_parent" 
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/name_event"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/name_event" />
+        tools:context="${relativePackage}.${activityClass}" >
 
-    <EditText
-        android:id="@+id/name_event_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name_event" />
+        <TextView
+            android:id="@+id/name_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/name_event" />
 
-    <TextView
-        android:id="@+id/start_event_text_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name_event_text"
-        android:text="@string/start_event_text_date" />
+        <EditText
+            android:id="@+id/name_event_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name_event" 
+            android:hint="@string/name_event_edit"/>
 
-    <DatePicker
-        android:id="@+id/start_event_picker_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/start_event_text_date"/>
-    
-    <TextView
-        android:id="@+id/start_event_text_hour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/start_event_picker_date"
-        android:text="@string/start_event_text_hour" />
-    
-     <TimePicker
-        android:id="@+id/start_event_picker_hour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/start_event_text_hour"/>
-     
-     
-     <TextView
-        android:id="@+id/end_event_text_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/start_event_picker_hour"
-        android:text="@string/end_event_text_date" />
+        <TextView
+            android:id="@+id/start_event_text_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name_event_text"
+            android:text="@string/start_event_text_date" />
 
-    <DatePicker
-        android:id="@+id/end_event_picker_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/end_event_text_date"/>
-    
-    <TextView
-        android:id="@+id/end_event_text_hour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/end_event_picker_date"
-        android:text="@string/end_event_text_hour" />
-    
-     <TimePicker
-        android:id="@+id/end_event_picker_hour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/end_event_text_hour"/>
-     
-     
-    <Button 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/valid_event"
-        android:text="@string/valid_event"
-        android:onClick="finishActivity"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        />
+        <DatePicker
+            android:id="@+id/start_event_picker_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/start_event_text_date"
+            android:calendarViewShown="false" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/start_event_text_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/start_event_picker_date"
+            android:text="@string/start_event_text_hour" />
+
+        <TimePicker
+            android:id="@+id/start_event_picker_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/start_event_text_hour" />
+
+        <TextView
+            android:id="@+id/end_event_text_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/start_event_picker_hour"
+            android:text="@string/end_event_text_date" />
+
+        <DatePicker
+            android:id="@+id/end_event_picker_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/end_event_text_date"
+            android:calendarViewShown="false" />
+
+        <TextView
+            android:id="@+id/end_event_text_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/end_event_picker_date"
+            android:text="@string/end_event_text_hour" />
+
+        <TimePicker
+            android:id="@+id/end_event_picker_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/end_event_text_hour" />
+
+        <Button
+            android:id="@+id/valid_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/end_event_picker_hour"
+            android:onClick="finishActivity"
+            android:text="@string/valid_event" />
+    </RelativeLayout>
+
+</ScrollView>
