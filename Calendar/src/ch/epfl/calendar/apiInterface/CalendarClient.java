@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
-
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.HttpClientFactory;
@@ -60,8 +59,8 @@ public class CalendarClient implements CalendarClientInterface {
      */
     @Override
     public List<Course> getISAInformations()
-    		throws CalendarClientException, TequilaAuthenticationException
-	{
+    	throws CalendarClientException, TequilaAuthenticationException {
+
         /*****************************TEST XML PARSER*************************/
 //        String contentAsString = "<data status=\"Termine\" date=\"20141017 16:08:36\" "
 //                + "key=\"1864682915\" dateFin=\"19.10.2014\" dateDebut=\"13.10.2014\">"
