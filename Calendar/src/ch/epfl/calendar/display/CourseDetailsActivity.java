@@ -98,7 +98,6 @@ public class CourseDetailsActivity extends Activity {
      * @author Maxime
      * 
      */
-
     private class DownloadCourseTask extends AsyncTask<String, Void, Course> {
 
         private ProgressDialog dialog;

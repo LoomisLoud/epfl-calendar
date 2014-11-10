@@ -40,12 +40,20 @@ public class MainActivity extends Activity {
         return super.onCreateOptionsMenu(menu);
     }
     
+    /**
+     *  Launches the CoursesListActivity
+     *
+     */
     public void switchToCoursesList() {
         Intent coursesListActivityIntent = new Intent(this,
                 CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
     }
     
+    /**
+     *  Launches the DraftActivity
+     *
+     */
     public void switchToDraftActivity() {
         Intent draftActivityIntent = new Intent(this,
                 DraftActivity.class);
@@ -72,6 +80,10 @@ public class MainActivity extends Activity {
         }
     }
     
+    /**
+     *  Initializes the calendar by setting colors and default parameters
+     *
+     */
     public void initializeCalendar() {
         mCalendar = (CalendarView) findViewById(R.id.calendar);
 
