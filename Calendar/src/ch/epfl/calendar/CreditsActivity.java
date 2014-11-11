@@ -8,7 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * @author LoomisLoud
+ *
+ * @author lweingart
  *
  */
 public class CreditsActivity extends Activity implements OnClickListener {
@@ -30,8 +31,8 @@ public class CreditsActivity extends Activity implements OnClickListener {
 					+"Maxime Coriou\n"
 					+"Matthias Leroy\n"
 					+"Enea Bell\n"
-					+"Marc Sch�r\n"
-					+"Gil Brechb�hler\n"
+					+"Marc Schär\n"
+					+"Gil Brechbühler\n"
 					+"Laurent Weingart\n");
 	}
 
