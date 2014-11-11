@@ -5,30 +5,31 @@ import ch.epfl.calendar.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TimePicker;
 
+/**
+ * @author LoomisLoud
+ *
+ */
 public class AddEventActivity extends Activity {
     
-    private EditText nameEvent;
-    private DatePicker startEventDate;
-    private TimePicker startEventHour;
-    private DatePicker endEventDate;
-    private TimePicker endEventHour;
+    //private EditText mNameEvent;
+    //private DatePicker mStartEventDate;
+    //private TimePicker mStartEventHour;
+    //private DatePicker mEndEventDate;
+    //private TimePicker mEndEventHour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
-        nameEvent = (EditText) findViewById(R.id.name_event_text);
-        
-        startEventDate = (DatePicker) findViewById(R.id.start_event_picker_date);
-        startEventHour = (TimePicker) findViewById(R.id.start_event_picker_hour);
-        
-        endEventDate = (DatePicker) findViewById(R.id.end_event_picker_date);
-        endEventHour = (TimePicker) findViewById(R.id.end_event_picker_hour);
+        //mNameEvent = (EditText) findViewById(R.id.name_event_text);
+        //
+        //mStartEventDate = (DatePicker) findViewById(R.id.start_event_picker_date);
+        //mStartEventHour = (TimePicker) findViewById(R.id.start_event_picker_hour);
+        //
+        //mEndEventDate = (DatePicker) findViewById(R.id.end_event_picker_date);
+        //mEndEventHour = (TimePicker) findViewById(R.id.end_event_picker_hour);
         
     }
     public void finishActivity(View v) {

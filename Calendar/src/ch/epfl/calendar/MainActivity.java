@@ -30,8 +30,8 @@ import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.CoursesListActivity;
-import ch.epfl.calendar.display.WeekView;
-import ch.epfl.calendar.display.WeekViewEvent;
+import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
+import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.GlobalPreferences;
 
 /**
@@ -46,6 +46,21 @@ public class MainActivity extends Activity implements
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
+    
+    private static final int SIZE_COLUMN_GAP_DAY = 8;
+    private static final int SIZE_FRONT_DAY = 12;
+    private static final int SIZE_FRONT_EVENT_DAY = 12;
+    private static final int SIZE_COLUMN_GAP_3DAYS = 8;
+    private static final int SIZE_FRONT_3DAYS = 12;
+    private static final int SIZE_FRONT_EVENT_3DAYS = 12;
+    private static final int SIZE_COLUMN_GAP_WEEK = 2;
+    private static final int SIZE_FRONT_WEEK = 7;
+    private static final int SIZE_FRONT_EVENT_WEEK = 7;
+    
+    private static final int NUMBER_VISIBLE_DAYS_DAY = 1;
+    private static final int NUMBER_VISIBLE_DAYS_3DAYS = 3;
+    private static final int NUMBER_VISIBLE_DAYS_WEEK = 7;
+    
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private List<Course> listCourses = null;
@@ -119,51 +134,51 @@ public class MainActivity extends Activity implements
                 if (position == 0) {
                     if (mWeekViewType != TYPE_DAY_VIEW) {
                         mWeekViewType = TYPE_DAY_VIEW;
-                        mWeekView.setNumberOfVisibleDays(1);
+                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_DAY);
 
                         // Lets change some dimensions to best fit the view.
                         mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
+                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_DAY, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, 12, getResources()
+                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_DAY, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, 12,
+                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_DAY,
                                         getResources().getDisplayMetrics()));
                     }
                     return true;
                 } else if (position == 1) {
                     if (mWeekViewType != TYPE_THREE_DAY_VIEW) {
                         mWeekViewType = TYPE_THREE_DAY_VIEW;
-                        mWeekView.setNumberOfVisibleDays(3);
+                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_3DAYS);
 
                         // Lets change some dimensions to best fit the view.
                         mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
+                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_3DAYS, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, 12, getResources()
+                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_3DAYS, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, 12,
+                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_3DAYS,
                                         getResources().getDisplayMetrics()));
                     }
                     return true;
                 } else if (position == 2) {
                     if (mWeekViewType != TYPE_WEEK_VIEW) {
                         mWeekViewType = TYPE_WEEK_VIEW;
-                        mWeekView.setNumberOfVisibleDays(7);
+                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_WEEK);
 
                         // Lets change some dimensions to best fit the view.
                         mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, 2, getResources()
+                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_WEEK, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, 7, getResources()
+                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_WEEK, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, 7,
+                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_WEEK,
                                         getResources().getDisplayMetrics()));
                     }
                     return true;
@@ -236,23 +251,23 @@ public class MainActivity extends Activity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.action_courses_list:
-            switchToCoursesList();
-            return true;
-        case R.id.action_settings:
-            switchToCreditsActivity();
-            return true;
-        case R.id.add_event:
-            switchToAddEventsActivity();
-            return true;
-        case R.id.action_today:
-            mWeekView.goToToday();
-            return true;
-        case R.id.action_update_activity:
-            populateCalendar();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_courses_list:
+                switchToCoursesList();
+                return true;
+            case R.id.action_settings:
+                switchToCreditsActivity();
+                return true;
+            case R.id.add_event:
+                switchToAddEventsActivity();
+                return true;
+            case R.id.action_today:
+                mWeekView.goToToday();
+                return true;
+            case R.id.action_update_activity:
+                populateCalendar();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

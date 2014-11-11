@@ -1,9 +1,16 @@
-package ch.epfl.calendar.display;
-
+package ch.epfl.calendar.thirdParty.calendarViews;
+/**
+ * Code imported from:
+ * https://github.com/alamkanak/Android-Week-View/tree/master/library/src/main/java/com/alamkanak/weekview
+ */
 import java.util.Calendar;
 
 import android.graphics.Color;
 
+/**
+ * @author LoomisLoud
+ *
+ */
 public class WeekViewEvent {
     private long mId;
     private Calendar mStartTime;

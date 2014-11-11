@@ -6,7 +6,7 @@
     tools:context=".MyActivity"
     android:background="#fff">
     
-   <ch.epfl.calendar.display.WeekView
+   <ch.epfl.calendar.thirdParty.calendarViews.WeekView
         android:id="@+id/weekView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

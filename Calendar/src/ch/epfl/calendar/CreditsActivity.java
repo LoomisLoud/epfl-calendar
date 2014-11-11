@@ -14,19 +14,19 @@ import android.widget.TextView;
  */
 public class CreditsActivity extends Activity implements OnClickListener {
 
-	private Button okBtn;
-	private TextView text;
+	private Button mOkBtn;
+	private TextView mText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_credits);
 
-		okBtn = (Button) findViewById(R.id.ok_btn);
-		text = (TextView) findViewById(R.id.credit_txtView_id);
+		mOkBtn = (Button) findViewById(R.id.ok_btn);
+		mText = (TextView) findViewById(R.id.credit_txtView_id);
 
-		okBtn.setOnClickListener(this);
-		text.setText("Authors:\nRomain Choukroun\n"
+		mOkBtn.setOnClickListener(this);
+		mText.setText("Authors:\nRomain Choukroun\n"
 					+"Pierre Fouche\n"
 					+"Maxime Coriou\n"
 					+"Matthias Leroy\n"
