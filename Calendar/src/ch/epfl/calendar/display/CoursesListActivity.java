@@ -1,7 +1,9 @@
 package ch.epfl.calendar.display;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -10,12 +12,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.utils.ConstructCourse;
 
 /**
  * @author Maxime
@@ -33,12 +36,15 @@ public class CoursesListActivity extends Activity {
         mListView = (ListView) findViewById(R.id.coursesListView);
 
         final ArrayList<Course> coursesList = retrieveCourse();
-        final ArrayList<String> coursesNameList = retrieveCourseName(coursesList);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, coursesNameList);
+        final List<Map<String, String>> courseInfoList = retrieveCourseInfo(coursesList);
 
-        mListView.setAdapter(adapter);
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
+                android.R.layout.simple_list_item_2,
+                new String[] {"Course name", "Professor and Credits" },
+                new int[] {android.R.id.text1, android.R.id.text2 });
+
+        mListView.setAdapter(simpleAdapter);
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -46,7 +52,8 @@ public class CoursesListActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
 
-                openCourseDetails(coursesNameList.get(position));
+                openCourseDetails(courseInfoList.get(position).get(
+                        "Course name"));
 
             }
 
@@ -67,7 +74,7 @@ public class CoursesListActivity extends Activity {
 
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
-        
+
         mDialog = new ProgressDialog(this);
         mDialog.setMessage("Charging course details");
         mDialog.show();
@@ -88,12 +95,19 @@ public class CoursesListActivity extends Activity {
         return retrieveData;
     }
 
-    private ArrayList<String> retrieveCourseName(List<Course> coursesList) {
+    private ArrayList<Map<String, String>> retrieveCourseInfo(
+            List<Course> coursesList) {
 
-        ArrayList<String> coursesName = new ArrayList<String>();
+        ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
 
         for (Course cours : coursesList) {
-            coursesName.add(cours.getName());
+            ConstructCourse.getInstance(cours);
+            Map<String, String> courseMap = new HashMap<String, String>();
+            courseMap.put("Course name", cours.getName());
+            courseMap.put("Professor and Credits",
+                    "Professor : " + cours.getTeacher() + ", Credits : "
+                            + cours.getCredits());
+            coursesName.add(courseMap);
         }
         return coursesName;
     }
