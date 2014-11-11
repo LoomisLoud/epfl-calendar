@@ -12,11 +12,13 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
+import android.widget.Toast;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.AppEngineClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.DatabaseInterface;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.utils.HttpUtils;
 
 /**
  * @author LoomisLoud
@@ -26,6 +28,8 @@ import ch.epfl.calendar.data.Course;
 public class CourseDetailsActivity extends Activity {
 
     private static final float SIZE_OF_TITLE = 1.5f;
+    
+    private final Activity mThisActivity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +43,17 @@ public class CourseDetailsActivity extends Activity {
 
         Course course = null;
         try {
-            course = new DownloadCourseTask().execute(courseName).get();
+            if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
+                course = new DownloadCourseTask().execute(courseName).get();
+            }
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Toast.makeText(this.mThisActivity,
+                    R.string.calendar_client_ex_msg,
+                    Toast.LENGTH_SHORT).show();
         } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Toast.makeText(this.mThisActivity,
+                    R.string.calendar_client_ex_msg,
+                    Toast.LENGTH_SHORT).show();
         }
 
         if (course == null) {
@@ -112,8 +120,9 @@ public class CourseDetailsActivity extends Activity {
                 course = appEngineClient.getCourseByName(courseName);
 
             } catch (CalendarClientException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Toast.makeText(mThisActivity,
+                        R.string.calendar_client_ex_msg,
+                        Toast.LENGTH_SHORT).show();
             }
             return course;
         }

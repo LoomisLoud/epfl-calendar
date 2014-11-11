@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 
 /**
@@ -21,6 +22,8 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationException;
  *
  */
 public class HttpUtils {
+    
+    private static final int RESPONSE_OK = 200;
     
     public static boolean isNetworkWorking(Activity activity) {
         ConnectivityManager connMgr = (ConnectivityManager) 
@@ -57,5 +60,11 @@ public class HttpUtils {
         String tokenHeader = location.getValue();
         int i = tokenHeader.indexOf("=");
         return tokenHeader.substring(i+1);
+    }
+    
+    public static void handleResponse(int responseCode) throws CalendarClientException {
+        if (responseCode != RESPONSE_OK) {
+            throw new CalendarClientException();
+        }
     }
 }

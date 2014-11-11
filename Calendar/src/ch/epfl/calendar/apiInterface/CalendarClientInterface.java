@@ -9,7 +9,7 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.data.Course;
 
 /**
- * A client to get student's and classes' informations. This interfaces is meant to abstract the underlying
+ * A client to get student's periods informations. This interfaces is meant to abstract the underlying
  * network protocol and data formats.
  *
  * @author gilbrechbuhler
