@@ -211,7 +211,7 @@ public class MainActivity extends Activity implements
             listCourses = populateCalendar();
         }
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -285,7 +285,7 @@ public class MainActivity extends Activity implements
     public Calendar createCalendar(int year, int month, int day, int hour,
             int minute) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, day);
+        calendar.set(Calendar.DAY_OF_WEEK, day - 1);
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.MONTH, month - 1);
@@ -293,7 +293,7 @@ public class MainActivity extends Activity implements
 
         return calendar;
     }
-
+    
     @Override
     public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
         // Populate the week view with some events.
@@ -301,15 +301,12 @@ public class MainActivity extends Activity implements
 
         int idEvent = 0;
         for (Course c : listCourses) {
-
             for (Period p : c.getPeriods()) {
                 events.add(new WeekViewEvent(idEvent, getEventTitle(c, p), p
                         .getStartDate(), p.getEndDate(), p.getType()));
-
             }
             idEvent++;
         }
-
         return events;
     }
 
