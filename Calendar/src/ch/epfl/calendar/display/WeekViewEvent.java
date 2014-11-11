@@ -2,6 +2,7 @@ package ch.epfl.calendar.display;
 
 import java.util.Calendar;
 
+import android.graphics.Color;
 
 public class WeekViewEvent {
     private long mId;
@@ -73,11 +74,24 @@ public class WeekViewEvent {
      *            The time when the event ends.
      */
     public WeekViewEvent(long id, String name, Calendar startTime,
-            Calendar endTime) {
+            Calendar endTime, String type) {
         this.mId = id;
         this.mName = name;
         this.mStartTime = startTime;
         this.mEndTime = endTime;
+        setColorWithType(type);
+
+    }
+
+    private void setColorWithType(String type) {
+        if (type.equals("Cours") || type.equals("Lecture")) {
+            mColor = Color.BLUE;
+
+        } else if (type.equals("Exercices")) {
+            mColor = Color.GREEN;
+        } else {
+            mColor = Color.YELLOW;
+        }
     }
 
     public Calendar getStartTime() {

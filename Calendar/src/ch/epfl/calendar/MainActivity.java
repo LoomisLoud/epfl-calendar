@@ -35,9 +35,9 @@ import ch.epfl.calendar.display.WeekViewEvent;
 import ch.epfl.calendar.utils.GlobalPreferences;
 
 /**
- *
+ * 
  * @author lweingart
- *
+ * 
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
@@ -94,7 +94,7 @@ public class MainActivity extends Activity implements
                 android.R.layout.simple_spinner_item, spinnerList) {
 
             @Override
-			public View getView(int position, View convertView, ViewGroup parent) {
+            public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView text = (TextView) view
                         .findViewById(android.R.id.text1);
@@ -103,7 +103,7 @@ public class MainActivity extends Activity implements
             }
 
             @Override
-			public View getDropDownView(int position, View convertView,
+            public View getDropDownView(int position, View convertView,
                     ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView text = (TextView) view
@@ -228,8 +228,8 @@ public class MainActivity extends Activity implements
     }
 
     private void switchToCreditsActivity() {
-    	Intent i = new Intent(mThisActivity, CreditsActivity.class);
-    	startActivity(i);
+        Intent i = new Intent(mThisActivity, CreditsActivity.class);
+        startActivity(i);
 
     }
 
@@ -256,8 +256,7 @@ public class MainActivity extends Activity implements
         }
     }
 
-
-	public Calendar createCalendar(int year, int month, int day, int hour,
+    public Calendar createCalendar(int year, int month, int day, int hour,
             int minute) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_WEEK, day);
@@ -278,8 +277,9 @@ public class MainActivity extends Activity implements
         for (Course c : listCourses) {
 
             for (Period p : c.getPeriods()) {
-                events.add(new WeekViewEvent(idEvent, c.getName(), p
-                        .getStartDate(), p.getEndDate()));
+                events.add(new WeekViewEvent(idEvent, getEventTitle(c, p), p
+                        .getStartDate(), p.getEndDate(), p.getType()));
+
             }
             idEvent++;
         }
@@ -287,10 +287,18 @@ public class MainActivity extends Activity implements
         return events;
     }
 
-    private String getEventTitle(Calendar time) {
-        return String.format("Event of %02d:%02d %s/%d",
-                time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE),
-                time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH));
+    private String getEventTitle(Course c, Period p) {
+        String result = c.getName() + " " + p.getType() + "\n";
+        int i = p.getRooms().size();
+        for (String r : p.getRooms()) {
+            if (i > 1) {
+                result += r + ",";
+            } else {
+                result += r;
+            }
+            i++;
+        }
+        return result;
     }
 
     @Override
