@@ -7,38 +7,42 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * @author LoomisLoud
+ *
+ */
 public class CreditsActivity extends Activity implements OnClickListener {
 
-	private Button ok_btn;
-	private TextView text;
+	private Button mOkBtn;
+	private TextView mText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_credits);
 
-		ok_btn = (Button) findViewById(R.id.ok_btn);
-		text = (TextView) findViewById(R.id.credit_txtView_id);
+		mOkBtn = (Button) findViewById(R.id.ok_btn);
+		mText = (TextView) findViewById(R.id.credit_txtView_id);
 
-		ok_btn.setOnClickListener(this);
-		text.setText("Authors:\nRomain Choukroun\n"
+		mOkBtn.setOnClickListener(this);
+		mText.setText("Authors:\nRomain Choukroun\n"
 					+"Pierre Fouche\n"
 					+"Maxime Coriou\n"
 					+"Matthias Leroy\n"
 					+"Enea Bell\n"
-					+"Marc SchŠr\n"
-					+"Gil BrechbŸhler\n"
+					+"Marc Schï¿½r\n"
+					+"Gil Brechbï¿½hler\n"
 					+"Laurent Weingart\n");
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ok_btn:
-			this.finish();
-			break;
-		default:
-			break;
+			case R.id.ok_btn:
+				this.finish();
+				break;
+			default:
+				break;
 		}
 	}
 

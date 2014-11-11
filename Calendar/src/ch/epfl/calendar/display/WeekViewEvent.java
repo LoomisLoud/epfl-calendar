@@ -3,6 +3,10 @@ package ch.epfl.calendar.display;
 import java.util.Calendar;
 
 
+/**
+ * @author LoomisLoud
+ *
+ */
 public class WeekViewEvent {
     private long mId;
     private Calendar mStartTime;
