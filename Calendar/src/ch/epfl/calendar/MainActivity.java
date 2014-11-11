@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
-    
+
     private static final int SIZE_COLUMN_GAP_DAY = 8;
     private static final int SIZE_FRONT_DAY = 12;
     private static final int SIZE_FRONT_EVENT_DAY = 12;
@@ -56,11 +56,11 @@ public class MainActivity extends Activity implements
     private static final int SIZE_COLUMN_GAP_WEEK = 2;
     private static final int SIZE_FRONT_WEEK = 7;
     private static final int SIZE_FRONT_EVENT_WEEK = 7;
-    
+
     private static final int NUMBER_VISIBLE_DAYS_DAY = 1;
     private static final int NUMBER_VISIBLE_DAYS_3DAYS = 3;
     private static final int NUMBER_VISIBLE_DAYS_WEEK = 7;
-    
+
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private List<Course> listCourses = null;
@@ -134,52 +134,61 @@ public class MainActivity extends Activity implements
                 if (position == 0) {
                     if (mWeekViewType != TYPE_DAY_VIEW) {
                         mWeekViewType = TYPE_DAY_VIEW;
-                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_DAY);
+                        mWeekView
+                                .setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_DAY);
 
                         // Lets change some dimensions to best fit the view.
                         mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_DAY, getResources()
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                SIZE_COLUMN_GAP_DAY, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_DAY, getResources()
-                                        .getDisplayMetrics()));
+                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_DAY,
+                                getResources().getDisplayMetrics()));
                         mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_DAY,
-                                        getResources().getDisplayMetrics()));
+                                .applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                                        SIZE_FRONT_EVENT_DAY, getResources()
+                                                .getDisplayMetrics()));
                     }
                     return true;
                 } else if (position == 1) {
                     if (mWeekViewType != TYPE_THREE_DAY_VIEW) {
                         mWeekViewType = TYPE_THREE_DAY_VIEW;
-                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_3DAYS);
+                        mWeekView
+                                .setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_3DAYS);
 
                         // Lets change some dimensions to best fit the view.
                         mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_3DAYS, getResources()
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                SIZE_COLUMN_GAP_3DAYS, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_3DAYS, getResources()
-                                        .getDisplayMetrics()));
+                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_3DAYS,
+                                getResources().getDisplayMetrics()));
                         mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_3DAYS,
-                                        getResources().getDisplayMetrics()));
+                                .applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                                        SIZE_FRONT_EVENT_3DAYS, getResources()
+                                                .getDisplayMetrics()));
                     }
                     return true;
                 } else if (position == 2) {
                     if (mWeekViewType != TYPE_WEEK_VIEW) {
                         mWeekViewType = TYPE_WEEK_VIEW;
-                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_WEEK);
+                        mWeekView
+                                .setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_WEEK);
 
                         // Lets change some dimensions to best fit the view.
                         mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_WEEK, getResources()
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                SIZE_COLUMN_GAP_WEEK, getResources()
                                         .getDisplayMetrics()));
                         mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_WEEK, getResources()
-                                        .getDisplayMetrics()));
+                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_WEEK,
+                                getResources().getDisplayMetrics()));
                         mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_WEEK,
-                                        getResources().getDisplayMetrics()));
+                                .applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                                        SIZE_FRONT_EVENT_WEEK, getResources()
+                                                .getDisplayMetrics()));
                     }
                     return true;
                 } else {
@@ -303,7 +312,7 @@ public class MainActivity extends Activity implements
     }
 
     private String getEventTitle(Course c, Period p) {
-        String result = c.getName() + " " + p.getType() + "\n";
+        String result = c.getName() + "\n";
         int i = p.getRooms().size();
         for (String r : p.getRooms()) {
             if (i > 1) {
@@ -311,14 +320,15 @@ public class MainActivity extends Activity implements
             } else {
                 result += r;
             }
-            i++;
+            i--;
         }
-        return result;
+        return result + "\n" + p.getType();
     }
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        switchToCourseDetails(event.getName());
+        String cours=event.getName().split("\n")[0];
+        switchToCourseDetails(cours);
     }
 
     @Override

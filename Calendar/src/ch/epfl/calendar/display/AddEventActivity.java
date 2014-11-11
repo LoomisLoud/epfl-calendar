@@ -1,10 +1,11 @@
 package ch.epfl.calendar.display;
 
 
-import ch.epfl.calendar.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.DatePicker;
+import ch.epfl.calendar.R;
 
 /**
  * @author LoomisLoud
@@ -13,7 +14,7 @@ import android.view.View;
 public class AddEventActivity extends Activity {
     
     //private EditText mNameEvent;
-    //private DatePicker mStartEventDate;
+    private DatePicker mStartEventDate;
     //private TimePicker mStartEventHour;
     //private DatePicker mEndEventDate;
     //private TimePicker mEndEventHour;
@@ -25,7 +26,7 @@ public class AddEventActivity extends Activity {
 
         //mNameEvent = (EditText) findViewById(R.id.name_event_text);
         //
-        //mStartEventDate = (DatePicker) findViewById(R.id.start_event_picker_date);
+        mStartEventDate = (DatePicker) findViewById(R.id.start_event_picker_date);
         //mStartEventHour = (TimePicker) findViewById(R.id.start_event_picker_hour);
         //
         //mEndEventDate = (DatePicker) findViewById(R.id.end_event_picker_date);
@@ -33,7 +34,7 @@ public class AddEventActivity extends Activity {
         
     }
     public void finishActivity(View v) {
-        
+        System.out.println(mStartEventDate.getDayOfMonth());
         finish();
     }
 
