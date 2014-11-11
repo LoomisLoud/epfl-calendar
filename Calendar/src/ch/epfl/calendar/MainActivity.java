@@ -199,6 +199,8 @@ public class MainActivity extends Activity implements
 
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
+        
+        actionBar.setSelectedNavigationItem(1);
 
         // TODO : At the beginning of the application, we "logout" the user
         TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
