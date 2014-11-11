@@ -9,20 +9,32 @@ import ch.epfl.calendar.apiInterface.DatabaseInterface;
 import ch.epfl.calendar.data.Course;
 
 /**
- * This class is to complete a course get from isa by adding the information
- * get from the appEngine.
- * Call ConstructCourse.getInstance(yourCourse) to complete it.
+ * This class is to complete a course get from isa by adding the information get
+ * from the appEngine. To use it create a ConstructCourse and call
+ * completeCourse on the ConstructCourse.
  * 
  * @author Maxime
  * 
  */
 public final class ConstructCourse {
 
-    private static Course mCourse = null;
+    private static ConstructCourse constructCourse;
 
-    private ConstructCourse(Course course) {
+    private ConstructCourse() {
+
+    }
+
+    public static ConstructCourse getInstance() {
+        if (constructCourse == null) {
+            return new ConstructCourse();
+        }
+        return constructCourse;
+    }
+
+    public void completeCourse(Course course) {
+
         try {
-            mCourse = completeCourse(course);
+            new DownloadCourseTask().execute(course).get();
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -30,18 +42,6 @@ public final class ConstructCourse {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    public static Course getInstance(Course course) {
-
-        new ConstructCourse(course);
-
-        return mCourse;
-    }
-
-    public Course completeCourse(Course course) throws InterruptedException,
-            ExecutionException {
-        return new DownloadCourseTask().execute(course).get();
 
     }
 

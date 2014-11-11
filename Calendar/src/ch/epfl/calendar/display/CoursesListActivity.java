@@ -101,12 +101,15 @@ public class CoursesListActivity extends Activity {
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
 
         for (Course cours : coursesList) {
-            ConstructCourse.getInstance(cours);
+            ConstructCourse constructCourse = ConstructCourse.getInstance();
+            constructCourse.completeCourse(cours);
+            
             Map<String, String> courseMap = new HashMap<String, String>();
             courseMap.put("Course name", cours.getName());
             courseMap.put("Professor and Credits",
                     "Professor : " + cours.getTeacher() + ", Credits : "
                             + cours.getCredits());
+            
             coursesName.add(courseMap);
         }
         return coursesName;
