@@ -50,6 +50,7 @@ public class AuthenticationActivity extends Activity {
                         username,
                         password)
                     .execute(null, null);
+                setResult(RESULT_OK, getIntent());
             }
         });
 	}
@@ -76,7 +77,6 @@ public class AuthenticationActivity extends Activity {
                         R.string.authenticated,
                         Toast.LENGTH_SHORT)
                     .show();
-            setResult(RESULT_OK, getIntent());
             AuthenticationActivity.this.mThisActivity.finish();
         }
     }
