@@ -22,10 +22,10 @@ public class AuthenticationActivity extends Activity {
 
     private final Activity mThisActivity = this;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_authentication);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_authentication);
 
         mTxtUsername = (EditText) this.findViewById(R.id.txtUsername);
         mTxtPassword = (EditText) this.findViewById(R.id.txtPassword);
@@ -71,12 +71,12 @@ public class AuthenticationActivity extends Activity {
         public void onSuccess(String sessionID) {
             // store the sessionID in the preferences
             TequilaAuthenticationAPI
-            	.getInstance()
-            	.setSessionID(AuthenticationActivity.this.mThisActivity, sessionID);
+                .getInstance()
+                .setSessionID(AuthenticationActivity.this.mThisActivity, sessionID);
             Toast.makeText(AuthenticationActivity.this.mThisActivity,
-            			   R.string.authenticated,
-            			   Toast.LENGTH_SHORT)
-            	.show();
+                        R.string.authenticated,
+                        Toast.LENGTH_SHORT)
+                    .show();
             AuthenticationActivity.this.mThisActivity.finish();
         }
     }

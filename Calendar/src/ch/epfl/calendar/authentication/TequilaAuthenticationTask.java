@@ -34,7 +34,7 @@ import ch.epfl.calendar.utils.InputStreamUtils;
  */
 public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
-	public static final String TAG = "AuthenticationTas Class::";
+    public static final String TAG = "AuthenticationTas Class::";
 
     private Context mContext = null;
     private TequilaAuthenticationListener mListener = null;
@@ -87,9 +87,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         mDialog.show();
     }
 
-	@Override
-	protected String doInBackground(Void... params) {
-	    String result;
+    @Override
+    protected String doInBackground(Void... params) {
+        String result;
         try {
             mLocalContext = new BasicHttpContext();
             int httpCode = 0;
