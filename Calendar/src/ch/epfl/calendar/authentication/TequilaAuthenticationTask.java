@@ -156,6 +156,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             mExceptionOccured = true;
             Log.e("AuthTask::IllegalStateException", e.getMessage());
             return mContext.getString(R.string.error_illegal_state);
+        } catch (TequilaAuthenticationException e) {
+            mExceptionOccured = true;
+            Log.e("AuthTask::TequilaAuthenticationException", e.getMessage());
+            return mContext.getString(R.string.error_wrong_credentials);
         }
 
         if (!this.isCancelled()) {
@@ -199,8 +203,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
      * @param firstTry - If it's the first try, we have to use the username and the passwd
      * @throws ClientProtocolException
      * @throws IOException
+     * @throws TequilaAuthenticationException 
      */
-    private void authenticateOnTequila(String token, boolean firstTry) throws ClientProtocolException, IOException {
+    private void authenticateOnTequila(String token, boolean firstTry) throws IOException, TequilaAuthenticationException {
         Log.i("INFO : ", "Authentication to Tequila");
 
         HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());
@@ -217,8 +222,13 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         }
         authReq.setEntity(new UrlEncodedFormEntity(postBody));
-        client.execute(authReq,
-                new CustomResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
+        try {
+            client.execute(authReq,
+                    new TequilaResponseHandler(TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE));
+        } catch (ClientProtocolException e) {
+            throw new TequilaAuthenticationException(e);
+        }
+
 
         //We get the cookies from Tequila
         if (firstTry) {
