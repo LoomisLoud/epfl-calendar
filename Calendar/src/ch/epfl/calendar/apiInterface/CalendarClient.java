@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
@@ -51,6 +52,8 @@ public class CalendarClient implements CalendarClientInterface {
             coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
         } catch (UnsupportedEncodingException e) {
             throw new CalendarClientException("Parsing Exception", e);
+        } catch (TequilaAuthenticationException e) {
+            throw new CalendarClientException(e);
         }
 
         for (Course course : coursesList) {
@@ -73,11 +76,15 @@ public class CalendarClient implements CalendarClientInterface {
                 .get();
         } catch (InterruptedException e) {
             exceptionOccured = true;
-            errMessage = "INTERRUPTED";
+            errMessage = "Getting timetable : " + mParentActivity.getString(R.string.error_interruption);
             ex = e;
         } catch (ExecutionException e) {
             exceptionOccured = true;
-            errMessage = "EXECUTION";
+            errMessage = "Getting timetable : " + mParentActivity.getString(R.string.error_execution);
+            ex = e;
+        } catch (CancellationException e) {
+            exceptionOccured = true;
+            errMessage = "Getting timetable : " + mParentActivity.getString(R.string.error_authentication_cancel);
             ex = e;
         } finally {
             if (exceptionOccured) {
