@@ -17,7 +17,14 @@ def getContentDetailsFromUrl(url):
 		#print 'INDENT:', json.dumps(data, sort_keys=True, indent=2)
 		try :
 			jsonObj = data[0]
-			jsonResume = jsonObj['courseBook']['paragraphs'][0]['content']
+			categoryLen = len(jsonObj['courseBook']['paragraphs'])
+			i = 0
+			while(i < categoryLen):
+				lang = jsonObj['courseBook']['paragraphs'][i]['lang']
+				if (jsonObj['courseBook']['paragraphs'][i]['type']['code'] == "RUBRIQUE_RESUME" and lang == "en"):
+					jsonResume = jsonObj['courseBook']['paragraphs'][i]['content']
+					break
+				i = i + 1
 
 			#jsonResume = re.sub('(<br />)?(<br />)?','',jsonResume)
 			#jsonResume = re.sub('(<p>)?(</p>)?','', jsonResume)
@@ -30,15 +37,15 @@ colCodeCourse = 0
 colCourseName = 1
 colCredit = -1
 colEnseignant = -1
-urlAppEngine = "http://versatile-hull-742.appspot.com"
-#urlAppEngine = "http://localhost:8080"
+#urlAppEngine = "http://versatile-hull-742.appspot.com"
+urlAppEngine = "http://localhost:8080"
 regex = '(^[A-Z]+)-([0-9]+\(?[a-z]*\)?]*$)'
 regexCode = '^Code[s]?$'
 regexCodeMulCols = '^2ème$'
 regexEnseignant = '(?i)((.*(Enseignants).*)|(.*(coordinateurs).*))'
 credit = 0
 #url details
-urlDetails = 'https://isa.epfl.ch/services/books/2014-2015/course/'
+urlDetails = 'https://isa.epfl.ch/services/books/2013-2014/course/'
 #for each .xls
 for fn in os.listdir('.'):
 	if os.path.isfile(fn):
