@@ -68,7 +68,7 @@ public class CalendarClient implements CalendarClientInterface {
         Exception ex = new Exception();
         String result = null;
         try {
-            new TequilaAuthenticationTask(mParentActivity,
+            result = new TequilaAuthenticationTask(mParentActivity,
                                                     new TequilaAuthenticationHandler(),
                                                     null,
                                                     null)

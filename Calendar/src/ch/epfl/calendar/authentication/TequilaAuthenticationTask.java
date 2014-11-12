@@ -83,7 +83,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         mDialog = new ProgressDialog(mContext);
         mDialog.setTitle(mContext.getString(R.string.be_patient));
         mDialog.setMessage(mContext.getString(R.string.authenticating));
-        mDialog.setCancelable(false);
+        //mDialog.setCancelable(false);
         mDialog.show();
     }
 
