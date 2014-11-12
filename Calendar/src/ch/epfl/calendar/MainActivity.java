@@ -8,17 +8,13 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
@@ -35,9 +31,9 @@ import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.GlobalPreferences;
 
 /**
- *
+ * 
  * @author lweingart
- *
+ * 
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
@@ -46,7 +42,7 @@ public class MainActivity extends Activity implements
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
-    
+
     private static final int SIZE_COLUMN_GAP_DAY = 8;
     private static final int SIZE_FRONT_DAY = 12;
     private static final int SIZE_FRONT_EVENT_DAY = 12;
@@ -56,11 +52,11 @@ public class MainActivity extends Activity implements
     private static final int SIZE_COLUMN_GAP_WEEK = 2;
     private static final int SIZE_FRONT_WEEK = 7;
     private static final int SIZE_FRONT_EVENT_WEEK = 7;
-    
+
     private static final int NUMBER_VISIBLE_DAYS_DAY = 1;
     private static final int NUMBER_VISIBLE_DAYS_3DAYS = 3;
     private static final int NUMBER_VISIBLE_DAYS_WEEK = 7;
-    
+
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private List<Course> listCourses = null;
@@ -77,8 +73,6 @@ public class MainActivity extends Activity implements
         setContentView(R.layout.activity_main);
         mThisActivity = this;
 
-        // *************************************************
-
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
 
@@ -93,103 +87,7 @@ public class MainActivity extends Activity implements
         // Set long press listener for events.
         mWeekView.setEventLongPressListener(this);
 
-        // *************************************************
-
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
-        final ArrayList<String> spinnerList = new ArrayList<String>();
-        spinnerList.add("Day");
-        spinnerList.add("3 Days");
-        spinnerList.add("Week");
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, spinnerList) {
-
-            @Override
-			public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text = (TextView) view
-                        .findViewById(android.R.id.text1);
-                text.setTextColor(Color.WHITE);
-                return view;
-            }
-
-            @Override
-			public View getDropDownView(int position, View convertView,
-                    ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text = (TextView) view
-                        .findViewById(android.R.id.text1);
-                text.setTextColor(Color.WHITE);
-                return view;
-            }
-        };
-
-        ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener() {
-            @Override
-            public boolean onNavigationItemSelected(int position, long itemId) {
-                if (position == 0) {
-                    if (mWeekViewType != TYPE_DAY_VIEW) {
-                        mWeekViewType = TYPE_DAY_VIEW;
-                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_DAY);
-
-                        // Lets change some dimensions to best fit the view.
-                        mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_DAY, getResources()
-                                        .getDisplayMetrics()));
-                        mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_DAY, getResources()
-                                        .getDisplayMetrics()));
-                        mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_DAY,
-                                        getResources().getDisplayMetrics()));
-                    }
-                    return true;
-                } else if (position == 1) {
-                    if (mWeekViewType != TYPE_THREE_DAY_VIEW) {
-                        mWeekViewType = TYPE_THREE_DAY_VIEW;
-                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_3DAYS);
-
-                        // Lets change some dimensions to best fit the view.
-                        mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_3DAYS, getResources()
-                                        .getDisplayMetrics()));
-                        mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_3DAYS, getResources()
-                                        .getDisplayMetrics()));
-                        mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_3DAYS,
-                                        getResources().getDisplayMetrics()));
-                    }
-                    return true;
-                } else if (position == 2) {
-                    if (mWeekViewType != TYPE_WEEK_VIEW) {
-                        mWeekViewType = TYPE_WEEK_VIEW;
-                        mWeekView.setNumberOfVisibleDays(NUMBER_VISIBLE_DAYS_WEEK);
-
-                        // Lets change some dimensions to best fit the view.
-                        mWeekView.setColumnGap((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP, SIZE_COLUMN_GAP_WEEK, getResources()
-                                        .getDisplayMetrics()));
-                        mWeekView.setTextSize((int) TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_WEEK, getResources()
-                                        .getDisplayMetrics()));
-                        mWeekView.setEventTextSize((int) TypedValue
-                                .applyDimension(TypedValue.COMPLEX_UNIT_SP, SIZE_FRONT_EVENT_WEEK,
-                                        getResources().getDisplayMetrics()));
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
-
-        actionBar.setListNavigationCallbacks(arrayAdapter,
-                mOnNavigationListener);
+        actionBarMainActivity();
 
         // TODO : At the beginning of the application, we "logout" the user
         TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
@@ -201,6 +99,69 @@ public class MainActivity extends Activity implements
         }
     }
 
+    private ArrayList<String> spinnerList() {
+        ArrayList<String> spinnerList = new ArrayList<String>();
+        spinnerList.add("Day");
+        spinnerList.add("3 Days");
+        spinnerList.add("Week");
+        return spinnerList;
+    }
+
+    private void actionBarMainActivity() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
+        ArrayAdapter<String> arrayAdapter = new MySpinnerAdapter<String>(this,
+                android.R.layout.simple_spinner_item, spinnerList());
+
+        ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener() {
+            @Override
+            public boolean onNavigationItemSelected(int position, long itemId) {
+                if (position == 0) {
+                    changeCalendarView(TYPE_DAY_VIEW, NUMBER_VISIBLE_DAYS_DAY,
+                            SIZE_COLUMN_GAP_DAY, SIZE_FRONT_DAY,
+                            SIZE_FRONT_EVENT_DAY);
+                    return true;
+                } else if (position == 1) {
+                    changeCalendarView(TYPE_THREE_DAY_VIEW,
+                            NUMBER_VISIBLE_DAYS_3DAYS, SIZE_COLUMN_GAP_3DAYS,
+                            SIZE_FRONT_3DAYS, SIZE_FRONT_EVENT_3DAYS);
+                    return true;
+                } else if (position == 2) {
+                    changeCalendarView(TYPE_WEEK_VIEW,
+                            NUMBER_VISIBLE_DAYS_WEEK, SIZE_COLUMN_GAP_WEEK,
+                            SIZE_FRONT_WEEK, SIZE_FRONT_EVENT_WEEK);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+        
+        actionBar.setListNavigationCallbacks(arrayAdapter,
+                mOnNavigationListener);
+    }
+
+    private void changeCalendarView(int typeView, int numberVisibleDays,
+            int sizeColumnGap, int sizeFront, int sizeFrontEvent) {
+        if (mWeekViewType != typeView) {
+            mWeekViewType = typeView;
+            mWeekView.setNumberOfVisibleDays(numberVisibleDays);
+            // Lets change some dimensions to best fit the view.
+            mWeekView.setColumnGap((int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, sizeColumnGap, getResources()
+                            .getDisplayMetrics()));
+            mWeekView.setTextSize((int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP, sizeFront, getResources()
+                            .getDisplayMetrics()));
+            mWeekView.setEventTextSize((int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP, sizeFrontEvent, getResources()
+                            .getDisplayMetrics()));
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -209,14 +170,13 @@ public class MainActivity extends Activity implements
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void switchToCoursesList() {
+    private void switchToCoursesList() {
         Intent coursesListActivityIntent = new Intent(this,
                 CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
     }
 
-    public void switchToCourseDetails(String courseName) {
-
+    private void switchToCourseDetails(String courseName) {
         Intent courseDetailsActivityIntent = new Intent(this,
                 CourseDetailsActivity.class);
 
@@ -228,7 +188,7 @@ public class MainActivity extends Activity implements
         mDialog.show();
     }
 
-    public void switchToAddEventsActivity() {
+    private void switchToAddEventsActivity() {
         Intent addEventsActivityIntent = new Intent(this,
                 AddEventActivity.class);
         startActivity(addEventsActivityIntent);
@@ -239,13 +199,11 @@ public class MainActivity extends Activity implements
                 AuthenticationActivity.class);
         mThisActivity.startActivityForResult(
                 displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
-
     }
 
     private void switchToCreditsActivity() {
-    	Intent i = new Intent(mThisActivity, CreditsActivity.class);
-    	startActivity(i);
-
+        Intent i = new Intent(mThisActivity, CreditsActivity.class);
+        startActivity(i);
     }
 
     @Override
@@ -271,8 +229,7 @@ public class MainActivity extends Activity implements
         }
     }
 
-
-	public Calendar createCalendar(int year, int month, int day, int hour,
+    public Calendar createCalendar(int year, int month, int day, int hour,
             int minute) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_WEEK, day);
@@ -298,15 +255,15 @@ public class MainActivity extends Activity implements
             }
             idEvent++;
         }
-
         return events;
     }
 
-    /*private String getEventTitle(Calendar time) {
-        return String.format("Event of %02d:%02d %s/%d",
-                time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE),
-                time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH));
-    }*/
+    /*
+     * private String getEventTitle(Calendar time) { return
+     * String.format("Event of %02d:%02d %s/%d", time.get(Calendar.HOUR_OF_DAY),
+     * time.get(Calendar.MINUTE), time.get(Calendar.MONTH) + 1,
+     * time.get(Calendar.DAY_OF_MONTH)); }
+     */
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
