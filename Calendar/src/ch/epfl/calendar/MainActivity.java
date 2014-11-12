@@ -327,20 +327,7 @@ public class MainActivity extends Activity implements
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-    public List<Course> populateCalendar() {
-        CalendarClientInterface cal = new CalendarClient(mThisActivity);
-        List<Course> courses = new ArrayList<Course>();
-
-        try {
-            courses = cal.getISAInformations();
-        } catch (CalendarClientException e) {
-            // TODO catch exceptions and manage
-            e.printStackTrace();
-        }
-        return courses;
-    }
-
+    
     @Override
     protected void onResume() {
         super.onResume();
@@ -348,4 +335,18 @@ public class MainActivity extends Activity implements
             mDialog.dismiss();
         }
     }
+
+    protected List<Course> populateCalendar() {
+        CalendarClientInterface cal = new CalendarClient(mThisActivity);
+        List<Course> courses = new ArrayList<Course>();
+
+        try {
+            courses = cal.getISAInformations();
+        } catch (CalendarClientException e) {
+            Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        
+        return courses;
+    }
+
 }

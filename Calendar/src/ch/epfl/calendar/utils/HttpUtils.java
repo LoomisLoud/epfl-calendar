@@ -52,7 +52,7 @@ public class HttpUtils {
         return null;
     }
     
-    public static String getTokenFromHeader(Header location) {
+    public static String getTokenFromHeader(Header location) throws TequilaAuthenticationException {
         if (location == null) {
             throw new TequilaAuthenticationException("Try to get token, but already authenticated");
         }
