@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
@@ -19,7 +20,9 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.utils.NetworkException;
 import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
+import ch.epfl.calendar.utils.isaparser.ParsingException;
 
 /**
  * For now uses a pre-built xml string and parses it.
@@ -51,9 +54,20 @@ public class CalendarClient implements CalendarClientInterface {
         	byte[] timeTableBytes = getIsaTimetableOnline(mParentActivity).getBytes("UTF-8");
             coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
         } catch (UnsupportedEncodingException e) {
-            throw new CalendarClientException("Parsing Exception", e);
-        } catch (TequilaAuthenticationException e) {
+            Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
             throw new CalendarClientException(e);
+        } catch (TequilaAuthenticationException e) {
+            Log.e(TAG + "TequilaAuthenticationException", e.getMessage());
+            throw new CalendarClientException(e);
+        } catch (ParsingException e) {
+            Log.e(TAG + "ParsingException", e.getMessage());
+            //We don't want that the user sees this exception
+        } catch (NullPointerException e) {
+            Log.e(TAG + "NullPointerException", e.getMessage());
+            //We don't want that the user sees this exception
+        } catch (NetworkException e) {
+            Log.e(TAG + "NetworkException", e.getMessage());
+            //This Exception is already shown to the user
         }
 
         for (Course course : coursesList) {
@@ -62,7 +76,7 @@ public class CalendarClient implements CalendarClientInterface {
         return coursesList;
     }
 
-    private String getIsaTimetableOnline(Context context) throws TequilaAuthenticationException {
+    private String getIsaTimetableOnline(Context context) throws TequilaAuthenticationException, NetworkException {
         boolean exceptionOccured = false;
         String errMessage = "";
         Exception ex = new Exception();
@@ -74,6 +88,13 @@ public class CalendarClient implements CalendarClientInterface {
                               null)
                 .execute(null, null)
                 .get();
+            if (result.equals(mParentActivity.getString(R.string.network_unreachable))) {
+                throw new NetworkException(
+                        "Getting timetable : " + mParentActivity.getString(R.string.network_unreachable)); 
+            } else if (result.equals(mParentActivity.getString(R.string.error_wrong_credentials))) {
+                TequilaAuthenticationAPI.getInstance().clearStoredData(mParentActivity);
+                throw new TequilaAuthenticationException(mParentActivity.getString(R.string.error_disconnected));
+            }
         } catch (InterruptedException e) {
             exceptionOccured = true;
             errMessage = "Getting timetable : " + mParentActivity.getString(R.string.error_interruption);
