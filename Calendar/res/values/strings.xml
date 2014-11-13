@@ -17,6 +17,7 @@
     <string name="error_execution">Error during execution</string>
     <string name="error_interruption">Interruption during process</string>
     <string name="error_wrong_credentials">Username and/or Password is wrong</string>
+    <string name="error_disconnected">You were disconnected, please login !</string>
     <string name="login_success">Successfully logged in!</string>
     <string name="error_authentication_cancel">Authentication was cancelled!</string>
     <string name="network_unreachable">Network unreachable, please verify your connection</string>

@@ -25,6 +25,7 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.HttpUtils;
 import ch.epfl.calendar.utils.InputStreamUtils;
+import ch.epfl.calendar.utils.NetworkException;
 
 /**
  * The main class that connects with the Tequila server and authenticates user
@@ -96,6 +97,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params) {
         String result;
         try {
+            if (!this.isNetworkWorking(mContext)) {
+                throw new NetworkException(mContext.getString(R.string.network_unreachable));
+            }
             mLocalContext = new BasicHttpContext();
             int httpCode = 0;
             boolean firstTry = true;
@@ -134,6 +138,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 int timeoutAuthentication = TIMEOUT_AUTHENTICATION;
 
                 while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK && timeoutAuthentication > 0) {
+                    if (!this.isNetworkWorking(mContext)) {
+                        throw new IOException(mContext.getString(R.string.network_unreachable));
+                    }
                     try {
                         mCurrentToken = HttpUtils.getTokenFromHeader(mRespGetTimetable.getFirstHeader("Location"));
                     } catch (TequilaAuthenticationException e) {
@@ -167,20 +174,24 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         } catch (ClientProtocolException e) {
             mExceptionOccured = true;
-            Log.e("AuthTask::ClientProtocolException", e.getMessage());
+            Log.e(TAG + "ClientProtocolException", e.getMessage());
             return mContext.getString(R.string.error_http_protocol);
         } catch (IOException e) {
             mExceptionOccured = true;
-            Log.e("AuthTask::IOException", e.getMessage());
+            Log.e(TAG + "IOException", e.getMessage());
             return mContext.getString(R.string.error_io);
         } catch (IllegalStateException e) {
             mExceptionOccured = true;
-            Log.e("AuthTask::IllegalStateException", e.getMessage());
+            Log.e(TAG + "IllegalStateException", e.getMessage());
             return mContext.getString(R.string.error_illegal_state);
         } catch (TequilaAuthenticationException e) {
             mExceptionOccured = true;
-            Log.e("AuthTask::TequilaAuthenticationException", e.getMessage());
+            Log.e(TAG + "TequilaAuthenticationException", e.getMessage());
             return mContext.getString(R.string.error_wrong_credentials);
+        } catch (NetworkException e) {
+            mExceptionOccured = true;
+            Log.e(TAG + "NetworkException", e.getMessage());
+            return mContext.getString(R.string.network_unreachable);
         }
 
         if (!this.isCancelled()) {
@@ -297,5 +308,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         globalPrefs.setSessionIDCookie(HttpUtils.getCookie(client, SESSIONID));
 
         return mRespGetTimetable.getStatusLine().getStatusCode();
+    }
+    
+    private boolean isNetworkWorking(Context context) {
+        return HttpUtils.isNetworkWorking(context);
     }
 }

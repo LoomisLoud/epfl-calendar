@@ -343,7 +343,7 @@ public class MainActivity extends Activity implements
         try {
             courses = cal.getISAInformations();
         } catch (CalendarClientException e) {
-            Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_LONG).show();
         }
         
         return courses;
