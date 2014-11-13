@@ -266,6 +266,9 @@ public class MainActivity extends Activity implements
             case R.id.action_update_activity:
                 populateCalendar();
                 return true;
+            case R.id.action_logout:
+                logout();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -347,6 +350,10 @@ public class MainActivity extends Activity implements
         }
         
         return courses;
+    }
+
+    private void logout() {
+        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
     }
 
 }
