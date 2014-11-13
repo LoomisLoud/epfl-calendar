@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -57,6 +58,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private static final String SESSIONID = "JSESSIONID";
     private static final String TEQUILA_KEY = "tequila_key";
     private static final String TEQUILA_USER = "tequila_user";
+    private static final String DOMAIN_ISA = "isa.epfl.ch";
+    private static final String DOMAIN_TEQUILA = "tequila.epfl.ch";
+    private static final String PATH_ISA = "/service";
     private static final int TIMEOUT_AUTHENTICATION = 10;
 
     /**
@@ -83,7 +87,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         mDialog = new ProgressDialog(mContext);
         mDialog.setTitle(mContext.getString(R.string.be_patient));
         mDialog.setMessage(mContext.getString(R.string.authenticating));
-        //mDialog.setCancelable(false);
+        //FIXME : is it really useful ?
+        mDialog.setCancelable(false);
         mDialog.show();
     }
 
@@ -98,8 +103,24 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
             Log.d(TAG, "AUTHENTICATED : "+GlobalPreferences.isAuthenticated(mContext));
             if (GlobalPreferences.isAuthenticated(mContext)) {
-                mSessionID = TequilaAuthenticationAPI.getInstance().getSessionID(mContext);
+                mSessionID = tequilaApi.getSessionID(mContext);
+                mUsername = tequilaApi.getUsername(mContext);
+                String tequilaKey = tequilaApi.getTequilaKey(mContext);
+
+                BasicClientCookie isaCookie = new BasicClientCookie(SESSIONID, mSessionID);
+                isaCookie.setDomain(DOMAIN_ISA);
+                isaCookie.setPath(PATH_ISA);
+                
+                BasicClientCookie tequilaUsernameCookie = new BasicClientCookie(TEQUILA_USER, mUsername);
+                tequilaUsernameCookie.setDomain(DOMAIN_TEQUILA);
+                BasicClientCookie tequilaKeyCookie = new BasicClientCookie(TEQUILA_KEY, tequilaKey);
+                tequilaKeyCookie.setDomain(DOMAIN_TEQUILA);
+
+                globalPrefs.setSessionIDCookie(isaCookie);
+                globalPrefs.setTequilaUsernameCookie(tequilaUsernameCookie);
+                globalPrefs.setTequilaKeyCookie(tequilaKeyCookie);
                 Log.i(TAG, "SESSION ID : " + mSessionID);
+                
                 //Try to access to ISA to get a token
                 httpCode = getAccessToIsa(mSessionID, null);
                 firstTry = false;
@@ -163,6 +184,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         }
 
         if (!this.isCancelled()) {
+            tequilaApi.setUsername(mContext, globalPrefs.getTequilaUsernameCookie().getValue());
+            tequilaApi.setTequilaKey(mContext, globalPrefs.getTequilaKeyCookie().getValue());
             return result;
         } else {
             // onCancelled() will be called instead of onPostExecute()
@@ -205,7 +228,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
      * @throws IOException
      * @throws TequilaAuthenticationException 
      */
-    private void authenticateOnTequila(String token, boolean firstTry) throws IOException, TequilaAuthenticationException {
+    private void authenticateOnTequila(String token, boolean firstTry)
+        throws IOException, TequilaAuthenticationException {
+        
         Log.i("INFO : ", "Authentication to Tequila");
 
         HttpPost authReq = new HttpPost(tequilaApi.getTequilaAuthenticationURL());

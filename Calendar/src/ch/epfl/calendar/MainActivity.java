@@ -35,7 +35,7 @@ import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.GlobalPreferences;
 
 /**
- *
+ * 
  * @author lweingart
  *
  */
@@ -192,7 +192,7 @@ public class MainActivity extends Activity implements
                 mOnNavigationListener);
 
         // TODO : At the beginning of the application, we "logout" the user
-        TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
+//        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
 
         if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
             switchToAuthenticationActivity();
