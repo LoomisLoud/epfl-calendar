@@ -41,8 +41,8 @@ public class CoursesListActivity extends Activity {
         final List<Map<String, String>> courseInfoList = retrieveCourseInfo(coursesList);
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
-                android.R.layout.simple_list_item_2,
-                new String[] {"Course name", "Professor and Credits" },
+                android.R.layout.simple_list_item_2, 
+                new String[] {"Course name", "Course information" }, 
                 new int[] {android.R.id.text1, android.R.id.text2 });
 
         mListView.setAdapter(simpleAdapter);
@@ -105,13 +105,14 @@ public class CoursesListActivity extends Activity {
         for (Course cours : coursesList) {
             ConstructCourse constructCourse = ConstructCourse.getInstance();
             constructCourse.completeCourse(cours);
-            
+
             Map<String, String> courseMap = new HashMap<String, String>();
             courseMap.put("Course name", cours.getName());
-            courseMap.put("Professor and Credits",
+            courseMap.put("Course information",
                     "Professor : " + cours.getTeacher() + ", Credits : "
-                            + cours.getCredits());
-            
+                            + cours.getCredits() + "\n"
+                            + cours.getPeriods().toString());
+
             coursesName.add(courseMap);
         }
         return coursesName;
