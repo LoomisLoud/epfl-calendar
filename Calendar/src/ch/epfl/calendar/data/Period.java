@@ -32,7 +32,7 @@ public class Period{
     private static final int MONTH_MAX = 12;
     private static final int YEAR_MIN = 1970;
     private static final int HOUR_MIN = 0;
-    private static final int HOUR_MAX = 2;
+    private static final int HOUR_MAX = 23;
     private static final int MINUTE_MIN = 0;
     private static final int MINUTE_MAX = 59;
     
@@ -73,9 +73,9 @@ public class Period{
             if (timeParts.length != HOUR_PARTS_LENGTH) {
                 throw new IllegalArgumentException("Parsing date failed");
             }
-            int day = Integer.parseInt(dateParts[2]);
+            int year = Integer.parseInt(dateParts[2]);
             int month = Integer.parseInt(dateParts[1])-1;
-            int year = Integer.parseInt(dateParts[0]);
+            int day = Integer.parseInt(dateParts[0]);
             int hour = Integer.parseInt(timeParts[0]);
             int minute = Integer.parseInt(timeParts[1]);
             
@@ -95,9 +95,9 @@ public class Period{
             if (hour < HOUR_MIN || hour > HOUR_MAX) {
                 throw new IllegalArgumentException("Parsed date is impossible");
             }
-            return new GregorianCalendar(day,
+            return new GregorianCalendar(year,
                                         month,
-                                        year,
+                                        day,
                                         hour,
                                         minute);
         } else {
