@@ -17,6 +17,7 @@ import android.widget.SimpleAdapter;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
+import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.utils.ConstructCourse;
 
@@ -90,6 +91,8 @@ public class CoursesListActivity extends Activity {
             retrieveData = new ArrayList<Course>(
                     calendarClient.getISAInformations());
         } catch (CalendarClientException e) {
+            e.printStackTrace();
+        } catch (TequilaAuthenticationException e) {
             e.printStackTrace();
         }
         return retrieveData;

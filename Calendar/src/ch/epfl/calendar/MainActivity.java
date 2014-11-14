@@ -25,6 +25,7 @@ import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
+import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AddEventActivity;
@@ -347,6 +348,9 @@ public class MainActivity extends Activity implements
             courses = cal.getISAInformations();
         } catch (CalendarClientException e) {
             Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (TequilaAuthenticationException e) {
+            Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_LONG).show();
+            this.switchToAuthenticationActivity();
         }
         
         return courses;
@@ -354,6 +358,7 @@ public class MainActivity extends Activity implements
 
     private void logout() {
         TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+        switchToAuthenticationActivity();
     }
 
 }
