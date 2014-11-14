@@ -55,6 +55,8 @@ public class ISAXMLParserTest extends TestCase {
     private static InputStream standardReadStudyPeriod;
     private static InputStream standardReadStudyPeriodNull;
     private static InputStream standardReadStudyPeriodNullWithDates;
+    private static InputStream standardReadStudyPeriodNullWithWrongDate;
+    private static InputStream standardReadStudyPeriodNullWithWrongHour;
     private static InputStream standardReadData;
     private static InputStream standardReadDataNull;
     private static InputStream standardInput;
@@ -100,6 +102,10 @@ public class ISAXMLParserTest extends TestCase {
                         + "</name></room></study-period>").getBytes("UTF-8"));
         standardReadStudyPeriodNullWithDates = new ByteArrayInputStream(("<study-period>"
                 + "<date>13.10.2014</date><startTime>14:15</startTime><endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
+        standardReadStudyPeriodNullWithWrongDate = new ByteArrayInputStream(("<study-period>"
+                + "<date>13.10.2014.14</date><startTime>14:15</startTime><endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
+        standardReadStudyPeriodNullWithWrongHour = new ByteArrayInputStream(("<study-period>"
+                + "<date>13.10.2014</date><startTime>14:15:16</startTime><endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
         standardReadStudyPeriodNull = new ByteArrayInputStream("<study-period></study-period>".getBytes("UTF-8"));
         standardReadData = 
                 new ByteArrayInputStream(("<data><study-period><id>1808047617</id><date>13.10.2014</date>"
@@ -209,20 +215,11 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadStudyPeriodNull, null);
             parser.nextTag();
-            Course course = (Course) readStudyPeriod.invoke(null, new Object[] {parser});
+            readStudyPeriod.invoke(null, new Object[] {parser});
             fail("It doesn't fail with null Period");
-            assertEquals(0, course.getCredits());
-            assertNull(course.getTeacher());
-            assertNull(course.getName());
-            assertNotNull(course.getPeriods());
-            assertNull(course.getPeriods().get(0).getStartDate());
-            assertNull(course.getPeriods().get(0).getEndDate());
-            assertNull(course.getPeriods().get(0).getType());
-            assertNotNull(course.getPeriods().get(0).getRooms());
-            assertEquals(0, course.getPeriods().get(0).getRooms().size());
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                if (e.getMessage().equals("Date or Hour is null in createCalendar()")) {
+                if (e.getTargetException().getMessage().equals("Date or Hour is null in createCalendar()")) {
                     //waited exception
                 } else {
                     fail("Wrong NullPointerException");
@@ -246,6 +243,40 @@ public class ISAXMLParserTest extends TestCase {
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(0, course.getPeriods().get(0).getRooms().size());
         } finally { }
+        
+      //With null arguments but wrong date
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(standardReadStudyPeriodNullWithWrongDate, null);
+            parser.nextTag();
+            readStudyPeriod.invoke(null, new Object[] {parser});
+            fail("It doesn't fail with wrong Date");
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof IllegalArgumentException) {
+                if (e.getTargetException().getMessage().equals("Parsing date failed")) {
+                    //waited exception
+                } else {
+                    fail("Wrong IllegalArgumentException");
+                }
+            }
+        }
+        
+      //With null arguments but wrong hour
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(standardReadStudyPeriodNullWithWrongHour, null);
+            parser.nextTag();
+            readStudyPeriod.invoke(null, new Object[] {parser});
+            fail("It doesn't fail with wrong Hour");
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof IllegalArgumentException) {
+                if (e.getTargetException().getMessage().equals("Parsing date failed")) {
+                    //waited exception
+                } else {
+                    fail("Wrong IllegalArgumentException");
+                }
+            }
+        }
         
         //With standard input
         try {

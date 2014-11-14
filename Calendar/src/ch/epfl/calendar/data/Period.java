@@ -63,6 +63,8 @@ public class Period{
             if (timeParts.length != HOUR_PARTS_LENGTH) {
                 throw new IllegalArgumentException("Parsing date failed");
             }
+            //FIXME : Test if dateParts and timeParts are valid value ?
+            //FIXME : In this case, what is the exception thrown by GregorianCalendar ? IllegalArg ?
             return new GregorianCalendar(Integer.parseInt(dateParts[2]),
                                         Integer.parseInt(dateParts[1])-1,
                                         Integer.parseInt(dateParts[0]),

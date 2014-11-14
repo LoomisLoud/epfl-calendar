@@ -32,7 +32,6 @@ public class CourseTest extends TestCase {
 //        assertEquals(returnedPeriods.get(1).getDate(), "date2");
 //        assertEquals(returnedPeriods.get(1).getStartTime(), "startTime2");
 //        assertEquals(returnedPeriods.get(1).getEndTime(), "endTime2");
-        System.out.println(returnedPeriods.get(1).getType().toString());
         assertEquals(returnedPeriods.get(1).getType(), PeriodType.EXERCISES);
         assertEquals(returnedPeriods.get(1).getRooms().size(), 0);
     }
