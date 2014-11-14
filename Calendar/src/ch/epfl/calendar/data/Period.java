@@ -26,6 +26,12 @@ public class Period{
     
     private static final int DATE_PARTS_LENGTH = 3;
     private static final int HOUR_PARTS_LENGTH = 2;
+    private static final String TYPE_EXERCISES_FR = "Exercices";
+    private static final String TYPE_EXERCISES_EN = "Exercises";
+    private static final String TYPE_PROJECT_FR = "Projet";
+    private static final String TYPE_PROJECT_EN = "Project";
+    private static final String TYPE_LECTURE_FR = "Cours";
+    private static final String TYPE_LECTURE_EN = "Lecture";
 
     public Period(String date, String startTime, String endTime, String type,
             List<String> rooms) {
@@ -38,7 +44,9 @@ public class Period{
                 mEndDate = temp;
             }
         }
-        setType(type);
+        if (type != null) {
+            setType(type);
+        }
         this.mRooms = rooms;
     }
     
@@ -87,28 +95,14 @@ public class Period{
             throw new NullPointerException();
         }
         PeriodType periodType= null;
-        switch (type) {
-            case "Exercises":
-                periodType = PeriodType.EXERCISES;
-                break;
-            case "Exercices":
-                periodType = PeriodType.EXERCISES;
-                break;
-            case "Project":
-                periodType = PeriodType.PROJECT;
-                break;
-            case "Projet":
-                periodType = PeriodType.PROJECT;
-                break;
-            case "Lecture":
-                periodType = PeriodType.LECTURE;
-                break;
-            case "Cours":
-                periodType = PeriodType.LECTURE;
-                break;
-            default:
-                periodType = PeriodType.DEFAULT;
-                break;
+        if (type.equals(TYPE_EXERCISES_EN) || type.equals(TYPE_EXERCISES_FR)) {
+            periodType = PeriodType.EXERCISES;
+        } else if (type.equals(TYPE_PROJECT_EN) || type.equals(TYPE_PROJECT_FR)) {
+            periodType = PeriodType.PROJECT;
+        } else if (type.equals(TYPE_LECTURE_EN) || type.equals(TYPE_LECTURE_FR)) {
+            periodType = PeriodType.LECTURE;
+        } else {
+            periodType = PeriodType.DEFAULT;
         }
         this.mType = periodType;
     }

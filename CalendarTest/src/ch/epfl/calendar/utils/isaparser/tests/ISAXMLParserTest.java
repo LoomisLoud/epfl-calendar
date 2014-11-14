@@ -18,6 +18,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
 import ch.epfl.calendar.utils.isaparser.ParsingException;
 
@@ -230,7 +231,7 @@ public class ISAXMLParserTest extends TestCase {
             //Month is actual month - 1
             assertEquals(new GregorianCalendar(2014, 9, 13, 14, 15), course.getPeriods().get(0).getStartDate());
             assertEquals(new GregorianCalendar(2014, 9, 13, 16, 00), course.getPeriods().get(0).getEndDate());
-            assertEquals("Cours", course.getPeriods().get(0).getType());
+            assertEquals(PeriodType.LECTURE, course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(1, course.getPeriods().get(0).getRooms().size());
             assertEquals("CO 2", course.getPeriods().get(0).getRooms().get(0));
