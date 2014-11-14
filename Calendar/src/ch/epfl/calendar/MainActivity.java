@@ -21,12 +21,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
-import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AddEventActivity;
@@ -345,14 +343,7 @@ public class MainActivity extends Activity implements
 
     protected void populateCalendar() {
         CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
-        try {
-            cal.getISAInformations();
-        } catch (CalendarClientException e) {
-            Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_LONG).show();
-        } catch (TequilaAuthenticationException e) {
-            Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_LONG).show();
-            this.switchToAuthenticationActivity();
-        }
+        cal.getISAInformations();
     }
 
     private void logout() {

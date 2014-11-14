@@ -92,13 +92,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     protected void onPreExecute() {
         mDialog = new ProgressDialog(mContext);
         mDialog.setTitle(mContext.getString(R.string.be_patient));
-        mDialog.setMessage(mContext.getString(R.string.authenticating));
-//        mDialog.setCancelable(false);
+        mDialog.setMessage(mContext.getString(R.string.authenticatinguploading));
+        mDialog.setCancelable(false);
         mDialog.show();
-        if (mDialog.isShowing()) {
-            System.out.println(mContext.toString());
-            System.out.println(mDialog.isShowing());
-        }
     }
 
     @Override
@@ -113,7 +109,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             boolean firstTry = true;
             String tokenList = "";
 
-            Log.d(TAG, "AUTHENTICATED : "+GlobalPreferences.isAuthenticated(mContext));
+            Log.d(TAG, "AUTHENTICATED : " + GlobalPreferences.isAuthenticated(mContext));
             if (GlobalPreferences.isAuthenticated(mContext)) {
                 mSessionID = tequilaApi.getSessionID(mContext);
                 mUsername = tequilaApi.getUsername(mContext);
