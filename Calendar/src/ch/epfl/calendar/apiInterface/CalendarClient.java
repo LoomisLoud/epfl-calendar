@@ -90,11 +90,12 @@ public class CalendarClient implements CalendarClientInterface {
                 .get();
             if (result.equals(mParentActivity.getString(R.string.network_unreachable))) {
                 throw new NetworkException(
-                        "Getting timetable : " + mParentActivity.getString(R.string.network_unreachable)); 
-            } else if (result.equals(mParentActivity.getString(R.string.error_wrong_credentials))) {
-                TequilaAuthenticationAPI.getInstance().clearStoredData(mParentActivity);
-                throw new TequilaAuthenticationException(mParentActivity.getString(R.string.error_disconnected));
+                        "Getting timetable : " + mParentActivity.getString(R.string.network_unreachable));
             }
+//            } else if (result.equals(mParentActivity.getString(R.string.error_wrong_credentials))) {
+//                TequilaAuthenticationAPI.getInstance().clearStoredData(mParentActivity);
+//                throw new TequilaAuthenticationException(mParentActivity.getString(R.string.error_disconnected));
+//            }
         } catch (InterruptedException e) {
             exceptionOccured = true;
             errMessage = "Getting timetable : " + mParentActivity.getString(R.string.error_interruption);
