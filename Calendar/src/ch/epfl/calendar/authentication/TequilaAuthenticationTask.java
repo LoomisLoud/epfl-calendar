@@ -89,7 +89,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         mDialog.setTitle(mContext.getString(R.string.be_patient));
         mDialog.setMessage(mContext.getString(R.string.authenticating));
         //FIXME : is it really useful ?
-        mDialog.setCancelable(false);
+//        mDialog.setCancelable(false);
         mDialog.show();
     }
 
@@ -139,7 +139,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
                 while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK && timeoutAuthentication > 0) {
                     if (!this.isNetworkWorking(mContext)) {
-                        throw new IOException(mContext.getString(R.string.network_unreachable));
+                        throw new NetworkException(mContext.getString(R.string.network_unreachable));
                     }
                     try {
                         mCurrentToken = HttpUtils.getTokenFromHeader(mRespGetTimetable.getFirstHeader("Location"));
@@ -187,7 +187,11 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         } catch (TequilaAuthenticationException e) {
             mExceptionOccured = true;
             Log.e(TAG + "TequilaAuthenticationException", e.getMessage());
-            return mContext.getString(R.string.error_wrong_credentials);
+            if (mSessionID == null) {
+                return mContext.getString(R.string.error_wrong_credentials);
+            } else {
+                return mContext.getString(R.string.error_disconnected);
+            }
         } catch (NetworkException e) {
             mExceptionOccured = true;
             Log.e(TAG + "NetworkException", e.getMessage());
