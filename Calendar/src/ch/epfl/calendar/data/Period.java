@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Period{
 
-    private String mType;
+    private PeriodType mType;
     private Calendar mStartDate;
     private Calendar mEndDate;
     private List<String> mRooms;
@@ -38,7 +38,7 @@ public class Period{
                 mEndDate = temp;
             }
         }
-        this.mType = type;
+        setType(type);
         this.mRooms = rooms;
     }
     
@@ -67,7 +67,7 @@ public class Period{
     /**
      * @return the mType
      */
-    public String getType() {
+    public PeriodType getType() {
         return mType;
     }
 
@@ -75,11 +75,42 @@ public class Period{
      * @param mType
      *            the mType to set
      */
-    public void setType(String type) {
+    public void setType(PeriodType type) {
         if (type == null) {
             throw new NullPointerException();
         }
         this.mType = type;
+    }
+    
+    public void setType(String type) {
+        if (type == null) {
+            throw new NullPointerException();
+        }
+        PeriodType periodType= null;
+        switch (type) {
+            case "Exercises":
+                periodType = PeriodType.EXERCISES;
+                break;
+            case "Exercices":
+                periodType = PeriodType.EXERCISES;
+                break;
+            case "Project":
+                periodType = PeriodType.PROJECT;
+                break;
+            case "Projet":
+                periodType = PeriodType.PROJECT;
+                break;
+            case "Lecture":
+                periodType = PeriodType.LECTURE;
+                break;
+            case "Cours":
+                periodType = PeriodType.LECTURE;
+                break;
+            default:
+                periodType = PeriodType.DEFAULT;
+                break;
+        }
+        this.mType = periodType;
     }
 
     /**
