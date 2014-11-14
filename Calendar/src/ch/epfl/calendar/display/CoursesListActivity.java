@@ -91,8 +91,9 @@ public class CoursesListActivity extends Activity {
             retrieveData = new ArrayList<Course>(
                     calendarClient.getISAInformations());
         } catch (CalendarClientException e) {
-        	Toast.makeText(CoursesListActivity.this, 
-            		"Could not retrieve data, check your internet connection", Toast.LENGTH_LONG).show();
+            Toast.makeText(CoursesListActivity.this,
+                    "Could not retrieve data, check your internet connection",
+                    Toast.LENGTH_LONG).show();
         }
         return retrieveData;
     }
