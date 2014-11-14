@@ -12,6 +12,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
+import android.widget.Toast;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.AppEngineClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
@@ -41,11 +42,11 @@ public class CourseDetailsActivity extends Activity {
         try {
             course = new DownloadCourseTask().execute(courseName).get();
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Toast.makeText(CourseDetailsActivity.this, 
+            		"Could not retrieve data from the course", Toast.LENGTH_LONG).show();
         } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Toast.makeText(CourseDetailsActivity.this, 
+            		"Could not retrieve data, check your internet connection", Toast.LENGTH_LONG).show();
         }
 
         if (course == null) {
@@ -112,8 +113,8 @@ public class CourseDetailsActivity extends Activity {
                 course = appEngineClient.getCourseByName(courseName);
 
             } catch (CalendarClientException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            	Toast.makeText(CourseDetailsActivity.this, 
+                		"Could not retrieve data, check your internet connection", Toast.LENGTH_LONG).show();
             }
             return course;
         }

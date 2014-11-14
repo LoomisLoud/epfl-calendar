@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
@@ -90,7 +91,8 @@ public class CoursesListActivity extends Activity {
             retrieveData = new ArrayList<Course>(
                     calendarClient.getISAInformations());
         } catch (CalendarClientException e) {
-            e.printStackTrace();
+        	Toast.makeText(CoursesListActivity.this, 
+            		"Could not retrieve data, check your internet connection", Toast.LENGTH_LONG).show();
         }
         return retrieveData;
     }
