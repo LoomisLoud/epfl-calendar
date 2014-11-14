@@ -23,6 +23,11 @@ import android.util.Xml;
 public class ISAXMLParser {
     // We don't use namespaces
     private static final String NMP = null;
+    private XmlPullParser mParser = null;
+    
+    public ISAXMLParser() {
+        mParser = Xml.newPullParser();
+    }
    
     /**
      * Parse an InputStream
@@ -31,16 +36,15 @@ public class ISAXMLParser {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    public static List<Course> parse(InputStream in) {
+    public List<Course> parse(InputStream in) {
         if (in == null) {
             throw new NullPointerException("InputStream is null");
         }
         try {
-            XmlPullParser parser = Xml.newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(in, null);
-            parser.nextTag();
-            return readData(parser);
+            mParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            mParser.setInput(in, null);
+            mParser.nextTag();
+            return readData();
         } catch (XmlPullParserException e) {
             throw new ParsingException("Parsing Error during XML Parsing");
         } catch (IOException e) {
@@ -58,27 +62,27 @@ public class ISAXMLParser {
     
     /**
      * Read Data
-     * @param parser
+     * @param mParser
      * @return
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private static List<Course> readData(XmlPullParser parser) {
-        if (parser == null) {
+    private List<Course> readData() {
+        if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
         List<Course> courses = new ArrayList<Course>();
         try {
-            parser.require(XmlPullParser.START_TAG, NMP, "data");
-            while (parser.next() != XmlPullParser.END_TAG) {
+            mParser.require(XmlPullParser.START_TAG, NMP, "data");
+            while (mParser.next() != XmlPullParser.END_TAG) {
                 boolean added = false;
-                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                if (mParser.getEventType() != XmlPullParser.START_TAG) {
                     continue;
                 }
-                String nameParser = parser.getName();
+                String nameParser = mParser.getName();
                 // Starts by looking for the study-period tag
                 if (nameParser.equals("study-period")) {
-                    Course newCourse = readStudyPeriod(parser);
+                    Course newCourse = readStudyPeriod();
                     for (Course course: courses) {
                         if (course.getName().equals(newCourse.getName())) {
                             course.addPeriod(newCourse.getPeriods().get(0));
@@ -89,7 +93,7 @@ public class ISAXMLParser {
                         courses.add(newCourse);
                     }
                 } else {
-                    skip(parser);
+                    skip();
                 }
             }  
             return courses;
@@ -102,41 +106,41 @@ public class ISAXMLParser {
     
     /**
      * Processes different tags to construct a Course Object.
-     * @param parser
+     * @param mParser
      * @return
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private static Course readStudyPeriod(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser == null) {
+    private Course readStudyPeriod() throws XmlPullParserException, IOException {
+        if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
-        parser.require(XmlPullParser.START_TAG, NMP, "study-period");
+        mParser.require(XmlPullParser.START_TAG, NMP, "study-period");
         String course = null;
         String date = null;
         String startTime = null;
         String endTime = null;
         String type = null;
         List<String> rooms = new ArrayList<String>();
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
+        while (mParser.next() != XmlPullParser.END_TAG) {
+            if (mParser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            String nameParser = parser.getName();
+            String nameParser = mParser.getName();
             if (nameParser.equals("course")) {
-                course = readCourse(parser);
+                course = readCourse();
             } else if (nameParser.equals("date")) {
-                date = readText(parser);
+                date = readText();
             } else if (nameParser.equals("startTime")) {
-                startTime = readText(parser);
+                startTime = readText();
             } else if (nameParser.equals("endTime")) {
-                endTime = readText(parser);
+                endTime = readText();
             } else if (nameParser.equals("type")) {
-                type = readType(parser);
+                type = readType();
             } else if (nameParser.equals("room")) {
-                rooms.add(readRoom(parser));
+                rooms.add(readRoom());
             } else {
-                skip(parser);
+                skip();
             }
         }
         return new Course(course, date, startTime, endTime, type, rooms);
@@ -145,26 +149,26 @@ public class ISAXMLParser {
     
     /**
      * Processes course tags.
-     * @param parser
+     * @param mParser
      * @return
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private static String readCourse(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser == null) {
+    private String readCourse() throws XmlPullParserException, IOException {
+        if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
-        parser.require(XmlPullParser.START_TAG, NMP, "course");
+        mParser.require(XmlPullParser.START_TAG, NMP, "course");
         String name = null;
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
+        while (mParser.next() != XmlPullParser.END_TAG) {
+            if (mParser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            String nameParser = parser.getName();
+            String nameParser = mParser.getName();
             if (nameParser.equals("name")) {
-                name = readName(parser);
+                name = readName();
             } else {
-                skip(parser);
+                skip();
             }
         }
         return name;
@@ -172,27 +176,27 @@ public class ISAXMLParser {
     
     /**
      * Processes Type tags.
-     * @param parser
+     * @param mParser
      * @return
      * @throws XmlPullParserException
      * @throws IOException
      */
     //TODO : Manage different languages (en-fr)
-    private static String readType(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser == null) {
+    private String readType() throws XmlPullParserException, IOException {
+        if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
-        parser.require(XmlPullParser.START_TAG, NMP, "type");
+        mParser.require(XmlPullParser.START_TAG, NMP, "type");
         String text = null;
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
+        while (mParser.next() != XmlPullParser.END_TAG) {
+            if (mParser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            String nameParser = parser.getName();
+            String nameParser = mParser.getName();
             if (nameParser.equals("text")) {
-                text = readText(parser);
+                text = readText();
             } else {
-                skip(parser);
+                skip();
             }
         }
         return text;
@@ -200,27 +204,26 @@ public class ISAXMLParser {
     
     /**
      * Processes room tags.
-     * @param parser
+     * @param mParser
      * @return
      * @throws XmlPullParserException
      * @throws IOException
      */
-    //FIXME : Get the name(GC B3 31) instead of code (GCB331)
-    private static String readRoom(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser == null) {
+    private String readRoom() throws XmlPullParserException, IOException {
+        if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
-        parser.require(XmlPullParser.START_TAG, NMP, "room");
+        mParser.require(XmlPullParser.START_TAG, NMP, "room");
         String name = null;
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
+        while (mParser.next() != XmlPullParser.END_TAG) {
+            if (mParser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            String nameParser = parser.getName();
+            String nameParser = mParser.getName();
             if (nameParser.equals("name")) {
-                name = readName(parser);
+                name = readName();
             } else {
-                skip(parser);
+                skip();
             }
         }
         return name;
@@ -230,26 +233,26 @@ public class ISAXMLParser {
     
     /**
      * Processes text tags.
-     * @param parser
+     * @param mParser
      * @return
      * @throws IOException
      * @throws XmlPullParserException
      */
-    private static String readName(XmlPullParser parser) throws IOException, XmlPullParserException {
-        if (parser == null) {
+    private String readName() throws IOException, XmlPullParserException {
+        if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
-        parser.require(XmlPullParser.START_TAG, NMP, "name");
+        mParser.require(XmlPullParser.START_TAG, NMP, "name");
         String text = null;
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
+        while (mParser.next() != XmlPullParser.END_TAG) {
+            if (mParser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            String nameParser = parser.getName();
+            String nameParser = mParser.getName();
             if (nameParser.equals("text")) {
-                text = readText(parser);
+                text = readText();
             } else {
-                skip(parser);
+                skip();
             }
         }
         return text;
@@ -258,39 +261,39 @@ public class ISAXMLParser {
 
     /**
      * Used for read the name
-     * @param parser
+     * @param mParser
      * @return
      * @throws IOException
      * @throws XmlPullParserException
      */
-    private static String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
-        if (parser == null) {
+    private String readText() throws IOException, XmlPullParserException {
+        if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
         String result = null;
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.getText();
-            parser.nextTag();
+        if (mParser.next() == XmlPullParser.TEXT) {
+            result = mParser.getText();
+            mParser.nextTag();
         }
         return result;
     }
     
     /**
      * Skip tags don't needed
-     * @param parser
+     * @param mParser
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private static void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser == null) {
+    private void skip() throws XmlPullParserException, IOException {
+        if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
-        if (parser.getEventType() != XmlPullParser.START_TAG) {
+        if (mParser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
         }
         int depth = 1;
         while (depth != 0) {
-            switch (parser.next()) {
+            switch (mParser.next()) {
                 case XmlPullParser.END_TAG:
                     depth--;
                     break;
