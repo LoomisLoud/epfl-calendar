@@ -54,6 +54,7 @@ public class ISAXMLParserTest extends TestCase {
     private static InputStream standardReadCourseOther;
     private static InputStream standardReadStudyPeriod;
     private static InputStream standardReadStudyPeriodNull;
+    private static InputStream standardReadStudyPeriodNullWithDates;
     private static InputStream standardReadData;
     private static InputStream standardReadDataNull;
     private static InputStream standardInput;
@@ -97,6 +98,8 @@ public class ISAXMLParserTest extends TestCase {
                         + "+ <course><id>2258712</id><name><text lang=\"fr\">Algorithms</text></name></course>"
                         + "<room><id>2192131</id><code>CO2</code><name><text lang=\"fr\">CO 2</text>"
                         + "</name></room></study-period>").getBytes("UTF-8"));
+        standardReadStudyPeriodNullWithDates = new ByteArrayInputStream(("<study-period>"
+                + "<date>13.10.2014</date><startTime>14:15</startTime><endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
         standardReadStudyPeriodNull = new ByteArrayInputStream("<study-period></study-period>".getBytes("UTF-8"));
         standardReadData = 
                 new ByteArrayInputStream(("<data><study-period><id>1808047617</id><date>13.10.2014</date>"
@@ -207,12 +210,38 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadStudyPeriodNull, null);
             parser.nextTag();
             Course course = (Course) readStudyPeriod.invoke(null, new Object[] {parser});
+            fail("It doesn't fail with null Period");
             assertEquals(0, course.getCredits());
             assertNull(course.getTeacher());
             assertNull(course.getName());
             assertNotNull(course.getPeriods());
             assertNull(course.getPeriods().get(0).getStartDate());
             assertNull(course.getPeriods().get(0).getEndDate());
+            assertNull(course.getPeriods().get(0).getType());
+            assertNotNull(course.getPeriods().get(0).getRooms());
+            assertEquals(0, course.getPeriods().get(0).getRooms().size());
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof NullPointerException) {
+                if (e.getMessage().equals("Date or Hour is null in createCalendar()")) {
+                    //waited exception
+                } else {
+                    fail("Wrong NullPointerException");
+                }
+            }
+        }
+        
+        //With null argument but correct date !
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(standardReadStudyPeriodNullWithDates, null);
+            parser.nextTag();
+            Course course = (Course) readStudyPeriod.invoke(null, new Object[] {parser});
+            assertEquals(0, course.getCredits());
+            assertNull(course.getTeacher());
+            assertNull(course.getName());
+            assertNotNull(course.getPeriods());
+            assertNotNull(course.getPeriods().get(0).getStartDate());
+            assertNotNull(course.getPeriods().get(0).getEndDate());
             assertNull(course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(0, course.getPeriods().get(0).getRooms().size());
@@ -228,7 +257,7 @@ public class ISAXMLParserTest extends TestCase {
             assertNull(course.getTeacher());
             assertEquals("Algorithms", course.getName());
             assertNotNull(course.getPeriods());
-            //Month is actual month - 1
+            //Month is current month - 1
             assertEquals(new GregorianCalendar(2014, 9, 13, 14, 15), course.getPeriods().get(0).getStartDate());
             assertEquals(new GregorianCalendar(2014, 9, 13, 16, 00), course.getPeriods().get(0).getEndDate());
             assertEquals(PeriodType.LECTURE, course.getPeriods().get(0).getType());

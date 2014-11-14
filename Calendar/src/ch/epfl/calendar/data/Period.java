@@ -61,7 +61,7 @@ public class Period{
             //Format of hour : hh:mm
             String[] timeParts = hour.split("\\:");
             if (timeParts.length != HOUR_PARTS_LENGTH) {
-                throw new IllegalArgumentException("Parsing hour failed");
+                throw new IllegalArgumentException("Parsing date failed");
             }
             return new GregorianCalendar(Integer.parseInt(dateParts[2]),
                                         Integer.parseInt(dateParts[1])-1,
