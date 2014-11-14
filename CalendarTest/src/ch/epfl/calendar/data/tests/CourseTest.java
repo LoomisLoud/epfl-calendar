@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
+import ch.epfl.calendar.data.PeriodType;
 
 /**
  * Test class for the {@link ch.epfl.calendar.data.Course} class
@@ -21,15 +22,8 @@ public class CourseTest extends TestCase {
 
     public void testAddPeriod() {
         Course course = new Course("test", "16.06.2014", "16:15", "17:15", "cours", new ArrayList<String>());
-        //FIXME
-        //Period period = new Period("date2", "startTime2", "endTime2", "exercice", new ArrayList<String>());
-        
-        /***********************/
-        Period period = new Period("16.06.2014", "16:15", "17:15", "exercice", new ArrayList<String>());
-        /***********************/
-        
-        
-        
+        Period period = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+
         course.addPeriod(period);
         List<Period> returnedPeriods = course.getPeriods();
         
@@ -38,8 +32,11 @@ public class CourseTest extends TestCase {
 //        assertEquals(returnedPeriods.get(1).getDate(), "date2");
 //        assertEquals(returnedPeriods.get(1).getStartTime(), "startTime2");
 //        assertEquals(returnedPeriods.get(1).getEndTime(), "endTime2");
-        assertEquals(returnedPeriods.get(1).getType(), "exercice");
+        System.out.println(returnedPeriods.get(1).getType().toString());
+        assertEquals(returnedPeriods.get(1).getType(), PeriodType.EXERCISES);
         assertEquals(returnedPeriods.get(1).getRooms().size(), 0);
     }
+    
+    //TODO : Test all type of Period (including DEFAULT, in french, in english)
 
 }
