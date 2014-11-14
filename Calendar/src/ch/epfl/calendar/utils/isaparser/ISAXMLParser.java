@@ -45,6 +45,8 @@ public class ISAXMLParser {
             throw new ParsingException("Parsing Error during XML Parsing");
         } catch (IOException e) {
             throw new ParsingException("IO Error during XML Parsing");
+        } catch (IllegalArgumentException e) {
+            throw new ParsingException(e.getMessage());
         } finally {
             try {
                 in.close();

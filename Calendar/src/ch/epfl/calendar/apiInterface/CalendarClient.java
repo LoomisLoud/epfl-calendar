@@ -66,11 +66,11 @@ public class CalendarClient implements CalendarClientInterface {
 		String result = null;
         try {
             result = new TequilaAuthenticationTask(mParentActivity,
-                            							  new TequilaAuthenticationHandler(),
-                            							  null,
-                            							  null)
-            						.execute(null, null)
-            						.get();
+                              new TequilaAuthenticationHandler(),
+                              null,
+                              null)
+                .execute(null, null)
+                .get();
         } catch (InterruptedException e) {
         	exceptionOccured = true;
         	errMessage = "INTERRUPTED";

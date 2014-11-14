@@ -55,12 +55,13 @@ public class Period{
             //Format of date : dd.mm.yyyy
             String[] dateParts = date.split("\\.");
             if (dateParts.length != DATE_PARTS_LENGTH) {
-                return null;
+                //Exception catched in ISAXMLParser
+                throw new IllegalArgumentException("Parsing date failed");
             }
             //Format of hour : hh:mm
             String[] timeParts = hour.split("\\:");
             if (timeParts.length != HOUR_PARTS_LENGTH) {
-                return null;
+                throw new IllegalArgumentException("Parsing hour failed");
             }
             return new GregorianCalendar(Integer.parseInt(dateParts[2]),
                                         Integer.parseInt(dateParts[1])-1,
@@ -68,7 +69,7 @@ public class Period{
                                         Integer.parseInt(timeParts[0]),
                                         Integer.parseInt(timeParts[1]));
         } else {
-            return null;
+            throw new NullPointerException("Date or Hour is null in createCalendar()");
         }
     }
 
