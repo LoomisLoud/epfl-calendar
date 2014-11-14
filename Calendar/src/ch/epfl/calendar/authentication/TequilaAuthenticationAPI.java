@@ -25,7 +25,8 @@ public final class TequilaAuthenticationAPI {
     private final String isAcademiaLoginURL;
     private final String tequilaAuthenticationURL;
 
-    private static final String ISACADEMIA_LOGIN_URL = "https://isa.epfl.ch/service/secure/student/timetable/week";
+    private static final String ISACADEMIA_LOGIN_URL =
+            "https://isa.epfl.ch/service/secure/student/timetable/period?from=31.08.2014&to=31.08.2015";
     private static final String TEQUILA_AUTHENTICATION_URL = "https://tequila.epfl.ch/cgi-bin/tequila/login";
 
     public static TequilaAuthenticationAPI getInstance() {
