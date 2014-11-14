@@ -148,7 +148,11 @@ public class ISAXMLParserTest extends TestCase {
             new ISAXMLParser().parse(null);
             fail("parse : Fail test null pointer");
         } catch (NullPointerException e) {
-            //waited exception
+            if (e.getMessage().equals("InputStream is null")) {
+                //waited exception
+            } else {
+                fail("testParse wrap wrong NullPointerException");
+            }
         }
     }
 
@@ -162,7 +166,11 @@ public class ISAXMLParserTest extends TestCase {
             fail("readData : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readData wrong NullPointerException");
+                }
             }
         }
         
@@ -208,7 +216,11 @@ public class ISAXMLParserTest extends TestCase {
             fail("readStudyPeriod : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readStudyPeriod wrong NullPointerException");
+                }
             }
         }
         
@@ -311,7 +323,11 @@ public class ISAXMLParserTest extends TestCase {
             fail("readCourse : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readCourse wrong NullPointerException");
+                }
             }
         }
         
@@ -342,7 +358,11 @@ public class ISAXMLParserTest extends TestCase {
             fail("readRoom : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readRoom wrong NullPointerException");
+                }
             }
         }
         
@@ -373,7 +393,11 @@ public class ISAXMLParserTest extends TestCase {
             fail("readType : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readType wrong NullPointerException");
+                }
             }
         }
         
@@ -404,7 +428,11 @@ public class ISAXMLParserTest extends TestCase {
             fail("readName : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readName wrong NullPointerException");
+                }
             }
         }
         
@@ -435,7 +463,11 @@ public class ISAXMLParserTest extends TestCase {
             fail("readText : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readText wrong NullPointerException");
+                }
             }
         }
 
@@ -466,7 +498,11 @@ public class ISAXMLParserTest extends TestCase {
             fail("skip : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("skip wrong NullPointerException");
+                }
             }
         }
         
