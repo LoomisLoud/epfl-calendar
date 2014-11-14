@@ -28,6 +28,10 @@ public class ISAXMLParser {
     public ISAXMLParser() {
         mParser = Xml.newPullParser();
     }
+    
+    public ISAXMLParser(XmlPullParser parser) {
+        mParser = parser;
+    }
    
     /**
      * Parse an InputStream
