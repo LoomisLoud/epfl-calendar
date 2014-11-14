@@ -39,6 +39,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     public static final String TAG = "AuthenticationTas Class::";
 
     private Context mContext = null;
+    private String mResult = null;
     private TequilaAuthenticationListener mListener = null;
     private boolean mExceptionOccured = false;
     private HttpContext mLocalContext = null;
@@ -83,14 +84,21 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         mPassword = password;
     }
 
+    public String getResult() {
+        return mResult;
+    }
+
     @Override
     protected void onPreExecute() {
         mDialog = new ProgressDialog(mContext);
         mDialog.setTitle(mContext.getString(R.string.be_patient));
         mDialog.setMessage(mContext.getString(R.string.authenticating));
-        //FIXME : is it really useful ?
 //        mDialog.setCancelable(false);
         mDialog.show();
+        if (mDialog.isShowing()) {
+            System.out.println(mContext.toString());
+            System.out.println(mDialog.isShowing());
+        }
     }
 
     @Override
@@ -229,6 +237,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             // notify success listener
             mListener.onError("Authentication : " + result);
         } else {
+            mResult = result;
             // notify error listener
             mListener.onSuccess(mSessionID);
         }

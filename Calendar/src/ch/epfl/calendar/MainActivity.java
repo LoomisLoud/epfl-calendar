@@ -23,6 +23,7 @@ import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
@@ -42,7 +43,7 @@ import ch.epfl.calendar.utils.GlobalPreferences;
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
-        WeekView.EventLongPressListener {
+        WeekView.EventLongPressListener, CalendarClientDownloadInterface {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -64,7 +65,7 @@ public class MainActivity extends Activity implements
     
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
-    private List<Course> listCourses = null;
+    private List<Course> listCourses = new ArrayList<Course>();
     private ProgressDialog mDialog;
 
     public static final String TAG = "MainActivity::";
@@ -198,7 +199,8 @@ public class MainActivity extends Activity implements
         if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
             switchToAuthenticationActivity();
         } else {
-            listCourses = populateCalendar();
+            listCourses = new ArrayList<Course>();
+            populateCalendar();
         }
     }
 
@@ -327,7 +329,8 @@ public class MainActivity extends Activity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            listCourses = populateCalendar();
+            listCourses = new ArrayList<Course>();
+            populateCalendar();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -340,25 +343,26 @@ public class MainActivity extends Activity implements
         }
     }
 
-    protected List<Course> populateCalendar() {
-        CalendarClientInterface cal = new CalendarClient(mThisActivity);
-        List<Course> courses = new ArrayList<Course>();
-
+    protected void populateCalendar() {
+        CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
         try {
-            courses = cal.getISAInformations();
+            cal.getISAInformations();
         } catch (CalendarClientException e) {
             Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_LONG).show();
         } catch (TequilaAuthenticationException e) {
             Toast.makeText(mThisActivity, e.getMessage(), Toast.LENGTH_LONG).show();
             this.switchToAuthenticationActivity();
         }
-        
-        return courses;
     }
 
     private void logout() {
         TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
         switchToAuthenticationActivity();
+    }
+
+    @Override
+    public void callbackDownload(List<Course> courses) {
+        listCourses = courses;
     }
 
 }

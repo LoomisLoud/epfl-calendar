@@ -84,17 +84,17 @@ public class CoursesListActivity extends Activity {
 
     private ArrayList<Course> retrieveCourse() {
 
-        CalendarClient calendarClient = new CalendarClient(this);
+//        CalendarClient calendarClient = new CalendarClient(this);
         ArrayList<Course> retrieveData = null;
 
-        try {
-            retrieveData = new ArrayList<Course>(
-                    calendarClient.getISAInformations());
-        } catch (CalendarClientException e) {
-            e.printStackTrace();
-        } catch (TequilaAuthenticationException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            retrieveData = new ArrayList<Course>(
+//                    calendarClient.getISAInformations());
+//        } catch (CalendarClientException e) {
+//            e.printStackTrace();
+//        } catch (TequilaAuthenticationException e) {
+//            e.printStackTrace();
+//        }
         return retrieveData;
     }
 
