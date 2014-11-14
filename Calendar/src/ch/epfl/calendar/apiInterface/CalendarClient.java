@@ -85,6 +85,9 @@ public class CalendarClient implements CalendarClientInterface {
     private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
         @Override
         public void onError(String msg) {
+            if (msg.equals(mParentActivity.getString(R.string.error_disconnected))) {
+                TequilaAuthenticationAPI.getInstance().clearStoredData(mParentActivity);
+            }
             Toast.makeText(mParentActivity, msg, Toast.LENGTH_LONG).show();
         }
         @Override
