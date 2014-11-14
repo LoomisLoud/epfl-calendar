@@ -45,7 +45,7 @@ public class CalendarClient implements CalendarClientInterface {
      * ch.epfl.calendar.mock.MockStudent)
      */
     @Override
-    public List<Course> getISAInformations() throws CalendarClientException {
+    public List<Course> getISAInformations() throws CalendarClientException, TequilaAuthenticationException {
 
         List<Course> coursesList = new ArrayList<Course>();
         List<String> namesOfCourses = new ArrayList<String>();
@@ -60,7 +60,7 @@ public class CalendarClient implements CalendarClientInterface {
             throw new CalendarClientException(e);
         } catch (TequilaAuthenticationException e) {
             Log.e(TAG + "TequilaAuthenticationException", e.getMessage());
-            throw new CalendarClientException(e);
+            throw new TequilaAuthenticationException(e);
         } catch (ParsingException e) {
             Log.e(TAG + "ParsingException", e.getMessage());
             //We don't want that the user sees this exception
