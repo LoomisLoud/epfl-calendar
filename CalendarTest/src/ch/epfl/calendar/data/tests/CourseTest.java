@@ -20,10 +20,16 @@ import ch.epfl.calendar.data.PeriodType;
  */
 public class CourseTest extends TestCase {
 
-    public void testAddPeriod() {
-        Course course = new Course("test", "16.06.2014", "16:15", "17:15", "cours", new ArrayList<String>());
-        Period period = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+    private Course course;
+    private Period period;
 
+    public void setUp() {
+        course = new Course("test", "16.06.2014", "16:15", "17:15", "cours", new ArrayList<String>());
+        period = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+    }
+
+    public void testAddPeriod() {
+    	setUp();
         course.addPeriod(period);
         List<Period> returnedPeriods = course.getPeriods();
         
@@ -37,5 +43,13 @@ public class CourseTest extends TestCase {
     }
     
     //TODO : Test all type of Period (including DEFAULT, in french, in english)
+    
+    public void testGettersSetters() {
+    	setUp();
+        assertEquals(course.getName(), "test");
+        course.setName("analysis");
+        assertEquals(course.getName(), "analysis");
 
+
+    }
 }
