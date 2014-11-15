@@ -82,5 +82,4 @@ public class TequilaResponseHandlerTest extends MockTestCase {
         assertEquals("test", result);
     }
 
-    
 }
