@@ -6,13 +6,10 @@ import org.apache.http.Header;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.AbstractHttpClient;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.Toast;
 
-import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 
@@ -25,21 +22,11 @@ public class HttpUtils {
     
     private static final int RESPONSE_OK = 200;
     
-    public static boolean isNetworkWorking(Activity activity) {
+    public static boolean isNetworkWorking(Context context) {
         ConnectivityManager connMgr = (ConnectivityManager) 
-                activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            return true;
-        } else {
-            errorNetwork(activity);
-            return false;
-        }
-    }
-    
-    public static void errorNetwork(Context context) {
-        Toast.makeText(context, R.string.network_unreachable,
-                Toast.LENGTH_SHORT).show();
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     public static Cookie getCookie(AbstractHttpClient client, String field) {
@@ -52,7 +39,7 @@ public class HttpUtils {
         return null;
     }
     
-    public static String getTokenFromHeader(Header location) {
+    public static String getTokenFromHeader(Header location) throws TequilaAuthenticationException {
         if (location == null) {
             throw new TequilaAuthenticationException("Try to get token, but already authenticated");
         }
