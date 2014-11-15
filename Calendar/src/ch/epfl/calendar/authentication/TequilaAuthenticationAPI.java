@@ -6,7 +6,6 @@ import java.util.GregorianCalendar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
 
 /**
