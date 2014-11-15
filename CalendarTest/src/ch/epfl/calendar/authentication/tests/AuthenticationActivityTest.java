@@ -1,4 +1,4 @@
-package ch.epfl.calendar.test.authentication;
+package ch.epfl.calendar.authentication.tests;
 
 
 /**
