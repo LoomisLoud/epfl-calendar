@@ -3,6 +3,8 @@
  */
 package ch.epfl.calendar.persistence;
 
+import ch.epfl.calendar.data.Course;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -32,4 +34,16 @@ public class DBHelper extends SQLiteOpenHelper {
 		CourseTable.onUpgrade(db, oldVersion, newVersion);
 	}
 
+	public long insertCourse(SQLiteDatabase db, Course course) {
+		assert course != null;
+
+		ContentValues values = new ContentValues();
+		values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
+
+		long newRowId;
+		newRowId = db.insert(CourseTable.TABLE_NAME_COURSE, null, values);
+
+
+		return newRowId;
+	}
 }
