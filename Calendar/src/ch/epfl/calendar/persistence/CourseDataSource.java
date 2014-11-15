@@ -10,6 +10,8 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.utils.Logger;
 
 /**
+ * DAO for {@link Course}
+ *
  * @author lweingart
  *
  */
