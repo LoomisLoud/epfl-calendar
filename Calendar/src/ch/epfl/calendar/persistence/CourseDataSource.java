@@ -23,10 +23,21 @@ public class CourseDataSource implements DAO {
 	private static final String SUCCESS_DELETE 	= "Course successfully deleted";
 	private static final String SUCCESS_UPDATE 	= "Course successfully updated";
 
+	private static CourseDataSource mCourseDataSource;
 	private DBHelper mDBHelper;
 
+	public static CourseDataSource getInstance() {
+		if (CourseDataSource.mCourseDataSource == null) {
+			CourseDataSource.mCourseDataSource = new CourseDataSource();
+		}
+		return CourseDataSource.mCourseDataSource;
+	}
+
 	/**
-	 * @see ch.epfl.calendar.persistence.DAO#create(java.lang.Object)
+	 * Create a course.
+	 *
+	 * @param obj
+	 * @throws SQLiteCalendarException
 	 */
 	@Override
 	public void create(Object obj) throws SQLiteCalendarException {
@@ -53,7 +64,10 @@ public class CourseDataSource implements DAO {
 	}
 
 	/**
-	 * @see ch.epfl.calendar.persistence.DAO#update(java.lang.Object)
+	 * Update a course.
+	 *
+	 * @param obj
+	 * @throws SQLiteCalendarException
 	 */
 	@Override
 	public void update(Object obj) throws SQLiteCalendarException {
@@ -82,8 +96,12 @@ public class CourseDataSource implements DAO {
 		Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_UPDATE);
 	}
 
+
 	/**
-	 * @see ch.epfl.calendar.persistence.DAO#delete(java.lang.Object)
+	 * Delete a course,
+	 *
+	 * @param obj
+	 * @throws SQLiteCalendarException
 	 */
 	@Override
 	public void delete(Object obj) throws SQLiteCalendarException {
@@ -104,7 +122,7 @@ public class CourseDataSource implements DAO {
 	}
 
 	/**
-	 * @see ch.epfl.calendar.persistence.DAO#deleteAll()
+	 * Delete all Courses.
 	 */
 	@Override
 	public void deleteAll() {
