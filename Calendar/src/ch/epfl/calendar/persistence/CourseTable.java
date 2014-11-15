@@ -6,6 +6,8 @@ package ch.epfl.calendar.persistence;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
+ * Handle migration for the course table.
+ *
  * @author lweingart
  *
  */
@@ -19,6 +21,9 @@ public class CourseTable {
 	public static final String COLUMN_NAME_CODE 		= "code";
 	public static final String COLUMN_NAME_DESCRIPTION 	= "description";
 
+	/**
+	 * See {@link SQLiteDatabase#onCreate(SQLiteDatabase}
+	 */
 	public static void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE" + CourseTable.TABLE_NAME_COURSE + "("
 				+ CourseTable.COLUMN_NAME_NAME + "TEXT PRIMARY KEY, "
@@ -29,6 +34,9 @@ public class CourseTable {
 				+ CourseTable.COLUMN_NAME_DESCRIPTION + "TEXT)");
 	}
 
+	/**
+	 * See {@link SQLiteDatabase#onUpgrade(SQLiteDatabase}
+	 */
 	public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		db.execSQL("DROP TABLE IF EXISTS " + CourseTable.TABLE_NAME_COURSE);
 		CourseTable.onCreate(db);

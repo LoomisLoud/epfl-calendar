@@ -6,6 +6,8 @@ package ch.epfl.calendar.persistence;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
+ * Handle migration for the period table.
+ *
  * @author lweingart
  *
  */
@@ -17,6 +19,9 @@ public class PeriodTable {
 	public static final String COLUMN_NAME_ENDDATE 		= "enddate";
 	public static final String COLUMN_NAME_ROOMS 		= "rooms";
 
+	/**
+	 * See {@link SQLiteDatabase#onCreate(SQLiteDatabase}
+	 */
 	public static void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE" + PeriodTable.TABLE_NAME_PERIOD + "("
 				+ PeriodTable.COLUMN_NAME_TYPE + "TEXT PRIMARY KEY, "
@@ -25,6 +30,9 @@ public class PeriodTable {
 				+ PeriodTable.COLUMN_NAME_ROOMS + "TEXT)");
 	}
 
+	/**
+	 * See {@link SQLiteDatabase#onUpgrade(SQLiteDatabase}
+	 */
 	public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		db.execSQL("DROP TABLE IF EXISTS " + PeriodTable.TABLE_NAME_PERIOD);
 		PeriodTable.onCreate(db);
