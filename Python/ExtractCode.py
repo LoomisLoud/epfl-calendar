@@ -25,13 +25,31 @@ def getContentDetailsFromUrl(url):
 					jsonResume = jsonObj['courseBook']['paragraphs'][i]['content']
 					break
 				i = i + 1
-
+			#remove html balises
 			#jsonResume = re.sub('(<br />)?(<br />)?','',jsonResume)
 			#jsonResume = re.sub('(<p>)?(</p>)?','', jsonResume)
 			jsonResume = re.sub('(<[a-z/ ]*>)','',jsonResume)
 		except IndexError :
 			print('no description for now...')
 	return jsonResume
+	
+def cleanCourseName(courseName):
+	regexCourseName = '(?P<body>.*)(?P<extraStuff>( \(.*\) ou$)|(\(.*\))?(\*\*$))'
+	matchCourseName =  re.match(regexCourseName,courseName)
+	if matchCourseName:
+		#print 'we found a (en français) : '+ courseName
+		#only take first group (we dont take " (en français)) ou"
+		courseName = matchCourseName.group('body')
+		#print 'coursename : ' + courseName
+		
+	regexCourseName = '(?P<extraStuff>^- ?)(?P<body>.*$)'
+	matchCourseName = re.match(regexCourseName, courseName)
+	if matchCourseName:
+		#print 'we found a -smthing : ' + courseName
+		courseName = matchCourseName.group('body')
+		#print 'courseName : ' + courseName
+	return courseName
+	
    
 colCodeCourse = 0
 colCourseName = 1
@@ -43,9 +61,10 @@ regex = '(^[A-Z]+)-([0-9]+\(?[a-z]*\)?]*$)'
 regexCode = '^Code[s]?$'
 regexCodeMulCols = '^2ème$'
 regexEnseignant = '(?i)((.*(Enseignants).*)|(.*(coordinateurs).*))'
+regexCredit = '^\((?P<body>[0-9]+)\)$'
 credit = 0
 #url details
-urlDetails = 'https://isa.epfl.ch/services/books/2013-2014/course/'
+urlDetails = 'https://isa.epfl.ch/services/books/2014-2015/course/'
 #for each .xls
 for fn in os.listdir('.'):
 	if os.path.isfile(fn):
@@ -104,8 +123,14 @@ for fn in os.listdir('.'):
 								credit = worksheet.cell(x,colCredit+1).value
 						
 						if (isinstance(credit, str) or isinstance(credit, unicode)) :
-							credit = -1
-
+							if (credit == ''):
+								credit = -1
+							else :
+								matchCredit = re.match(regexCredit, credit)
+								if matchCredit:
+									credit = int(matchCredit.group('body'))
+								else:
+									credit = -1
 						#print('credit = ' + str(credit))
 						#payload = {'code': worksheet.cell(x, colCodeCourse).value.encode('utf8'), 'name': worksheet.cell(x, colCourseName).value.encode('utf8')}
 						#r = requests.post("http://localhost:8080/", data=payload)
@@ -119,8 +144,17 @@ for fn in os.listdir('.'):
 						htmlParser = HTMLParser.HTMLParser()
 						details = htmlParser.unescape(details)
 						#print details.encode('utf8')
-						#TODO ADD TO PAYLOAD
-						payload = {'name': worksheet.cell(x,colCourseName).value.encode('utf8'), 'code' : code, 'description' : details.encode('utf8'),'numberOfCredits' : credit, 'professorName' : enseignant}
+						courseName = worksheet.cell(x,colCourseName).value.encode('utf8')
+						courseName = cleanCourseName(courseName)
+						#debug
+						if (credit == -1):
+							print "Credit -1 on : " + code
+							print "ColCredit : " + str(colCredit)
+							with open('Log/'+code + 'logCreditError.txt', 'w') as logFile:
+								logFile.write('Book : ' + fn.encode('utf8') + '\r\n' + 'Sheet : ' + worksheet_name.encode('utf8') + '\r\n' +'colCredit : ' + str(colCredit))
+							#default value to store course without credit
+							credit = 0
+						payload = {'name': courseName.lstrip().rstrip(), 'code' : code, 'description' : details.encode('utf8'),'numberOfCredits' : credit, 'professorName' : enseignant}
 						r = requests.post(urlAppEngine + "/course/create", data=json.dumps(payload))
 						if (r.status_code != requests.codes.ok):
 							print 'Error in request to app engine, failed to post payload'
