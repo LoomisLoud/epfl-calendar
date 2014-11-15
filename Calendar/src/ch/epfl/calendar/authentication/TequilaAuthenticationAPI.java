@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 
 /**
@@ -44,16 +45,15 @@ public final class TequilaAuthenticationAPI {
 
     // disable the creation of objects
     private TequilaAuthenticationAPI() {
-        isAcademiaLoginURL = isAcademiaLoginUrl + calculateDate();
+        isAcademiaLoginURL = isAcademiaLoginUrl + calculateDate(new GregorianCalendar());
         tequilaAuthenticationURL = TEQUILA_AUTHENTICATION_URL;
     }
     
-    private String calculateDate() {
-        Calendar currentDate = new GregorianCalendar();
+    private String calculateDate(Calendar currentDate) {
         String period = null;
         if (currentDate.before(new GregorianCalendar(
                 currentDate.get(Calendar.YEAR),
-                AUGUST_MONTH,
+                AUGUST_MONTH-1,
                 LAST_DAY_OF_AUGUST)
         )) {
             period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH + "."
@@ -64,7 +64,7 @@ public final class TequilaAuthenticationAPI {
             period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH + "."
                     + (currentDate.get(Calendar.YEAR)) + "&to="
                     + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH
-                    + "." + currentDate.get(Calendar.YEAR)+1;
+                    + "." + (currentDate.get(Calendar.YEAR)+1);
         }
         return period;
     }

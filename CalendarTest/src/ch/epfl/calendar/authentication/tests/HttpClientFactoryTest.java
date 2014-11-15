@@ -45,5 +45,9 @@ public class HttpClientFactoryTest extends TestCase{
         client = HttpClientFactory.getInstance();
         assertEquals(defaultClient, client);
     }
+    
+    public final void testRedirectNoFollow() {
+        
+    }
 
 }
