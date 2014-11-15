@@ -5,10 +5,11 @@ from Period import Period
 # Author : gilbrechbuhler
 # Represents a Course in the DB
 class Course(ndb.Model):
-    name = ndb.StringProperty()
-    periodsKeys = ndb.KeyProperty(repeated=True)
+    name = ndb.StringProperty(indexed=False)
+    lowerCaseName = ndb.ComputedProperty(lambda self: self.name.lower())
+    periodsKeys = ndb.KeyProperty(repeated=True, indexed=False)
     code = ndb.StringProperty()
-    description = ndb.TextProperty()
+    description = ndb.TextProperty(indexed=False)
     numberOfCredits = ndb.IntegerProperty()
     professorName = ndb.StringProperty()
 
@@ -29,7 +30,7 @@ class Course(ndb.Model):
 
     @classmethod
     def query_by_name(cls, name):
-        return cls.query().filter(ndb.GenericProperty("name") == name)
+        return cls.query().filter(ndb.GenericProperty("lowerCaseName") == name)
 
     @classmethod
     def isCodeUnique(self, code):

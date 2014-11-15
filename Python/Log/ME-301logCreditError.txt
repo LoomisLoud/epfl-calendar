@@ -1,3 +1,0 @@
-Book : GMplan2014-2015.xls
-Sheet : BACHELOR
-colCredit : 17
