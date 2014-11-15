@@ -32,10 +32,6 @@ public final class HttpClientFactory {
     private static final int HTTPS_PORT = 443;
     private static final String DEBUG = "Debug";
 
-    private HttpClientFactory() {
-        // do nothing but needs to be private
-    }
-
     public static synchronized AbstractHttpClient getInstance() {
         if (httpClient == null) {
             //create() is used instead of create an instance of do a 
