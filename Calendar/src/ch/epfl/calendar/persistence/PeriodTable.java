@@ -25,7 +25,7 @@ public class PeriodTable {
 				+ PeriodTable.COLUMN_NAME_ROOMS + "TEXT)");
 	}
 
-	public static void onUpgrade(SQLiteDatabase db) {
+	public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		db.execSQL("DROP TABLE IF EXISTS " + PeriodTable.TABLE_NAME_PERIOD);
 		PeriodTable.onCreate(db);
 	}
