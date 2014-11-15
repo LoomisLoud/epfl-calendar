@@ -26,7 +26,7 @@ import ch.epfl.calendar.utils.ConstructCourse;
  * 
  */
 public class CoursesListActivity extends Activity implements
-        CalendarClientDownloadInterface {
+        CalendarClientDownloadInterface, AppEngineDownloadInterface {
     private ProgressDialog mDialog;
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
@@ -67,44 +67,32 @@ public class CoursesListActivity extends Activity implements
         calendarClient.getISAInformations();
     }
 
-    private ArrayList<Map<String, String>> retrieveCourseInfo(
-            List<Course> coursesList) {
+    private void retrieveCourseInfo(List<Course> coursesList) {
+
+        ConstructCourse constructCourse = ConstructCourse.getInstance(this);
+        constructCourse.completeCourse(coursesList, this);
+
+    }
+
+    public void callbackAppEngine(List<Course> coursesList) {
 
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
 
         for (Course cours : coursesList) {
-            ConstructCourse constructCourse = ConstructCourse.getInstance();
-            constructCourse.completeCourse(cours);
-
             Map<String, String> courseMap = new HashMap<String, String>();
             courseMap.put("Course name", cours.getName());
             courseMap.put("Course information",
                     "Professor : " + cours.getTeacher() + ", Credits : "
-                            + cours.getCredits() + "\n"
-                            + cours.getPeriods().toString());
+                            + cours.getCredits());
 
             coursesName.add(courseMap);
         }
-        return coursesName;
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void callbackDownload(List<Course> courses) {
-        this.mCourses = courses;
-
-        final List<Map<String, String>> courseInfoList = retrieveCourseInfo(mCourses);
+        final List<Map<String, String>> courseInfoList = coursesName;
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
                 android.R.layout.simple_list_item_2,
-                new String[] {"Course name", "Professor and Credits" },
+                new String[] {"Course name", "Course information" },
                 new int[] {android.R.id.text1, android.R.id.text2 });
 
         mListView.setAdapter(simpleAdapter);
@@ -121,6 +109,20 @@ public class CoursesListActivity extends Activity implements
             }
 
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void callbackDownload(List<Course> courses) {
+        this.mCourses = courses;
+        retrieveCourseInfo(mCourses);
 
     }
 }

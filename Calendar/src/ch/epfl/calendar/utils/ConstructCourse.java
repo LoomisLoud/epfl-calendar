@@ -1,12 +1,14 @@
 package ch.epfl.calendar.utils;
 
-import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.util.List;
 
-import android.os.AsyncTask;
-import ch.epfl.calendar.apiInterface.AppEngineClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.apiInterface.DatabaseInterface;
+import android.content.Context;
+import android.widget.Toast;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.display.AppEngineDownloadInterface;
+import ch.epfl.calendar.display.AppEngineTask;
+import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
 
 /**
  * This class is to complete a course get from isa by adding the information get
@@ -19,60 +21,66 @@ import ch.epfl.calendar.data.Course;
 public final class ConstructCourse {
 
     private static ConstructCourse constructCourse;
+    private ArrayList<AppEngineTask> mTasks;
+    private AppEngineDownloadInterface mObjectActivity = null;
+    private List<Course> mCourses;
 
-    private ConstructCourse() {
-
+    private ConstructCourse(AppEngineDownloadInterface objectActivity) {
+        mObjectActivity = objectActivity;
+        mTasks = new ArrayList<AppEngineTask>();
+        mCourses = new ArrayList<Course>();
     }
 
-    public static ConstructCourse getInstance() {
+    public static ConstructCourse getInstance(
+            AppEngineDownloadInterface objectActivity) {
         if (constructCourse == null) {
-            return new ConstructCourse();
+            return new ConstructCourse(objectActivity);
         }
         return constructCourse;
     }
 
-    public void completeCourse(Course course) {
-
-        try {
-            new DownloadCourseTask().execute(course).get();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    public void completeCourse(List<Course> courses, Context context) {
+        
+        for (Course course : courses) {
+            mCourses.add(course);
+            AppEngineTask task;
+            task = new AppEngineTask(context, new AppEngineHandler());
+            task.execute(course.getName());
+            mTasks.add(task);
         }
+    }
 
+    private void callback() {
+        for (AppEngineTask task : mTasks) {
+            Course cours = task.getCourse();
+            if (cours != null) {
+                mCourses.get(mTasks.indexOf(task)).setCredits(cours.getCredits());
+                mCourses.get(mTasks.indexOf(task)).setTeacher(cours.getTeacher());
+            } else {
+                mCourses.get(mTasks.indexOf(task)).setCredits(0);
+                mCourses.get(mTasks.indexOf(task)).setTeacher("Can't find a teacher");
+            }
+            mObjectActivity.callbackAppEngine(mCourses);
+        }
     }
 
     /**
+     * 
      * @author Maxime
      * 
      */
-    private class DownloadCourseTask extends AsyncTask<Course, Void, Course> {
+    private class AppEngineHandler implements AppEngineListener {
 
         @Override
-        protected Course doInBackground(Course... course) {
-            return retrieveCourse(course[0]);
+        public void onError(Context context, String msg) {
+
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
         }
 
-        private Course retrieveCourse(Course course) {
-            DatabaseInterface appEngineClient;
-
-            try {
-                appEngineClient = new AppEngineClient(
-                        "http://versatile-hull-742.appspot.com");
-                course.setCredits(appEngineClient.getCourseByName(
-                        course.getName()).getCredits());
-                course.setTeacher(appEngineClient.getCourseByName(
-                        course.getName()).getTeacher());
-
-            } catch (CalendarClientException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            
-            return course;
+        @Override
+        public void onSuccess() {
+            callback();
         }
+
     }
 }
