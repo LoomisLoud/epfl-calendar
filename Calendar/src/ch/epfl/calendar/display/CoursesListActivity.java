@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +18,7 @@ import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.utils.ConstructCourse;
+import ch.epfl.calendar.utils.ConstructListCourse;
 
 /**
  * @author Maxime
@@ -27,7 +26,7 @@ import ch.epfl.calendar.utils.ConstructCourse;
  */
 public class CoursesListActivity extends Activity implements
         CalendarClientDownloadInterface, AppEngineDownloadInterface {
-    private ProgressDialog mDialog;
+
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
 
@@ -55,11 +54,6 @@ public class CoursesListActivity extends Activity implements
 
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
-
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Charging course details");
-        mDialog.show();
-
     }
 
     private void retrieveCourse() {
@@ -69,7 +63,8 @@ public class CoursesListActivity extends Activity implements
 
     private void retrieveCourseInfo(List<Course> coursesList) {
 
-        ConstructCourse constructCourse = ConstructCourse.getInstance(this);
+        ConstructListCourse constructCourse = ConstructListCourse
+                .getInstance(this);
         constructCourse.completeCourse(coursesList, this);
 
     }
@@ -109,14 +104,6 @@ public class CoursesListActivity extends Activity implements
             }
 
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
     }
 
     @Override

@@ -18,23 +18,23 @@ import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
  * @author Maxime
  * 
  */
-public final class ConstructCourse {
+public final class ConstructListCourse {
 
-    private static ConstructCourse constructCourse;
+    private static ConstructListCourse constructCourse;
     private ArrayList<AppEngineTask> mTasks;
     private AppEngineDownloadInterface mObjectActivity = null;
     private List<Course> mCourses;
 
-    private ConstructCourse(AppEngineDownloadInterface objectActivity) {
+    private ConstructListCourse(AppEngineDownloadInterface objectActivity) {
         mObjectActivity = objectActivity;
         mTasks = new ArrayList<AppEngineTask>();
         mCourses = new ArrayList<Course>();
     }
 
-    public static ConstructCourse getInstance(
+    public static ConstructListCourse getInstance(
             AppEngineDownloadInterface objectActivity) {
         if (constructCourse == null) {
-            return new ConstructCourse(objectActivity);
+            return new ConstructListCourse(objectActivity);
         }
         return constructCourse;
     }
