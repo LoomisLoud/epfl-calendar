@@ -1,5 +1,8 @@
 package ch.epfl.calendar.authentication;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -25,9 +28,12 @@ public final class TequilaAuthenticationAPI {
     private final String isAcademiaLoginURL;
     private final String tequilaAuthenticationURL;
 
-    private static final String ISACADEMIA_LOGIN_URL =
-            "https://isa.epfl.ch/service/secure/student/timetable/period?from=31.08.2014&to=31.08.2015";
+    private static String isAcademiaLoginUrl =
+            "https://isa.epfl.ch/service/secure/student/timetable/period?";
     private static final String TEQUILA_AUTHENTICATION_URL = "https://tequila.epfl.ch/cgi-bin/tequila/login";
+    
+    private static final int AUGUST_MONTH = 7;
+    private static final int LAST_DAY_OF_AUGUST = 31;
 
     public static TequilaAuthenticationAPI getInstance() {
         if (instance == null) {
@@ -38,8 +44,29 @@ public final class TequilaAuthenticationAPI {
 
     // disable the creation of objects
     private TequilaAuthenticationAPI() {
-        isAcademiaLoginURL = ISACADEMIA_LOGIN_URL;
+        isAcademiaLoginURL = isAcademiaLoginUrl + calculateDate();
         tequilaAuthenticationURL = TEQUILA_AUTHENTICATION_URL;
+    }
+    
+    private String calculateDate() {
+        Calendar currentDate = new GregorianCalendar();
+        String period = null;
+        if (currentDate.before(new GregorianCalendar(
+                currentDate.get(Calendar.YEAR),
+                AUGUST_MONTH,
+                LAST_DAY_OF_AUGUST)
+        )) {
+            period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH+1 + "."
+                    + (currentDate.get(Calendar.YEAR)-1) + "&to="
+                    + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH+1
+                    + "." + currentDate.get(Calendar.YEAR);
+        } else {
+            period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH+1 + "."
+                    + (currentDate.get(Calendar.YEAR)) + "&to="
+                    + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH+1
+                    + "." + currentDate.get(Calendar.YEAR)+1;
+        }
+        return period;
     }
 
     public void clearStoredData(Context context) {
