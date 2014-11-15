@@ -30,6 +30,7 @@ public final class HttpClientFactory {
     private static AbstractHttpClient httpClient;
     private static final int HTTP_PORT = 80;
     private static final int HTTPS_PORT = 443;
+    private static final String DEBUG = "Debug";
 
     private HttpClientFactory() {
         // do nothing but needs to be private
@@ -46,7 +47,11 @@ public final class HttpClientFactory {
     }
 
     public static synchronized void setInstance(AbstractHttpClient instance) {
-        httpClient = instance;
+        if (instance == null) {
+            Log.d(DEBUG, "Argument of setInstance is null");
+        } else {
+            httpClient = instance;
+        }
     }
 
     private static final RedirectHandler REDIRECT_NO_FOLLOW = new RedirectHandler() {
