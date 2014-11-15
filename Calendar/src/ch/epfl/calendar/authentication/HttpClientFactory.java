@@ -37,6 +37,8 @@ public final class HttpClientFactory {
 
     public static synchronized AbstractHttpClient getInstance() {
         if (httpClient == null) {
+            //create() is used instead of create an instance of do a 
+            //new HttpClientFactory because create returns an AbstractHttpClient
             httpClient = create();
         }
 

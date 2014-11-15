@@ -14,6 +14,8 @@ public final class TequilaAuthenticationAPI {
 
     public static final String AUTHENTICATION_PREFERENCES_NAME = "user_session";
     public static final String AUTHENTICATION_SESSION_ID_KEY = "SESSION_ID";
+    public static final String AUTHENTICATION_USERNAME = "USERNAME";
+    public static final String AUTHENTICATION_TEQUILA_KEY = "TEQUILA_KEY";
 
     public static final int STATUS_CODE_OK = 200;
     public static final int STATUS_CODE_AUTH_RESPONSE = 302;
@@ -23,7 +25,8 @@ public final class TequilaAuthenticationAPI {
     private final String isAcademiaLoginURL;
     private final String tequilaAuthenticationURL;
 
-    private static final String ISACADEMIA_LOGIN_URL = "https://isa.epfl.ch/service/secure/student/timetable/week";
+    private static final String ISACADEMIA_LOGIN_URL =
+            "https://isa.epfl.ch/service/secure/student/timetable/period?from=31.08.2014&to=31.08.2015";
     private static final String TEQUILA_AUTHENTICATION_URL = "https://tequila.epfl.ch/cgi-bin/tequila/login";
 
     public static TequilaAuthenticationAPI getInstance() {
@@ -39,6 +42,12 @@ public final class TequilaAuthenticationAPI {
         tequilaAuthenticationURL = TEQUILA_AUTHENTICATION_URL;
     }
 
+    public void clearStoredData(Context context) {
+        clearSessionID(context);
+        clearTequilaKey(context);
+        clearUsername(context);
+    }
+    
     /**
      * This function will only be called INSIDE this package.
      * And ONLY by the AuthenticationActivity! It stores the session id
@@ -79,6 +88,90 @@ public final class TequilaAuthenticationAPI {
         SharedPreferences prefs = context.
                 getSharedPreferences(TequilaAuthenticationAPI.AUTHENTICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
         return prefs.getString(AUTHENTICATION_SESSION_ID_KEY, "");
+    }
+    
+    /**
+     * This function will only be called INSIDE this package.
+     * And ONLY by the AuthenticationActivity! It stores the session id
+     * inside the Shared Preferences.
+     *
+     * @param context
+     * @param username
+     */
+    public void setUsername(Context context, String username) {
+        SharedPreferences prefs = context.
+                getSharedPreferences(TequilaAuthenticationAPI.AUTHENTICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        Editor editor = prefs.edit();
+        editor.putString(TequilaAuthenticationAPI.AUTHENTICATION_USERNAME, username);
+        editor.apply();
+    }
+
+    /**
+     * This function should be called by the MainActivity if the user
+     * selects to Log Out.
+     *
+     * @param context
+     */
+    public void clearUsername(Context context) {
+        SharedPreferences prefs = context.
+                getSharedPreferences(TequilaAuthenticationAPI.AUTHENTICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        Editor editor = prefs.edit();
+        editor.remove(TequilaAuthenticationAPI.AUTHENTICATION_USERNAME);
+        editor.apply();
+    }
+
+    /**
+     * This function returns the sessionID if there is one stored
+     * inside the SharedPreferences otherwise it returns an empty string
+     * @param context
+     * @return
+     */
+    public String getUsername(Context context) {
+        SharedPreferences prefs = context.
+                getSharedPreferences(TequilaAuthenticationAPI.AUTHENTICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(AUTHENTICATION_USERNAME, "");
+    }
+    
+    /**
+     * This function will only be called INSIDE this package.
+     * And ONLY by the AuthenticationActivity! It stores the session id
+     * inside the Shared Preferences.
+     *
+     * @param context
+     * @param tequilaKey
+     */
+    public void setTequilaKey(Context context, String tequilaKey) {
+        SharedPreferences prefs = context.
+                getSharedPreferences(TequilaAuthenticationAPI.AUTHENTICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        Editor editor = prefs.edit();
+        editor.putString(TequilaAuthenticationAPI.AUTHENTICATION_TEQUILA_KEY, tequilaKey);
+        editor.apply();
+    }
+
+    /**
+     * This function should be called by the MainActivity if the user
+     * selects to Log Out.
+     *
+     * @param context
+     */
+    public void clearTequilaKey(Context context) {
+        SharedPreferences prefs = context.
+                getSharedPreferences(TequilaAuthenticationAPI.AUTHENTICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        Editor editor = prefs.edit();
+        editor.remove(TequilaAuthenticationAPI.AUTHENTICATION_TEQUILA_KEY);
+        editor.apply();
+    }
+
+    /**
+     * This function returns the sessionID if there is one stored
+     * inside the SharedPreferences otherwise it returns an empty string
+     * @param context
+     * @return
+     */
+    public String getTequilaKey(Context context) {
+        SharedPreferences prefs = context.
+                getSharedPreferences(TequilaAuthenticationAPI.AUTHENTICATION_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(AUTHENTICATION_TEQUILA_KEY, "");
     }
 
     public String getIsAcademiaLoginURL() {
