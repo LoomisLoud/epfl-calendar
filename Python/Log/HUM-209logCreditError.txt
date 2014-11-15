@@ -1,0 +1,3 @@
+Book : SHSplan2014-2015.xls
+Sheet : BACHELOR 2
+colCredit : 11
