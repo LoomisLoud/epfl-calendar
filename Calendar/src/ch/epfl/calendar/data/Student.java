@@ -34,6 +34,9 @@ public class Student extends Person implements StudentData {
 	}
 
 	public void setSCIPER(int sciper) {
+		if ((Integer) sciper == null) {
+			throw new NullPointerException();
+		}
 		//check if argument is correct
 		//get "length" of int (as number of digit)
 		int length = (int) (Math.log10(sciper)+1);
@@ -55,6 +58,9 @@ public class Student extends Person implements StudentData {
      * @param courses the courses to set
      */
     public void setCourses(List<Course> courses) {
+    	if (courses == null) {
+    		throw new NullPointerException();
+    	}
         this.mCourses = new ArrayList<Course>(courses);
     }
 }
