@@ -48,7 +48,7 @@ public class Course {
      * @param description
      *            the description of the course
      * @param professorName
-     *            the name of the Professor teahcing the course
+     *            the name of the Professor teaching the course
      * @param numberOfCredits
      *            the number of credits for the course
      */
