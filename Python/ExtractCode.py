@@ -4,6 +4,7 @@ import requests
 import re
 import os
 import json
+import HTMLParser
 
 def getContentDetailsFromUrl(url):
 	headers = {'Accept': 'application/json'}
@@ -16,7 +17,14 @@ def getContentDetailsFromUrl(url):
 		#print 'INDENT:', json.dumps(data, sort_keys=True, indent=2)
 		try :
 			jsonObj = data[0]
-			jsonResume = jsonObj['courseBook']['paragraphs'][0]['content']
+			categoryLen = len(jsonObj['courseBook']['paragraphs'])
+			i = 0
+			while(i < categoryLen):
+				lang = jsonObj['courseBook']['paragraphs'][i]['lang']
+				if (jsonObj['courseBook']['paragraphs'][i]['type']['code'] == "RUBRIQUE_RESUME" and lang == "en"):
+					jsonResume = jsonObj['courseBook']['paragraphs'][i]['content']
+					break
+				i = i + 1
 
 			#jsonResume = re.sub('(<br />)?(<br />)?','',jsonResume)
 			#jsonResume = re.sub('(<p>)?(</p>)?','', jsonResume)
@@ -34,7 +42,7 @@ urlAppEngine = "http://versatile-hull-742.appspot.com"
 regex = '(^[A-Z]+)-([0-9]+\(?[a-z]*\)?]*$)'
 regexCode = '^Code[s]?$'
 regexCodeMulCols = '^2ème$'
-regexEnseignant = '.*(Enseignants).*'
+regexEnseignant = '(?i)((.*(Enseignants).*)|(.*(coordinateurs).*))'
 credit = 0
 #url details
 urlDetails = 'https://isa.epfl.ch/services/books/2013-2014/course/'
@@ -103,11 +111,16 @@ for fn in os.listdir('.'):
 						#r = requests.post("http://localhost:8080/", data=payload)
 						#payload = {'name': 'Embedded systems', 'code' : 'CS-473', 'description' : 'mock description', 'numberOfCredits' : '4', 'professorName' : 'Pr. Beuchat'}
 						#json from website
-						urlDetailsFinal = urlDetails + worksheet.cell(x,colCodeCourse).value.encode('utf8')
+						code = worksheet.cell(x,colCodeCourse).value.encode('utf8')
+						code = re.sub('([a-z]+)$', r'(\1)', code)
+						print(code)
+						urlDetailsFinal = urlDetails + code
 						details = getContentDetailsFromUrl(urlDetailsFinal)
+						htmlParser = HTMLParser.HTMLParser()
+						details = htmlParser.unescape(details)
 						#print details.encode('utf8')
 						#TODO ADD TO PAYLOAD
-						payload = {'name': worksheet.cell(x,colCourseName).value.encode('utf8'), 'code' : worksheet.cell(x,colCodeCourse).value.encode('utf8'), 'description' : details.encode('utf8'),'numberOfCredits' : credit, 'professorName' : enseignant}
+						payload = {'name': worksheet.cell(x,colCourseName).value.encode('utf8'), 'code' : code, 'description' : details.encode('utf8'),'numberOfCredits' : credit, 'professorName' : enseignant}
 						r = requests.post(urlAppEngine + "/course/create", data=json.dumps(payload))
 						if (r.status_code != requests.codes.ok):
 							print 'Error in request to app engine, failed to post payload'

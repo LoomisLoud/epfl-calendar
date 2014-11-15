@@ -6,7 +6,7 @@ package ch.epfl.calendar.authentication;
  * @author AblionGE
  *
  */
-public class TequilaAuthenticationException extends RuntimeException{
+public class TequilaAuthenticationException extends Exception{
 
     private static final long serialVersionUID = 1L;
 

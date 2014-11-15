@@ -14,10 +14,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
+import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
+import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.utils.ConstructCourse;
 
@@ -25,9 +25,11 @@ import ch.epfl.calendar.utils.ConstructCourse;
  * @author Maxime
  * 
  */
-public class CoursesListActivity extends Activity {
+public class CoursesListActivity extends Activity implements
+        CalendarClientDownloadInterface {
     private ProgressDialog mDialog;
     private ListView mListView;
+    private List<Course> mCourses = new ArrayList<Course>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,29 +38,7 @@ public class CoursesListActivity extends Activity {
 
         mListView = (ListView) findViewById(R.id.coursesListView);
 
-        final ArrayList<Course> coursesList = retrieveCourse();
-
-        final List<Map<String, String>> courseInfoList = retrieveCourseInfo(coursesList);
-
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
-                android.R.layout.simple_list_item_2, 
-                new String[] {"Course name", "Course information" }, 
-                new int[] {android.R.id.text1, android.R.id.text2 });
-
-        mListView.setAdapter(simpleAdapter);
-
-        mListView.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-
-                openCourseDetails(courseInfoList.get(position).get(
-                        "Course name"));
-
-            }
-
-        });
+        retrieveCourse();
 
     }
 
@@ -82,20 +62,9 @@ public class CoursesListActivity extends Activity {
 
     }
 
-    private ArrayList<Course> retrieveCourse() {
-
-        CalendarClient calendarClient = new CalendarClient(this);
-        ArrayList<Course> retrieveData = null;
-
-        try {
-            retrieveData = new ArrayList<Course>(
-                    calendarClient.getISAInformations());
-        } catch (CalendarClientException e) {
-            Toast.makeText(CoursesListActivity.this,
-                    "Could not retrieve data, check your internet connection",
-                    Toast.LENGTH_LONG).show();
-        }
-        return retrieveData;
+    private void retrieveCourse() {
+        CalendarClientInterface calendarClient = new CalendarClient(this, this);
+        calendarClient.getISAInformations();
     }
 
     private ArrayList<Map<String, String>> retrieveCourseInfo(
@@ -125,5 +94,33 @@ public class CoursesListActivity extends Activity {
         if (mDialog != null) {
             mDialog.dismiss();
         }
+    }
+
+    @Override
+    public void callbackDownload(List<Course> courses) {
+        this.mCourses = courses;
+
+        final List<Map<String, String>> courseInfoList = retrieveCourseInfo(mCourses);
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
+                android.R.layout.simple_list_item_2,
+                new String[] {"Course name", "Professor and Credits" },
+                new int[] {android.R.id.text1, android.R.id.text2 });
+
+        mListView.setAdapter(simpleAdapter);
+
+        mListView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+
+                openCourseDetails(courseInfoList.get(position).get(
+                        "Course name"));
+
+            }
+
+        });
+
     }
 }

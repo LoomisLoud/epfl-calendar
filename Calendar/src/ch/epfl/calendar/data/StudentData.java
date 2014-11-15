@@ -1,6 +1,6 @@
 package ch.epfl.calendar.data;
 
-import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Give higher level methods to get information needed from a student
@@ -9,5 +9,5 @@ import java.lang.reflect.Array;
  */
 public interface StudentData {
 
-	Array getLectureList();
+    ArrayList<String> getLectureList();
 }

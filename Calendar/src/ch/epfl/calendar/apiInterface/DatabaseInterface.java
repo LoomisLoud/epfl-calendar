@@ -29,7 +29,7 @@ public interface DatabaseInterface {
      */
     Course getCourseByCode(String code) throws CalendarClientException;
 
-    /**
+    /*
      *
      * @param period The period to put in the database
      * @param courseCode the code of the course of which the period belongs.

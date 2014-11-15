@@ -1,6 +1,5 @@
 package ch.epfl.calendar.data;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class Student extends Person implements StudentData {
 	}
 
 	@Override
-	public Array getLectureList() {
+	public ArrayList<String> getLectureList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
