@@ -1,10 +1,17 @@
 package ch.epfl.calendar.utils;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.protocol.HttpContext;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -29,7 +36,7 @@ public class HttpUtils {
         return networkInfo != null && networkInfo.isConnected();
     }
 
-    public static Cookie getCookie(AbstractHttpClient client, String field) {
+    public Cookie getCookie(AbstractHttpClient client, String field) {
         List<Cookie> lc = client.getCookieStore().getCookies();
         for (Cookie c : lc) {
             if (c.getName().equals(field)) {
@@ -53,5 +60,17 @@ public class HttpUtils {
         if (responseCode != RESPONSE_OK) {
             throw new CalendarClientException();
         }
+    }
+    
+    public HttpResponse executeGet(AbstractHttpClient httpClient, HttpGet get, HttpContext context)
+        throws ClientProtocolException, IOException {
+        
+        return httpClient.execute(get, context);
+    }
+    
+    public String executePost(AbstractHttpClient httpClient, HttpPost post, ResponseHandler<String> handler)
+        throws ClientProtocolException, IOException {
+        
+        return httpClient.execute(post, handler);
     }
 }
