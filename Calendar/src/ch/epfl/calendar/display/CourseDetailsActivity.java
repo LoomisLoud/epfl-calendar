@@ -61,7 +61,7 @@ public class CourseDetailsActivity extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
+        // Save the activity state
         savedInstanceState.putParcelable("course", mCourse);
         //System.out.println("Saving state");
         

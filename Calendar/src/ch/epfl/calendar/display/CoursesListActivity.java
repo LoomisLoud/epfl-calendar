@@ -56,7 +56,7 @@ public class CoursesListActivity extends Activity implements
     
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
+        // Save the activity state
         savedInstanceState.putParcelableArrayList("coursesList", new ArrayList<Course>(mCourses));
         //System.out.println("Saving state");
         
