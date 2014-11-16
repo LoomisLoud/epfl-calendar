@@ -154,7 +154,7 @@ for fn in os.listdir('.'):
 								logFile.write('Book : ' + fn.encode('utf8') + '\r\n' + 'Sheet : ' + worksheet_name.encode('utf8') + '\r\n' +'colCredit : ' + str(colCredit))
 							#default value to store course without credit
 							credit = 0
-						payload = {'name': courseName, 'code' : code, 'description' : details.encode('utf8'),'numberOfCredits' : credit, 'professorName' : enseignant}
+						payload = {'name': courseName.lstrip().rstrip(), 'code' : code, 'description' : details.encode('utf8'),'numberOfCredits' : credit, 'professorName' : enseignant}
 						r = requests.post(urlAppEngine + "/course/create", data=json.dumps(payload))
 						if (r.status_code != requests.codes.ok):
 							print 'Error in request to app engine, failed to post payload'

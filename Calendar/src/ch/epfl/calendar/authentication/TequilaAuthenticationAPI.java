@@ -32,7 +32,7 @@ public final class TequilaAuthenticationAPI {
             "https://isa.epfl.ch/service/secure/student/timetable/period?";
     private static final String TEQUILA_AUTHENTICATION_URL = "https://tequila.epfl.ch/cgi-bin/tequila/login";
     
-    private static final int AUGUST_MONTH = 7;
+    private static final int AUGUST_MONTH = 8;
     private static final int LAST_DAY_OF_AUGUST = 31;
 
     public static TequilaAuthenticationAPI getInstance() {
@@ -56,14 +56,14 @@ public final class TequilaAuthenticationAPI {
                 AUGUST_MONTH,
                 LAST_DAY_OF_AUGUST)
         )) {
-            period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH+1 + "."
+            period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH + "."
                     + (currentDate.get(Calendar.YEAR)-1) + "&to="
-                    + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH+1
+                    + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH
                     + "." + currentDate.get(Calendar.YEAR);
         } else {
-            period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH+1 + "."
+            period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH + "."
                     + (currentDate.get(Calendar.YEAR)) + "&to="
-                    + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH+1
+                    + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH
                     + "." + currentDate.get(Calendar.YEAR)+1;
         }
         return period;

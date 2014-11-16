@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,14 +18,15 @@ import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.utils.ConstructCourse;
+import ch.epfl.calendar.utils.ConstructListCourse;
 
 /**
  * @author Maxime
  * 
  */
-public class CoursesListActivity extends Activity implements CalendarClientDownloadInterface {
-    private ProgressDialog mDialog;
+public class CoursesListActivity extends Activity implements
+        CalendarClientDownloadInterface, AppEngineDownloadInterface {
+
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
 
@@ -38,6 +38,7 @@ public class CoursesListActivity extends Activity implements CalendarClientDownl
         mListView = (ListView) findViewById(R.id.coursesListView);
 
         retrieveCourse();
+
     }
 
     /**
@@ -53,11 +54,6 @@ public class CoursesListActivity extends Activity implements CalendarClientDownl
 
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
-
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Charging course details");
-        mDialog.show();
-
     }
 
     private void retrieveCourse() {
@@ -65,43 +61,33 @@ public class CoursesListActivity extends Activity implements CalendarClientDownl
         calendarClient.getISAInformations();
     }
 
-    private ArrayList<Map<String, String>> retrieveCourseInfo(
-            List<Course> coursesList) {
+    private void retrieveCourseInfo(List<Course> coursesList) {
+
+        ConstructListCourse constructCourse = ConstructListCourse
+                .getInstance(this);
+        constructCourse.completeCourse(coursesList, this);
+
+    }
+
+    public void callbackAppEngine(List<Course> coursesList) {
 
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
 
         for (Course cours : coursesList) {
-            ConstructCourse constructCourse = ConstructCourse.getInstance();
-            constructCourse.completeCourse(cours);
-            
             Map<String, String> courseMap = new HashMap<String, String>();
             courseMap.put("Course name", cours.getName());
-            courseMap.put("Professor and Credits",
+            courseMap.put("Course information",
                     "Professor : " + cours.getTeacher() + ", Credits : "
                             + cours.getCredits());
-            
+
             coursesName.add(courseMap);
         }
-        return coursesName;
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void callbackDownload(List<Course> courses) {
-        this.mCourses = courses;
-        
-        final List<Map<String, String>> courseInfoList = retrieveCourseInfo(mCourses);
+        final List<Map<String, String>> courseInfoList = coursesName;
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
                 android.R.layout.simple_list_item_2,
-                new String[] {"Course name", "Professor and Credits" },
+                new String[] {"Course name", "Course information" },
                 new int[] {android.R.id.text1, android.R.id.text2 });
 
         mListView.setAdapter(simpleAdapter);
@@ -118,6 +104,12 @@ public class CoursesListActivity extends Activity implements CalendarClientDownl
             }
 
         });
+    }
+
+    @Override
+    public void callbackDownload(List<Course> courses) {
+        this.mCourses = courses;
+        retrieveCourseInfo(mCourses);
 
     }
 }

@@ -1,3 +1,0 @@
-Book : GCplan2014-2015.xls
-Sheet : MASTER
-colCredit : 13

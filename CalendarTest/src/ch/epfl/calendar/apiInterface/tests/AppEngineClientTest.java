@@ -4,10 +4,6 @@
 package ch.epfl.calendar.apiInterface.tests;
 
 import junit.framework.TestCase;
-import ch.epfl.calendar.apiInterface.AppEngineClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.apiInterface.DatabaseInterface;
-import ch.epfl.calendar.data.Course;
 
 /**
  * Test class for {@link ch.epfl.calendar.apiInterface.AppEngineClient}
@@ -17,7 +13,7 @@ import ch.epfl.calendar.data.Course;
  */
 public class AppEngineClientTest extends TestCase {
 
-    private DatabaseInterface dbInterface;
+    //private DatabaseInterface dbInterface;
 
     // FIXME : see with Jonas to have a local app engine on the jenkins server.
     /*public void testGetCourseErrors() {
