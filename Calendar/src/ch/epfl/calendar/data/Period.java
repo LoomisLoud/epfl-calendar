@@ -32,8 +32,9 @@ public class Period {
     private static final int START_TIME_INDEX = 11;
     private static final int DAY_MIN = 1;
     private static final int DAY_MAX = 31;
-    private static final int MONTH_MIN = 1;
-    private static final int MONTH_MAX = 12;
+    //In a gregorian java calendar, a month starts at 0 and ends at 11
+    private static final int MONTH_MIN = 0;
+    private static final int MONTH_MAX = 11;
     private static final int YEAR_MIN = 1970;
     private static final int HOUR_MIN = 0;
     private static final int HOUR_MAX = 23;
@@ -158,11 +159,11 @@ public class Period {
             throw new NullPointerException();
         }
         PeriodType periodType= null;
-        if (type.equals(TYPE_EXERCISES_EN) || type.equals(TYPE_EXERCISES_FR)) {
+        if (type.equalsIgnoreCase(TYPE_EXERCISES_EN) || type.equalsIgnoreCase(TYPE_EXERCISES_FR)) {
             periodType = PeriodType.EXERCISES;
-        } else if (type.equals(TYPE_PROJECT_EN) || type.equals(TYPE_PROJECT_FR)) {
+        } else if (type.equalsIgnoreCase(TYPE_PROJECT_EN) || type.equalsIgnoreCase(TYPE_PROJECT_FR)) {
             periodType = PeriodType.PROJECT;
-        } else if (type.equals(TYPE_LECTURE_EN) || type.equals(TYPE_LECTURE_FR)) {
+        } else if (type.equalsIgnoreCase(TYPE_LECTURE_EN) || type.equalsIgnoreCase(TYPE_LECTURE_FR)) {
             periodType = PeriodType.LECTURE;
         } else {
             periodType = PeriodType.DEFAULT;

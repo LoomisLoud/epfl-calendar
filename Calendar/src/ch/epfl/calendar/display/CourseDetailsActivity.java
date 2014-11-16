@@ -1,11 +1,9 @@
 package ch.epfl.calendar.display;
 
-import java.util.concurrent.ExecutionException;
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
@@ -14,10 +12,8 @@ import android.text.style.StyleSpan;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.epfl.calendar.R;
-import ch.epfl.calendar.apiInterface.AppEngineClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.apiInterface.DatabaseInterface;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
 import ch.epfl.calendar.utils.HttpUtils;
 
 /**
@@ -28,8 +24,11 @@ import ch.epfl.calendar.utils.HttpUtils;
 public class CourseDetailsActivity extends Activity {
 
     private static final float SIZE_OF_TITLE = 1.5f;
-    
+
     private final Activity mThisActivity = this;
+    private AppEngineTask mTask;
+    private String mCourseName;
+    private Course mCourse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,47 +38,66 @@ public class CourseDetailsActivity extends Activity {
         // get the intent that started the Activity
         Intent startingIntent = getIntent();
 
-        String courseName = startingIntent.getStringExtra("course");
+        mCourseName = startingIntent.getStringExtra("course");
 
-        Course course = null;
-        try {
-            if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
-                course = new DownloadCourseTask().execute(courseName).get();
-            }
-        } catch (InterruptedException e) {
-            Toast.makeText(this.mThisActivity,
-                    R.string.calendar_client_ex_msg,
-                    Toast.LENGTH_SHORT).show();
-        } catch (ExecutionException e) {
-            Toast.makeText(this.mThisActivity,
-                    R.string.calendar_client_ex_msg,
-                    Toast.LENGTH_SHORT).show();
-        }
+        // Course course = null;
 
-        if (course == null) {
-            TextView textView = (TextView) findViewById(R.id.courseName);
-            textView.setText(courseName + " not found in data base.");
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            //System.out.println("Loading courses in savedInstanceState");
+            mCourse = savedInstanceState.getParcelable("course");
+            setTextViewsFromCourse();
         } else {
-
-            String courseProfessor = course.getTeacher();
-            String courseCredits = Integer.toString(course.getCredits());
-            String courseDescription = course.getDescription();
-
-            // get the TextView and update it
-            TextView textView = (TextView) findViewById(R.id.courseName);
-            textView.setText(titleToSpannable(courseName));
-
-            textView = (TextView) findViewById(R.id.courseProfessor);
-            textView.setText(bodyToSpannable("Professor: " + courseProfessor));
-
-            textView = (TextView) findViewById(R.id.courseCredits);
-            textView.setText(bodyToSpannable(courseCredits + " crédits"));
-            
-            textView = (TextView) findViewById(R.id.courseDescription);
-            textView.setText(bodyToSpannable("Description: " + courseDescription));
-            textView.setMovementMethod(new ScrollingMovementMethod());
-
+            // Retrieve course for first time
+            //System.out.println("Retrieving courses for first time");
+            if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
+                // course = new DownloadCourseTask().execute(courseName).get();
+                mTask = new AppEngineTask(this, new AppEngineHandler());
+                mTask.execute(mCourseName);
+            }
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the activity state
+        savedInstanceState.putParcelable("course", mCourse);
+        //System.out.println("Saving state");
+        
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    
+    private void callback() {
+        mCourse = mTask.getCourse();
+        if (mCourse == null) {
+            TextView textView = (TextView) findViewById(R.id.courseName);
+            textView.setText(mCourseName + " not found in data base.");
+        } else {
+            setTextViewsFromCourse();
+        }
+    }
+
+    private void setTextViewsFromCourse() {
+        String courseProfessor = mCourse.getTeacher();
+        String courseCredits = Integer.toString(mCourse.getCredits());
+        String courseDescription = mCourse.getDescription();
+
+        // get the TextView and update it
+        TextView textView = (TextView) findViewById(R.id.courseName);
+        textView.setText(titleToSpannable(mCourse.getName()));
+
+        textView = (TextView) findViewById(R.id.courseProfessor);
+        textView.setText(bodyToSpannable("Professor: " + courseProfessor));
+
+        textView = (TextView) findViewById(R.id.courseCredits);
+        textView.setText(bodyToSpannable(courseCredits + " crédits"));
+
+        textView = (TextView) findViewById(R.id.courseDescription);
+        textView.setText(bodyToSpannable("Description: "
+                + courseDescription));
+        textView.setMovementMethod(new ScrollingMovementMethod());
     }
 
     private SpannableString titleToSpannable(String title) {
@@ -101,31 +119,23 @@ public class CourseDetailsActivity extends Activity {
     }
 
     /**
+     * 
      * @author Maxime
      * 
      */
-    private class DownloadCourseTask extends AsyncTask<String, Void, Course> {
+    private class AppEngineHandler implements AppEngineListener {
 
         @Override
-        protected Course doInBackground(String... courseName) {
-            return retrieveCourse(courseName[0]);
+        public void onError(Context context, String msg) {
+
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
         }
 
-        private Course retrieveCourse(String courseName) {
-            DatabaseInterface appEngineClient;
-            Course course = null;
-            try {
-                appEngineClient = new AppEngineClient(
-                        "http://versatile-hull-742.appspot.com");
-                course = appEngineClient.getCourseByName(courseName);
-
-            } catch (CalendarClientException e) {
-                Toast.makeText(mThisActivity,
-                        R.string.calendar_client_ex_msg,
-                        Toast.LENGTH_SHORT).show();
-            }
-            return course;
+        @Override
+        public void onSuccess() {
+            callback();
         }
+
     }
 
 }

@@ -11,6 +11,7 @@ bin/
 gen/
 local.properties
 
+Python/Log/
 .checkstyle
 .metadata/
 .classpath
