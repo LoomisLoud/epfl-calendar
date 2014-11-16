@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.data;
 
@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * A period is a date, a start time and an end time + the type (exercises,
  * lesson) and the rooms of a course
- * 
+ *
  * @author AblionGE
- * 
+ *
  */
 
 public class Period{
@@ -23,7 +23,7 @@ public class Period{
     private Calendar mStartDate;
     private Calendar mEndDate;
     private List<String> mRooms;
-    
+
     private static final int DATE_PARTS_LENGTH = 3;
     private static final int HOUR_PARTS_LENGTH = 2;
 
@@ -41,7 +41,14 @@ public class Period{
         this.mType = type;
         this.mRooms = rooms;
     }
-    
+
+    public Period(String type, Calendar startDate, Calendar endDate, List<String> rooms) {
+    	this.mType = type;
+    	this.mStartDate = startDate;
+    	this.mEndDate = endDate;
+    	this.mRooms = rooms;
+    }
+
     private Calendar createCalendar(String date, String hour) {
         if (date != null && hour != null) {
             //Format of date : dd.mm.yyyy
@@ -124,16 +131,16 @@ public class Period{
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "From " + mStartDate.get(Calendar.DATE) + "." + mStartDate.get(Calendar.MONTH) + "." 
+        return "From " + mStartDate.get(Calendar.DATE) + "." + mStartDate.get(Calendar.MONTH) + "."
                 + mStartDate.get(Calendar.YEAR) + " at "
                 + mStartDate.get(Calendar.HOUR_OF_DAY) + ":" + mStartDate.get(Calendar.MINUTE)
                 + " to " + mEndDate.get(Calendar.DATE) + "."
-                + mEndDate.get(Calendar.MONTH) + "." 
+                + mEndDate.get(Calendar.MONTH) + "."
                 + mEndDate.get(Calendar.YEAR) + " at "
                 + mEndDate.get(Calendar.HOUR_OF_DAY) + ":" + mEndDate.get(Calendar.MINUTE) + " of type "
                 + mType + " in rooms : " + mRooms + "\n";
