@@ -3,8 +3,6 @@
  */
 package ch.epfl.calendar.persistence;
 
-import ch.epfl.calendar.data.Course;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -15,11 +13,24 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
+	/**
+	 * Database file name.
+	 */
 	public static final String DATABASE_NAME = "Calendar.db";
+
+	/**
+	 * Database version. This number must be increased whenever the database
+	 * schema is upgraded in order to trigger the
+	 * {@link SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)}
+	 * method.
+	 */
 	public static final int DATABASE_VERSION = 1;
+
+	private Context mContext;
 
 	public DBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		mContext = context;
 	}
 
 	@Override
@@ -34,16 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		CourseTable.onUpgrade(db, oldVersion, newVersion);
 	}
 
-	public long insertCourse(SQLiteDatabase db, Course course) {
-		assert course != null;
-
-		ContentValues values = new ContentValues();
-		values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
-
-		long newRowId;
-		newRowId = db.insert(CourseTable.TABLE_NAME_COURSE, null, values);
-
-
-		return newRowId;
+	public Context getContext() {
+		return this.mContext;
 	}
 }
