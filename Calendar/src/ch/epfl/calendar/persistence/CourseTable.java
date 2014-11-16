@@ -13,21 +13,21 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class CourseTable {
 
-	public static final String TABLE_NAME_COURSE 		= "course";
-	public static final String COLUMN_NAME_NAME 		= "name";
-	public static final String COLUMN_NAME_PERIODS 		= "periods";
-	public static final String COLUMN_NAME_TEACHER 		= "teacher";
-	public static final String COLUMN_NAME_CREDITS 		= "credits";
-	public static final String COLUMN_NAME_CODE 		= "code";
-	public static final String COLUMN_NAME_DESCRIPTION 	= "description";
+	public static final String TABLE_NAME_COURSE		= "course";
+	public static final String COLUMN_NAME_ID			= "_id";
+	public static final String COLUMN_NAME_NAME			= "name";
+	public static final String COLUMN_NAME_TEACHER		= "teacher";
+	public static final String COLUMN_NAME_CREDITS		= "credits";
+	public static final String COLUMN_NAME_CODE			= "code";
+	public static final String COLUMN_NAME_DESCRIPTION	= "description";
 
 	/**
 	 * See {@link SQLiteDatabase#onCreate(SQLiteDatabase}
 	 */
 	public static void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE" + CourseTable.TABLE_NAME_COURSE + "("
-				+ CourseTable.COLUMN_NAME_NAME + "TEXT PRIMARY KEY, "
-				+ CourseTable.COLUMN_NAME_PERIODS + "FOREIGN KEY, "
+				+ CourseTable.COLUMN_NAME_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ CourseTable.COLUMN_NAME_NAME + "TEXT, "
 				+ CourseTable.COLUMN_NAME_TEACHER + "TEXT, "
 				+ CourseTable.COLUMN_NAME_CREDITS + "INTEGER, "
 				+ CourseTable.COLUMN_NAME_CODE + "TEXT, "
