@@ -3,7 +3,6 @@
  */
 package ch.epfl.calendar.persistence;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -11,6 +10,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Period;
 
 /**
@@ -30,7 +30,6 @@ public class PeriodDataSource implements DAO {
 	private static final String SUCCESS_UPDATE 	= "Period successfully updated";
 
 	private static PeriodDataSource mPeriodDataSource;
-	private DBHelper mDBHelper;
 
 	public static PeriodDataSource getInstance() {
 		if (PeriodDataSource.mPeriodDataSource == null) {
@@ -40,7 +39,7 @@ public class PeriodDataSource implements DAO {
 	}
 
 	public ArrayList<Period> findAll() {
-		SQLiteDatabase db = mDBHelper.getReadableDatabase();
+		SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
 		Cursor cursor = db.rawQuery(
 				"SELECT * FROM "
 				+ PeriodTable.TABLE_NAME_PERIOD
@@ -77,7 +76,7 @@ public class PeriodDataSource implements DAO {
 	public void create(Object obj) throws SQLiteCalendarException {
 		Period period = (Period) obj;
 		assert period != null;
-		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		ContentValues values = new ContentValues();
 
@@ -91,7 +90,9 @@ public class PeriodDataSource implements DAO {
 	 */
 	@Override
 	public void update(Object obj) throws SQLiteCalendarException {
-		// TODO Auto-generated method stub
+		Period period = (Period) obj;
+		assert period != null;
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 	}
 
@@ -103,7 +104,9 @@ public class PeriodDataSource implements DAO {
 	 */
 	@Override
 	public void delete(Object obj) throws SQLiteCalendarException {
-		// TODO Auto-generated method stub
+		Period period = (Period) obj;
+		assert period != null;
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 	}
 
@@ -112,7 +115,8 @@ public class PeriodDataSource implements DAO {
 	 */
 	@Override
 	public void deleteAll() {
-		// TODO Auto-generated method stub
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+		db.delete(PeriodTable.TABLE_NAME_PERIOD, null, null);
 
 	}
 

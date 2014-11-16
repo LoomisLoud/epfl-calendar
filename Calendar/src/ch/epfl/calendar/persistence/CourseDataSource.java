@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.Logger;
@@ -30,7 +31,6 @@ public class CourseDataSource implements DAO {
 	private static final String SUCCESS_UPDATE 	= "Course successfully updated";
 
 	private static CourseDataSource mCourseDataSource;
-	private DBHelper mDBHelper;
 
 	public static CourseDataSource getInstance() {
 		if (CourseDataSource.mCourseDataSource == null) {
@@ -45,7 +45,7 @@ public class CourseDataSource implements DAO {
 	 * @return
 	 */
 	public ArrayList<Course> findAll() {
-		SQLiteDatabase db = mDBHelper.getReadableDatabase();
+		SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
 		Cursor cursor = db.rawQuery(
 				"SELECT * FROM "
 				+ CourseTable.TABLE_NAME_COURSE
@@ -85,7 +85,7 @@ public class CourseDataSource implements DAO {
 	public void create(Object obj) throws SQLiteCalendarException {
 		Course course = (Course) obj;
 		assert course!= null;
-		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		ContentValues values = new ContentValues();
 		values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
@@ -115,7 +115,7 @@ public class CourseDataSource implements DAO {
 	public void update(Object obj) throws SQLiteCalendarException {
 		Course course = (Course) obj;
 		assert course != null;
-		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		ContentValues values = new ContentValues();
 		// FIXME: look for the reason of this error
@@ -149,7 +149,7 @@ public class CourseDataSource implements DAO {
 	public void delete(Object obj) throws SQLiteCalendarException {
 		Course course = (Course) obj;
 		assert course != null;
-		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		long rowId = db.delete(
 				CourseTable.TABLE_NAME_COURSE,
@@ -168,7 +168,7 @@ public class CourseDataSource implements DAO {
 	 */
 	@Override
 	public void deleteAll() {
-		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 		db.delete(CourseTable.TABLE_NAME_COURSE, null, null);
 	}
 
