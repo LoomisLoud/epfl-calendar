@@ -3,6 +3,8 @@
  */
 package ch.epfl.calendar;
 
+import java.util.ArrayList;
+
 import ch.epfl.calendar.persistence.DBHelper;
 import android.app.Application;
 import android.content.Context;
@@ -50,5 +52,20 @@ public class App extends Application {
 
 	public static Context getAppContext() {
 		return App.mContext;
+	}
+
+	/**
+	 * Parse a string of comma separated values into an arraylist of strings.
+	 *
+	 * @param csv
+	 * @return
+	 */
+	public static ArrayList<String> parseFromCSVString(String csv) {
+		String[] ary = csv.split(",");
+		ArrayList<String> result = new ArrayList<String>();
+		for (int i = 0; i < ary.length; i++) {
+			result.add(ary[i]);
+		}
+		return result;
 	}
 }
