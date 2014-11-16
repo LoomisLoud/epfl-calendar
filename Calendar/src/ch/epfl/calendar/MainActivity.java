@@ -203,6 +203,16 @@ public class MainActivity extends Activity implements
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+       // savedInstanceState.putInt(STATE_SCORE, mCurrentScore);
+       // savedInstanceState.putInt(STATE_LEVEL, mCurrentLevel);
+        
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
