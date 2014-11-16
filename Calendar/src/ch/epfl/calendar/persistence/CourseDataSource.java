@@ -55,6 +55,9 @@ public class CourseDataSource implements DAO {
 
 		if (cursor.moveToFirst()) {
 			while (!cursor.isAfterLast()) {
+				// TODO check what to do with the id (autoincrement ?)
+//				long id = cursor.getLong(
+//						cursor.getColumnIndex(CourseTable.COLUMN_NAME_ID));
 				String name = cursor.getString(
 						cursor.getColumnIndex(CourseTable.COLUMN_NAME_NAME));
 				// FIXME: find a valid return type for a list of periods
@@ -89,12 +92,13 @@ public class CourseDataSource implements DAO {
 
 		ContentValues values = new ContentValues();
 		values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
-		// FIXME: look for the reason of this error
-//		values.put(CourseTable.COLUMN_NAME_PERIODS, course.getPeriods());
 		values.put(CourseTable.COLUMN_NAME_TEACHER, course.getTeacher());
 		values.put(CourseTable.COLUMN_NAME_CREDITS, course.getCredits());
 		values.put(CourseTable.COLUMN_NAME_CODE, course.getCode());
 		values.put(CourseTable.COLUMN_NAME_DESCRIPTION, course.getDescription());
+
+		// TODO find a way to insert rows in Period table for each period of the course.
+		// solution: insert in PeriodTable
 
 		long rowId = db.insert(CourseTable.TABLE_NAME_COURSE, null, values);
 		if (rowId == -1) {
@@ -118,12 +122,14 @@ public class CourseDataSource implements DAO {
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		// FIXME: look for the reason of this error
-//		values.put(CourseTable.COLUMN_NAME_PERIODS, course.getPeriods());
+		values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
 		values.put(CourseTable.COLUMN_NAME_TEACHER, course.getTeacher());
 		values.put(CourseTable.COLUMN_NAME_CREDITS, course.getCredits());
 		values.put(CourseTable.COLUMN_NAME_CODE, course.getCode());
 		values.put(CourseTable.COLUMN_NAME_DESCRIPTION, course.getDescription());
+
+		// TODO find a way to insert rows in Period table for each period of the course.
+		// solution: update in PeriodTable
 
 		long rowId = db.update(
 				CourseTable.TABLE_NAME_COURSE,
@@ -171,5 +177,4 @@ public class CourseDataSource implements DAO {
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 		db.delete(CourseTable.TABLE_NAME_COURSE, null, null);
 	}
-
 }

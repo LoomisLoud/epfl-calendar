@@ -9,9 +9,11 @@ import java.util.Calendar;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Period;
+import ch.epfl.calendar.utils.Logger;
 
 /**
  * DAO for {@link Period}.
@@ -49,16 +51,19 @@ public class PeriodDataSource implements DAO {
 
 		if (cursor.moveToFirst()) {
 			while (!cursor.isAfterLast()) {
-				int id = cursor.getInt(
-						cursor.getColumnIndex(PeriodTable.COLUMN_NAME_ID));
+				// TODO check what to do with the id (autoincrement ?)
+//				int id = cursor.getInt(
+//						cursor.getColumnIndex(PeriodTable.COLUMN_NAME_ID));
 				String type = cursor.getString(
 						cursor.getColumnIndex(PeriodTable.COLUMN_NAME_TYPE));
-				// FIXME: find a suitable sql data type for date
-				Calendar startDate = null;
-				Calendar endDate = null;
-				// FIXME: find a way to fill this arrayList
-				ArrayList<String> rooms = null; //cursor.getString(
-						//cursor.getColumnIndex(new String[] {PeriodTable.COLUMN_NAME_ROOMS}));
+				String startDate = cursor.getString(
+						cursor.getColumnIndex(PeriodTable.COLUMN_NAME_STARTDATE));
+				String endDate = cursor.getString(
+						cursor.getColumnIndex(PeriodTable.COLUMN_NAME_ENDDATE));
+				String roomsCSV = cursor.getString(
+						cursor.getColumnIndex(PeriodTable.COLUMN_NAME_ROOMS));
+				ArrayList<String> rooms = App.parseFromCSVString(roomsCSV);
+
 				periods.add(new Period(type, startDate, endDate, rooms));
 			}
 		}
@@ -79,7 +84,22 @@ public class PeriodDataSource implements DAO {
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		ContentValues values = new ContentValues();
+		values.put(PeriodTable.COLUMN_NAME_TYPE, period.getType());
+		// TODO check the return value of Calendar toString method
+		values.put(PeriodTable.COLUMN_NAME_STARTDATE, period.getStartDate().toString());
+		values.put(PeriodTable.COLUMN_NAME_ENDDATE, period.getEndDate().toString());
+		String roomsCSV = App.csvStringFromList(period.getRooms());
+		values.put(PeriodTable.COLUMN_NAME_ROOMS, roomsCSV);
+		// TODO check how to store this foreign key value
+//		values.put(PeriodTable.COLUMN_NAME_COURSE_ID, ???);
 
+		long rowId = db.insert(PeriodTable.TABLE_NAME_PERIOD, null, values);
+		if (rowId == -1) {
+			Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_CREATE);
+			throw new SQLiteCalendarException(PeriodDataSource.ERROR_CREATE);
+		}
+
+		Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_CREATE);
 	}
 
 	/**
@@ -94,6 +114,28 @@ public class PeriodDataSource implements DAO {
 		assert period != null;
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
+		ContentValues values = new ContentValues();
+		values.put(PeriodTable.COLUMN_NAME_TYPE, period.getType());
+		// TODO check the return value of Calendar toString method
+		values.put(PeriodTable.COLUMN_NAME_STARTDATE, period.getStartDate().toString());
+		values.put(PeriodTable.COLUMN_NAME_ENDDATE, period.getEndDate().toString());
+		String roomsCSV = App.csvStringFromList(period.getRooms());
+		values.put(PeriodTable.COLUMN_NAME_ROOMS, roomsCSV);
+		// TODO check how to store this foreign key value
+//		values.put(PeriodTable.COLUMN_NAME_COURSE_ID, ???);
+
+		// TODO create id attribute and getter in Period class
+//		long rowId = db.update(
+//				PeriodTable.TABLE_NAME_PERIOD,
+//				values,
+//				PeriodTable.COLUMN_NAME_ID + " = ?",
+//				new String[] {String.valueOf(period.getId())});
+//		if (rowId == -1) {
+//			Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_UPDATE);
+//			throw new SQLiteCalendarException(PeriodDataSource.ERROR_UPDATE);
+//		}
+
+		Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_UPDATE);
 	}
 
 	/**
@@ -108,6 +150,18 @@ public class PeriodDataSource implements DAO {
 		assert period != null;
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
+		// TODO create id attribute and getter in Period class
+//		long rowId = db.delete(
+//				PeriodTable.TABLE_NAME_PERIOD,
+//				PeriodTable.COLUMN_NAME_ID + " = '" + period.getId() + "'",
+//				null);
+//		if (rowId == -1) {
+//			Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_DELETE);
+//			throw new SQLiteCalendarException(PeriodDataSource.ERROR_DELETE);
+//		}
+
+		Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_DELETE);
+
 	}
 
 	/**
@@ -117,7 +171,5 @@ public class PeriodDataSource implements DAO {
 	public void deleteAll() {
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 		db.delete(PeriodTable.TABLE_NAME_PERIOD, null, null);
-
 	}
-
 }

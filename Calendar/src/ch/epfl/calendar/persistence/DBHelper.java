@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Class for managing the persistent storage in DB
+ * Class for managing the persistent storage in DB.
  *
  * @author lweingart
  *
