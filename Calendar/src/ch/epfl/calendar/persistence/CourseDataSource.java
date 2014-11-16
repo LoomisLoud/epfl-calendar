@@ -3,14 +3,18 @@
  */
 package ch.epfl.calendar.persistence;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.Logger;
 
 /**
- * DAO for {@link Course}
+ * DAO for {@link Course}.
  *
  * @author lweingart
  *
@@ -33,6 +37,37 @@ public class CourseDataSource implements DAO {
 			CourseDataSource.mCourseDataSource = new CourseDataSource();
 		}
 		return CourseDataSource.mCourseDataSource;
+	}
+
+	public ArrayList<Course> findAll() {
+		SQLiteDatabase db = mDBHelper.getReadableDatabase();
+		Cursor cursor = db.rawQuery(
+				"SELECT * FROM "
+				+ CourseTable.TABLE_NAME_COURSE
+				+ " ORDER BY code ASC",
+				null);
+		ArrayList<Course> courses = new ArrayList<Course>();
+
+		if (cursor.moveToFirst()) {
+			while (!cursor.isAfterLast()) {
+				String name = cursor.getString(
+						cursor.getColumnIndex(CourseTable.COLUMN_NAME_NAME));
+				// FIXME: find a valid return type for a list of periods
+				ArrayList<Period> periods = null;
+				String teacher = cursor.getString(
+						cursor.getColumnIndex(CourseTable.COLUMN_NAME_TEACHER));
+				int credits = cursor.getInt(
+						cursor.getColumnIndex(CourseTable.COLUMN_NAME_CREDITS));
+				String code = cursor.getString(
+						cursor.getColumnIndex(CourseTable.COLUMN_NAME_CODE));
+				String description = cursor.getString(
+						cursor.getColumnIndex(CourseTable.COLUMN_NAME_DESCRIPTION));
+
+				courses.add(new Course(name, periods, teacher, credits, code, description));
+			}
+		}
+
+		return courses;
 	}
 
 	/**
@@ -124,7 +159,7 @@ public class CourseDataSource implements DAO {
 	}
 
 	/**
-	 * Delete all Courses.
+	 * Delete all courses.
 	 */
 	@Override
 	public void deleteAll() {
