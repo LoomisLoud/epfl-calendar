@@ -387,37 +387,37 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
         }
     }
 
-    public final void testDoInBackgroundVoidArrayWithoutNetworking() {
-        Method doInBackground;
-        try {
-            doInBackground = (TequilaAuthenticationTask.class).getDeclaredMethod("doInBackground",
-                    new Class[] {Void.class});
-            doInBackground.setAccessible(true);
-
-            
-            TequilaAuthenticationTask instance = 
-                    Mockito.spy(new TequilaAuthenticationTask(context, listener, "test", "test"));
-
-            Mockito.doReturn(false).when(instance).isNetworkWorking(context);
-
-            doInBackground.invoke(instance, new Object[] {});
-        } catch (NoSuchMethodException e) {
-            fail(e.getMessage());
-        } catch (IllegalAccessException e) {
-            fail(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            fail(e.getMessage());
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof NetworkException) {
-                if (e.getTargetException().getMessage().equals(context.getString(R.string.network_unreachable))) {
-                    //Waited
-                } else {
-                    fail();
-                }
-            } else {
-                fail();
-            }
-        }
-    }
+//    public final void testDoInBackgroundVoidArrayWithoutNetworking() {
+//        Method doInBackground;
+//        try {
+//            doInBackground = (TequilaAuthenticationTask.class).getDeclaredMethod("doInBackground",
+//                    new Class[] {Void.class});
+//            doInBackground.setAccessible(true);
+//
+//            
+//            TequilaAuthenticationTask instance = 
+//                    Mockito.spy(new TequilaAuthenticationTask(context, listener, "test", "test"));
+//
+//            Mockito.doReturn(false).when(instance).isNetworkWorking(context);
+//
+//            doInBackground.invoke(instance, new Object[] {});
+//        } catch (NoSuchMethodException e) {
+//            fail(e.getMessage());
+//        } catch (IllegalAccessException e) {
+//            fail(e.getMessage());
+//        } catch (IllegalArgumentException e) {
+//            fail(e.getMessage());
+//        } catch (InvocationTargetException e) {
+//            if (e.getTargetException() instanceof NetworkException) {
+//                if (e.getTargetException().getMessage().equals(context.getString(R.string.network_unreachable))) {
+//                    //Waited
+//                } else {
+//                    fail();
+//                }
+//            } else {
+//                fail();
+//            }
+//        }
+//    }
     
 }
