@@ -58,6 +58,7 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
 
 
     protected void setUp() throws Exception {
+        super.setUp();
         client = Mockito.mock(AbstractHttpClient.class);
         response = Mockito.mock(HttpResponse.class);
         statusLine = Mockito.mock(BasicStatusLine.class);
@@ -68,7 +69,6 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
         Mockito.doReturn(statusLine).when(response).getStatusLine();
         Mockito.doReturn(HTTP_CODE_OK).when(statusLine).getStatusCode();
         context = getInstrumentation().getTargetContext();
-        super.setUp();
     }
 
     //onPreExecute needs to be tested in an UI test
@@ -387,37 +387,37 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
         }
     }
 
-//    public final void testDoInBackgroundVoidArrayWithoutNetworking() {
-//        Method doInBackground;
-//        try {
-//            doInBackground = (TequilaAuthenticationTask.class).getDeclaredMethod("doInBackground",
-//                    new Class[] {});
-//            doInBackground.setAccessible(true);
-//
-//            
-//            TequilaAuthenticationTask instance = 
-//                    Mockito.spy(new TequilaAuthenticationTask(context, listener, "test", "test"));
-//
-//            Mockito.doReturn(false).when(instance).isNetworkWorking(context);
-//
-//            doInBackground.invoke(instance, new Object[] {});
-//        } catch (NoSuchMethodException e) {
-//            fail(e.getMessage());
-//        } catch (IllegalAccessException e) {
-//            fail(e.getMessage());
-//        } catch (IllegalArgumentException e) {
-//            fail(e.getMessage());
-//        } catch (InvocationTargetException e) {
-//            if (e.getTargetException() instanceof NetworkException) {
-//                if (e.getTargetException().getMessage().equals(context.getString(R.string.network_unreachable))) {
-//                    //Waited
-//                } else {
-//                    fail();
-//                }
-//            } else {
-//                fail();
-//            }
-//        }
-//    }
+    public final void testDoInBackgroundVoidArrayWithoutNetworking() {
+        Method doInBackground;
+        try {
+            doInBackground = (TequilaAuthenticationTask.class).getDeclaredMethod("doInBackground",
+                    new Class[] {Void.class});
+            doInBackground.setAccessible(true);
+
+            
+            TequilaAuthenticationTask instance = 
+                    Mockito.spy(new TequilaAuthenticationTask(context, listener, "test", "test"));
+
+            Mockito.doReturn(false).when(instance).isNetworkWorking(context);
+
+            doInBackground.invoke(instance, new Object[] {});
+        } catch (NoSuchMethodException e) {
+            fail(e.getMessage());
+        } catch (IllegalAccessException e) {
+            fail(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            fail(e.getMessage());
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof NetworkException) {
+                if (e.getTargetException().getMessage().equals(context.getString(R.string.network_unreachable))) {
+                    //Waited
+                } else {
+                    fail();
+                }
+            } else {
+                fail();
+            }
+        }
+    }
     
 }
