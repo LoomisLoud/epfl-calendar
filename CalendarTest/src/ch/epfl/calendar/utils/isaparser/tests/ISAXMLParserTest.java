@@ -18,6 +18,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
 import ch.epfl.calendar.utils.isaparser.ParsingException;
 
@@ -53,26 +54,29 @@ public class ISAXMLParserTest extends TestCase {
     private static InputStream standardReadCourseOther;
     private static InputStream standardReadStudyPeriod;
     private static InputStream standardReadStudyPeriodNull;
+    private static InputStream standardReadStudyPeriodNullWithDates;
+    private static InputStream standardReadStudyPeriodNullWithWrongDate;
+    private static InputStream standardReadStudyPeriodNullWithWrongHour;
     private static InputStream standardReadData;
     private static InputStream standardReadDataNull;
     private static InputStream standardInput;
 
     public void setUp() throws NoSuchMethodException, UnsupportedEncodingException {
-        skip = (ISAXMLParser.class).getDeclaredMethod("skip", new Class[] {XmlPullParser.class});
+        skip = (ISAXMLParser.class).getDeclaredMethod("skip", new Class[] {});
         skip.setAccessible(true);
-        readText = (ISAXMLParser.class).getDeclaredMethod("readText", new Class[] {XmlPullParser.class});
+        readText = (ISAXMLParser.class).getDeclaredMethod("readText", new Class[] {});
         readText.setAccessible(true);
-        readName = (ISAXMLParser.class).getDeclaredMethod("readName", new Class[] {XmlPullParser.class});
+        readName = (ISAXMLParser.class).getDeclaredMethod("readName", new Class[] {});
         readName.setAccessible(true);
-        readType = (ISAXMLParser.class).getDeclaredMethod("readType", new Class[] {XmlPullParser.class});
+        readType = (ISAXMLParser.class).getDeclaredMethod("readType", new Class[] {});
         readType.setAccessible(true);
-        readRoom = (ISAXMLParser.class).getDeclaredMethod("readRoom", new Class[] {XmlPullParser.class});
+        readRoom = (ISAXMLParser.class).getDeclaredMethod("readRoom", new Class[] {});
         readRoom.setAccessible(true);
-        readCourse = (ISAXMLParser.class).getDeclaredMethod("readCourse", new Class[] {XmlPullParser.class});
+        readCourse = (ISAXMLParser.class).getDeclaredMethod("readCourse", new Class[] {});
         readCourse.setAccessible(true);
-        readStudyPeriod = (ISAXMLParser.class).getDeclaredMethod("readStudyPeriod", new Class[] {XmlPullParser.class});
+        readStudyPeriod = (ISAXMLParser.class).getDeclaredMethod("readStudyPeriod", new Class[] {});
         readStudyPeriod.setAccessible(true);
-        readData = (ISAXMLParser.class).getDeclaredMethod("readData", new Class[] {XmlPullParser.class});
+        readData = (ISAXMLParser.class).getDeclaredMethod("readData", new Class[] {});
         readData.setAccessible(true);
         
         
@@ -96,6 +100,12 @@ public class ISAXMLParserTest extends TestCase {
                         + "+ <course><id>2258712</id><name><text lang=\"fr\">Algorithms</text></name></course>"
                         + "<room><id>2192131</id><code>CO2</code><name><text lang=\"fr\">CO 2</text>"
                         + "</name></room></study-period>").getBytes("UTF-8"));
+        standardReadStudyPeriodNullWithDates = new ByteArrayInputStream(("<study-period>"
+                + "<date>13.10.2014</date><startTime>14:15</startTime><endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
+        standardReadStudyPeriodNullWithWrongDate = new ByteArrayInputStream(("<study-period>"
+                + "<date>13.10.2014.14</date><startTime>14:15</startTime><endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
+        standardReadStudyPeriodNullWithWrongHour = new ByteArrayInputStream(("<study-period>"
+                + "<date>13.10.2014</date><startTime>14:15:16</startTime><endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
         standardReadStudyPeriodNull = new ByteArrayInputStream("<study-period></study-period>".getBytes("UTF-8"));
         standardReadData = 
                 new ByteArrayInputStream(("<data><study-period><id>1808047617</id><date>13.10.2014</date>"
@@ -135,23 +145,32 @@ public class ISAXMLParserTest extends TestCase {
     public void testParse() throws ParsingException {
         //With null argument
         try {
-            ISAXMLParser.parse(null);
+            new ISAXMLParser().parse(null);
             fail("parse : Fail test null pointer");
         } catch (NullPointerException e) {
-            //waited exception
+            if (e.getMessage().equals("InputStream is null")) {
+                //waited exception
+            } else {
+                fail("testParse wrap wrong NullPointerException");
+            }
         }
     }
 
     public void testReadData() throws IllegalAccessException, IllegalArgumentException, 
         InvocationTargetException, ParsingException, XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
+        
       //With Null argument
         try {
-            readData.invoke(null, new Object[] {null});
+            readData.invoke(new ISAXMLParser(), new Object[] {});
             fail("readData : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readData wrong NullPointerException");
+                }
             }
         }
         
@@ -161,7 +180,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadDataNull, null);
             parser.nextTag();
             @SuppressWarnings("unchecked")
-            List<Course> courses = (List<Course>) readData.invoke(null, new Object[] {parser});
+            List<Course> courses = (List<Course>) readData.invoke(new ISAXMLParser(parser), new Object[] {});
             assertEquals(0, courses.size());
         } finally { }
         
@@ -171,7 +190,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardReadData, null);
             parser.nextTag();
             @SuppressWarnings("unchecked")
-            List<Course> courses = (List<Course>) readData.invoke(null, new Object[] {parser});
+            List<Course> courses = (List<Course>) readData.invoke(new ISAXMLParser(parser), new Object[] {});
             assertEquals(1, courses.size());
         } finally { }
         
@@ -181,7 +200,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setInput(standardInput, null);
             parser.nextTag();
             @SuppressWarnings("unchecked")
-            List<Course> courses = (List<Course>) readData.invoke(null, new Object[] {parser});
+            List<Course> courses = (List<Course>) readData.invoke(new ISAXMLParser(parser), new Object[] {});
             assertEquals(2, courses.size());
             assertEquals(2, courses.get(0).getPeriods().size());
         } finally { }
@@ -190,13 +209,18 @@ public class ISAXMLParserTest extends TestCase {
     public void testReadStudyPeriod() throws IllegalAccessException, IllegalArgumentException,
         InvocationTargetException, XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
+        
       //With Null argument
         try {
-            readStudyPeriod.invoke(null, new Object[] {null});
+            readStudyPeriod.invoke(new ISAXMLParser(), new Object[] {});
             fail("readStudyPeriod : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readStudyPeriod wrong NullPointerException");
+                }
             }
         }
         
@@ -205,32 +229,84 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadStudyPeriodNull, null);
             parser.nextTag();
-            Course course = (Course) readStudyPeriod.invoke(null, new Object[] {parser});
+            readStudyPeriod.invoke(new ISAXMLParser(parser), new Object[] {});
+            fail("It doesn't fail with null Period");
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof NullPointerException) {
+                if (e.getTargetException().getMessage().equals("Date or Hour is null in createCalendar()")) {
+                    //waited exception
+                } else {
+                    fail("Wrong NullPointerException");
+                }
+            }
+        }
+        
+        //With null argument but correct date !
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(standardReadStudyPeriodNullWithDates, null);
+            parser.nextTag();
+            Course course = (Course) readStudyPeriod.invoke(new ISAXMLParser(parser), new Object[] {});
             assertEquals(0, course.getCredits());
             assertNull(course.getTeacher());
             assertNull(course.getName());
             assertNotNull(course.getPeriods());
-            assertNull(course.getPeriods().get(0).getStartDate());
-            assertNull(course.getPeriods().get(0).getEndDate());
+            assertNotNull(course.getPeriods().get(0).getStartDate());
+            assertNotNull(course.getPeriods().get(0).getEndDate());
             assertNull(course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(0, course.getPeriods().get(0).getRooms().size());
         } finally { }
+        
+      //With null arguments but wrong date
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(standardReadStudyPeriodNullWithWrongDate, null);
+            parser.nextTag();
+            readStudyPeriod.invoke(new ISAXMLParser(parser), new Object[] {});
+            fail("It doesn't fail with wrong Date");
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof IllegalArgumentException) {
+                System.out.println(e.getTargetException().getMessage());
+                if (e.getTargetException().getMessage().equals("Parsing date failed")) {
+                    //waited exception
+                } else {
+                    fail("Wrong IllegalArgumentException");
+                }
+            }
+        }
+        
+      //With null arguments but wrong hour
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(standardReadStudyPeriodNullWithWrongHour, null);
+            parser.nextTag();
+            readStudyPeriod.invoke(new ISAXMLParser(parser), new Object[] {});
+            fail("It doesn't fail with wrong Hour");
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof IllegalArgumentException) {
+                if (e.getTargetException().getMessage().equals("Parsing date failed")) {
+                    //waited exception
+                } else {
+                    fail("Wrong IllegalArgumentException");
+                }
+            }
+        }
         
         //With standard input
         try {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadStudyPeriod, null);
             parser.nextTag();
-            Course course = (Course) readStudyPeriod.invoke(null, new Object[] {parser});
+            Course course = (Course) readStudyPeriod.invoke(new ISAXMLParser(parser), new Object[] {});
             assertEquals(0, course.getCredits());
             assertNull(course.getTeacher());
             assertEquals("Algorithms", course.getName());
             assertNotNull(course.getPeriods());
-            //Month is actual month - 1
+            //Month is current month - 1
             assertEquals(new GregorianCalendar(2014, 9, 13, 14, 15), course.getPeriods().get(0).getStartDate());
             assertEquals(new GregorianCalendar(2014, 9, 13, 16, 00), course.getPeriods().get(0).getEndDate());
-            assertEquals("Cours", course.getPeriods().get(0).getType());
+            assertEquals(PeriodType.LECTURE, course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(1, course.getPeriods().get(0).getRooms().size());
             assertEquals("CO 2", course.getPeriods().get(0).getRooms().get(0));
@@ -240,13 +316,18 @@ public class ISAXMLParserTest extends TestCase {
     public void testReadCourse() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
+        
       //With Null argument
         try {
-            readCourse.invoke(null, new Object[] {null});
+            readCourse.invoke(new ISAXMLParser(), new Object[] {});
             fail("readCourse : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readCourse wrong NullPointerException");
+                }
             }
         }
         
@@ -255,7 +336,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadCourse, null);
             parser.nextTag();
-            assertEquals("bla bla", readCourse.invoke(null, new Object[] {parser}));
+            assertEquals("bla bla", readCourse.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
         
         //Without <name></name>
@@ -263,20 +344,25 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadCourseOther, null);
             parser.nextTag();
-            assertNull(readCourse.invoke(null, new Object[] {parser}));
+            assertNull(readCourse.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
     }
 
     public void testReadRoom() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
         XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
+        
       //With Null argument
         try {
-            readRoom.invoke(null, new Object[] {null});
+            readRoom.invoke(new ISAXMLParser(), new Object[] {});
             fail("readRoom : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readRoom wrong NullPointerException");
+                }
             }
         }
         
@@ -285,7 +371,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadRoom, null);
             parser.nextTag();
-            assertEquals("bla bla", readRoom.invoke(null, new Object[] {parser}));
+            assertEquals("bla bla", readRoom.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
         
         //Without <name></name>
@@ -293,20 +379,25 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadRoomOther, null);
             parser.nextTag();
-            assertNull(readRoom.invoke(null, new Object[] {parser}));
+            assertNull(readRoom.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
     }
 
     public void testReadType() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
         XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
+        
       //With Null argument
         try {
-            readType.invoke(null, new Object[] {null});
+            readType.invoke(new ISAXMLParser(), new Object[] {});
             fail("readType : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readType wrong NullPointerException");
+                }
             }
         }
         
@@ -315,7 +406,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadType, null);
             parser.nextTag();
-            assertEquals("bla bla", readType.invoke(null, new Object[] {parser}));
+            assertEquals("bla bla", readType.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
         
         //Without <type></type>
@@ -323,20 +414,25 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadTypeOther, null);
             parser.nextTag();
-            assertNull(readType.invoke(null, new Object[] {parser}));
+            assertNull(readType.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
     }
 
     public void testReadName() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
     XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
+        
       //With Null argument
         try {
-            readName.invoke(null, new Object[] {null});
+            readName.invoke(new ISAXMLParser(), new Object[] {});
             fail("readName : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readName wrong NullPointerException");
+                }
             }
         }
         
@@ -345,7 +441,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadName, null);
             parser.nextTag();
-            assertEquals("bla bla", readName.invoke(null, new Object[] {parser}));
+            assertEquals("bla bla", readName.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
         
         //Without <text></text>
@@ -353,29 +449,34 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadNameOther, null);
             parser.nextTag();
-            assertNull(readName.invoke(null, new Object[] {parser}));
+            assertNull(readName.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
     }
 
     public void testReadText() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
     XmlPullParserException, IOException {
+        XmlPullParser parser = Xml.newPullParser();
+        
         //With Null argument
         try {
-            readText.invoke(null, new Object[] {null});
+            readText.invoke(new ISAXMLParser(), new Object[] {});
             fail("readText : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("readText wrong NullPointerException");
+                }
             }
         }
-        
-        XmlPullParser parser = Xml.newPullParser();
+
         //With a TAG
         try {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardXml, null);
             parser.nextTag();
-            assertNull(readText.invoke(null, new Object[] {parser}));
+            assertNull(readText.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
         
         //With TEXT
@@ -383,26 +484,31 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(text, null);
             parser.nextTag();
-            assertEquals("bla", readText.invoke(null, new Object[] {parser}));
+            assertEquals("bla", readText.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
     }
 
     public void testSkip() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
     XmlPullParserException, IOException {
+        XmlPullParser parser = Xml.newPullParser();
+
         //WithArgumentNull
         try {
-            skip.invoke(null, new Object[] {null});
+            skip.invoke(new ISAXMLParser(), new Object[] {});
             fail("skip : Fail test null pointer");
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NullPointerException) {
-                //waited exception
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                    //waited exception
+                } else {
+                    fail("skip wrong NullPointerException");
+                }
             }
         }
         
         //With empty parser
-        XmlPullParser parser = Xml.newPullParser();
         try {
-            skip.invoke(null, new Object[] {parser});
+            skip.invoke(new ISAXMLParser(parser), new Object[] {});
             fail();
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof IllegalStateException) {
@@ -418,7 +524,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.nextTag();
             //Pass through the START_TAG to have an END_TAG
             parser.nextTag();
-            skip.invoke(null, parser);
+            skip.invoke(new ISAXMLParser(parser), new Object[] {});
             fail();
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof IllegalStateException) {
@@ -431,7 +537,7 @@ public class ISAXMLParserTest extends TestCase {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardXml, null);
             parser.nextTag();
-            skip.invoke(null, new Object[] {parser});
+            skip.invoke(new ISAXMLParser(parser), new Object[] {});
         } finally { }
     }
 

@@ -10,28 +10,31 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 
+import android.util.Log;
+
 /**
  * Custom response handler for the Tequila authorization.
  * @author lweingart
  *
  */
-public class CustomResponseHandler implements ResponseHandler<String> {
+public class TequilaResponseHandler implements ResponseHandler<String> {
 
     private static final int BUF_SIZE = 1024;
+    private static final String TAG = "CustomResponseHandler Class:: ";
 
     private final int mStatusCodeExpected;
 
-    public CustomResponseHandler(int statusCodeExpected) {
+    public TequilaResponseHandler(int statusCodeExpected) {
         this.mStatusCodeExpected = statusCodeExpected;
     }
 
     @Override
     public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
         if (response.getStatusLine().getStatusCode() != this.mStatusCodeExpected) {
-            System.out.println("Get : " + response.getStatusLine().getStatusCode()
-            		+ " and expected : "
-            		+ this.mStatusCodeExpected);
-            throw new ClientProtocolException();
+            Log.d(TAG, "Get : " + response.getStatusLine().getStatusCode()
+                    + " and expected : "
+                    + this.mStatusCodeExpected);
+            throw new ClientProtocolException(TAG + "Wrong Http Code received");
         }
         HttpEntity entity = response.getEntity();
         if (entity == null) {

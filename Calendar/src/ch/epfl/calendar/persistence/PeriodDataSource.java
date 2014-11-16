@@ -4,7 +4,6 @@
 package ch.epfl.calendar.persistence;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -84,7 +83,7 @@ public class PeriodDataSource implements DAO {
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		values.put(PeriodTable.COLUMN_NAME_TYPE, period.getType());
+		values.put(PeriodTable.COLUMN_NAME_TYPE, period.getType().toString());
 		// TODO check the return value of Calendar toString method
 		values.put(PeriodTable.COLUMN_NAME_STARTDATE, period.getStartDate().toString());
 		values.put(PeriodTable.COLUMN_NAME_ENDDATE, period.getEndDate().toString());
@@ -115,7 +114,7 @@ public class PeriodDataSource implements DAO {
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		values.put(PeriodTable.COLUMN_NAME_TYPE, period.getType());
+		values.put(PeriodTable.COLUMN_NAME_TYPE, period.getType().toString());
 		// TODO check the return value of Calendar toString method
 		values.put(PeriodTable.COLUMN_NAME_STARTDATE, period.getStartDate().toString());
 		values.put(PeriodTable.COLUMN_NAME_ENDDATE, period.getEndDate().toString());
