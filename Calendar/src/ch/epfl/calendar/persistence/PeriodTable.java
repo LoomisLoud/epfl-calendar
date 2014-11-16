@@ -27,7 +27,7 @@ public class PeriodTable {
 		db.execSQL("CREATE TABLE" + PeriodTable.TABLE_NAME_PERIOD + "("
 				+ PeriodTable.COLUMN_NAME_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "
 				+ PeriodTable.COLUMN_NAME_TYPE + "TEXT, "
-				+ PeriodTable.COLUMN_NAME_STARTDATE + "DATE, "
+				+ PeriodTable.COLUMN_NAME_STARTDATE + "DATE, " // FIXME: Date doesn't seem a suitable type
 				+ PeriodTable.COLUMN_NAME_ENDDATE + "DATE, "
 				+ PeriodTable.COLUMN_NAME_ROOMS + "TEXT)");
 	}

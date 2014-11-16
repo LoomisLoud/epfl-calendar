@@ -39,6 +39,11 @@ public class CourseDataSource implements DAO {
 		return CourseDataSource.mCourseDataSource;
 	}
 
+	/**
+	 * Find all the courses.
+	 *
+	 * @return
+	 */
 	public ArrayList<Course> findAll() {
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 		Cursor cursor = db.rawQuery(
