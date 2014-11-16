@@ -28,6 +28,7 @@ public class CourseDetailsActivity extends Activity {
     private final Activity mThisActivity = this;
     private AppEngineTask mTask;
     private String mCourseName;
+    private Course mCourse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,40 +42,62 @@ public class CourseDetailsActivity extends Activity {
 
         // Course course = null;
 
-        if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
-            // course = new DownloadCourseTask().execute(courseName).get();
-            mTask = new AppEngineTask(this, new AppEngineHandler());
-            mTask.execute(mCourseName);
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            //System.out.println("Loading courses in savedInstanceState");
+            mCourse = savedInstanceState.getParcelable("course");
+            setTextViewsFromCourse();
+        } else {
+            // Retrieve course for first time
+            //System.out.println("Retrieving courses for first time");
+            if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
+                // course = new DownloadCourseTask().execute(courseName).get();
+                mTask = new AppEngineTask(this, new AppEngineHandler());
+                mTask.execute(mCourseName);
+            }
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the activity state
+        savedInstanceState.putParcelable("course", mCourse);
+        //System.out.println("Saving state");
+        
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    
     private void callback() {
-        Course course = mTask.getCourse();
-        if (course == null) {
+        mCourse = mTask.getCourse();
+        if (mCourse == null) {
             TextView textView = (TextView) findViewById(R.id.courseName);
             textView.setText(mCourseName + " not found in data base.");
         } else {
-
-            String courseProfessor = course.getTeacher();
-            String courseCredits = Integer.toString(course.getCredits());
-            String courseDescription = course.getDescription();
-
-            // get the TextView and update it
-            TextView textView = (TextView) findViewById(R.id.courseName);
-            textView.setText(titleToSpannable(course.getName()));
-
-            textView = (TextView) findViewById(R.id.courseProfessor);
-            textView.setText(bodyToSpannable("Professor: " + courseProfessor));
-
-            textView = (TextView) findViewById(R.id.courseCredits);
-            textView.setText(bodyToSpannable(courseCredits + " crédits"));
-
-            textView = (TextView) findViewById(R.id.courseDescription);
-            textView.setText(bodyToSpannable("Description: "
-                    + courseDescription));
-            textView.setMovementMethod(new ScrollingMovementMethod());
-
+            setTextViewsFromCourse();
         }
+    }
+
+    private void setTextViewsFromCourse() {
+        String courseProfessor = mCourse.getTeacher();
+        String courseCredits = Integer.toString(mCourse.getCredits());
+        String courseDescription = mCourse.getDescription();
+
+        // get the TextView and update it
+        TextView textView = (TextView) findViewById(R.id.courseName);
+        textView.setText(titleToSpannable(mCourse.getName()));
+
+        textView = (TextView) findViewById(R.id.courseProfessor);
+        textView.setText(bodyToSpannable("Professor: " + courseProfessor));
+
+        textView = (TextView) findViewById(R.id.courseCredits);
+        textView.setText(bodyToSpannable(courseCredits + " crédits"));
+
+        textView = (TextView) findViewById(R.id.courseDescription);
+        textView.setText(bodyToSpannable("Description: "
+                + courseDescription));
+        textView.setMovementMethod(new ScrollingMovementMethod());
     }
 
     private SpannableString titleToSpannable(String title) {
