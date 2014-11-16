@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class PeriodTable {
 
 	public static final String TABLE_NAME_PERIOD 		= "period";
+	public static final String COLUMN_NAME_ID			= "id";
 	public static final String COLUMN_NAME_TYPE 		= "type";
 	public static final String COLUMN_NAME_STARTDATE 	= "startdate";
 	public static final String COLUMN_NAME_ENDDATE 		= "enddate";
@@ -24,7 +25,8 @@ public class PeriodTable {
 	 */
 	public static void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE" + PeriodTable.TABLE_NAME_PERIOD + "("
-				+ PeriodTable.COLUMN_NAME_TYPE + "TEXT PRIMARY KEY, "
+				+ PeriodTable.COLUMN_NAME_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ PeriodTable.COLUMN_NAME_TYPE + "TEXT, "
 				+ PeriodTable.COLUMN_NAME_STARTDATE + "DATE, "
 				+ PeriodTable.COLUMN_NAME_ENDDATE + "DATE, "
 				+ PeriodTable.COLUMN_NAME_ROOMS + "TEXT)");
