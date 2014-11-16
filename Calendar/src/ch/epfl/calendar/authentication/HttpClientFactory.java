@@ -25,7 +25,7 @@ import android.util.Log;
  * @author lweingart
  *
  */
-public final class HttpClientFactory {
+public class HttpClientFactory {
 
     private static AbstractHttpClient httpClient;
     private static final int HTTP_PORT = 80;

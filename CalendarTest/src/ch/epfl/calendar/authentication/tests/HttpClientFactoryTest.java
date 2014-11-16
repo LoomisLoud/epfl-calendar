@@ -13,7 +13,7 @@ import junit.framework.TestCase;
  * @author AblionGE
  *
  */
-public class HttpClientFactoryTest extends TestCase{
+public class HttpClientFactoryTest extends TestCase {
     private AbstractHttpClient client = null;
 
     public final void testGetInstance() {
@@ -44,10 +44,6 @@ public class HttpClientFactoryTest extends TestCase{
         HttpClientFactory.setInstance(defaultClient);
         client = HttpClientFactory.getInstance();
         assertEquals(defaultClient, client);
-    }
-    
-    public final void testRedirectNoFollow() {
-        
     }
 
 }
