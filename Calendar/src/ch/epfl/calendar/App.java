@@ -4,6 +4,7 @@
 package ch.epfl.calendar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ch.epfl.calendar.persistence.DBHelper;
 import android.app.Application;
@@ -55,7 +56,7 @@ public class App extends Application {
 	}
 
 	/**
-	 * Parse a string of comma separated values into an arraylist of strings.
+	 * Parse a csv string into an array list of strings.
 	 *
 	 * @param csv
 	 * @return
@@ -67,5 +68,19 @@ public class App extends Application {
 			result.add(ary[i]);
 		}
 		return result;
+	}
+
+	/**
+	 * Transform an array list of string into a csv string.
+	 *
+	 * @param array
+	 * @return
+	 */
+	public static String csvStringFromList(List<String> list) {
+		ArrayList<String> array = new ArrayList<String>(list);
+		return new String(array.toString()
+				.replace("[", "")
+				.replace(", ", ",")
+				.replace("]", ""));
 	}
 }
