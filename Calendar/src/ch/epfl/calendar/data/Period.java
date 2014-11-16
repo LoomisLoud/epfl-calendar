@@ -17,7 +17,8 @@ import java.util.List;
  *
  */
 
-public class Period{
+public class Period {
+
 
     private String mType;
     private Calendar mStartDate;
@@ -26,7 +27,20 @@ public class Period{
 
     private static final int DATE_PARTS_LENGTH = 3;
     private static final int HOUR_PARTS_LENGTH = 2;
+    private static final int ZERO_INDEX = 0;
+    private static final int END_DATE_INDEX = 10;
+    private static final int START_TIME_INDEX = 11;
 
+    /**
+     * Constuct the period object.
+     * date format must be of format dd.mm.yyyy
+     * startTime and endTime must be of format hh:mm
+     * @param date
+     * @param startTime
+     * @param endTime
+     * @param type
+     * @param rooms
+     */
     public Period(String date, String startTime, String endTime, String type,
             List<String> rooms) {
         this.mStartDate = createCalendar(date, startTime);
@@ -42,11 +56,20 @@ public class Period{
         this.mRooms = rooms;
     }
 
-    public Period(String type, Calendar startDate, Calendar endDate, List<String> rooms) {
-    	this.mType = type;
-    	this.mStartDate = startDate;
-    	this.mEndDate = endDate;
-    	this.mRooms = rooms;
+    /**
+     * Construc the period object.
+     * startDate and endDate must be of format 'dd.mm.yyyy hh:mm'
+     * @param type
+     * @param startDate
+     * @param endDate
+     * @param rooms
+     */
+    public Period(String type, String startDate, String endDate, List<String> rooms) {
+    	this(startDate.substring(ZERO_INDEX, END_DATE_INDEX),
+    		 startDate.substring(START_TIME_INDEX),
+    		 endDate.substring(START_TIME_INDEX),
+    		 type,
+    		 rooms);
     }
 
     private Calendar createCalendar(String date, String hour) {
