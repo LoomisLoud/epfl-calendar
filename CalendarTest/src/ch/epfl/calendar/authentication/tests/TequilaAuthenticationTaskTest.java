@@ -99,19 +99,19 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
             Mockito.doNothing().when(content).close();
 
             //With Null args
-            int result = (int) getAccessToIsa.invoke(instance, new Object[] {null, null});
+            int result = (Integer) getAccessToIsa.invoke(instance, new Object[] {null, null});
             assertEquals(HTTP_CODE_OK, result);
 
             //Only with sessionID
-            result = (int) getAccessToIsa.invoke(instance, new Object[] {"sessionID", null});
+            result = (Integer) getAccessToIsa.invoke(instance, new Object[] {"sessionID", null});
             assertEquals(HTTP_CODE_OK, result);
 
           //Only with tokenList
-            result = (int) getAccessToIsa.invoke(instance, new Object[] {null, "tokenList"});
+            result = (Integer) getAccessToIsa.invoke(instance, new Object[] {null, "tokenList"});
             assertEquals(HTTP_CODE_OK, result);
 
           //with Both args
-            result = (int) getAccessToIsa.invoke(instance, new Object[] {"sessionID", "tokenList"});
+            result = (Integer) getAccessToIsa.invoke(instance, new Object[] {"sessionID", "tokenList"});
             assertEquals(HTTP_CODE_OK, result);
 
         } catch (IllegalAccessException e) {
@@ -391,7 +391,7 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
 //        Method doInBackground;
 //        try {
 //            doInBackground = (TequilaAuthenticationTask.class).getDeclaredMethod("doInBackground",
-//                    new Class[] {Void[].class});
+//                    new Class[] {});
 //            doInBackground.setAccessible(true);
 //
 //            
