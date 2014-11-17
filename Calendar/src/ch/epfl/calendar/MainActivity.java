@@ -64,9 +64,9 @@ public class MainActivity extends Activity implements
     private long mIdEvent = 0;
     private List<Course> mListCourses = new ArrayList<Course>();
     private ProgressDialog mDialog;
-    
+
     private Activity mThisActivity;
-    
+
     public static final String TAG = "MainActivity::";
     public static final int AUTH_ACTIVITY_CODE = 1;
     public static final int ADD_EVENT_ACTIVITY_CODE = 2;
@@ -88,7 +88,7 @@ public class MainActivity extends Activity implements
         // month every time the month changes on the week view.
 
         mWeekView.setMonthChangeListener(this);
-        
+
         // Set long press listener for events.
         mWeekView.setEventLongPressListener(this);
 
@@ -96,21 +96,25 @@ public class MainActivity extends Activity implements
 
         if (savedInstanceState != null) {
             // Restore value of members from saved state
-            //System.out.println("Loading courses in savedInstanceState");
-            mListCourses = savedInstanceState.getParcelableArrayList("listCourses");
+            // System.out.println("Loading courses in savedInstanceState");
+            mListCourses = savedInstanceState
+                    .getParcelableArrayList("listCourses");
         } else {
             // Retrieve course for first time
-            //System.out.println("Retrieving courses for first time");
+            // System.out.println("Retrieving courses for first time");
             // TODO : At the beginning of the application, we "logout" the user
-            //TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+            // TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
 
             if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
             } else {
                 mListCourses = new ArrayList<Course>();
                 populateCalendar();
+
             }
+
         }
+
     }
 
     private ArrayList<String> spinnerList() {
@@ -181,11 +185,12 @@ public class MainActivity extends Activity implements
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the activity state
-        savedInstanceState.putParcelableArrayList("listCourses", new ArrayList<Course>(mListCourses));
+        savedInstanceState.putParcelableArrayList("listCourses",
+                new ArrayList<Course>(mListCourses));
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -233,26 +238,27 @@ public class MainActivity extends Activity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_courses_list:
-                switchToCoursesList();
-                return true;
-            case R.id.action_settings:
-                switchToCreditsActivity();
-                return true;
-            case R.id.add_event:
-                switchToAddEventsActivity();
-                return true;
-            case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            case R.id.action_update_activity:
-                populateCalendar();
-                return true;
-            case R.id.action_logout:
-                logout();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case R.id.action_courses_list:
+            switchToCoursesList();
+            return true;
+        case R.id.action_settings:
+            switchToCreditsActivity();
+            return true;
+        case R.id.add_event:
+            switchToAddEventsActivity();
+            return true;
+        case R.id.action_today:
+            mWeekView.goToToday();
+            return true;
+        case R.id.action_update_activity:
+            // populateCalendar();
+            // mWeekView.notifyDatasetChanged();
+            return true;
+        case R.id.action_logout:
+            logout();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -275,8 +281,10 @@ public class MainActivity extends Activity implements
 
         for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
-                mMListEvents.add(new WeekViewEvent(mIdEvent, getEventTitle(c, p), p
-                        .getStartDate(), p.getEndDate(), p.getType()));
+                mMListEvents.add(new WeekViewEvent(mIdEvent,
+                        getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
+                        p.getType()));
+
             }
             mIdEvent++;
         }
@@ -340,12 +348,13 @@ public class MainActivity extends Activity implements
             System.out.println(start.toString());
             mMListEvents.removeAll(mMListEvents);
 
-            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end, PeriodType.DEFAULT));
+            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
+                    PeriodType.DEFAULT));
 
             mWeekView.notifyDatasetChanged();
         }
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -367,6 +376,7 @@ public class MainActivity extends Activity implements
     @Override
     public void callbackDownload(List<Course> courses) {
         mListCourses = courses;
+        mWeekView.notifyDatasetChanged();
     }
 
 }
