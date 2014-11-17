@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.utils.HttpUtils;
 
 /**
  * URL to use to access App Engine : http://versatile-hull-742.appspot.com
@@ -106,9 +107,7 @@ public class AppEngineClient implements DatabaseInterface {
 //            throw new CalendarClientException(ioException);
 //        }
 //    }
-
     
-
     /**
      * Returns a String containing the content of the passed InputStream.
      * 
@@ -133,6 +132,8 @@ public class AppEngineClient implements DatabaseInterface {
         try {
             HttpClient httpClient = new DefaultHttpClient();
             HttpResponse httpResponse = httpClient.execute(new HttpGet(fullUrl));
+            int responseCode = httpResponse.getStatusLine().getStatusCode();
+            HttpUtils.handleResponse(responseCode);
             inputStream = httpResponse.getEntity().getContent();
             if (inputStream != null) {
                 String responseBody = readStream(inputStream);
@@ -149,17 +150,13 @@ public class AppEngineClient implements DatabaseInterface {
             throw new CalendarClientException(jsonException);
         }
         
-
 //        if (course != null) {
 //            List<Period> periods = getPeriodsByCourseCode(course.getCode());
 //            course.setPeriods(periods);
 //        }
 
-        
         return course;
     }
-    
-    
 
 //    private List<Period> getPeriodsByCourseCode(String code) throws CalendarClientException {
 //        String fullUrl = mDBUrl + AppEngineURLs.GET_PERIODS + "?code=" + code;
