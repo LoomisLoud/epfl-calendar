@@ -5,13 +5,8 @@ import static com.google.android.apps.common.testing.ui.espresso.action.ViewActi
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.*;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.*;
 
-import org.robolectric.shadows.ShadowToast;
-
 import static org.hamcrest.Matchers.*;
 
-import com.google.android.apps.common.testing.ui.espresso.NoMatchingViewException;
-
-import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
