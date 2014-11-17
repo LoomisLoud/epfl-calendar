@@ -55,12 +55,9 @@ public class CourseDataSource implements DAO {
 
 		if (cursor.moveToFirst()) {
 			while (!cursor.isAfterLast()) {
-				// TODO check what to do with the id (autoincrement ?)
-//				long id = cursor.getLong(
-//						cursor.getColumnIndex(CourseTable.COLUMN_NAME_ID));
 				String name = cursor.getString(
 						cursor.getColumnIndex(CourseTable.COLUMN_NAME_NAME));
-				// FIXME: find a valid return type for a list of periods
+				// TODO find a way to select all corresponding period
 				ArrayList<Period> periods = null;
 				String teacher = cursor.getString(
 						cursor.getColumnIndex(CourseTable.COLUMN_NAME_TEACHER));
