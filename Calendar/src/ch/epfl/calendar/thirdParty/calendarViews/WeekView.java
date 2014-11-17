@@ -255,8 +255,8 @@ public class WeekView extends View {
                             .applyDimension(TypedValue.COMPLEX_UNIT_SP,
                                     mEventTextSize, context.getResources()
                                             .getDisplayMetrics()));
-            mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor,
-                    mEventTextColor);
+            //mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor,
+                    //mEventTextColor);
             mEventPadding = a.getDimensionPixelSize(
                     R.styleable.WeekView_hourSeparatorHeight, mEventPadding);
             mHeaderColumnBackgroundColor = a.getColor(
@@ -1376,8 +1376,6 @@ public class WeekView extends View {
         date.set(Calendar.HOUR_OF_DAY, 0);
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
-
-        mRefreshEvents = true;
 
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);

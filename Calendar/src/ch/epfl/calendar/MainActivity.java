@@ -59,7 +59,8 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private List<Course> listCourses = null;
-    List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
+    private List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
+    private int idEvent = 0;
     private ProgressDialog mDialog;
 
     public static final String TAG = "MainActivity::";
@@ -214,23 +215,23 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.action_courses_list:
-            switchToCoursesList();
-            return true;
-        case R.id.action_settings:
-            switchToCreditsActivity();
-            return true;
-        case R.id.add_event:
-            switchToAddEventsActivity();
-            return true;
-        case R.id.action_today:
-            mWeekView.goToToday();
-            return true;
-        case R.id.action_update_activity:
-            populateCalendar();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_courses_list:
+                switchToCoursesList();
+                return true;
+            case R.id.action_settings:
+                switchToCreditsActivity();
+                return true;
+            case R.id.add_event:
+                switchToAddEventsActivity();
+                return true;
+            case R.id.action_today:
+                mWeekView.goToToday();
+                return true;
+            case R.id.action_update_activity:
+                populateCalendar();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -240,7 +241,7 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
         calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.YEAR, year);
 
         return calendar;
@@ -252,7 +253,6 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
 
         // Populate the week view with some events.
 
-        int idEvent = 0;
         for (Course c : listCourses) {
             for (Period p : c.getPeriods()) {
                 events.add(new WeekViewEvent(idEvent, getEventTitle(c, p), p
@@ -262,7 +262,6 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
         }
         return events;
     }
-
 
     private String getEventTitle(Course c, Period p) {
         String result = c.getName() + "\n";
@@ -301,16 +300,16 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
 
         if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
             String name = data.getExtras().get("nameInfo").toString();
-            int startTab[] = data.getExtras().getIntArray("startInfo");
-            int endTab[] = data.getExtras().getIntArray("endInfo");
-            Calendar start = createCalendar(startTab[2], startTab[1] + 1,
-                    startTab[0], startTab[3], startTab[4]);
-            Calendar end = createCalendar(endTab[2], endTab[1] + 1, endTab[0],
+            int[] startTab = data.getExtras().getIntArray("startInfo");
+            int[] endTab = data.getExtras().getIntArray("endInfo");
+            Calendar start = createCalendar(startTab[0], startTab[1],
+                    startTab[2], startTab[3], startTab[4]);
+            Calendar end = createCalendar(endTab[0], endTab[1], endTab[2],
                     endTab[3], endTab[4]);
             System.out.println(start.toString());
             events.removeAll(events);
 
-            events.add(new WeekViewEvent(15, name, start, end, "Loisirs"));
+            events.add(new WeekViewEvent(idEvent++, name, start, end, "Loisirs"));
 
             mWeekView.notifyDatasetChanged();
         }

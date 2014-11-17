@@ -96,11 +96,12 @@ public class WeekViewEvent {
     private void setColorWithType(String type) {
         if (type.equals("Cours") || type.equals("Lecture")) {
             mColor = Color.BLUE;
-
-        } else if (type.equals("Exercices")) {
+        } else if (type.equals("Exercices") || type.equals("Exercises")) {
             mColor = Color.GREEN;
+        } else if (type.equals("Project") || type.equals("Projet")){
+            mColor = Color.RED;
         } else {
-            mColor = Color.YELLOW;
+            mColor = Color.MAGENTA;
         }
     }
 

@@ -41,13 +41,13 @@ public class AddEventActivity extends Activity {
     public void finishActivity(View v) {
         Intent i = getIntent();
         i.putExtra("nameInfo", mNameEvent.getText().toString());
-        int start[] = { mStartEventDate.getDayOfMonth(),
-                mStartEventDate.getMonth(), mStartEventDate.getYear(),
+        int[] start = {mStartEventDate.getYear(), mStartEventDate.getMonth(),
+                mStartEventDate.getDayOfMonth(),
                 mStartEventHour.getCurrentHour(),
-                mStartEventHour.getCurrentMinute() };
-        int end[] = { mEndEventDate.getDayOfMonth(), mEndEventDate.getMonth(),
-                mEndEventDate.getYear(), mEndEventHour.getCurrentHour(),
-                mEndEventHour.getCurrentMinute() };
+                mStartEventHour.getCurrentMinute()};
+        int[] end = {mEndEventDate.getYear(), mEndEventDate.getMonth(),
+                mEndEventDate.getDayOfMonth(), mEndEventHour.getCurrentHour(),
+                mEndEventHour.getCurrentMinute()};
         i.putExtra("startInfo", start);
         i.putExtra("endInfo", end);
         setResult(RESULT_OK, i);
