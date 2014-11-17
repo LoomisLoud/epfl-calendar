@@ -1,19 +1,29 @@
 package ch.epfl.calendar.display;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.apiInterface.CalendarClient;
+import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
+import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.data.Course;
 
 /**
  * @author LoomisLoud
  * 
  */
-public class AddEventActivity extends Activity {
+public class AddEventActivity extends Activity implements
+        CalendarClientDownloadInterface {
 
     private EditText mNameEvent;
     private DatePicker mStartEventDate;
@@ -22,6 +32,9 @@ public class AddEventActivity extends Activity {
 
     private DatePicker mEndEventDate;
     private TimePicker mEndEventHour;
+
+    private Spinner mSpinnerCourses;
+    private List<Course> mCourses = new ArrayList<Course>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +48,18 @@ public class AddEventActivity extends Activity {
         //
         mEndEventDate = (DatePicker) findViewById(R.id.end_event_picker_date);
         mEndEventHour = (TimePicker) findViewById(R.id.end_event_picker_hour);
+
+        mSpinnerCourses = (Spinner) findViewById(R.id.spinner_courses);
+        
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            mCourses = savedInstanceState.getParcelableArrayList("coursesList");
+            callbackDownload(mCourses);
+        } else {
+            // Retrieve course for first time
+            retrieveCourse();
+        }
 
     }
 
@@ -60,5 +85,40 @@ public class AddEventActivity extends Activity {
     public void finishActivity(View v) {
         transferData();
         finish();
+    }
+    
+    private void retrieveCourse() {
+        CalendarClientInterface calendarClient = new CalendarClient(this, this);
+        calendarClient.getISAInformations();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the activity state
+        savedInstanceState.putParcelableArrayList("coursesList", new ArrayList<Course>(mCourses));
+        //System.out.println("Saving state");
+        
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void callbackDownload(List<Course> courses) {
+        this.mCourses = courses;
+        
+        ArrayList<String> coursesName = new ArrayList<String>();
+        
+        coursesName.add("No connection with courses");
+        
+        for (Course course : courses) {
+            coursesName.add(course.getName());
+        }
+        
+        ArrayAdapter<String> coursesNameAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, coursesName);
+        
+        coursesNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerCourses.setAdapter(coursesNameAdapter);
+
     }
 }
