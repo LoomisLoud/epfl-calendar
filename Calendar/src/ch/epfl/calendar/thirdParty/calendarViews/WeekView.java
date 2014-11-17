@@ -1,4 +1,5 @@
 package ch.epfl.calendar.thirdParty.calendarViews;
+
 /**
  * Code imported from: 
  * https://github.com/alamkanak/Android-Week-View/tree/master/library/src/main/java/com/alamkanak/weekview
@@ -34,7 +35,6 @@ import android.view.View;
 import android.widget.OverScroller;
 import android.widget.Scroller;
 import ch.epfl.calendar.R;
-
 
 public class WeekView extends View {
 
@@ -255,8 +255,8 @@ public class WeekView extends View {
                             .applyDimension(TypedValue.COMPLEX_UNIT_SP,
                                     mEventTextSize, context.getResources()
                                             .getDisplayMetrics()));
-            mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor,
-                    mEventTextColor);
+            //mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor,
+                    //mEventTextColor);
             mEventPadding = a.getDimensionPixelSize(
                     R.styleable.WeekView_hourSeparatorHeight, mEventPadding);
             mHeaderColumnBackgroundColor = a.getColor(
@@ -512,7 +512,7 @@ public class WeekView extends View {
             canvas.drawLines(hourLines, mHourSeparatorPaint);
 
             // Draw the events.
-            drawEvents(day, startPixel, canvas);
+             drawEvents(day, startPixel, canvas);
 
             // In the next iteration, start from the next day.
             startPixel += mWidthPerDay + mColumnGap;
@@ -727,26 +727,22 @@ public class WeekView extends View {
         }
 
         // Get events of previous month.
-        /*int previousMonth = (day.get(Calendar.MONTH) == 0 ? 12 : day
-                .get(Calendar.MONTH));
-        int nextMonth = (day.get(Calendar.MONTH) + 2 == 13 ? 1 : day
-                .get(Calendar.MONTH) + 2);*/
+        /*
+         * int previousMonth = (day.get(Calendar.MONTH) == 0 ? 12 : day
+         * .get(Calendar.MONTH)); int nextMonth = (day.get(Calendar.MONTH) + 2
+         * == 13 ? 1 : day .get(Calendar.MONTH) + 2);
+         */
         int[] lastFetchedMonth = mFetchedMonths.clone();
-     /*   if (mFetchedMonths[0] < 1 || mFetchedMonths[0] != previousMonth
-                || mRefreshEvents) {
-            if (!containsValue(lastFetchedMonth, previousMonth)
-                    && !isInEditMode()) {
-                List<WeekViewEvent> events = mMonthChangeListener
-                        .onMonthChange(
-                                (previousMonth == 12) ? day.get(Calendar.YEAR) - 1
-                                        : day.get(Calendar.YEAR), previousMonth);
-                sortEvents(events);
-                for (WeekViewEvent event : events) {
-                    mEventRects.add(new EventRect(event, null));
-                }
-            }
-            mFetchedMonths[0] = previousMonth;
-        }*/
+        /*
+         * if (mFetchedMonths[0] < 1 || mFetchedMonths[0] != previousMonth ||
+         * mRefreshEvents) { if (!containsValue(lastFetchedMonth, previousMonth)
+         * && !isInEditMode()) { List<WeekViewEvent> events =
+         * mMonthChangeListener .onMonthChange( (previousMonth == 12) ?
+         * day.get(Calendar.YEAR) - 1 : day.get(Calendar.YEAR), previousMonth);
+         * sortEvents(events); for (WeekViewEvent event : events) {
+         * mEventRects.add(new EventRect(event, null)); } } mFetchedMonths[0] =
+         * previousMonth; }
+         */
 
         // Get events of this month.
         if (mFetchedMonths[1] < 1
@@ -766,20 +762,15 @@ public class WeekView extends View {
         }
 
         // Get events of next month.
-      /*  if (mFetchedMonths[2] < 1 || mFetchedMonths[2] != nextMonth
-                || mRefreshEvents) {
-            if (!containsValue(lastFetchedMonth, nextMonth) && !isInEditMode()) {
-                List<WeekViewEvent> events = mMonthChangeListener
-                        .onMonthChange(
-                                nextMonth == 1 ? day.get(Calendar.YEAR) + 1
-                                        : day.get(Calendar.YEAR), nextMonth);
-                sortEvents(events);
-                for (WeekViewEvent event : events) {
-                    mEventRects.add(new EventRect(event, null));
-                }
-            }
-            mFetchedMonths[2] = nextMonth;
-        }*/
+        /*
+         * if (mFetchedMonths[2] < 1 || mFetchedMonths[2] != nextMonth ||
+         * mRefreshEvents) { if (!containsValue(lastFetchedMonth, nextMonth) &&
+         * !isInEditMode()) { List<WeekViewEvent> events = mMonthChangeListener
+         * .onMonthChange( nextMonth == 1 ? day.get(Calendar.YEAR) + 1 :
+         * day.get(Calendar.YEAR), nextMonth); sortEvents(events); for
+         * (WeekViewEvent event : events) { mEventRects.add(new EventRect(event,
+         * null)); } } mFetchedMonths[2] = nextMonth; }
+         */
 
         // Prepare to calculate positions of each events.
         ArrayList<EventRect> tempEvents = new ArrayList<EventRect>(mEventRects);
@@ -948,10 +939,11 @@ public class WeekView extends View {
      * @return true if time1 and time2 are equal or if time1 is after time2.
      *         Otherwise false.
      */
-    /*private boolean isTimeAfterOrEquals(Calendar time1, Calendar time2) {
-        return !(time1 == null || time2 == null)
-                && time1.getTimeInMillis() >= time2.getTimeInMillis();
-    }*/
+    /*
+     * private boolean isTimeAfterOrEquals(Calendar time1, Calendar time2) {
+     * return !(time1 == null || time2 == null) && time1.getTimeInMillis() >=
+     * time2.getTimeInMillis(); }
+     */
 
     /**
      * Deletes the events of the months that are too far away from the current
@@ -1242,8 +1234,10 @@ public class WeekView extends View {
      * 
      * @param length
      *            Supported values are
-     *            {@link ch.epfl.calendar.thirdParty.calendarViews.alamkanak.weekview.WeekView#LENGTH_SHORT} and
-     *            {@link ch.epfl.calendar.thirdParty.calendarViews.alamkanak.weekview.WeekView#LENGTH_LONG}.
+     *            {@link ch.epfl.calendar.thirdParty.calendarViews.alamkanak.weekview.WeekView#LENGTH_SHORT}
+     *            and
+     *            {@link ch.epfl.calendar.thirdParty.calendarViews.alamkanak.weekview.WeekView#LENGTH_LONG}
+     *            .
      */
     public void setDayNameLength(int length) {
         if (length != LENGTH_LONG && length != LENGTH_SHORT) {
@@ -1383,8 +1377,6 @@ public class WeekView extends View {
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
 
-        mRefreshEvents = true;
-
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
@@ -1520,11 +1512,13 @@ public class WeekView extends View {
     }
 
     /**
-     * @param mStartDate the mStartDate to set
+     * @param mStartDate
+     *            the mStartDate to set
      */
     public void setmStartDate(Calendar mStartDate) {
         this.mStartDate = mStartDate;
     }
 
+   
 
 }
