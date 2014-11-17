@@ -248,8 +248,7 @@ public class MainActivity extends Activity implements
                 mWeekView.goToToday();
                 return true;
             case R.id.action_update_activity:
-                // populateCalendar();
-                // mWeekView.notifyDatasetChanged();
+                 populateCalendar();
                 return true;
             case R.id.action_logout:
                 logout();
@@ -374,6 +373,7 @@ public class MainActivity extends Activity implements
     public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
             mListCourses = courses;
+            mWeekView.notifyDatasetChanged();
         } else {
             this.logout();
         }
