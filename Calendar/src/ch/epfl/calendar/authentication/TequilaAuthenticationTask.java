@@ -115,8 +115,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             boolean firstTry = true;
             String tokenList = "";
 
-            Log.d(TAG, "AUTHENTICATED : " + GlobalPreferences.isAuthenticated(mContext));
-            if (GlobalPreferences.isAuthenticated(mContext)) {
+            Log.d(TAG, "AUTHENTICATED : " + getGlobalPrefs().isAuthenticated(mContext));
+            if (getGlobalPrefs().isAuthenticated(mContext)) {
                 mSessionID = getTequilaApi().getSessionID(mContext);
                 mUsername = getTequilaApi().getUsername(mContext);
                 String tequilaKey = getTequilaApi().getTequilaKey(mContext);
@@ -142,21 +142,17 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 httpCode = getAccessToIsa(null, null);
             }
 
+            int timeoutAuthentication = TIMEOUT_AUTHENTICATION;
+
             if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_AUTH_RESPONSE
                     || httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
-
-                int timeoutAuthentication = TIMEOUT_AUTHENTICATION;
 
                 while (httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK && timeoutAuthentication > 0) {
                     if (!this.isNetworkWorking(mContext)) {
                         throw new NetworkException(mContext.getString(R.string.network_unreachable));
                     }
-                    try {
-                        mCurrentToken = HttpUtils.getTokenFromHeader(getRespGetTimetable().getFirstHeader("Location"));
-                    } catch (TequilaAuthenticationException e) {
-                        throw new ClientProtocolException(e);
-                    }
-                    
+                    mCurrentToken = getHttpUtils()
+                            .getTokenFromHeader(getRespGetTimetable().getFirstHeader("Location"));
                     timeoutAuthentication--;
                     
                     //Authentication on Tequila needed the token + to know if
@@ -180,6 +176,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 throw new ClientProtocolException("Wrong Http Code");
             }
             
+            if (timeoutAuthentication <= 0) {
+                throw new ClientProtocolException("Authentication Timeout");
+            }
+            
             result = InputStreamUtils.readInputStream(getRespGetTimetable().getEntity().getContent());
 
         } catch (ClientProtocolException e) {
@@ -190,10 +190,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             mExceptionOccured = true;
             Log.e(TAG + "IOException", e.getMessage());
             return mContext.getString(R.string.error_io);
-        } catch (IllegalStateException e) {
-            mExceptionOccured = true;
-            Log.e(TAG + "IllegalStateException", e.getMessage());
-            return mContext.getString(R.string.error_illegal_state);
         } catch (TequilaAuthenticationException e) {
             mExceptionOccured = true;
             Log.e(TAG + "TequilaAuthenticationException", e.getMessage());

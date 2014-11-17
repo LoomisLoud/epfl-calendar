@@ -194,7 +194,7 @@ public class MainActivity extends Activity implements
         // TODO : At the beginning of the application, we "logout" the user
 //        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
 
-        if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
+        if (!GlobalPreferences.getInstance().isAuthenticated(mThisActivity)) {
             switchToAuthenticationActivity();
         } else {
             listCourses = new ArrayList<Course>();

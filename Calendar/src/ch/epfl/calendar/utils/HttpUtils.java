@@ -18,7 +18,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 
 /**
  * This class contains several tools to work with http
@@ -46,9 +45,9 @@ public class HttpUtils {
         return null;
     }
     
-    public static String getTokenFromHeader(Header location) throws TequilaAuthenticationException {
+    public String getTokenFromHeader(Header location) throws ClientProtocolException {
         if (location == null) {
-            throw new TequilaAuthenticationException("Try to get token, but already authenticated");
+            throw new ClientProtocolException("No Location field in the headers");
         }
         
         String tokenHeader = location.getValue();
