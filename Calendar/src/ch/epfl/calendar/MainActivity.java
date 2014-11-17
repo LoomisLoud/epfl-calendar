@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements
     
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
-    private List<Course> listCourses = new ArrayList<Course>();
+    private List<Course> mListCourses = new ArrayList<Course>();
     private ProgressDialog mDialog;
 
     public static final String TAG = "MainActivity::";
@@ -191,17 +191,34 @@ public class MainActivity extends Activity implements
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
 
-        // TODO : At the beginning of the application, we "logout" the user
-//        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-
-        if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
-            switchToAuthenticationActivity();
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            //System.out.println("Loading courses in savedInstanceState");
+            mListCourses = savedInstanceState.getParcelableArrayList("listCourses");
         } else {
-            listCourses = new ArrayList<Course>();
-            populateCalendar();
+            // Retrieve course for first time
+            //System.out.println("Retrieving courses for first time");
+            // TODO : At the beginning of the application, we "logout" the user
+            //TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+
+            if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
+                switchToAuthenticationActivity();
+            } else {
+                mListCourses = new ArrayList<Course>();
+                populateCalendar();
+            }
         }
+        
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the activity state
+        savedInstanceState.putParcelableArrayList("listCourses", new ArrayList<Course>(mListCourses));
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -294,7 +311,7 @@ public class MainActivity extends Activity implements
         List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
 
         int idEvent = 0;
-        for (Course c : listCourses) {
+        for (Course c : mListCourses) {
 
             for (Period p : c.getPeriods()) {
                 events.add(new WeekViewEvent(idEvent, c.getName(), p
@@ -327,7 +344,7 @@ public class MainActivity extends Activity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            listCourses = new ArrayList<Course>();
+            mListCourses = new ArrayList<Course>();
             populateCalendar();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -353,7 +370,7 @@ public class MainActivity extends Activity implements
 
     @Override
     public void callbackDownload(List<Course> courses) {
-        listCourses = courses;
+        mListCourses = courses;
     }
 
 }
