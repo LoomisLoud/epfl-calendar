@@ -16,6 +16,7 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Course;
 
 /**
@@ -33,6 +34,7 @@ public class AddEventActivity extends Activity implements
     private DatePicker mEndEventDate;
     private TimePicker mEndEventHour;
 
+    public static final int AUTH_ACTIVITY_CODE = 1;
     private Spinner mSpinnerCourses;
     private List<Course> mCourses = new ArrayList<Course>();
 
@@ -50,12 +52,12 @@ public class AddEventActivity extends Activity implements
         mEndEventHour = (TimePicker) findViewById(R.id.end_event_picker_hour);
 
         mSpinnerCourses = (Spinner) findViewById(R.id.spinner_courses);
-        
+
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore value of members from saved state
             mCourses = savedInstanceState.getParcelableArrayList("coursesList");
-            callbackDownload(mCourses);
+            callbackDownload(true, mCourses);
         } else {
             // Retrieve course for first time
             retrieveCourse();
@@ -86,7 +88,7 @@ public class AddEventActivity extends Activity implements
         transferData();
         finish();
     }
-    
+
     private void retrieveCourse() {
         CalendarClientInterface calendarClient = new CalendarClient(this, this);
         calendarClient.getISAInformations();
@@ -95,30 +97,43 @@ public class AddEventActivity extends Activity implements
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the activity state
-        savedInstanceState.putParcelableArrayList("coursesList", new ArrayList<Course>(mCourses));
-        //System.out.println("Saving state");
-        
+        savedInstanceState.putParcelableArrayList("coursesList",
+                new ArrayList<Course>(mCourses));
+        // System.out.println("Saving state");
+
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    private void switchToAuthenticationActivity() {
+        Intent displayAuthenticationActivtyIntent = new Intent(this,
+                AuthenticationActivity.class);
+        this.startActivityForResult(displayAuthenticationActivtyIntent,
+                AUTH_ACTIVITY_CODE);
+    }
+
     @Override
-    public void callbackDownload(List<Course> courses) {
-        this.mCourses = courses;
-        
-        ArrayList<String> coursesName = new ArrayList<String>();
-        
-        coursesName.add("No connection with courses");
-        
-        for (Course course : courses) {
-            coursesName.add(course.getName());
+    public void callbackDownload(boolean success, List<Course> courses) {
+        if (success) {
+            this.mCourses = courses;
+
+            ArrayList<String> coursesName = new ArrayList<String>();
+
+            coursesName.add("No connection with courses");
+
+            for (Course course : courses) {
+                coursesName.add(course.getName());
+            }
+
+            ArrayAdapter<String> coursesNameAdapter = new ArrayAdapter<String>(
+                    this, android.R.layout.simple_spinner_item, coursesName);
+
+            coursesNameAdapter
+                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSpinnerCourses.setAdapter(coursesNameAdapter);
+        } else {
+            switchToAuthenticationActivity();
         }
-        
-        ArrayAdapter<String> coursesNameAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, coursesName);
-        
-        coursesNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerCourses.setAdapter(coursesNameAdapter);
 
     }
 }

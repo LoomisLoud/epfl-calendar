@@ -72,42 +72,6 @@ public class AppEngineClient implements DatabaseInterface {
         return getCourse(url);
     }
     
-    /* (non-Javadoc)
-     * {@see ch.epfl.calendar.apiInterface.databaseInterface#createPeriod(ch.epfl.calendar.data.Period, 
-     * java.lang.String)}
-     */
-
-//    public void createPeriod(Period period, String courseCode) throws CalendarClientException {
-//        String url = mDBUrl + AppEngineURLs.CREATE_PERIOD;
-//        JSONObject jsonPeriod = null;
-//        try {
-//            jsonPeriod = period.getJSONFromPeriod(courseCode);
-//        } catch (JSONException jsonException) {
-//            throw new CalendarClientException(jsonException);
-//        }
-//        
-//        if (jsonPeriod == null) {
-//            throw new CalendarClientException();
-//        }
-//        
-//        try {
-//            HttpClient httpClient = new DefaultHttpClient();
-//            HttpPost httpPost = new HttpPost(url);
-//            StringEntity jsonAsString = new StringEntity(jsonPeriod.toString());
-//            httpPost.setEntity(jsonAsString);
-//            httpPost.setHeader("Accept", "application/json");
-//            httpPost.setHeader("Content-type", "application/json");
-//            BasicResponseHandler responseHandler = new BasicResponseHandler();
-//            httpClient.execute(httpPost, responseHandler);
-//        } catch (UnsupportedEncodingException unsupportedEncException) {
-//            throw new CalendarClientException(unsupportedEncException);
-//        } catch (ClientProtocolException clientProtoException) {
-//            throw new CalendarClientException(clientProtoException);
-//        } catch (IOException ioException) {
-//            throw new CalendarClientException(ioException);
-//        }
-//    }
-    
     /**
      * Returns a String containing the content of the passed InputStream.
      * 
@@ -185,6 +149,42 @@ public class AppEngineClient implements DatabaseInterface {
 //        }
 //        
 //        return periodsList;
+//    }
+    
+    /* (non-Javadoc)
+     * {@see ch.epfl.calendar.apiInterface.databaseInterface#createPeriod(ch.epfl.calendar.data.Period, 
+     * java.lang.String)}
+     */
+
+//    public void createPeriod(Period period, String courseCode) throws CalendarClientException {
+//        String url = mDBUrl + AppEngineURLs.CREATE_PERIOD;
+//        JSONObject jsonPeriod = null;
+//        try {
+//            jsonPeriod = period.getJSONFromPeriod(courseCode);
+//        } catch (JSONException jsonException) {
+//            throw new CalendarClientException(jsonException);
+//        }
+//        
+//        if (jsonPeriod == null) {
+//            throw new CalendarClientException();
+//        }
+//        
+//        try {
+//            HttpClient httpClient = new DefaultHttpClient();
+//            HttpPost httpPost = new HttpPost(url);
+//            StringEntity jsonAsString = new StringEntity(jsonPeriod.toString());
+//            httpPost.setEntity(jsonAsString);
+//            httpPost.setHeader("Accept", "application/json");
+//            httpPost.setHeader("Content-type", "application/json");
+//            BasicResponseHandler responseHandler = new BasicResponseHandler();
+//            httpClient.execute(httpPost, responseHandler);
+//        } catch (UnsupportedEncodingException unsupportedEncException) {
+//            throw new CalendarClientException(unsupportedEncException);
+//        } catch (ClientProtocolException clientProtoException) {
+//            throw new CalendarClientException(clientProtoException);
+//        } catch (IOException ioException) {
+//            throw new CalendarClientException(ioException);
+//        }
 //    }
 
 }
