@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.preference.PreferenceManager.OnActivityResultListener;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,9 +40,8 @@ import ch.epfl.calendar.utils.GlobalPreferences;
  * @author lweingart
  * 
  */
-public class MainActivity extends Activity implements
-        WeekView.MonthChangeListener, WeekView.EventClickListener,
-        WeekView.EventLongPressListener {
+public class MainActivity extends Activity implements WeekView.MonthChangeListener,
+        WeekView.EventClickListener, WeekView.EventLongPressListener {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -64,10 +64,12 @@ public class MainActivity extends Activity implements
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private List<Course> listCourses = null;
+    List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
     private ProgressDialog mDialog;
 
     public static final String TAG = "MainActivity::";
     public static final int AUTH_ACTIVITY_CODE = 1;
+    public static final int ADD_EVENT_ACTIVITY_CODE = 2;
 
     private Activity mThisActivity;
 
@@ -88,8 +90,8 @@ public class MainActivity extends Activity implements
         // The week view has infinite scrolling horizontally. We have to provide
         // the events of a
         // month every time the month changes on the week view.
-        mWeekView.setMonthChangeListener(this);
 
+        mWeekView.setMonthChangeListener(this);
         // Set long press listener for events.
         mWeekView.setEventLongPressListener(this);
 
@@ -199,7 +201,7 @@ public class MainActivity extends Activity implements
 
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
-        
+
         actionBar.setSelectedNavigationItem(1);
 
         // TODO : At the beginning of the application, we "logout" the user
@@ -242,7 +244,7 @@ public class MainActivity extends Activity implements
     public void switchToAddEventsActivity() {
         Intent addEventsActivityIntent = new Intent(this,
                 AddEventActivity.class);
-        startActivity(addEventsActivityIntent);
+        startActivityForResult(addEventsActivityIntent, ADD_EVENT_ACTIVITY_CODE);
     }
 
     private void switchToAuthenticationActivity() {
@@ -262,30 +264,30 @@ public class MainActivity extends Activity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_courses_list:
-                switchToCoursesList();
-                return true;
-            case R.id.action_settings:
-                switchToCreditsActivity();
-                return true;
-            case R.id.add_event:
-                switchToAddEventsActivity();
-                return true;
-            case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            case R.id.action_update_activity:
-                populateCalendar();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case R.id.action_courses_list:
+            switchToCoursesList();
+            return true;
+        case R.id.action_settings:
+            switchToCreditsActivity();
+            return true;
+        case R.id.add_event:
+            switchToAddEventsActivity();
+            return true;
+        case R.id.action_today:
+            mWeekView.goToToday();
+            return true;
+        case R.id.action_update_activity:
+            populateCalendar();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
     public Calendar createCalendar(int year, int month, int day, int hour,
             int minute) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, day);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.MONTH, month - 1);
@@ -294,10 +296,8 @@ public class MainActivity extends Activity implements
         return calendar;
     }
 
-    @Override
-    public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
+    public List<WeekViewEvent> onMonthChange(int newMonth,int newYear) {
         // Populate the week view with some events.
-        List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
 
         int idEvent = 0;
         for (Course c : listCourses) {
@@ -305,6 +305,7 @@ public class MainActivity extends Activity implements
             for (Period p : c.getPeriods()) {
                 events.add(new WeekViewEvent(idEvent, getEventTitle(c, p), p
                         .getStartDate(), p.getEndDate(), p.getType()));
+                System.out.println(p.getStartDate().toString());
 
             }
             idEvent++;
@@ -329,7 +330,7 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        String cours=event.getName().split("\n")[0];
+        String cours = event.getName().split("\n")[0];
         switchToCourseDetails(cours);
     }
 
@@ -345,7 +346,24 @@ public class MainActivity extends Activity implements
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             listCourses = populateCalendar();
         }
+
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
+            String name = data.getExtras().get("nameInfo").toString();
+            int startTab[] = data.getExtras().getIntArray("startInfo");
+            int endTab[] = data.getExtras().getIntArray("endInfo");
+            Calendar start = createCalendar(startTab[2], startTab[1] + 1,
+                    startTab[0], startTab[3], startTab[4]);
+            Calendar end = createCalendar(endTab[2], endTab[1] + 1, endTab[0],
+                    endTab[3], endTab[4]);
+            System.out.println(start.toString());
+            events.removeAll(events);
+
+            events.add(new WeekViewEvent(15, name, start, end, "Loisirs"));
+
+            mWeekView.notifyDatasetChanged();
+        }
     }
 
     public List<Course> populateCalendar() {
