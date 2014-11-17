@@ -35,8 +35,9 @@ import ch.epfl.calendar.utils.GlobalPreferences;
  * @author lweingart
  * 
  */
-public class MainActivity extends Activity implements WeekView.MonthChangeListener,
-        WeekView.EventClickListener, WeekView.EventLongPressListener {
+public class MainActivity extends Activity implements
+        WeekView.MonthChangeListener, WeekView.EventClickListener,
+        WeekView.EventLongPressListener {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -118,7 +119,6 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
         ArrayAdapter<String> arrayAdapter = new MySpinnerAdapter<String>(this,
                 android.R.layout.simple_spinner_item, spinnerList());
 
-
         ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener() {
             @Override
             public boolean onNavigationItemSelected(int position, long itemId) {
@@ -144,11 +144,10 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
                 }
             }
         };
-        
+
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
     }
-
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
             int sizeColumnGap, int sizeFront, int sizeFrontEvent) {
@@ -167,7 +166,7 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
                             .getDisplayMetrics()));
         }
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -247,7 +246,6 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
         return calendar;
     }
 
-    
     @Override
     public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
 
@@ -300,12 +298,22 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
 
         if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
             String name = data.getExtras().get("nameInfo").toString();
-            int[] startTab = data.getExtras().getIntArray("startInfo");
-            int[] endTab = data.getExtras().getIntArray("endInfo");
-            Calendar start = createCalendar(startTab[0], startTab[1],
-                    startTab[2], startTab[3], startTab[4]);
-            Calendar end = createCalendar(endTab[0], endTab[1], endTab[2],
-                    endTab[3], endTab[4]);
+            int startYear = data.getExtras().getInt("startYear");
+            int startMonth = data.getExtras().getInt("startMonth");
+            int startDay = data.getExtras().getInt("startDay");
+            int startHour = data.getExtras().getInt("startHour");
+            int startMinute = data.getExtras().getInt("startMinute");
+
+            int endYear = data.getExtras().getInt("endYear");
+            int endMonth = data.getExtras().getInt("endMonth");
+            int endDay = data.getExtras().getInt("endDay");
+            int endHour = data.getExtras().getInt("endHour");
+            int endMinute = data.getExtras().getInt("endMinute");
+
+            Calendar start = createCalendar(startYear, startMonth, startDay,
+                    startHour, startMinute);
+            Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
+                    endMinute);
             System.out.println(start.toString());
             events.removeAll(events);
 

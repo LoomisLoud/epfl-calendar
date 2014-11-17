@@ -38,20 +38,27 @@ public class AddEventActivity extends Activity {
 
     }
 
-    public void finishActivity(View v) {
+    private void transferData() {
         Intent i = getIntent();
         i.putExtra("nameInfo", mNameEvent.getText().toString());
-        int[] start = {mStartEventDate.getYear(), mStartEventDate.getMonth(),
-                mStartEventDate.getDayOfMonth(),
-                mStartEventHour.getCurrentHour(),
-                mStartEventHour.getCurrentMinute()};
-        int[] end = {mEndEventDate.getYear(), mEndEventDate.getMonth(),
-                mEndEventDate.getDayOfMonth(), mEndEventHour.getCurrentHour(),
-                mEndEventHour.getCurrentMinute()};
-        i.putExtra("startInfo", start);
-        i.putExtra("endInfo", end);
+
+        i.putExtra("startYear", mStartEventDate.getYear());
+        i.putExtra("startMonth", mStartEventDate.getMonth());
+        i.putExtra("startDay", mStartEventDate.getDayOfMonth());
+        i.putExtra("startHour", mStartEventHour.getCurrentHour());
+        i.putExtra("startMinutes", mStartEventHour.getCurrentMinute());
+
+        i.putExtra("endYear", mEndEventDate.getYear());
+        i.putExtra("endMonth", mEndEventDate.getMonth());
+        i.putExtra("endDay", mEndEventDate.getDayOfMonth());
+        i.putExtra("endHour", mEndEventHour.getCurrentHour());
+        i.putExtra("endMinutes", mEndEventHour.getCurrentMinute());
+
         setResult(RESULT_OK, i);
-        finish();
     }
 
+    public void finishActivity(View v) {
+        transferData();
+        finish();
+    }
 }
