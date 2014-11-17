@@ -8,6 +8,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 /**
  * A period is a date, a start time and an end time + the type (exercises,
@@ -17,7 +20,7 @@ import java.util.List;
  * 
  */
 
-public class Period{
+public class Period implements Parcelable {
 
     private PeriodType mType;
     private Calendar mStartDate;
@@ -197,4 +200,39 @@ public class Period{
                 + mEndDate.get(Calendar.HOUR_OF_DAY) + ":" + mEndDate.get(Calendar.MINUTE) + " of type "
                 + mType + " in rooms : " + mRooms + "\n";
     }
+    
+    // Parcelable ----------------
+    // using setter and getter to check for property in case of memory error or any problem that could happen
+    // at execution between writing and reading and corrupt integrity.
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeSerializable(getType());
+        parcel.writeSerializable(getStartDate());
+        parcel.writeSerializable(getEndDate());
+        parcel.writeList(getRooms());
+    }
+    
+    private Period(Parcel in) {
+        this.setType((PeriodType) in.readSerializable());
+        this.setStartDate((Calendar) in.readSerializable());
+        this.setEndDate((Calendar) in.readSerializable());
+        ArrayList<String> rooms = new ArrayList<String>();
+        in.readList(rooms, String.class.getClassLoader());
+        this.setRooms(rooms);
+    }
+
+    @Override
+    public int describeContents() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+    
+    public static final Parcelable.Creator<Period> CREATOR = new Parcelable.Creator<Period>() {
+        public Period createFromParcel(Parcel in) {
+            return new Period(in);
+        }
+
+        public Period[] newArray(int size) {
+            return new Period[size];
+        }
+    };
 }

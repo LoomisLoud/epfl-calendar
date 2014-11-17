@@ -6,6 +6,8 @@ package ch.epfl.calendar.data.tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Parcel;
+
 import junit.framework.TestCase;
 
 import ch.epfl.calendar.data.Course;
@@ -22,6 +24,16 @@ public class CourseTest extends TestCase {
 
 	public static final int CREDITS = 5;
 	private static final Object NUMBER_OF_PERIODS = 2;
+	
+	private Course mCourse;
+	
+	@Override
+	protected void setUp() throws Exception {
+	    super.setUp();
+	    mCourse = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+        mCourse.addPeriod(periodNormal);
+	}
 
 	public void testAddPeriod() {
 		Course course = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
@@ -93,5 +105,18 @@ public class CourseTest extends TestCase {
 
 		course.setTeacher("Man");
 		assertEquals(course.getTeacher(), "Man");
+	}
+	
+	public void testParcelable() {
+	    // Obtain a Parcel object and write the parcelable object to it:
+	    Parcel parcel = Parcel.obtain();
+	    mCourse.writeToParcel(parcel, 0);
+	    
+	    // After you're done with writing, you need to reset the parcel for reading:
+	    parcel.setDataPosition(0);
+	    
+	    // Reconstruct object from parcel and asserts:
+	    Course createdFromParcel = Course.CREATOR.createFromParcel(parcel);
+	    assertEquals(mCourse, createdFromParcel);
 	}
 }
