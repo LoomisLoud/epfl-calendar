@@ -55,7 +55,7 @@ public class AppEngineClient implements DatabaseInterface {
     public Course getCourseByName(String name) throws CalendarClientException {
         String nameUrlized;
         try {
-            nameUrlized = URLEncoder.encode(name, "UTF-8");
+            nameUrlized = URLEncoder.encode(name.toLowerCase(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new CalendarClientException();
         }

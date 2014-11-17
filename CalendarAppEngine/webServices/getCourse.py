@@ -22,6 +22,7 @@ class getCourse(webapp2.RequestHandler):
             passedParam = code
             courseList = Course.query_by_code(code).fetch(1)
         self.response.headers['Content-Type'] = 'application/json'
+        self.response.content_type_params = {'charset': 'utf8'}
         if (len(courseList) >= 1):
             for course in courseList:   
                 courseJson = course.get_as_json()

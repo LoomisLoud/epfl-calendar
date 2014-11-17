@@ -4,10 +4,6 @@
 package ch.epfl.calendar.apiInterface.tests;
 
 import junit.framework.TestCase;
-import ch.epfl.calendar.apiInterface.AppEngineClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.apiInterface.DatabaseInterface;
-import ch.epfl.calendar.data.Course;
 
 /**
  * Test class for {@link ch.epfl.calendar.apiInterface.AppEngineClient}
@@ -17,7 +13,7 @@ import ch.epfl.calendar.data.Course;
  */
 public class AppEngineClientTest extends TestCase {
 
-    private DatabaseInterface dbInterface;
+    //private DatabaseInterface dbInterface;
 
     // FIXME : see with Jonas to have a local app engine on the jenkins server.
     /*public void testGetCourseErrors() {
@@ -100,30 +96,30 @@ public class AppEngineClientTest extends TestCase {
         }
     }*/
 
-    public void testOnlineURL() {
-        try {
-            dbInterface = new AppEngineClient("http://versatile-hull-742.appspot.com");
-            Course course = dbInterface.getCourseByCode("CS-470");
-            /*System.out.println(course.getDescription());
-            System.out.println("GET DESCRIPTION");
-            System.out.println(course.getDescription());*/
-            assertEquals("CS-470", course.getCode());
-            assertEquals("Augmenter au maximum la performance :\n"
-                +"\n\n\nPrincipes de parallelisme au niveau des instructions.\n"
-                + "\"Register renaming\".\n"
-                +"Prediction et speculation.\n"
-                +"\"Simultaneous multithreading\".\n"
-                + "VLIWs et techniques de compilation pour ILP.\n"
-                +"\"Dynamic binary translation\". \n"
-                +"\nProcesseurs embarqués :\n"
-                + "\n\n\n"
-                +"Particularités par rapport aux processeurs non-embarqués.\n"
-                +"Survol des DSP et de leur défis pour la compilation.\n"
-                +"Processeurs configurables et customisation.\n", course.getDescription());
-            assertEquals("Ienne", course.getTeacher());
-            assertEquals(4, course.getCredits());
-        } catch (CalendarClientException calendarClientException) {
-            fail("An error occured.");
-        }
-    }
+//    public void testOnlineURL() {
+//        try {
+//            dbInterface = new AppEngineClient("http://versatile-hull-742.appspot.com");
+//            Course course = dbInterface.getCourseByCode("CS-470");
+//            /*System.out.println(course.getDescription());
+//            System.out.println("GET DESCRIPTION");
+//            System.out.println(course.getDescription());*/
+//            assertEquals("CS-470", course.getCode());
+//            assertEquals("Augmenter au maximum la performance :\n"
+//                +"\n\n\nPrincipes de parallelisme au niveau des instructions.\n"
+//                + "\"Register renaming\".\n"
+//                +"Prediction et speculation.\n"
+//                +"\"Simultaneous multithreading\".\n"
+//                + "VLIWs et techniques de compilation pour ILP.\n"
+//                +"\"Dynamic binary translation\". \n"
+//                +"\nProcesseurs embarqués :\n"
+//                + "\n\n\n"
+//                +"Particularités par rapport aux processeurs non-embarqués.\n"
+//                +"Survol des DSP et de leur défis pour la compilation.\n"
+//                +"Processeurs configurables et customisation.\n", course.getDescription());
+//            assertEquals("Ienne", course.getTeacher());
+//            assertEquals(4, course.getCredits());
+//        } catch (CalendarClientException calendarClientException) {
+//            fail("An error occured.");
+//        }
+//    }
 }

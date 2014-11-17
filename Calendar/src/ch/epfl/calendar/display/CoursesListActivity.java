@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,32 +15,102 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
+import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
+import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.utils.ConstructCourse;
+import ch.epfl.calendar.utils.ConstructListCourse;
 
 /**
  * @author Maxime
  * 
  */
-public class CoursesListActivity extends Activity {
-    private ProgressDialog mDialog;
-    private ListView mListView;
+public class CoursesListActivity extends Activity implements
+        CalendarClientDownloadInterface, AppEngineDownloadInterface {
 
+    private ListView mListView;
+    private List<Course> mCourses = new ArrayList<Course>();
+
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses_list);
 
         mListView = (ListView) findViewById(R.id.coursesListView);
+        
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            //System.out.println("Loading courses in savedInstanceState");
+            mCourses = savedInstanceState.getParcelableArrayList("coursesList");
+            callbackAppEngine(mCourses);
+        } else {
+            // Retrieve course for first time
+            //System.out.println("Retrieving courses for first time");
+            retrieveCourse();
+        }
+        
+        
 
-        final ArrayList<Course> coursesList = retrieveCourse();
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the activity state
+        savedInstanceState.putParcelableArrayList("coursesList", new ArrayList<Course>(mCourses));
+        //System.out.println("Saving state");
+        
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
-        final List<Map<String, String>> courseInfoList = retrieveCourseInfo(coursesList);
+    /**
+     * Launches the CourseDetailsActivity of a specific courseName
+     * 
+     * @param courseName
+     *            the name of the course from which we want the details
+     */
+    private void openCourseDetails(String courseName) {
+
+        Intent courseDetailsActivityIntent = new Intent(this,
+                CourseDetailsActivity.class);
+
+        courseDetailsActivityIntent.putExtra("course", courseName);
+        startActivity(courseDetailsActivityIntent);
+    }
+
+    private void retrieveCourse() {
+        CalendarClientInterface calendarClient = new CalendarClient(this, this);
+        calendarClient.getISAInformations();
+    }
+
+    private void retrieveCourseInfo(List<Course> coursesList) {
+
+        ConstructListCourse constructCourse = ConstructListCourse
+                .getInstance(this);
+        constructCourse.completeCourse(coursesList, this);
+
+    }
+
+    public void callbackAppEngine(List<Course> coursesList) {
+
+        ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
+
+        for (Course cours : coursesList) {
+            Map<String, String> courseMap = new HashMap<String, String>();
+            courseMap.put("Course name", cours.getName());
+            courseMap.put("Course information",
+                    "Professor : " + cours.getTeacher() + ", Credits : "
+                            + cours.getCredits());
+
+            coursesName.add(courseMap);
+        }
+
+        final List<Map<String, String>> courseInfoList = coursesName;
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
                 android.R.layout.simple_list_item_2,
-                new String[] {"Course name", "Professor and Credits" },
+                new String[] {"Course name", "Course information" },
                 new int[] {android.R.id.text1, android.R.id.text2 });
 
         mListView.setAdapter(simpleAdapter);
@@ -58,68 +127,12 @@ public class CoursesListActivity extends Activity {
             }
 
         });
-
-    }
-
-    /**
-     * Launches the CourseDetailsActivity of a specific courseName
-     * 
-     * @param courseName
-     *            the name of the course from which we want the details
-     */
-    private void openCourseDetails(String courseName) {
-
-        Intent courseDetailsActivityIntent = new Intent(this,
-                CourseDetailsActivity.class);
-
-        courseDetailsActivityIntent.putExtra("course", courseName);
-        startActivity(courseDetailsActivityIntent);
-
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Charging course details");
-        mDialog.show();
-
-    }
-
-    private ArrayList<Course> retrieveCourse() {
-
-        CalendarClient calendarClient = new CalendarClient(this);
-        ArrayList<Course> retrieveData = null;
-
-        try {
-            retrieveData = new ArrayList<Course>(
-                    calendarClient.getISAInformations());
-        } catch (CalendarClientException e) {
-            e.printStackTrace();
-        }
-        return retrieveData;
-    }
-
-    private ArrayList<Map<String, String>> retrieveCourseInfo(
-            List<Course> coursesList) {
-
-        ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
-
-        for (Course cours : coursesList) {
-            ConstructCourse constructCourse = ConstructCourse.getInstance();
-            constructCourse.completeCourse(cours);
-            
-            Map<String, String> courseMap = new HashMap<String, String>();
-            courseMap.put("Course name", cours.getName());
-            courseMap.put("Professor and Credits",
-                    "Professor : " + cours.getTeacher() + ", Credits : "
-                            + cours.getCredits());
-            
-            coursesName.add(courseMap);
-        }
-        return coursesName;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
+    public void callbackDownload(List<Course> courses) {
+        this.mCourses = courses;
+        retrieveCourseInfo(mCourses);
+
     }
 }

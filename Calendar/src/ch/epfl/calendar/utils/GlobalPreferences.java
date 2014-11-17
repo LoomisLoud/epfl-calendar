@@ -10,12 +10,15 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
  * @author lweingart
  *
  */
-public class GlobalPreferences {
+public final class GlobalPreferences {
 
     private static GlobalPreferences mInstance;
     private Cookie mCookieWithSessionID = null;
     private Cookie mCookieWithTequilaUsername = null;
     private Cookie mCookieWithTequilaKey = null;
+
+    private GlobalPreferences() {
+    }
 
     public static GlobalPreferences getInstance() {
         if (mInstance == null) {

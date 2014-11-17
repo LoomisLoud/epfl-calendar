@@ -17,12 +17,13 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
+import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.CoursesListActivity;
@@ -37,7 +38,7 @@ import ch.epfl.calendar.utils.GlobalPreferences;
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
-        WeekView.EventLongPressListener {
+        WeekView.EventLongPressListener, CalendarClientDownloadInterface {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -59,9 +60,9 @@ public class MainActivity extends Activity implements
 
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
-    private List<Course> mListCourses = null;
     private List<WeekViewEvent> mMListEvents = new ArrayList<WeekViewEvent>();
-    private int mIdEvent = 0;
+    private long mIdEvent = 0;
+    private List<Course> mListCourses = new ArrayList<Course>();
     private ProgressDialog mDialog;
     
     private Activity mThisActivity;
@@ -93,13 +94,22 @@ public class MainActivity extends Activity implements
 
         actionBarMainActivity();
 
-        // TODO : At the beginning of the application, we "logout" the user
-        TequilaAuthenticationAPI.getInstance().clearSessionID(mThisActivity);
-
-        if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
-            switchToAuthenticationActivity();
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            //System.out.println("Loading courses in savedInstanceState");
+            mListCourses = savedInstanceState.getParcelableArrayList("listCourses");
         } else {
-            mListCourses = populateCalendar();
+            // Retrieve course for first time
+            //System.out.println("Retrieving courses for first time");
+            // TODO : At the beginning of the application, we "logout" the user
+            //TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+
+            if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
+                switchToAuthenticationActivity();
+            } else {
+                mListCourses = new ArrayList<Course>();
+                populateCalendar();
+            }
         }
     }
 
@@ -169,6 +179,14 @@ public class MainActivity extends Activity implements
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the activity state
+        savedInstanceState.putParcelableArrayList("listCourses", new ArrayList<Course>(mListCourses));
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
@@ -229,6 +247,9 @@ public class MainActivity extends Activity implements
                 return true;
             case R.id.action_update_activity:
                 populateCalendar();
+                return true;
+            case R.id.action_logout:
+                logout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -292,7 +313,8 @@ public class MainActivity extends Activity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            mListCourses = populateCalendar();
+            mListCourses = new ArrayList<Course>();
+            populateCalendar();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -318,25 +340,12 @@ public class MainActivity extends Activity implements
             System.out.println(start.toString());
             mMListEvents.removeAll(mMListEvents);
 
-            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end, "Loisirs"));
+            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end, PeriodType.DEFAULT));
 
             mWeekView.notifyDatasetChanged();
         }
     }
-
-    public List<Course> populateCalendar() {
-        CalendarClientInterface cal = new CalendarClient(mThisActivity);
-        List<Course> courses = new ArrayList<Course>();
-
-        try {
-            courses = cal.getISAInformations();
-        } catch (CalendarClientException e) {
-            // TODO catch exceptions and manage
-            e.printStackTrace();
-        }
-        return courses;
-    }
-
+    
     @Override
     protected void onResume() {
         super.onResume();
@@ -344,4 +353,20 @@ public class MainActivity extends Activity implements
             mDialog.dismiss();
         }
     }
+
+    protected void populateCalendar() {
+        CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
+        cal.getISAInformations();
+    }
+
+    private void logout() {
+        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+        switchToAuthenticationActivity();
+    }
+
+    @Override
+    public void callbackDownload(List<Course> courses) {
+        mListCourses = courses;
+    }
+
 }
