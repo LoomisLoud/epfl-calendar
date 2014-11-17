@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
-import android.preference.PreferenceManager.OnActivityResultListener;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -213,7 +212,7 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
             listCourses = populateCalendar();
         }
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -296,21 +295,20 @@ public class MainActivity extends Activity implements WeekView.MonthChangeListen
         return calendar;
     }
 
-    public List<WeekViewEvent> onMonthChange(int newMonth,int newYear) {
+    
+    @Override
+    public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
+
         // Populate the week view with some events.
 
         int idEvent = 0;
         for (Course c : listCourses) {
-
             for (Period p : c.getPeriods()) {
                 events.add(new WeekViewEvent(idEvent, getEventTitle(c, p), p
                         .getStartDate(), p.getEndDate(), p.getType()));
-                System.out.println(p.getStartDate().toString());
-
             }
             idEvent++;
         }
-
         return events;
     }
 
