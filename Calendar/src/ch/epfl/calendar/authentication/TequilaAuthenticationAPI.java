@@ -64,7 +64,7 @@ public final class TequilaAuthenticationAPI {
             period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH + "."
                     + (currentDate.get(Calendar.YEAR)) + "&to="
                     + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH
-                    + "." + currentDate.get(Calendar.YEAR)+1;
+                    + "." + (currentDate.get(Calendar.YEAR)+1);
         }
         return period;
     }

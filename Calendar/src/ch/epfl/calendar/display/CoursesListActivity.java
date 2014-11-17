@@ -19,6 +19,7 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.ConstructListCourse;
@@ -30,6 +31,7 @@ import ch.epfl.calendar.utils.ConstructListCourse;
 public class CoursesListActivity extends Activity implements
         CalendarClientDownloadInterface, AppEngineDownloadInterface {
 
+    public static final int AUTH_ACTIVITY_CODE = 1;
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
 
@@ -138,10 +140,34 @@ public class CoursesListActivity extends Activity implements
         });
     }
 
+    /**
+     * FIXME : NOT CLEAN TO DO THIS WAY
+     */
+    private void switchToAuthenticationActivity() {
+        Intent displayAuthenticationActivtyIntent = new Intent(this,
+                AuthenticationActivity.class);
+        this.startActivityForResult(
+                displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
+
+    }
+    
     @Override
-    public void callbackDownload(List<Course> courses) {
-        this.mCourses = courses;
-        retrieveCourseInfo(mCourses);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
+            this.mCourses = new ArrayList<Course>();
+            retrieveCourse();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    @Override
+    public void callbackDownload(boolean success, List<Course> courses) {
+        if (success) {
+            this.mCourses = courses;
+            retrieveCourseInfo(mCourses);
+        } else {
+            switchToAuthenticationActivity();
+        }
 
     }
 }

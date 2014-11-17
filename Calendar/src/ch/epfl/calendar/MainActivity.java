@@ -369,8 +369,12 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void callbackDownload(List<Course> courses) {
-        mListCourses = courses;
+    public void callbackDownload(boolean success, List<Course> courses) {
+        if (success) {
+            mListCourses = courses;
+        } else {
+            this.logout();
+        }
     }
 
 }
