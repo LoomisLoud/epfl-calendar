@@ -59,16 +59,16 @@ public class MainActivity extends Activity implements
 
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
-    private List<Course> listCourses = null;
-    private List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
-    private int idEvent = 0;
+    private List<Course> mListCourses = null;
+    private List<WeekViewEvent> mMListEvents = new ArrayList<WeekViewEvent>();
+    private int mIdEvent = 0;
     private ProgressDialog mDialog;
-
+    
+    private Activity mThisActivity;
+    
     public static final String TAG = "MainActivity::";
     public static final int AUTH_ACTIVITY_CODE = 1;
     public static final int ADD_EVENT_ACTIVITY_CODE = 2;
-
-    private Activity mThisActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +87,7 @@ public class MainActivity extends Activity implements
         // month every time the month changes on the week view.
 
         mWeekView.setMonthChangeListener(this);
+        
         // Set long press listener for events.
         mWeekView.setEventLongPressListener(this);
 
@@ -98,7 +99,7 @@ public class MainActivity extends Activity implements
         if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
             switchToAuthenticationActivity();
         } else {
-            listCourses = populateCalendar();
+            mListCourses = populateCalendar();
         }
     }
 
@@ -251,14 +252,14 @@ public class MainActivity extends Activity implements
 
         // Populate the week view with some events.
 
-        for (Course c : listCourses) {
+        for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
-                events.add(new WeekViewEvent(idEvent, getEventTitle(c, p), p
+                mMListEvents.add(new WeekViewEvent(mIdEvent, getEventTitle(c, p), p
                         .getStartDate(), p.getEndDate(), p.getType()));
             }
-            idEvent++;
+            mIdEvent++;
         }
-        return events;
+        return mMListEvents;
     }
 
     private String getEventTitle(Course c, Period p) {
@@ -291,7 +292,7 @@ public class MainActivity extends Activity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            listCourses = populateCalendar();
+            mListCourses = populateCalendar();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -315,9 +316,9 @@ public class MainActivity extends Activity implements
             Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
                     endMinute);
             System.out.println(start.toString());
-            events.removeAll(events);
+            mMListEvents.removeAll(mMListEvents);
 
-            events.add(new WeekViewEvent(idEvent++, name, start, end, "Loisirs"));
+            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end, "Loisirs"));
 
             mWeekView.notifyDatasetChanged();
         }
