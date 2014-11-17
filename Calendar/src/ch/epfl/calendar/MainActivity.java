@@ -248,7 +248,7 @@ public class MainActivity extends Activity implements
                 mWeekView.goToToday();
                 return true;
             case R.id.action_update_activity:
-                 populateCalendar();
+                populateCalendar();
                 return true;
             case R.id.action_logout:
                 logout();
