@@ -47,6 +47,15 @@ public class InputStreamUtilsTest extends TestCase {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        
+        try {
+            is1 = new ByteArrayInputStream(TEST_STRING.getBytes(UTF8_ENCODING));
+            InputStreamUtils.readInputStream(is1, "");
+
+            fail("Exception for bad encoding should be raised.");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     public void testReadInputStreamNullInputStream() {

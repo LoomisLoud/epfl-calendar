@@ -22,11 +22,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.utils.AuthenticationUtils;
 import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.HttpUtils;
 import ch.epfl.calendar.utils.InputStreamUtils;
 import ch.epfl.calendar.utils.NetworkException;
-import ch.epfl.calendar.utils.UniqueInstance;
 
 /**
  * The main class that connects with the Tequila server and authenticates user
@@ -54,6 +54,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private String mUsername;
     private String mPassword;
     private String mCurrentToken;
+    private AuthenticationUtils mAuthUtils;
 
     private static final String PASSWORD = "password";
     private static final String REQUEST_KEY = "requestkey";
@@ -88,8 +89,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         
         mClient = HttpClientFactory.getInstance();
         mTequilaApi = TequilaAuthenticationAPI.getInstance();
-        mGlobalPrefs = new GlobalPreferences();
+        mGlobalPrefs = GlobalPreferences.getInstance();
         mHttpUtils = new HttpUtils();
+        mAuthUtils = new AuthenticationUtils();
     }
 
     public String getResult() {
@@ -117,8 +119,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             boolean firstTry = true;
             String tokenList = "";
 
-            Log.d(TAG, "AUTHENTICATED : " + getGlobalPrefs().isAuthenticated(mContext));
-            if (getGlobalPrefs().isAuthenticated(mContext)) {
+            Log.d(TAG, "AUTHENTICATED : " + getAuthUtils().isAuthenticated(mContext));
+            if (getAuthUtils().isAuthenticated(mContext)) {
                 mSessionID = getTequilaApi().getSessionID(mContext);
                 mUsername = getTequilaApi().getUsername(mContext);
                 String tequilaKey = getTequilaApi().getTequilaKey(mContext);
@@ -132,9 +134,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 BasicClientCookie tequilaKeyCookie = new BasicClientCookie(TEQUILA_KEY, tequilaKey);
                 tequilaKeyCookie.setDomain(DOMAIN_TEQUILA);
 
-                UniqueInstance.getGlobalPrefsInstance().setSessionIDCookie(isaCookie);
-                UniqueInstance.getGlobalPrefsInstance().setTequilaUsernameCookie(tequilaUsernameCookie);
-                UniqueInstance.getGlobalPrefsInstance().setTequilaKeyCookie(tequilaKeyCookie);
+                getGlobalPrefs().setSessionIDCookie(isaCookie);
+                getGlobalPrefs().setTequilaUsernameCookie(tequilaUsernameCookie);
+                getGlobalPrefs().setTequilaKeyCookie(tequilaKeyCookie);
                 Log.i(TAG, "SESSION ID : " + mSessionID);
                 
                 //Try to access to ISA to get a token
@@ -172,7 +174,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     }
                     //Try to get the page on Isa
                     httpCode = getAccessToIsa(mSessionID, tokenList);
-                    mSessionID = UniqueInstance.getGlobalPrefsInstance().getSessionIDCookie().getValue();
+                    mSessionID = getGlobalPrefs().getSessionIDCookie().getValue();
                 }
             } else {
                 throw new ClientProtocolException("Wrong Http Code");
@@ -208,9 +210,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         if (!this.isCancelled()) {
             getTequilaApi().setUsername(mContext, 
-                    UniqueInstance.getGlobalPrefsInstance().getTequilaUsernameCookie().getValue());
+                    getGlobalPrefs().getTequilaUsernameCookie().getValue());
             getTequilaApi().setTequilaKey(mContext, 
-                    UniqueInstance.getGlobalPrefsInstance().getTequilaKeyCookie().getValue());
+                    getGlobalPrefs().getTequilaKeyCookie().getValue());
             return result;
         } else {
             // onCancelled() will be called instead of onPostExecute()
@@ -299,7 +301,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         Log.i("INFO : ", "Http code received when trying access to ISA Service : "
                 + getRespGetTimetable().getStatusLine().getStatusCode());
-        UniqueInstance.getGlobalPrefsInstance().setSessionIDCookie(getHttpUtils().getCookie(getClient(), SESSIONID));
+        getGlobalPrefs().setSessionIDCookie(getHttpUtils().getCookie(getClient(), SESSIONID));
 
         return getRespGetTimetable().getStatusLine().getStatusCode();
     }
@@ -309,7 +311,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         getTimetable.addHeader("Set-Cookie", SESSIONID + "=" +sessionID);
         getClient().setCookieStore(new BasicCookieStore());
-        getClient().getCookieStore().addCookie(UniqueInstance.getGlobalPrefsInstance().getSessionIDCookie());
+        getClient().getCookieStore().addCookie(getGlobalPrefs().getSessionIDCookie());
         if (getRespGetTimetable() != null) {
             getRespGetTimetable().getEntity().getContent().close();
         }
@@ -346,15 +348,15 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         if (!(firstTry && mUsername != null && mPassword != null)) {
             //We set the cookies for Tequila authentication
             getClient().setCookieStore(new BasicCookieStore());
-            getClient().getCookieStore().addCookie(UniqueInstance.getGlobalPrefsInstance().getTequilaKeyCookie());
-            getClient().getCookieStore().addCookie(UniqueInstance.getGlobalPrefsInstance().getTequilaUsernameCookie());
+            getClient().getCookieStore().addCookie(getGlobalPrefs().getTequilaKeyCookie());
+            getClient().getCookieStore().addCookie(getGlobalPrefs().getTequilaUsernameCookie());
         }
     }
     
     private void storeCookiesFromTequila() {
-        UniqueInstance.getGlobalPrefsInstance().setTequilaUsernameCookie(getHttpUtils().getCookie(getClient(), 
+        getGlobalPrefs().setTequilaUsernameCookie(getHttpUtils().getCookie(getClient(), 
                 TEQUILA_USER));
-        UniqueInstance.getGlobalPrefsInstance().setTequilaKeyCookie(getHttpUtils().getCookie(getClient(), TEQUILA_KEY));
+        getGlobalPrefs().setTequilaKeyCookie(getHttpUtils().getCookie(getClient(), TEQUILA_KEY));
     }
     
     public boolean isNetworkWorking(Context context) {
@@ -371,6 +373,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
     public GlobalPreferences getGlobalPrefs() {
         return mGlobalPrefs;
+    }
+    
+    public AuthenticationUtils getAuthUtils() {
+        return mAuthUtils;
     }
 
     public HttpUtils getHttpUtils() {
