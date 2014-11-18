@@ -7,18 +7,14 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.mockito.Mockito;
 
-import com.google.android.apps.common.testing.ui.espresso.matcher.BoundedMatcher;
-
 import static org.hamcrest.Matchers.*;
 
-import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.EditText;
@@ -82,8 +78,7 @@ public class AuthenticationActivityTest
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-        
+        //Test that we do not change activity
     }
     
     private static Matcher<View> withHint(final String expectedHint) {
