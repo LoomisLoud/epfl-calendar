@@ -251,7 +251,7 @@ public class MainActivity extends Activity implements
             mWeekView.goToToday();
             return true;
         case R.id.action_update_activity:
-            // populateCalendar();
+             populateCalendar();
             // mWeekView.notifyDatasetChanged();
             return true;
         case R.id.action_logout:
@@ -287,6 +287,15 @@ public class MainActivity extends Activity implements
 
             }
             mIdEvent++;
+        }
+        for (int i = 0; i < mMListEvents.size(); i++) {
+            for (int j = 1; j < mMListEvents.size(); j++) {
+                if (i != j) {
+                    if (sameEvent(mMListEvents.get(i), mMListEvents.get(j))) {
+                        mMListEvents.remove(j);
+                    }
+                }
+            }
         }
         return mMListEvents;
     }
@@ -345,9 +354,7 @@ public class MainActivity extends Activity implements
                     startHour, startMinute);
             Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
                     endMinute);
-            System.out.println(start.toString());
-            mMListEvents.removeAll(mMListEvents);
-
+            
             mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
                     PeriodType.DEFAULT));
 
@@ -371,6 +378,17 @@ public class MainActivity extends Activity implements
     private void logout() {
         TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
         switchToAuthenticationActivity();
+    }
+
+    public boolean sameEvent(WeekViewEvent w1, WeekViewEvent w2) {
+        if (w1.getStartTime().compareTo(w2.getStartTime()) == 0
+                && w1.getEndTime().compareTo(w2.getEndTime()) == 0
+                && w1.getmType() == w2.getmType()
+                && w1.getName().equals(w2.getName())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
