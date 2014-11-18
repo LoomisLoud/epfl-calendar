@@ -110,11 +110,8 @@ public class MainActivity extends Activity implements
             } else {
                 mListCourses = new ArrayList<Course>();
                 populateCalendar();
-
             }
-
         }
-
     }
 
     private ArrayList<String> spinnerList() {
@@ -238,27 +235,28 @@ public class MainActivity extends Activity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.action_courses_list:
-            switchToCoursesList();
-            return true;
-        case R.id.action_settings:
-            switchToCreditsActivity();
-            return true;
-        case R.id.add_event:
-            switchToAddEventsActivity();
-            return true;
-        case R.id.action_today:
-            mWeekView.goToToday();
-            return true;
-        case R.id.action_update_activity:
-             populateCalendar();
-            // mWeekView.notifyDatasetChanged();
-            return true;
-        case R.id.action_logout:
-            logout();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+
+            case R.id.action_courses_list:
+                switchToCoursesList();
+                return true;
+            case R.id.action_settings:
+                switchToCreditsActivity();
+                return true;
+            case R.id.add_event:
+                switchToAddEventsActivity();
+                return true;
+            case R.id.action_today:
+                mWeekView.goToToday();
+                return true;
+            case R.id.action_update_activity:
+                populateCalendar();
+                return true;
+            case R.id.action_logout:
+                logout();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
     }
 
@@ -391,10 +389,13 @@ public class MainActivity extends Activity implements
         }
     }
 
-    @Override
-    public void callbackDownload(List<Course> courses) {
-        mListCourses = courses;
-        mWeekView.notifyDatasetChanged();
+    public void callbackDownload(boolean success, List<Course> courses) {
+        if (success) {
+            mListCourses = courses;
+            mWeekView.notifyDatasetChanged();
+        } else {
+            this.logout();
+        }
     }
 
 }
