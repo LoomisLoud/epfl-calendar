@@ -35,6 +35,7 @@ import ch.epfl.calendar.testing.utils.MockTestCase;
 import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.HttpUtils;
 import ch.epfl.calendar.utils.NetworkException;
+import ch.epfl.calendar.utils.UniqueInstance;
 
 /**
  * This class tests the TequilaAuthenticationTask class
@@ -161,7 +162,7 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
         Mockito.doReturn(null).when(instance).getRespGetTimetable();
         
         Cookie cookie = new BasicClientCookie("name", "value");
-        GlobalPreferences.getInstance().setSessionIDCookie(cookie);
+        UniqueInstance.getGlobalPrefsInstance().setSessionIDCookie(cookie);
 
         HttpGet result = (HttpGet) setCookiesAndHeaders.invoke(instance, new Object[] {realGet, "sessionID"});
         assertEquals(SESSIONID + "=" +"sessionID", result.getFirstHeader("Set-Cookie").getValue());
@@ -284,8 +285,8 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
 
         Cookie tequilaKeyCookie = new BasicClientCookie("tequila", "key");
         Cookie tequilaUsernameCookie = new BasicClientCookie("cookie", "username");
-        GlobalPreferences.getInstance().setTequilaKeyCookie(tequilaKeyCookie);
-        GlobalPreferences.getInstance().setTequilaUsernameCookie(tequilaUsernameCookie);
+        GlobalPreferences.setTequilaKeyCookie(tequilaKeyCookie);
+        GlobalPreferences.setTequilaUsernameCookie(tequilaUsernameCookie);
 
         setCookiesForTequila.invoke(instance, new Object[] {false});
         assertEquals(BasicCookieStore.class, HttpClientFactory.getInstance().getCookieStore().getClass());
@@ -314,8 +315,8 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
                 Mockito.any(AbstractHttpClient.class), Mockito.any(String.class));
 
         storeCookiesFromTequila.invoke(instance, new Object[] {});
-        assertEquals(cookie, GlobalPreferences.getInstance().getTequilaKeyCookie());
-        assertEquals(cookie, GlobalPreferences.getInstance().getTequilaUsernameCookie());
+        assertEquals(cookie, UniqueInstance.getGlobalPrefsInstance().getTequilaKeyCookie());
+        assertEquals(cookie, UniqueInstance.getGlobalPrefsInstance().getTequilaUsernameCookie());
     }
 
     public final void testDoInBackgroundVoidArrayWithoutNetworking()

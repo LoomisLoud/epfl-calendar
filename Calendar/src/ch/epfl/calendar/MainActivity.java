@@ -30,6 +30,7 @@ import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.GlobalPreferences;
+import ch.epfl.calendar.utils.UniqueInstance;
 
 /**
  * 
@@ -100,7 +101,7 @@ public class MainActivity extends Activity implements
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
         } else {
-            if (!GlobalPreferences.getInstance().isAuthenticated(mThisActivity)) {
+            if (UniqueInstance.getGlobalPrefsInstance().isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
             } else {
                 mListCourses = new ArrayList<Course>();
