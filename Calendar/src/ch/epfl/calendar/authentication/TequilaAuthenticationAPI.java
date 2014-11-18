@@ -13,7 +13,7 @@ import android.content.SharedPreferences.Editor;
  * @author lweingart
  *
  */
-public final class TequilaAuthenticationAPI {
+public class TequilaAuthenticationAPI {
 
     public static final String AUTHENTICATION_PREFERENCES_NAME = "user_session";
     public static final String AUTHENTICATION_SESSION_ID_KEY = "SESSION_ID";
@@ -31,7 +31,7 @@ public final class TequilaAuthenticationAPI {
     private static String isAcademiaLoginUrl =
             "https://isa.epfl.ch/service/secure/student/timetable/period?";
     private static final String TEQUILA_AUTHENTICATION_URL = "https://tequila.epfl.ch/cgi-bin/tequila/login";
-    
+
     private static final int AUGUST_MONTH = 8;
     private static final int LAST_DAY_OF_AUGUST = 31;
 
@@ -42,18 +42,16 @@ public final class TequilaAuthenticationAPI {
         return instance;
     }
 
-    // disable the creation of objects
-    private TequilaAuthenticationAPI() {
-        isAcademiaLoginURL = isAcademiaLoginUrl + calculateDate();
+    public TequilaAuthenticationAPI() {
+        isAcademiaLoginURL = isAcademiaLoginUrl + calculateDate(new GregorianCalendar());
         tequilaAuthenticationURL = TEQUILA_AUTHENTICATION_URL;
     }
-    
-    private String calculateDate() {
-        Calendar currentDate = new GregorianCalendar();
+
+    private String calculateDate(Calendar currentDate) {
         String period = null;
         if (currentDate.before(new GregorianCalendar(
                 currentDate.get(Calendar.YEAR),
-                AUGUST_MONTH,
+                AUGUST_MONTH-1,
                 LAST_DAY_OF_AUGUST)
         )) {
             period = "from=" + LAST_DAY_OF_AUGUST + "." + AUGUST_MONTH + "."

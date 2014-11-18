@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 import ch.epfl.calendar.R;
@@ -32,12 +31,12 @@ public class CalendarClient implements CalendarClientInterface {
 	public static final String TAG = "CalendarClient Class::";
 
     private Activity mParentActivity = null;
-    private CalendarClientDownloadInterface mObjectActivity = null;
-    private TequilaAuthenticationTask task = null;
+    private CalendarClientDownloadInterface mDownloadInterface = null;
+    private TequilaAuthenticationTask mTask = null;
 
-    public CalendarClient(Activity activity, CalendarClientDownloadInterface objectActivity) {
+    public CalendarClient(Activity activity, CalendarClientDownloadInterface downloadInterface) {
         this.mParentActivity = activity;
-        this.mObjectActivity = objectActivity;
+        this.mDownloadInterface = downloadInterface;
     }
 
     /* (non-Javadoc)
@@ -46,24 +45,18 @@ public class CalendarClient implements CalendarClientInterface {
      */
     @Override
     public void getISAInformations() {
-        getIsaTimetableOnline(mParentActivity);
+        mTask = new TequilaAuthenticationTask(mParentActivity,
+                new TequilaAuthenticationHandler(),
+                null,
+                null);
+        mTask.execute(null, null);
     }
-    
-
-    private void getIsaTimetableOnline(Context context) {
-        task = new TequilaAuthenticationTask(mParentActivity,
-                          new TequilaAuthenticationHandler(),
-                          null,
-                          null);
-        task.execute(null, null);
-    }
-
 
     private void callback(boolean success) throws TequilaAuthenticationException, CalendarClientException {
         List<Course> coursesList = new ArrayList<Course>();
         if (success) {
             try {
-                byte[] timeTableBytes = task.getResult().getBytes("UTF-8");
+                byte[] timeTableBytes = mTask.getResult().getBytes("UTF-8");
                 coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
             } catch (UnsupportedEncodingException e) {
                 Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
@@ -76,11 +69,11 @@ public class CalendarClient implements CalendarClientInterface {
                 //We don't want that the user sees this exception
             }
         }
-        mObjectActivity.callbackDownload(success, coursesList);
+        mDownloadInterface.callbackDownload(success, coursesList);
     }
     
     /**
-     * A Handler that manage the onError and onSuccess function for Tequila Authentication
+     * A Handler that manages the onError and onSuccess function for Tequila Authentication
      * @author AblionGE
      *
      */
