@@ -60,13 +60,13 @@ public class ISAXMLParserTest extends TestCase {
     private static InputStream standardReadData;
     private static InputStream standardReadDataNull;
     private static InputStream standardInput;
-    private static final int YEAR_2014 = 2014;
-    private static final int MONTH_9 = 9;
-    private static final int DAY_13 = 13;
-    private static final int HOUR_14 = 14;
-    private static final int HOUR_16 = 16;
-    private static final int MINUTE_15 = 15;
-    private static final int MINUTE_0 = 0;
+    private static final int YEAR = 2014;
+    private static final int MONTH = 9;
+    private static final int DAY = 13;
+    private static final int HOUR_FOURTEEN = 14;
+    private static final int HOUR_SIXTEEN = 16;
+    private static final int MINUTE_FIFTEEN = 15;
+    private static final int MINUTE_ZERO = 00;
 
     public void setUp() throws NoSuchMethodException, UnsupportedEncodingException {
         skip = (ISAXMLParser.class).getDeclaredMethod("skip", new Class[] {});
@@ -108,14 +108,14 @@ public class ISAXMLParserTest extends TestCase {
                         + "<room><id>2192131</id><code>CO2</code><name><text lang=\"fr\">CO 2</text>"
                         + "</name></room></study-period>").getBytes("UTF-8"));
         standardReadStudyPeriodNullWithDates = new ByteArrayInputStream(("<study-period>"
-                + "<date>13.10.2014</date><startTime>14:15</startTime><endTime>16:00</endTime>"
-                + "</study-period>").getBytes("UTF-8"));
+                + "<date>13.10.2014</date><startTime>14:15</startTime>" 
+        		+ "<endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
         standardReadStudyPeriodNullWithWrongDate = new ByteArrayInputStream(("<study-period>"
-                + "<date>13.10.2014.14</date><startTime>14:15</startTime><endTime>16:00</endTime>"
-                + "</study-period>").getBytes("UTF-8"));
+                + "<date>13.10.2014.14</date><startTime>14:15</startTime>" 
+        		+ "<endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
         standardReadStudyPeriodNullWithWrongHour = new ByteArrayInputStream(("<study-period>"
-                + "<date>13.10.2014</date><startTime>14:15:16</startTime><endTime>16:00</endTime>"
-                + "</study-period>").getBytes("UTF-8"));
+                + "<date>13.10.2014</date><startTime>14:15:16</startTime>" 
+        		+ "<endTime>16:00</endTime></study-period>").getBytes("UTF-8"));
         standardReadStudyPeriodNull = new ByteArrayInputStream("<study-period></study-period>".getBytes("UTF-8"));
         standardReadData = 
                 new ByteArrayInputStream(("<data><study-period><id>1808047617</id><date>13.10.2014</date>"
@@ -314,10 +314,10 @@ public class ISAXMLParserTest extends TestCase {
             assertEquals("Algorithms", course.getName());
             assertNotNull(course.getPeriods());
             //Month is current month - 1
-            assertEquals(new GregorianCalendar(YEAR_2014, MONTH_9, DAY_13, HOUR_14, MINUTE_15),
-                    course.getPeriods().get(0).getStartDate());
-            assertEquals(new GregorianCalendar(YEAR_2014, MONTH_9, DAY_13, HOUR_16, MINUTE_0),
-                    course.getPeriods().get(0).getEndDate());
+            assertEquals(new GregorianCalendar(YEAR, MONTH, DAY, HOUR_FOURTEEN, MINUTE_FIFTEEN),
+            		course.getPeriods().get(0).getStartDate());
+            assertEquals(new GregorianCalendar(YEAR, MONTH, DAY, HOUR_SIXTEEN, MINUTE_ZERO), 
+            		course.getPeriods().get(0).getEndDate());
             assertEquals(PeriodType.LECTURE, course.getPeriods().get(0).getType());
             assertNotNull(course.getPeriods().get(0).getRooms());
             assertEquals(1, course.getPeriods().get(0).getRooms().size());

@@ -52,22 +52,24 @@ public class CalendarClient implements CalendarClientInterface {
         mTask.execute(null, null);
     }
 
-    private void callback() throws TequilaAuthenticationException, CalendarClientException {
+    private void callback(boolean success) throws TequilaAuthenticationException, CalendarClientException {
         List<Course> coursesList = new ArrayList<Course>();
-        try {
-            byte[] timeTableBytes = mTask.getResult().getBytes("UTF-8");
-            coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
-            throw new CalendarClientException(e);
-        } catch (ParsingException e) {
-            Log.e(TAG + "ParsingException", e.getMessage());
-            //We don't want that the user sees this exception
-        } catch (NullPointerException e) {
-            Log.e(TAG + "NullPointerException", e.getMessage());
-            //We don't want that the user sees this exception
+        if (success) {
+            try {
+                byte[] timeTableBytes = mTask.getResult().getBytes("UTF-8");
+                coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
+            } catch (UnsupportedEncodingException e) {
+                Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
+                throw new CalendarClientException(e);
+            } catch (ParsingException e) {
+                Log.e(TAG + "ParsingException", e.getMessage());
+                //We don't want that the user sees this exception
+            } catch (NullPointerException e) {
+                Log.e(TAG + "NullPointerException", e.getMessage());
+                //We don't want that the user sees this exception
+            }
         }
-        mDownloadInterface.callbackDownload(coursesList);
+        mDownloadInterface.callbackDownload(success, coursesList);
     }
     
     /**
@@ -78,10 +80,22 @@ public class CalendarClient implements CalendarClientInterface {
     private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
         @Override
         public void onError(String msg) {
+            boolean exceptionOccured = false;
+            String errMessage = "";
             if (msg.equals(mParentActivity.getString(R.string.error_disconnected))) {
                 TequilaAuthenticationAPI.getInstance().clearStoredData(mParentActivity);
             }
             Toast.makeText(mParentActivity, msg, Toast.LENGTH_LONG).show();
+            try {
+                callback(false);
+            } catch (TequilaAuthenticationException e) {
+                errMessage = e.getMessage();
+            } catch (CalendarClientException e) {
+                errMessage = e.getMessage();
+            }
+            if (!exceptionOccured) {
+                Log.i("Unexpected error : ", errMessage);
+            }
         }
         @Override
         public void onSuccess(String sessionID) {
@@ -91,7 +105,7 @@ public class CalendarClient implements CalendarClientInterface {
             boolean exceptionOccured = false;
             String errMessage = "";
             try {
-                callback();
+                callback(true);
             } catch (TequilaAuthenticationException e) {
                 errMessage = e.getMessage();
             } catch (CalendarClientException e) {

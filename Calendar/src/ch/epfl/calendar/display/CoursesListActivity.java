@@ -2,11 +2,12 @@ package ch.epfl.calendar.display;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -18,26 +19,54 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.utils.ConstructCourse;
+import ch.epfl.calendar.data.Period;
+import ch.epfl.calendar.utils.ConstructListCourse;
 
 /**
  * @author Maxime
  * 
  */
-public class CoursesListActivity extends Activity implements CalendarClientDownloadInterface {
-    private ProgressDialog mDialog;
+public class CoursesListActivity extends Activity implements
+        CalendarClientDownloadInterface, AppEngineDownloadInterface {
+
+    public static final int AUTH_ACTIVITY_CODE = 1;
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
 
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses_list);
 
         mListView = (ListView) findViewById(R.id.coursesListView);
+        
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            //System.out.println("Loading courses in savedInstanceState");
+            mCourses = savedInstanceState.getParcelableArrayList("coursesList");
+            callbackAppEngine(mCourses);
+        } else {
+            // Retrieve course for first time
+            //System.out.println("Retrieving courses for first time");
+            retrieveCourse();
+        }
+        
+        
 
-        retrieveCourse();
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the activity state
+        savedInstanceState.putParcelableArrayList("coursesList", new ArrayList<Course>(mCourses));
+        //System.out.println("Saving state");
+        
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     /**
@@ -53,11 +82,6 @@ public class CoursesListActivity extends Activity implements CalendarClientDownl
 
         courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
-
-        mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Charging course details");
-        mDialog.show();
-
     }
 
     private void retrieveCourse() {
@@ -65,43 +89,39 @@ public class CoursesListActivity extends Activity implements CalendarClientDownl
         calendarClient.getISAInformations();
     }
 
-    private ArrayList<Map<String, String>> retrieveCourseInfo(
-            List<Course> coursesList) {
+    private void retrieveCourseInfo(List<Course> coursesList) {
+
+        ConstructListCourse constructCourse = ConstructListCourse
+                .getInstance(this);
+        constructCourse.completeCourse(coursesList, this);
+
+    }
+
+    public void callbackAppEngine(List<Course> coursesList) {
 
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
-
+        
         for (Course cours : coursesList) {
-            ConstructCourse constructCourse = ConstructCourse.getInstance();
-            constructCourse.completeCourse(cours);
-            
             Map<String, String> courseMap = new HashMap<String, String>();
-            courseMap.put("Course name", cours.getName());
-            courseMap.put("Professor and Credits",
-                    "Professor : " + cours.getTeacher() + ", Credits : "
-                            + cours.getCredits());
             
+            Set<String> periods = new HashSet<String>();
+            for (Period period : cours.getPeriods()) {
+                periods.add(period.toString());
+            }
+            
+            courseMap.put("Course name", cours.getName());
+            courseMap.put("Course information",
+                    "Professor : " + cours.getTeacher() + ", Credits : "
+                            + cours.getCredits() + "\n" + periods);
+
             coursesName.add(courseMap);
         }
-        return coursesName;
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void callbackDownload(List<Course> courses) {
-        this.mCourses = courses;
-        
-        final List<Map<String, String>> courseInfoList = retrieveCourseInfo(mCourses);
+        final List<Map<String, String>> courseInfoList = coursesName;
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
                 android.R.layout.simple_list_item_2,
-                new String[] {"Course name", "Professor and Credits" },
+                new String[] {"Course name", "Course information" },
                 new int[] {android.R.id.text1, android.R.id.text2 });
 
         mListView.setAdapter(simpleAdapter);
@@ -118,6 +138,36 @@ public class CoursesListActivity extends Activity implements CalendarClientDownl
             }
 
         });
+    }
+
+    /**
+     * FIXME : NOT CLEAN TO DO THIS WAY
+     */
+    private void switchToAuthenticationActivity() {
+        Intent displayAuthenticationActivtyIntent = new Intent(this,
+                AuthenticationActivity.class);
+        this.startActivityForResult(
+                displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
+
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
+            this.mCourses = new ArrayList<Course>();
+            retrieveCourse();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    @Override
+    public void callbackDownload(boolean success, List<Course> courses) {
+        if (success) {
+            this.mCourses = courses;
+            retrieveCourseInfo(mCourses);
+        } else {
+            switchToAuthenticationActivity();
+        }
 
     }
 }

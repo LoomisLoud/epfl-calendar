@@ -6,13 +6,16 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * A course of EPFL with its informations : - Name - Date - Period classes
  * 
  * @author AblionGE
  * 
  */
-public class Course {
+public class Course implements Parcelable {
     private String mName;
     private List<Period> mPeriods;
     private String mTeacher;
@@ -48,7 +51,7 @@ public class Course {
      * @param description
      *            the description of the course
      * @param professorName
-     *            the name of the Professor teahcing the course
+     *            the name of the Professor teaching the course
      * @param numberOfCredits
      *            the number of credits for the course
      */
@@ -190,4 +193,39 @@ public class Course {
         return new Course(code, name, description, professorName,
                 numberOfCredits);
     }
+    
+    // Parcelable ----------------
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mName);
+        parcel.writeString(mTeacher);
+        parcel.writeInt(mCredits);
+        parcel.writeString(mCode);
+        parcel.writeString(mDescription);
+    }
+    
+    private Course(Parcel in) {
+        mName = in.readString();
+        //FIXME change periods
+        mPeriods = null;
+        mTeacher = in.readString();
+        mCredits = in.readInt();
+        mCode = in.readString();
+        mDescription = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+    
+    public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
+        public Course createFromParcel(Parcel in) {
+            return new Course(in);
+        }
+
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
+    };
 }
