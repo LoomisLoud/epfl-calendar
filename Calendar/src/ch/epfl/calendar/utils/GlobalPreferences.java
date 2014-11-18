@@ -28,8 +28,12 @@ public class GlobalPreferences {
     }*/
     
     public boolean isAuthenticated(Context context) {
-        String tokenID = TequilaAuthenticationAPI.getInstance().getSessionID(context);
+        String tokenID = getTequilaAPI().getSessionID(context);
         return (tokenID != null) && !tokenID.isEmpty();
+    }
+    
+    public TequilaAuthenticationAPI getTequilaAPI() {
+        return TequilaAuthenticationAPI.getInstance();
     }
 
     public Cookie getSessionIDCookie() {

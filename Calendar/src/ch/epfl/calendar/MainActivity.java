@@ -29,7 +29,6 @@ import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
-import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.UniqueInstance;
 
 /**

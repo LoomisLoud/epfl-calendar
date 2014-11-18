@@ -26,8 +26,8 @@ public class Event {
     /**
      * @param mName the mName to set
      */
-    public void setName(String mName) {
-        this.mName = mName;
+    public void setName(String name) {
+        this.mName = name;
     }
     /**
      * @return the mStartDate
@@ -38,8 +38,8 @@ public class Event {
     /**
      * @param mStartDate the mStartDate to set
      */
-    public void setStartDate(Calendar mStartDate) {
-        this.mStartDate = (Calendar) mStartDate.clone();
+    public void setStartDate(Calendar startDate) {
+        this.mStartDate = (Calendar) startDate.clone();
     }
     /**
      * @return the mEndDate
@@ -50,8 +50,8 @@ public class Event {
     /**
      * @param mEndDate the mEndDate to set
      */
-    public void setEndDate(Calendar mEndDate) {
-        this.mEndDate = (Calendar) mEndDate.clone();
+    public void setEndDate(Calendar endDate) {
+        this.mEndDate = (Calendar) endDate.clone();
     }
     /**
      * @return the mType
@@ -62,8 +62,8 @@ public class Event {
     /**
      * @param mType the mType to set
      */
-    public void setmType(String mType) {
-        this.mType = mType;
+    public void setmType(String type) {
+        this.mType = type;
     }
     /**
      * @return the mLinkedCourse
@@ -74,7 +74,7 @@ public class Event {
     /**
      * @param mLinkedCourse the mLinkedCourse to set
      */
-    public void setLinkedCourse(String mLinkedCourse) {
-        this.mLinkedCourse = mLinkedCourse;
+    public void setLinkedCourse(String linkedCourse) {
+        this.mLinkedCourse = linkedCourse;
     }
 }

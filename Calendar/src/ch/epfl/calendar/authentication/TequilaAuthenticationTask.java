@@ -66,6 +66,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private static final String DOMAIN_TEQUILA = "tequila.epfl.ch";
     private static final String PATH_ISA = "/service";
     private static final int TIMEOUT_AUTHENTICATION = 10;
+    private static final String TEQUILA_ENCODING = "ISO-8859-1";
 
     /**
      * @author lweingart
@@ -181,7 +182,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 throw new ClientProtocolException("Authentication Timeout");
             }
             
-            result = InputStreamUtils.readInputStream(getRespGetTimetable().getEntity().getContent());
+            result = InputStreamUtils.readInputStream(getRespGetTimetable().getEntity().getContent(), TEQUILA_ENCODING);
 
         } catch (ClientProtocolException e) {
             mExceptionOccured = true;
@@ -351,7 +352,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     }
     
     private void storeCookiesFromTequila() {
-        UniqueInstance.getGlobalPrefsInstance().setTequilaUsernameCookie(getHttpUtils().getCookie(getClient(), TEQUILA_USER));
+        UniqueInstance.getGlobalPrefsInstance().setTequilaUsernameCookie(getHttpUtils().getCookie(getClient(), 
+                TEQUILA_USER));
         UniqueInstance.getGlobalPrefsInstance().setTequilaKeyCookie(getHttpUtils().getCookie(getClient(), TEQUILA_KEY));
     }
     

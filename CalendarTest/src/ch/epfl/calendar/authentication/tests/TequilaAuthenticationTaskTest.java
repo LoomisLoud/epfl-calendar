@@ -285,8 +285,8 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
 
         Cookie tequilaKeyCookie = new BasicClientCookie("tequila", "key");
         Cookie tequilaUsernameCookie = new BasicClientCookie("cookie", "username");
-        GlobalPreferences.setTequilaKeyCookie(tequilaKeyCookie);
-        GlobalPreferences.setTequilaUsernameCookie(tequilaUsernameCookie);
+        UniqueInstance.getGlobalPrefsInstance().setTequilaKeyCookie(tequilaKeyCookie);
+        UniqueInstance.getGlobalPrefsInstance().setTequilaUsernameCookie(tequilaUsernameCookie);
 
         setCookiesForTequila.invoke(instance, new Object[] {false});
         assertEquals(BasicCookieStore.class, HttpClientFactory.getInstance().getCookieStore().getClass());

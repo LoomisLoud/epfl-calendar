@@ -9,10 +9,10 @@ package ch.epfl.calendar.utils;
  */
 public class UniqueInstance {
 
-    private static final GlobalPreferences globalPrefs = new GlobalPreferences();
+    private static final GlobalPreferences GLOBAL_PREFS = new GlobalPreferences();
 
     public static GlobalPreferences getGlobalPrefsInstance() {
-        return globalPrefs;
+        return GLOBAL_PREFS;
     }
     
     
