@@ -56,7 +56,7 @@ public class AuthenticationActivity extends Activity {
 	}
 
 	/**
-	 *
+	 * Handler for the TequilaAuthentication
 	 * @author lweingart
 	 *
 	 */

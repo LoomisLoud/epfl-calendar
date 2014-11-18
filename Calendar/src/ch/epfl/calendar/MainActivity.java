@@ -100,12 +100,7 @@ public class MainActivity extends Activity implements
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
         } else {
-            // Retrieve course for first time
-            // System.out.println("Retrieving courses for first time");
-            // TODO : At the beginning of the application, we "logout" the user
-            // TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-
-            if (!GlobalPreferences.isAuthenticated(mThisActivity)) {
+            if (!GlobalPreferences.getInstance().isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
             } else {
                 mListCourses = new ArrayList<Course>();
@@ -160,6 +155,9 @@ public class MainActivity extends Activity implements
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
     }
+
+        // TODO : At the beginning of the application, we "logout" the user
+//        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
             int sizeColumnGap, int sizeFront, int sizeFrontEvent) {

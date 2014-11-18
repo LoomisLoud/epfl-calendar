@@ -10,14 +10,14 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
  * @author lweingart
  *
  */
-public final class GlobalPreferences {
+public class GlobalPreferences {
 
     private static GlobalPreferences mInstance;
     private Cookie mCookieWithSessionID = null;
     private Cookie mCookieWithTequilaUsername = null;
     private Cookie mCookieWithTequilaKey = null;
 
-    private GlobalPreferences() {
+    public GlobalPreferences() {
     }
 
     public static GlobalPreferences getInstance() {
@@ -27,7 +27,7 @@ public final class GlobalPreferences {
         return mInstance;
     }
 
-    public static boolean isAuthenticated(Context context) {
+    public boolean isAuthenticated(Context context) {
         String tokenID = TequilaAuthenticationAPI.getInstance().getSessionID(context);
         return (tokenID != null) && !tokenID.isEmpty();
     }

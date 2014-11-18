@@ -3,26 +3,31 @@
  */
 package ch.epfl.calendar.apiInterface.tests;
 
-import junit.framework.TestCase;
+import org.mockito.Mockito;
 
+import ch.epfl.calendar.apiInterface.CalendarClient;
+import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
+import ch.epfl.calendar.testing.utils.MockTestCase;
 /**
  * @author gilbrechbuhler
  *
  */
-public class CalendarClientTest extends TestCase {
+public class CalendarClientTest extends MockTestCase {
 
-    public void testGetISAInformation() {
-        //FIXME : Need context !
+    private TequilaAuthenticationTask task;
+    private CalendarClient calendarClient;
+
+    protected void setUp() throws Exception {
+        task = Mockito.mock(TequilaAuthenticationTask.class);
+        calendarClient = Mockito.spy(new CalendarClient(null, null));
     }
-        /*CalendarClientInterface fetcher = new CalendarClient();
-        List<Course> result = new ArrayList<Course>();
-        try {
-            result = fetcher.getISAInformations();
-            assertNotNull(result);
-        } catch (CalendarClientException e) {
-            fail("An exception occured while using the interface.");
-        }
-        assertFalse("The returned colleciton should not be empty", result.isEmpty());
-    }*/
+
+    public final void testGetIsaInformations() {
+        //TODO
+    }
+
+    public final void testcallback() {
+        //TODO
+    }
 
 }
