@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -34,6 +36,8 @@ public class AddEventActivity extends Activity implements
     private DatePicker mEndEventDate;
     private TimePicker mEndEventHour;
 
+    private String mNewNameEvent;
+
     public static final int AUTH_ACTIVITY_CODE = 1;
     private Spinner mSpinnerCourses;
     private List<Course> mCourses = new ArrayList<Course>();
@@ -44,10 +48,10 @@ public class AddEventActivity extends Activity implements
         setContentView(R.layout.activity_add_event);
 
         mNameEvent = (EditText) findViewById(R.id.name_event_text);
-        //
+
         mStartEventDate = (DatePicker) findViewById(R.id.start_event_picker_date);
         mStartEventHour = (TimePicker) findViewById(R.id.start_event_picker_hour);
-        //
+
         mEndEventDate = (DatePicker) findViewById(R.id.end_event_picker_date);
         mEndEventHour = (TimePicker) findViewById(R.id.end_event_picker_hour);
 
@@ -67,7 +71,8 @@ public class AddEventActivity extends Activity implements
 
     private void transferData() {
         Intent i = getIntent();
-        i.putExtra("nameInfo", mNameEvent.getText().toString());
+
+        i.putExtra("nameInfo", mNameEvent.getText().toString() + mNewNameEvent);
 
         i.putExtra("startYear", mStartEventDate.getYear());
         i.putExtra("startMonth", mStartEventDate.getMonth());
@@ -117,7 +122,7 @@ public class AddEventActivity extends Activity implements
         if (success) {
             this.mCourses = courses;
 
-            ArrayList<String> coursesName = new ArrayList<String>();
+            final ArrayList<String> coursesName = new ArrayList<String>();
 
             coursesName.add("No connection with courses");
 
@@ -131,6 +136,26 @@ public class AddEventActivity extends Activity implements
             coursesNameAdapter
                     .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mSpinnerCourses.setAdapter(coursesNameAdapter);
+            mSpinnerCourses
+                    .setOnItemSelectedListener(new OnItemSelectedListener() {
+
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent,
+                                View view, int position, long id) {
+                            if (position == 0) {
+                                mNewNameEvent = "";
+                            } else {
+                                mNewNameEvent = "\n"
+                                        + coursesName.get(position);
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            mNewNameEvent = "";
+                        }
+
+                    });
         } else {
             switchToAuthenticationActivity();
         }
