@@ -103,7 +103,7 @@ public class MainActivity extends Activity implements
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
         } else {
-            if (mAuthUtils.isAuthenticated(mThisActivity)) {
+            if (!mAuthUtils.isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
             } else {
                 mListCourses = new ArrayList<Course>();

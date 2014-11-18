@@ -1,10 +1,12 @@
 /**
  * 
  */
-package ch.epfl.calendar.display;
+package ch.epfl.calendar.display.tests;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import ch.epfl.calendar.display.CourseDetailsActivity;
 
 import junit.framework.TestCase;
 import android.graphics.Typeface;
