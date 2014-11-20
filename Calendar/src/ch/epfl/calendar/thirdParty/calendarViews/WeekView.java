@@ -723,8 +723,7 @@ public class WeekView extends View {
             mFetchedMonths = new int[3];
         }
 
-        List<WeekViewEvent> events = mMonthChangeListener.onMonthChange(
-                day.get(Calendar.YEAR), day.get(Calendar.MONTH) + 1);
+        List<WeekViewEvent> events = mMonthChangeListener.onMonthChange();
         removeDuplicate(events);
         sortEvents(events);
         for (WeekViewEvent event : events) {
@@ -1363,7 +1362,7 @@ public class WeekView extends View {
     }
 
     public interface MonthChangeListener {
-        List<WeekViewEvent> onMonthChange(int newYear, int newMonth);
+        List<WeekViewEvent> onMonthChange();
     }
 
     public interface EventLongPressListener {
