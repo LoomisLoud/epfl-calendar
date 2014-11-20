@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import android.media.audiofx.Equalizer;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -200,7 +201,11 @@ public class Period implements Parcelable {
                 + mEndDate.get(Calendar.HOUR_OF_DAY) + ":" + mEndDate.get(Calendar.MINUTE) + " of type "
                 + mType + " in rooms : " + mRooms + "\n";
     }
-    
+    /**
+     * Return if classes are equals. Either object can't be null to return true.
+     * if they are the same object (==), return true.
+     * if they don't have the same reference, the method test each member of the class and check if they are all equals.
+     */
     @Override
     public boolean equals(Object other) {
         if (other == null) {
@@ -235,6 +240,10 @@ public class Period implements Parcelable {
         return true;
     }
     
+    /**
+     * Respect the contract of equals methods
+     * @see java.lang.Object#equals(Object)
+     */
     @Override
     public int hashCode() {
         int result = 0;

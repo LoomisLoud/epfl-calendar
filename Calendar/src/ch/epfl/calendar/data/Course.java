@@ -193,7 +193,11 @@ public class Course implements Parcelable {
         return new Course(code, name, description, professorName,
                 numberOfCredits);
     }
-    
+    /**
+    * Return if classes are equals. Either object can't be null to return true.
+    * if they are the same object (==), return true.
+    * if they don't have the same reference, the method test each member of the class and check if they are all equals.
+    */
     @Override
     public boolean equals(Object other) {
         if (other == null) {
@@ -236,7 +240,10 @@ public class Course implements Parcelable {
         //all member are equals
         return true;
     }
-    
+    /**
+     * Respect the contract of equals methods
+     * @see java.lang.Object#equals(Object)
+     */
     @Override
     public int hashCode() {
         int result = 0;
