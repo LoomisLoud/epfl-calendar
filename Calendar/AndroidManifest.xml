@@ -45,6 +45,10 @@
             android:name=".CreditsActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog" >
         </activity>
+        <activity
+            android:name=".AddBlocksActivity"
+            android:label="@string/title_activity_add_blocks" >
+        </activity>
     </application>
 
 </manifest>

@@ -7,6 +7,10 @@
         android:showAsAction="never"
         android:title="@string/action_courses_list"/>
     <item
+        android:id="@+id/action_add_blocks"
+        android:showAsAction="never"
+        android:title="@string/action_add_blocks"/>
+    <item
         android:id="@+id/action_update_activity"
         android:showAsAction="never"
         android:title="@string/action_update_activity"/>

@@ -230,12 +230,19 @@ public class MainActivity extends Activity implements
         startActivity(i);
     }
 
+    private void switchToAddBlocksActivity() {
+    	Intent i = new Intent(mThisActivity, AddBlocksActivity.class);
+    	startActivity(i);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_courses_list:
                 switchToCoursesList();
                 return true;
+            case R.id.action_add_blocks:
+            	switchToAddBlocksActivity();
+            	return true;
             case R.id.action_settings:
                 switchToCreditsActivity();
                 return true;
