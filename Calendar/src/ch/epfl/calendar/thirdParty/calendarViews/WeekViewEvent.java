@@ -92,6 +92,7 @@ public class WeekViewEvent {
         this.mStartTime = startTime;
         this.mEndTime = endTime;
         setColorWithType(type);
+        this.mType = type;
 
     }
 

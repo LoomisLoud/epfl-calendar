@@ -156,8 +156,8 @@ public class MainActivity extends Activity implements
                 mOnNavigationListener);
     }
 
-        // TODO : At the beginning of the application, we "logout" the user
-//        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+    // TODO : At the beginning of the application, we "logout" the user
+    // TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
             int sizeColumnGap, int sizeFront, int sizeFrontEvent) {
@@ -302,8 +302,16 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        String cours = event.getName().split("\n")[0];
-        switchToCourseDetails(cours);
+        if (event.getmType().equals(PeriodType.LECTURE)
+                || event.getmType().equals(PeriodType.PROJECT)
+                || event.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = event.getName().split("\n")[0];
+            switchToCourseDetails(cours);
+        } else {
+            Toast.makeText(MainActivity.this,
+                    "Short pressed event: " + event.getName(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -340,7 +348,7 @@ public class MainActivity extends Activity implements
                     startHour, startMinute);
             Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
                     endMinute);
-            
+
             mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
                     PeriodType.DEFAULT));
 
@@ -365,8 +373,6 @@ public class MainActivity extends Activity implements
         TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
         switchToAuthenticationActivity();
     }
-
-    
 
     public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
