@@ -18,7 +18,7 @@ public class WeekViewEvent {
     private Calendar mStartTime;
     private Calendar mEndTime;
     private String mName;
-    private String mType;
+    private PeriodType mType;
    
 
     private int mColor;
@@ -147,11 +147,11 @@ public class WeekViewEvent {
         this.mId = id;
     }
     
-    public String getmType() {
+    public PeriodType getmType() {
         return mType;
     }
 
-    public void setmType(String mType) {
+    public void setmType(PeriodType mType) {
         this.mType = mType;
     }
 }
