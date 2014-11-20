@@ -193,9 +193,9 @@ public class Course implements Parcelable {
         return new Course(code, name, description, professorName,
                 numberOfCredits);
     }
-    /*
+    
     @Override
-    public boolean equals(Object other){
+    public boolean equals(Object other) {
         if (other == null) {
             return false;
         }
@@ -207,33 +207,46 @@ public class Course implements Parcelable {
         }
         Course otherCourse = (Course) other;
         //test each member
-        if (this.getName() != otherCourse.getName()) {
+        if (!this.getName().equals(otherCourse.getName())) {
+            System.out.println("Name aren't equals ");
             return false;
         }
+        System.out.println("Names equals");
         if (this.getPeriods().size() == otherCourse.getPeriods().size()) {
             for (int i = 0; i < this.getPeriods().size(); i++) {
-                if (this.getPeriods().get(i) != otherCourse.getPeriods().get(i)) {
+                if (!this.getPeriods().get(i).equals(otherCourse.getPeriods().get(i))) {
                     return false;
                 }
             }
         } else {
             return false;
         }
-        if (this.getTeacher() != otherCourse.getTeacher()) {
+        if (!this.getTeacher().equals(otherCourse.getTeacher())) {
             return false;
         }
         if (this.getCredits() != otherCourse.getCredits()) {
             return false;
         }
-        if (this.getCode() != otherCourse.getCode()) {
+        if (!this.getCode().equals(otherCourse.getCode())) {
             return false;
         }
-        if (this.getDescription() != otherCourse.getDescription()) {
+        if (!this.getDescription().equals(otherCourse.getDescription())) {
             return false;
         }
         //all member are equals
         return true;
-    }*/
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 0;
+        result += mName.hashCode() + mTeacher.hashCode() + mCredits + mCode.hashCode()
+                 + mDescription.hashCode();
+        for (Period p : mPeriods) {
+            result += p.hashCode();
+        }
+        return result;
+    }
 
     
     // Parcelable ----------------

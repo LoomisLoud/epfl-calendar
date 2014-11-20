@@ -31,7 +31,13 @@ public class CourseTest extends TestCase {
 	protected void setUp() throws Exception {
 	    super.setUp();
 	    mCourse = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
-        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+	    mCourse.setTeacher("Pr Waffle Blue");
+	    mCourse.setCredits(CREDITS);
+	    mCourse.setCode("CS-42");
+	    mCourse.setDescription("Waffle's knowledge  of the world");
+	    ArrayList<String> rooms = new ArrayList<String>();
+	    rooms.add("CO2");
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
         mCourse.addPeriod(periodNormal);
 	}
 
@@ -107,6 +113,40 @@ public class CourseTest extends TestCase {
 		assertEquals(course.getTeacher(), "Man");
 	}
 	
+	public void testEqualsSameObject() {
+	    assertEquals(mCourse, mCourse);
+	}
+	
+	public void testEqualsDifferentReference() {
+	    Course course2 = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+        course2.setTeacher("Pr Waffle Blue");
+        course2.setCredits(CREDITS);
+        course2.setCode("CS-42");
+        course2.setDescription("Waffle's knowledge  of the world");
+        ArrayList<String> rooms = new ArrayList<String>();
+        rooms.add("CO2");
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
+        course2.addPeriod(periodNormal);
+        assertEquals(mCourse, course2);
+	}
+	
+	public void testHashSameObject() {
+        assertEquals(mCourse.hashCode(), mCourse.hashCode());
+    }
+    
+    public void testHashDifferentReference() {
+        Course course2 = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+        course2.setTeacher("Pr Waffle Blue");
+        course2.setCredits(CREDITS);
+        course2.setCode("CS-42");
+        course2.setDescription("Waffle's knowledge  of the world");
+        ArrayList<String> rooms = new ArrayList<String>();
+        rooms.add("CO2");
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
+        course2.addPeriod(periodNormal);
+        assertEquals(mCourse.hashCode(), course2.hashCode());
+    }
+	
 	public void testParcelable() {
 	    // Obtain a Parcel object and write the parcelable object to it:
 	    Parcel parcel = Parcel.obtain();
@@ -117,6 +157,8 @@ public class CourseTest extends TestCase {
 	    
 	    // Reconstruct object from parcel and asserts:
 	    Course createdFromParcel = Course.CREATOR.createFromParcel(parcel);
+	    
+	    parcel.recycle();
 	    assertEquals(mCourse, createdFromParcel);
 	}
 }

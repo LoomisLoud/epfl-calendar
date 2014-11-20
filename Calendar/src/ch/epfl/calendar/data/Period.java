@@ -201,6 +201,50 @@ public class Period implements Parcelable {
                 + mType + " in rooms : " + mRooms + "\n";
     }
     
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof Period)) {
+            return false;
+        }
+        Period otherPeriod = (Period) other;
+        //test each member
+        if (!this.getType().equals(otherPeriod.getType())) {
+            return false;
+        }
+        if (!this.mStartDate.equals(otherPeriod.getStartDate())) {
+            return false;
+        }
+        if (!this.mEndDate.equals(otherPeriod.getEndDate())) {
+            return false;
+        }
+        if (this.getRooms().size() == otherPeriod.getRooms().size()) {
+            for (int i = 0; i < this.getRooms().size(); i++) {
+                if (!this.getRooms().get(i).equals(otherPeriod.getRooms().get(i))) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 0;
+        result += mType.hashCode() + mStartDate.hashCode() + mEndDate.hashCode();
+        for (String str : getRooms()) {
+            result += str.hashCode();
+        }
+        return result;
+    }
+    
     // Parcelable ----------------
     // using setter and getter to check for property in case of memory error or any problem that could happen
     // at execution between writing and reading and corrupt integrity.
