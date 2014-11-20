@@ -255,8 +255,8 @@ public class WeekView extends View {
                             .applyDimension(TypedValue.COMPLEX_UNIT_SP,
                                     mEventTextSize, context.getResources()
                                             .getDisplayMetrics()));
-            //mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor,
-                    //mEventTextColor);
+            // mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor,
+            // mEventTextColor);
             mEventPadding = a.getDimensionPixelSize(
                     R.styleable.WeekView_hourSeparatorHeight, mEventPadding);
             mHeaderColumnBackgroundColor = a.getColor(
@@ -470,11 +470,11 @@ public class WeekView extends View {
             // Get more events if necessary. We want to store the events 3
             // months beforehand. Get
             // events only when it is the first iteration of the loop.
-            if (mEventRects == null
-                    || mRefreshEvents
-                    || (dayNumber == leftDaysWithGaps + 1
-                            && mFetchedMonths[1] != day.get(Calendar.MONTH) + 1 && day
-                            .get(Calendar.DAY_OF_MONTH) == 15)) {
+            if (mEventRects == null || mRefreshEvents
+            // || (dayNumber == leftDaysWithGaps + 1
+            // && mFetchedMonths[1] != day.get(Calendar.MONTH) + 1 && day
+            // .get(Calendar.DAY_OF_MONTH) == 15)
+            ) {
                 getMoreEvents(day);
                 mRefreshEvents = false;
             }
@@ -512,7 +512,7 @@ public class WeekView extends View {
             canvas.drawLines(hourLines, mHourSeparatorPaint);
 
             // Draw the events.
-             drawEvents(day, startPixel, canvas);
+            drawEvents(day, startPixel, canvas);
 
             // In the next iteration, start from the next day.
             startPixel += mWidthPerDay + mColumnGap;
@@ -708,9 +708,6 @@ public class WeekView extends View {
      */
     private void getMoreEvents(Calendar day) {
 
-        // Delete all events if its not current month +- 1.
-        deleteFarMonths(day);
-
         // Get more events if the month is changed.
         if (mEventRects == null) {
             mEventRects = new ArrayList<EventRect>();
@@ -726,51 +723,14 @@ public class WeekView extends View {
             mFetchedMonths = new int[3];
         }
 
-        // Get events of previous month.
-        /*
-         * int previousMonth = (day.get(Calendar.MONTH) == 0 ? 12 : day
-         * .get(Calendar.MONTH)); int nextMonth = (day.get(Calendar.MONTH) + 2
-         * == 13 ? 1 : day .get(Calendar.MONTH) + 2);
-         */
-        int[] lastFetchedMonth = mFetchedMonths.clone();
-        /*
-         * if (mFetchedMonths[0] < 1 || mFetchedMonths[0] != previousMonth ||
-         * mRefreshEvents) { if (!containsValue(lastFetchedMonth, previousMonth)
-         * && !isInEditMode()) { List<WeekViewEvent> events =
-         * mMonthChangeListener .onMonthChange( (previousMonth == 12) ?
-         * day.get(Calendar.YEAR) - 1 : day.get(Calendar.YEAR), previousMonth);
-         * sortEvents(events); for (WeekViewEvent event : events) {
-         * mEventRects.add(new EventRect(event, null)); } } mFetchedMonths[0] =
-         * previousMonth; }
-         */
-
-        // Get events of this month.
-        if (mFetchedMonths[1] < 1
-                || mFetchedMonths[1] != day.get(Calendar.MONTH) + 1
-                || mRefreshEvents) {
-            if (!containsValue(lastFetchedMonth, day.get(Calendar.MONTH) + 1)
-                    && !isInEditMode()) {
-                List<WeekViewEvent> events = mMonthChangeListener
-                        .onMonthChange(day.get(Calendar.YEAR),
-                                day.get(Calendar.MONTH) + 1);
-                sortEvents(events);
-                for (WeekViewEvent event : events) {
-                    mEventRects.add(new EventRect(event, null));
-                }
-            }
-            mFetchedMonths[1] = day.get(Calendar.MONTH) + 1;
+        List<WeekViewEvent> events = mMonthChangeListener.onMonthChange(
+                day.get(Calendar.YEAR), day.get(Calendar.MONTH) + 1);
+        removeDuplicate(events);
+        sortEvents(events);
+        for (WeekViewEvent event : events) {
+            mEventRects.add(new EventRect(event, null));
         }
-
-        // Get events of next month.
-        /*
-         * if (mFetchedMonths[2] < 1 || mFetchedMonths[2] != nextMonth ||
-         * mRefreshEvents) { if (!containsValue(lastFetchedMonth, nextMonth) &&
-         * !isInEditMode()) { List<WeekViewEvent> events = mMonthChangeListener
-         * .onMonthChange( nextMonth == 1 ? day.get(Calendar.YEAR) + 1 :
-         * day.get(Calendar.YEAR), nextMonth); sortEvents(events); for
-         * (WeekViewEvent event : events) { mEventRects.add(new EventRect(event,
-         * null)); } } mFetchedMonths[2] = nextMonth; }
-         */
+        mFetchedMonths[1] = day.get(Calendar.MONTH) + 1;
 
         // Prepare to calculate positions of each events.
         ArrayList<EventRect> tempEvents = new ArrayList<EventRect>(mEventRects);
@@ -853,6 +813,35 @@ public class WeekView extends View {
             expandEventsToMaxWidth(collisionGroup);
         }
 
+    }
+
+    // ///////////////////////////////////////////////////////////////
+    //
+    // Helper methods.
+    //
+    // ///////////////////////////////////////////////////////////////
+
+    private void removeDuplicate(List<WeekViewEvent> list) {
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 1; j < list.size(); j++) {
+                if (i != j) {
+                    if (sameEvent(list.get(i), list.get(j))) {
+                        list.remove(j);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean sameEvent(WeekViewEvent w1, WeekViewEvent w2) {
+        if (w1.getStartTime().compareTo(w2.getStartTime()) == 0
+                && w1.getEndTime().compareTo(w2.getEndTime()) == 0
+                && w1.getmType() == w2.getmType()
+                && w1.getName().equals(w2.getName())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -952,40 +941,6 @@ public class WeekView extends View {
      * @param currentDay
      *            The current day.
      */
-    private void deleteFarMonths(Calendar currentDay) {
-
-        if (mEventRects == null) {
-            return;
-        }
-
-        Calendar nextMonth = (Calendar) currentDay.clone();
-        nextMonth.add(Calendar.MONTH, 1);
-        nextMonth.set(Calendar.DAY_OF_MONTH,
-                nextMonth.getActualMaximum(Calendar.DAY_OF_MONTH));
-        nextMonth.set(Calendar.HOUR_OF_DAY, 12);
-        nextMonth.set(Calendar.MINUTE, 59);
-        nextMonth.set(Calendar.SECOND, 59);
-
-        Calendar prevMonth = (Calendar) currentDay.clone();
-        prevMonth.add(Calendar.MONTH, -1);
-        prevMonth.set(Calendar.DAY_OF_MONTH, 1);
-        prevMonth.set(Calendar.HOUR_OF_DAY, 0);
-        prevMonth.set(Calendar.MINUTE, 0);
-        prevMonth.set(Calendar.SECOND, 0);
-
-        List<EventRect> newEvents = new ArrayList<EventRect>();
-        for (EventRect eventRect : mEventRects) {
-            boolean isFarMonth = eventRect.event.getStartTime()
-                    .getTimeInMillis() > nextMonth.getTimeInMillis()
-                    || eventRect.event.getEndTime().getTimeInMillis() < prevMonth
-                            .getTimeInMillis();
-            if (!isFarMonth) {
-                newEvents.add(eventRect);
-            }
-        }
-        mEventRects.clear();
-        mEventRects.addAll(newEvents);
-    }
 
     // ///////////////////////////////////////////////////////////////
     //
@@ -1415,12 +1370,6 @@ public class WeekView extends View {
         void onEventLongPress(WeekViewEvent event, RectF eventRect);
     }
 
-    // ///////////////////////////////////////////////////////////////
-    //
-    // Helper methods.
-    //
-    // ///////////////////////////////////////////////////////////////
-
     /**
      * Checks if an integer array contains a particular value.
      * 
@@ -1518,7 +1467,5 @@ public class WeekView extends View {
     public void setmStartDate(Calendar mStartDate) {
         this.mStartDate = mStartDate;
     }
-
-   
 
 }

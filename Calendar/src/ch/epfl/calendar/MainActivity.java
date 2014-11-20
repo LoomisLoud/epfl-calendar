@@ -233,6 +233,7 @@ public class MainActivity extends Activity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case R.id.action_courses_list:
                 switchToCoursesList();
                 return true;
@@ -253,6 +254,7 @@ public class MainActivity extends Activity implements
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+
         }
     }
 
@@ -278,7 +280,6 @@ public class MainActivity extends Activity implements
                 mMListEvents.add(new WeekViewEvent(mIdEvent,
                         getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
                         p.getType()));
-
             }
             mIdEvent++;
         }
@@ -339,9 +340,7 @@ public class MainActivity extends Activity implements
                     startHour, startMinute);
             Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
                     endMinute);
-            System.out.println(start.toString());
-            mMListEvents.removeAll(mMListEvents);
-
+            
             mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
                     PeriodType.DEFAULT));
 
@@ -367,7 +366,8 @@ public class MainActivity extends Activity implements
         switchToAuthenticationActivity();
     }
 
-    @Override
+    
+
     public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
             mListCourses = courses;
