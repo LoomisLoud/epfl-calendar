@@ -24,6 +24,7 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
+import ch.epfl.calendar.display.AddBlocksActivity;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.CoursesListActivity;

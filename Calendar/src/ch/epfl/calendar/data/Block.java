@@ -49,4 +49,13 @@ public class Block {
 	public boolean displayable() {
 		return !(mRemainingCredits == 0);
 	}
+	
+	@Override
+	public String toString() {
+		return this.mCourse.getName() + "\nRemaining credits: " + this.mRemainingCredits;
+	}
+	
+	public String creditsToString() {
+		return "Remaining credits: " + this.mRemainingCredits;
+	}
 }
