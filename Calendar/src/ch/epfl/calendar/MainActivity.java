@@ -280,18 +280,8 @@ public class MainActivity extends Activity implements
                 mMListEvents.add(new WeekViewEvent(mIdEvent,
                         getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
                         p.getType()));
-
             }
             mIdEvent++;
-        }
-        for (int i = 0; i < mMListEvents.size(); i++) {
-            for (int j = 1; j < mMListEvents.size(); j++) {
-                if (i != j) {
-                    if (sameEvent(mMListEvents.get(i), mMListEvents.get(j))) {
-                        mMListEvents.remove(j);
-                    }
-                }
-            }
         }
         return mMListEvents;
     }
@@ -376,16 +366,7 @@ public class MainActivity extends Activity implements
         switchToAuthenticationActivity();
     }
 
-    public boolean sameEvent(WeekViewEvent w1, WeekViewEvent w2) {
-        if (w1.getStartTime().compareTo(w2.getStartTime()) == 0
-                && w1.getEndTime().compareTo(w2.getEndTime()) == 0
-                && w1.getmType() == w2.getmType()
-                && w1.getName().equals(w2.getName())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    
 
     public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
