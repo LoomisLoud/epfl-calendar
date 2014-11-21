@@ -35,9 +35,9 @@ import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.GlobalPreferences;
 
 /**
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
@@ -282,7 +282,7 @@ public class MainActivity extends Activity implements
             for (Period p : c.getPeriods()) {
                 mMListEvents.add(new WeekViewEvent(mIdEvent,
                         getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
-                        p.getType(),c.getDescription()));
+                        p.getType(), c.getDescription()));
             }
             mIdEvent++;
         }
@@ -358,7 +358,7 @@ public class MainActivity extends Activity implements
         if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
             String name = data.getExtras().get("nameInfo").toString();
             String description = data.getExtras().getString("descriptionEvent").toString();
-            
+
             int startYear = data.getExtras().getInt("startYear");
             int startMonth = data.getExtras().getInt("startMonth");
             int startDay = data.getExtras().getInt("startDay");
@@ -401,7 +401,8 @@ public class MainActivity extends Activity implements
         switchToAuthenticationActivity();
     }
 
-    public void callbackDownload(boolean success, List<Course> courses) {
+    @Override
+	public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
             mListCourses = courses;
             mWeekView.notifyDatasetChanged();
