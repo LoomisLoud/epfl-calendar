@@ -104,8 +104,29 @@ public class EventDataSource implements DAO {
 	 */
 	@Override
 	public void update(Object obj) {
-		// TODO Auto-generated method stub
+		Event event = (Event) obj;
+		assert event != null;
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
+		ContentValues values = new ContentValues();
+		values.put(EventTable.COLUMN_NAME_NAME, event.getName());
+		// TODO check the return value of Calendar toString method
+		values.put(EventTable.COLUMN_NAME_STARTDATE, event.getStartDate().toString());
+		values.put(EventTable.COLUMN_NAME_ENDDATE, event.getEndDate().toString());
+		values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
+		values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
+
+		long rowId = db.update(
+				EventTable.TABLE_NAME_EVENT,
+				values,
+				EventTable.COLUMN_NAME_NAME + " = ?",
+				new String[] {event.getName()});
+		if (rowId == -1) {
+			Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_UPDATE);
+			throw new SQLiteCalendarException(EventDataSource.ERROR_UPDATE);
+		}
+
+		Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_UPDATE);
 	}
 
 	/**
@@ -116,8 +137,20 @@ public class EventDataSource implements DAO {
 	 */
 	@Override
 	public void delete(Object obj) {
-		// TODO Auto-generated method stub
+		Event event = (Event) obj;
+		assert event != null;
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
+		long rowId = db.delete(
+				EventTable.TABLE_NAME_EVENT,
+				EventTable.COLUMN_NAME_NAME + " = '" + event.getName() + "'",
+				null);
+		if (rowId == -1) {
+			Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_DELETE);
+			throw new SQLiteCalendarException(EventDataSource.ERROR_DELETE);
+		}
+
+		Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_DELETE);
 	}
 
 	/**
@@ -125,7 +158,8 @@ public class EventDataSource implements DAO {
 	 */
 	@Override
 	public void deleteAll() {
-		// TODO Auto-generated method stub
+		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+		db.delete(EventTable.TABLE_NAME_EVENT, null, null);
 
 	}
 
