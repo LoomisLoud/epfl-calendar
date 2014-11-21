@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import android.media.audiofx.Equalizer;
 import android.os.Parcel;
 import android.os.Parcelable;
 

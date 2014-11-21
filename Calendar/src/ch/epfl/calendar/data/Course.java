@@ -212,10 +212,8 @@ public class Course implements Parcelable {
         Course otherCourse = (Course) other;
         //test each member
         if (!this.getName().equals(otherCourse.getName())) {
-            System.out.println("Name aren't equals ");
             return false;
         }
-        System.out.println("Names equals");
         if (this.getPeriods().size() == otherCourse.getPeriods().size()) {
             for (int i = 0; i < this.getPeriods().size(); i++) {
                 if (!this.getPeriods().get(i).equals(otherCourse.getPeriods().get(i))) {
