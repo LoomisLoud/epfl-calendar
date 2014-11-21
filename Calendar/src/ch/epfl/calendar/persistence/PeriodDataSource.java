@@ -50,9 +50,6 @@ public class PeriodDataSource implements DAO {
 
 		if (cursor.moveToFirst()) {
 			while (!cursor.isAfterLast()) {
-				// TODO check what to do with the id (autoincrement ?)
-//				int id = cursor.getInt(
-//						cursor.getColumnIndex(PeriodTable.COLUMN_NAME_ID));
 				String type = cursor.getString(
 						cursor.getColumnIndex(PeriodTable.COLUMN_NAME_TYPE));
 				String startDate = cursor.getString(
@@ -124,15 +121,17 @@ public class PeriodDataSource implements DAO {
 //		values.put(PeriodTable.COLUMN_NAME_COURSE_ID, ???);
 
 		// TODO create id attribute and getter in Period class
-//		long rowId = db.update(
-//				PeriodTable.TABLE_NAME_PERIOD,
-//				values,
-//				PeriodTable.COLUMN_NAME_ID + " = ?",
-//				new String[] {String.valueOf(period.getId())});
-//		if (rowId == -1) {
-//			Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_UPDATE);
-//			throw new SQLiteCalendarException(PeriodDataSource.ERROR_UPDATE);
-//		}
+		long rowId = db.update(
+				PeriodTable.TABLE_NAME_PERIOD,
+				values,
+				PeriodTable.COLUMN_NAME_TYPE + " = ?",
+				// TODO change this column to select the period, this is done for
+				// compiling purpose
+				new String[] {String.valueOf(period.getType())});
+		if (rowId == -1) {
+			Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_UPDATE);
+			throw new SQLiteCalendarException(PeriodDataSource.ERROR_UPDATE);
+		}
 
 		Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_UPDATE);
 	}
@@ -150,14 +149,16 @@ public class PeriodDataSource implements DAO {
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		// TODO create id attribute and getter in Period class
-//		long rowId = db.delete(
-//				PeriodTable.TABLE_NAME_PERIOD,
-//				PeriodTable.COLUMN_NAME_ID + " = '" + period.getId() + "'",
-//				null);
-//		if (rowId == -1) {
-//			Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_DELETE);
-//			throw new SQLiteCalendarException(PeriodDataSource.ERROR_DELETE);
-//		}
+		long rowId = db.delete(
+				PeriodTable.TABLE_NAME_PERIOD,
+				// TODO change this column to select the period, this is done for
+				// compiling purpose
+				PeriodTable.COLUMN_NAME_TYPE + " = '" + period.getType() + "'",
+				null);
+		if (rowId == -1) {
+			Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_DELETE);
+			throw new SQLiteCalendarException(PeriodDataSource.ERROR_DELETE);
+		}
 
 		Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_DELETE);
 
