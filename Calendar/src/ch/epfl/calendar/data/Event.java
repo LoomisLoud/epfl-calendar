@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.data;
 
@@ -14,9 +14,9 @@ public class Event {
     private Calendar mStartDate;
     private Calendar mEndDate;
     private String mType; // Maybe Enum, we have to look
-    // Next is optional (like there is nothing in 
+    // Next is optional (like there is nothing in
     private String mLinkedCourse; // See if you want a string with the name of the course or the course itself.
-    
+
     /**
      * @return the mName
      */
@@ -24,7 +24,7 @@ public class Event {
         return mName;
     }
     /**
-     * @param mName the mName to set
+     * @param name the mName to set
      */
     public void setName(String name) {
         this.mName = name;
@@ -60,7 +60,7 @@ public class Event {
         return mType;
     }
     /**
-     * @param mType the mType to set
+     * @param type the mType to set
      */
     public void setmType(String type) {
         this.mType = type;
@@ -72,7 +72,7 @@ public class Event {
         return mLinkedCourse;
     }
     /**
-     * @param mLinkedCourse the mLinkedCourse to set
+     * @param linkedCourse the mLinkedCourse to set
      */
     public void setLinkedCourse(String linkedCourse) {
         this.mLinkedCourse = linkedCourse;
