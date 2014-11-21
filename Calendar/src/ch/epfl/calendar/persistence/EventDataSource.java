@@ -61,7 +61,7 @@ public class EventDataSource implements DAO {
 			String course = cursor.getString(
 					cursor.getColumnIndex(EventTable.COLUMN_NAME_COURSE));
 
-//			events.add(new Event(name, startDate, endDate, type, course));
+			events.add(new Event(name, startDate, endDate, type, course));
 		}
 
 		return events;
