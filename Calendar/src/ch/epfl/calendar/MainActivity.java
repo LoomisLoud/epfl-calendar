@@ -32,7 +32,7 @@ import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
-import ch.epfl.calendar.utils.GlobalPreferences;
+import ch.epfl.calendar.utils.AuthenticationUtils;
 
 /**
  *
@@ -69,6 +69,8 @@ public class MainActivity extends Activity implements
     private ProgressDialog mDialog;
 
     private Activity mThisActivity;
+    
+    private AuthenticationUtils mAuthUtils;
 
     public static final String TAG = "MainActivity::";
     public static final int AUTH_ACTIVITY_CODE = 1;
@@ -79,6 +81,7 @@ public class MainActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mThisActivity = this;
+        mAuthUtils = new AuthenticationUtils();
 
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
@@ -103,7 +106,7 @@ public class MainActivity extends Activity implements
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
         } else {
-            if (!GlobalPreferences.getInstance().isAuthenticated(mThisActivity)) {
+            if (!mAuthUtils.isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
             } else {
                 mListCourses = new ArrayList<Course>();

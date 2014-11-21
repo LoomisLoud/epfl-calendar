@@ -28,6 +28,9 @@ public class HttpUtils {
     
     private static final int RESPONSE_OK = 200;
     
+    private static final String EXCEPTION_LOCATION_MALFORMED = 
+            "The location field is not well formed in the headers";
+    
     public static boolean isNetworkWorking(Context context) {
         ConnectivityManager connMgr = (ConnectivityManager) 
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -36,6 +39,9 @@ public class HttpUtils {
     }
 
     public Cookie getCookie(AbstractHttpClient client, String field) {
+        if (client == null) {
+            return null;
+        }
         List<Cookie> lc = client.getCookieStore().getCookies();
         for (Cookie c : lc) {
             if (c.getName().equals(field)) {
@@ -52,6 +58,9 @@ public class HttpUtils {
         
         String tokenHeader = location.getValue();
         int i = tokenHeader.indexOf("=");
+        if (i == -1) {
+            throw new ClientProtocolException(EXCEPTION_LOCATION_MALFORMED);
+        }
         return tokenHeader.substring(i+1);
     }
     

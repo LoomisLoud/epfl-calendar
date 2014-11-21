@@ -39,7 +39,7 @@ public class Event {
      * @param mStartDate the mStartDate to set
      */
     public void setStartDate(Calendar startDate) {
-        this.mStartDate = (Calendar) mStartDate.clone();
+        this.mStartDate = (Calendar) startDate.clone();
     }
     /**
      * @return the mEndDate
@@ -51,7 +51,7 @@ public class Event {
      * @param mEndDate the mEndDate to set
      */
     public void setEndDate(Calendar endDate) {
-        this.mEndDate = (Calendar) mEndDate.clone();
+        this.mEndDate = (Calendar) endDate.clone();
     }
     /**
      * @return the mType
