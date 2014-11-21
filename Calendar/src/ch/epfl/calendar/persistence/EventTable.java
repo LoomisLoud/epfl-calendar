@@ -18,6 +18,9 @@ public class EventTable {
 	public static final String COLUMN_NAME_TYPE			= "type";
 	public static final String COLUMN_NAME_COURSE		= "course";
 
+	/**
+	 * See {@link SQLiteDatabase#onCreate(SQLiteDatabase}
+	 */
 	public static void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE" + EventTable.TABLE_NAME_EVENT + "("
 				+ EventTable.COLUMN_NAME_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -26,5 +29,13 @@ public class EventTable {
 				+ EventTable.COLUMN_NAME_ENDDATE + "TEXT, "
 				+ EventTable.COLUMN_NAME_TYPE + "TEXT, "
 				+ EventTable.COLUMN_NAME_COURSE + "TEXT INTEGER FOREIGN KEY)");
+	}
+
+	/**
+	 * See {@link SQLiteDatabase#onUpgrade(SQLiteDatabase}
+	 */
+	public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		db.execSQL("DROP TABLE IF EXISTS " + EventTable.TABLE_NAME_EVENT);
+		PeriodTable.onCreate(db);
 	}
 }
