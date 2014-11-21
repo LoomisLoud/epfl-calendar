@@ -6,6 +6,8 @@ package ch.epfl.calendar.data.tests;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import android.os.Parcel;
+
 import junit.framework.TestCase;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
@@ -17,7 +19,14 @@ import ch.epfl.calendar.data.PeriodType;
 public class PeriodTest extends TestCase {
 
 	private Period mPeriod;
+	private Period mFullPeriod;
 
+	@Override
+	protected void setUp() throws Exception {
+	    ArrayList<String> rooms = new ArrayList<String>();
+	    rooms.add("CO2");
+	    mFullPeriod = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
+	}
 
 	public void testInvertedDate() {
 		mPeriod = new Period("16.01.2014", "17:15", "16:15", null, null);
@@ -118,4 +127,41 @@ public class PeriodTest extends TestCase {
 		mPeriod.setEndDate(p.getEndDate());
 		assertEquals(mPeriod.getEndDate(), p.getEndDate());
 	}
+
+	public void testEqualsSameObject() {
+        assertEquals(mFullPeriod, mFullPeriod);
+    }
+
+    public void testEqualsDifferentReference() {
+        ArrayList<String> rooms = new ArrayList<String>();
+        rooms.add("CO2");
+        Period period2 = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
+        assertEquals(mFullPeriod, period2);
+    }
+
+    public void testHashSameObject() {
+        assertEquals(mFullPeriod.hashCode(), mFullPeriod.hashCode());
+    }
+
+    public void testHashDifferentReference() {
+        ArrayList<String> rooms = new ArrayList<String>();
+        rooms.add("CO2");
+        Period period2 = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
+        assertEquals(mFullPeriod.hashCode(), period2.hashCode());
+    }
+
+    public void testParcelable() {
+        // Obtain a Parcel object and write the parcelable object to it:
+        Parcel parcel = Parcel.obtain();
+        mFullPeriod.writeToParcel(parcel, 0);
+
+        // After you're done with writing, you need to reset the parcel for reading:
+        parcel.setDataPosition(0);
+
+        // Reconstruct object from parcel and asserts:
+        Period createdFromParcel = Period.CREATOR.createFromParcel(parcel);
+
+        parcel.recycle();
+        assertEquals(mFullPeriod, createdFromParcel);
+    }
 }

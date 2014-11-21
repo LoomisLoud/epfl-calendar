@@ -203,24 +203,88 @@ public class Course implements Parcelable {
         return new Course(code, name, description, professorName,
                 numberOfCredits);
     }
+    /**
+    * Return if classes are equals. Either object can't be null to return true.
+    * if they are the same object (==), return true.
+    * if they don't have the same reference, the method test each member of the class and check if they are all equals.
+    */
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof Course)) {
+            return false;
+        }
+        Course otherCourse = (Course) other;
+        //test each member
+        if (!this.getName().equals(otherCourse.getName())) {
+            return false;
+        }
+        if (this.getPeriods().size() == otherCourse.getPeriods().size()) {
+            for (int i = 0; i < this.getPeriods().size(); i++) {
+                if (!this.getPeriods().get(i).equals(otherCourse.getPeriods().get(i))) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        if (!this.getTeacher().equals(otherCourse.getTeacher())) {
+            return false;
+        }
+        if (this.getCredits() != otherCourse.getCredits()) {
+            return false;
+        }
+        if (!this.getCode().equals(otherCourse.getCode())) {
+            return false;
+        }
+        if (!this.getDescription().equals(otherCourse.getDescription())) {
+            return false;
+        }
+        //all member are equals
+        return true;
+    }
+    /**
+     * Respect the contract of equals methods
+     * @see java.lang.Object#equals(Object)
+     */
+    @Override
+    public int hashCode() {
+        int result = 0;
+        result += mName.hashCode() + mTeacher.hashCode() + mCredits + mCode.hashCode()
+                 + mDescription.hashCode();
+        for (Period p : mPeriods) {
+            result += p.hashCode();
+        }
+        return result;
+    }
+
     
     // Parcelable ----------------
+    // using setter and getter to check for property in case of memory error or any problem that could happen
+    // at execution between writing and reading and corrupt integrity.
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mName);
-        parcel.writeString(mTeacher);
-        parcel.writeInt(mCredits);
-        parcel.writeString(mCode);
-        parcel.writeString(mDescription);
+        parcel.writeString(getName());
+        parcel.writeList(getPeriods());
+        parcel.writeString(getTeacher());
+        parcel.writeInt(getCredits());
+        parcel.writeString(getCode());
+        parcel.writeString(getDescription());
     }
     
     private Course(Parcel in) {
-        mName = in.readString();
-        //FIXME change periods
-        mPeriods = null;
-        mTeacher = in.readString();
-        mCredits = in.readInt();
-        mCode = in.readString();
-        mDescription = in.readString();
+        setName(in.readString());
+        ArrayList<Period> periodList = new ArrayList<Period>();
+        in.readList(periodList, Period.class.getClassLoader());
+        setPeriods(periodList);
+        setTeacher(in.readString());
+        setCredits(in.readInt());
+        setCode(in.readString());
+        setDescription(in.readString());
     }
 
     @Override

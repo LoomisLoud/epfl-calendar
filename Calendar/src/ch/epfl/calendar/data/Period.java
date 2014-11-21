@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Locale;
 
 import ch.epfl.calendar.App;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 /**
  * A period is a date, a start time and an end time + the type (exercises,
@@ -17,8 +20,7 @@ import ch.epfl.calendar.App;
  * @author AblionGE
  *
  */
-
-public class Period {
+public class Period implements Parcelable {
 
     private PeriodType mType;
     private Calendar mStartDate;
@@ -213,4 +215,94 @@ public class Period {
     private boolean isSingleDigit(int number) {
         return number < DOUBLE_DIGIT;
     }
+    /**
+     * Return if classes are equals. Either object can't be null to return true.
+     * if they are the same object (==), return true.
+     * if they don't have the same reference, the method test each member of the class and check if they are all equals.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof Period)) {
+            return false;
+        }
+        Period otherPeriod = (Period) other;
+        //test each member
+        if (!this.getType().equals(otherPeriod.getType())) {
+            return false;
+        }
+        if (!this.mStartDate.equals(otherPeriod.getStartDate())) {
+            return false;
+        }
+        if (!this.mEndDate.equals(otherPeriod.getEndDate())) {
+            return false;
+        }
+        if (this.getRooms().size() == otherPeriod.getRooms().size()) {
+            for (int i = 0; i < this.getRooms().size(); i++) {
+                if (!this.getRooms().get(i).equals(otherPeriod.getRooms().get(i))) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Respect the contract of equals methods
+     * @see java.lang.Object#equals(Object)
+     */
+    @Override
+    public int hashCode() {
+        int result = 0;
+        result += mType.hashCode() + mStartDate.hashCode() + mEndDate.hashCode();
+        for (String str : getRooms()) {
+            result += str.hashCode();
+        }
+        return result;
+    }
+
+    // Parcelable ----------------
+    // using setter and getter to check for property in case of memory error or any problem that could happen
+    // at execution between writing and reading and corrupt integrity.
+    @Override
+	public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeSerializable(getType());
+        parcel.writeSerializable(getStartDate());
+        parcel.writeSerializable(getEndDate());
+        parcel.writeList(getRooms());
+    }
+
+    private Period(Parcel in) {
+        this.setType((PeriodType) in.readSerializable());
+        this.setStartDate((Calendar) in.readSerializable());
+        this.setEndDate((Calendar) in.readSerializable());
+        ArrayList<String> rooms = new ArrayList<String>();
+        in.readList(rooms, String.class.getClassLoader());
+        this.setRooms(rooms);
+    }
+
+    @Override
+    public int describeContents() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Period> CREATOR = new Parcelable.Creator<Period>() {
+        @Override
+		public Period createFromParcel(Parcel in) {
+            return new Period(in);
+        }
+
+        @Override
+		public Period[] newArray(int size) {
+            return new Period[size];
+        }
+    };
 }
