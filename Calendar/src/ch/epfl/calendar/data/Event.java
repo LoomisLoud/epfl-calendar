@@ -56,13 +56,13 @@ public class Event {
     /**
      * @return the mType
      */
-    public String getmType() {
+    public String getType() {
         return mType;
     }
     /**
      * @param type the mType to set
      */
-    public void setmType(String type) {
+    public void setType(String type) {
         this.mType = type;
     }
     /**

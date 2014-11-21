@@ -84,7 +84,7 @@ public class CourseDataSource implements DAO {
 	@Override
 	public void create(Object obj) throws SQLiteCalendarException {
 		Course course = (Course) obj;
-		assert course!= null;
+		assert course != null;
 		SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
 		ContentValues values = new ContentValues();
@@ -141,9 +141,8 @@ public class CourseDataSource implements DAO {
 		Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_UPDATE);
 	}
 
-
 	/**
-	 * Delete a course,
+	 * Delete a course.
 	 *
 	 * @param obj
 	 * @throws SQLiteCalendarException
