@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
@@ -32,12 +33,14 @@ public class AddBlocksActivity extends Activity implements
 	public static final int AUTH_ACTIVITY_CODE = 1;
 	private ListView mListView;
 	private List<Course> mCourses = new ArrayList<Course>();
+	private TextView mGreeter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_blocks);
 
+		mGreeter = (TextView) findViewById(R.id.greeter);
 		mListView = (ListView) findViewById(R.id.credits_blocks_list);
 
 		// Check whether we're recreating a previously destroyed instance
@@ -111,6 +114,10 @@ public class AddBlocksActivity extends Activity implements
 			}
 
 		});
+
+		if (simpleAdapter.isEmpty()) {
+			mGreeter.setText(getString(R.string.greeter_no_more_blocks));
+		}
 	}
 
 	private ArrayList<Block> constructBlockList(List<Course> courseList) {

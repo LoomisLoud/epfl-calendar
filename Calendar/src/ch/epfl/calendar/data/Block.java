@@ -50,6 +50,14 @@ public class Block {
 		return !(mRemainingCredits == 0);
 	}
 	
+	/**
+	 *	Placing a number of credits from this block
+	 *	@param credits the number of credits placed on the calendar
+	 */
+	public void placingCredits(int credits) {
+		setRemainingCredits(this.mRemainingCredits - credits);
+	}
+
 	@Override
 	public String toString() {
 		return this.mCourse.getName() + "\nRemaining credits: " + this.mRemainingCredits;
