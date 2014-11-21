@@ -1,33 +1,41 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context="${relativePackage}.${activityClass}" >
 
-        <TextView
-            android:id="@+id/name_event"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/name_event" />
-
         <EditText
             android:id="@+id/name_event_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/name_event" 
-            android:hint="@string/name_event_edit"/>
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="10sp"
+            android:background="@drawable/background_customised"
+            android:hint="@string/name_event_edit"
+            android:padding="10dp" />
+
+        <Spinner
+            android:id="@+id/spinner_courses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name_event_text"
+            android:layout_marginBottom="10sp"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="10sp"
+            android:background="@drawable/background_customised"
+            android:padding="10dp" />
 
         <TextView
             android:id="@+id/start_event_text_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/name_event_text"
+            android:layout_below="@id/spinner_courses"
             android:text="@string/start_event_text_date" />
 
         <DatePicker
@@ -77,13 +85,26 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/end_event_text_hour" />
 
+        <EditText
+            android:id="@+id/description_event_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/end_event_picker_hour"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="10sp"
+            android:background="@drawable/background_customised"
+            android:hint="@string/description_event_edit"
+            android:inputType="textMultiLine"
+            android:padding="10dp" />
+
         <Button
             android:id="@+id/valid_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/end_event_picker_hour"
+            android:layout_below="@id/description_event_text"
             android:onClick="finishActivity"
             android:text="@string/valid_event" />
     </RelativeLayout>

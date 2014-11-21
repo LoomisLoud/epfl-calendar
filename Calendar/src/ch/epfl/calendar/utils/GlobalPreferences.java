@@ -2,9 +2,6 @@ package ch.epfl.calendar.utils;
 
 import org.apache.http.cookie.Cookie;
 
-import android.content.Context;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
-
 /**
  * Serves as a place for everyone to have access to the preferences of the app
  * @author lweingart
@@ -25,11 +22,6 @@ public final class GlobalPreferences {
             mInstance = new GlobalPreferences();
         }
         return mInstance;
-    }
-
-    public static boolean isAuthenticated(Context context) {
-        String tokenID = TequilaAuthenticationAPI.getInstance().getSessionID(context);
-        return (tokenID != null) && !tokenID.isEmpty();
     }
 
     public Cookie getSessionIDCookie() {

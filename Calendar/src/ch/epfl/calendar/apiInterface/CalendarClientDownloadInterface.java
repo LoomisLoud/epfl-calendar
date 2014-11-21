@@ -14,5 +14,5 @@ public interface CalendarClientDownloadInterface {
     /**
      * 
      */
-    void callbackDownload(List<Course> courses);
+    void callbackDownload(boolean success, List<Course> courses);
 }
