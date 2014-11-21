@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
+import java.util.Locale;
 
 /**
  * A period is a date, a start time and an end time + the type (exercises,
@@ -18,7 +18,6 @@ import java.util.List;
  */
 
 public class Period {
-
 
     private PeriodType mType;
     private Calendar mStartDate;
@@ -32,7 +31,7 @@ public class Period {
     private static final int START_TIME_INDEX = 11;
     private static final int DAY_MIN = 1;
     private static final int DAY_MAX = 31;
-    //In a gregorian java calendar, a month starts at 0 and ends at 11
+    // In a gregorian java calendar, a month starts at 0 and ends at 11
     private static final int MONTH_MIN = 0;
     private static final int MONTH_MAX = 11;
     private static final int YEAR_MIN = 1970;
@@ -40,6 +39,7 @@ public class Period {
     private static final int HOUR_MAX = 23;
     private static final int MINUTE_MIN = 0;
     private static final int MINUTE_MAX = 59;
+    private static final int DOUBLE_DIGIT = 10;
 
     private static final String TYPE_EXERCISES_FR = "Exercices";
     private static final String TYPE_EXERCISES_EN = "Exercises";
@@ -93,24 +93,24 @@ public class Period {
 
     private Calendar createCalendar(String date, String hourArg) {
         if (date != null && hourArg != null) {
-            //Format of date : dd.mm.yyyy
+            // Format of date : dd.mm.yyyy
             String[] dateParts = date.split("\\.");
             if (dateParts.length != DATE_PARTS_LENGTH) {
-                //Exception catched in ISAXMLParser
+                // Exception catched in ISAXMLParser
                 throw new IllegalArgumentException("Parsing date failed");
             }
-            //Format of hour : hh:mm
+            // Format of hour : hh:mm
             String[] timeParts = hourArg.split("\\:");
             if (timeParts.length != HOUR_PARTS_LENGTH) {
                 throw new IllegalArgumentException("Parsing date failed");
             }
             int year = Integer.parseInt(dateParts[2]);
-            int month = Integer.parseInt(dateParts[1])-1;
+            int month = Integer.parseInt(dateParts[1]) - 1;
             int day = Integer.parseInt(dateParts[0]);
             int hour = Integer.parseInt(timeParts[0]);
             int minute = Integer.parseInt(timeParts[1]);
 
-            //Day
+            // Day
             if (day < DAY_MIN || day > DAY_MAX) {
                 throw new IllegalArgumentException("Parsed date is impossible");
             }
@@ -126,13 +126,10 @@ public class Period {
             if (hour < HOUR_MIN || hour > HOUR_MAX) {
                 throw new IllegalArgumentException("Parsed date is impossible");
             }
-            return new GregorianCalendar(year,
-                                        month,
-                                        day,
-                                        hour,
-                                        minute);
+            return new GregorianCalendar(year, month, day, hour, minute);
         } else {
-            throw new NullPointerException("Date or Hour is null in createCalendar()");
+            throw new NullPointerException(
+                    "Date or Hour is null in createCalendar()");
         }
     }
 
@@ -158,12 +155,15 @@ public class Period {
         if (type == null) {
             throw new NullPointerException();
         }
-        PeriodType periodType= null;
-        if (type.equalsIgnoreCase(TYPE_EXERCISES_EN) || type.equalsIgnoreCase(TYPE_EXERCISES_FR)) {
+        PeriodType periodType = null;
+        if (type.equalsIgnoreCase(TYPE_EXERCISES_EN)
+                || type.equalsIgnoreCase(TYPE_EXERCISES_FR)) {
             periodType = PeriodType.EXERCISES;
-        } else if (type.equalsIgnoreCase(TYPE_PROJECT_EN) || type.equalsIgnoreCase(TYPE_PROJECT_FR)) {
+        } else if (type.equalsIgnoreCase(TYPE_PROJECT_EN)
+                || type.equalsIgnoreCase(TYPE_PROJECT_FR)) {
             periodType = PeriodType.PROJECT;
-        } else if (type.equalsIgnoreCase(TYPE_LECTURE_EN) || type.equalsIgnoreCase(TYPE_LECTURE_FR)) {
+        } else if (type.equalsIgnoreCase(TYPE_LECTURE_EN)
+                || type.equalsIgnoreCase(TYPE_LECTURE_FR)) {
             periodType = PeriodType.LECTURE;
         } else {
             periodType = PeriodType.DEFAULT;
@@ -179,7 +179,8 @@ public class Period {
     }
 
     /**
-     * @param mRoom the mRoom to set
+     * @param mRoom
+     *            the mRoom to set
      */
     public void setRooms(List<String> room) {
         if (room == null) {
@@ -218,13 +219,54 @@ public class Period {
      */
     @Override
     public String toString() {
-        return "From " + mStartDate.get(Calendar.DATE) + "." + mStartDate.get(Calendar.MONTH) + "."
-                + mStartDate.get(Calendar.YEAR) + " at "
-                + mStartDate.get(Calendar.HOUR_OF_DAY) + ":" + mStartDate.get(Calendar.MINUTE)
-                + " to " + mEndDate.get(Calendar.DATE) + "."
-                + mEndDate.get(Calendar.MONTH) + "."
-                + mEndDate.get(Calendar.YEAR) + " at "
-                + mEndDate.get(Calendar.HOUR_OF_DAY) + ":" + mEndDate.get(Calendar.MINUTE) + " of type "
-                + mType + " in rooms : " + mRooms + "\n";
+        String periodType;
+        switch (mType) {
+            case LECTURE:
+                periodType = "L";
+                break;
+            case PROJECT:
+                periodType = "P";
+                break;
+            case EXERCISES:
+                periodType = "E";
+                break;
+            case DEFAULT:
+                periodType = "D";
+                break;
+            default:
+                periodType = "D";
+                break;
+        }
+
+        String day = mStartDate.getDisplayName(Calendar.DAY_OF_WEEK,
+                Calendar.SHORT, Locale.ENGLISH);
+        int startHour = mStartDate.get(Calendar.HOUR_OF_DAY);
+        int startMinute = mStartDate.get(Calendar.MINUTE);
+        int endHour = mEndDate.get(Calendar.HOUR_OF_DAY);
+        int endMinute = mEndDate.get(Calendar.MINUTE);
+        String startHourToString = Integer.toString(startHour);
+        String startMinuteToString = Integer.toString(startMinute);
+        String endHourToString = Integer.toString(endHour);
+        String endMinuteToString = Integer.toString(endMinute);
+        if (isSingleDigit(startHour)) {
+            startHourToString = "0" + startHour;
+        }
+        if (isSingleDigit(startMinute)) {
+            startMinuteToString = "0" + startMinute;
+        }
+        if (isSingleDigit(endHour)) {
+            endHourToString = "0" + endHour;
+        }
+        if (isSingleDigit(endMinute)) {
+            endMinuteToString = "0" + endMinute;
+        }
+
+        return periodType + " : " + day + " " + startHourToString + ":"
+                + startMinuteToString + "-" + endHourToString + ":"
+                + endMinuteToString;
+    }
+
+    private boolean isSingleDigit(int number) {
+        return number < DOUBLE_DIGIT;
     }
 }

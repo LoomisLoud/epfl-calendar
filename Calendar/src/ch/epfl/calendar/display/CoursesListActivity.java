@@ -2,8 +2,10 @@ package ch.epfl.calendar.display;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,7 +19,9 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.ConstructListCourse;
 
 /**
@@ -27,6 +31,7 @@ import ch.epfl.calendar.utils.ConstructListCourse;
 public class CoursesListActivity extends Activity implements
         CalendarClientDownloadInterface, AppEngineDownloadInterface {
 
+    public static final int AUTH_ACTIVITY_CODE = 1;
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
 
@@ -95,13 +100,19 @@ public class CoursesListActivity extends Activity implements
     public void callbackAppEngine(List<Course> coursesList) {
 
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
-
+        
         for (Course cours : coursesList) {
             Map<String, String> courseMap = new HashMap<String, String>();
+            
+            Set<String> periods = new HashSet<String>();
+            for (Period period : cours.getPeriods()) {
+                periods.add(period.toString());
+            }
+            
             courseMap.put("Course name", cours.getName());
             courseMap.put("Course information",
                     "Professor : " + cours.getTeacher() + ", Credits : "
-                            + cours.getCredits());
+                            + cours.getCredits() + "\n" + periods);
 
             coursesName.add(courseMap);
         }
@@ -129,10 +140,34 @@ public class CoursesListActivity extends Activity implements
         });
     }
 
+    /**
+     * FIXME : NOT CLEAN TO DO THIS WAY
+     */
+    private void switchToAuthenticationActivity() {
+        Intent displayAuthenticationActivtyIntent = new Intent(this,
+                AuthenticationActivity.class);
+        this.startActivityForResult(
+                displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
+
+    }
+    
     @Override
-    public void callbackDownload(List<Course> courses) {
-        this.mCourses = courses;
-        retrieveCourseInfo(mCourses);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
+            this.mCourses = new ArrayList<Course>();
+            retrieveCourse();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    @Override
+    public void callbackDownload(boolean success, List<Course> courses) {
+        if (success) {
+            this.mCourses = courses;
+            retrieveCourseInfo(mCourses);
+        } else {
+            switchToAuthenticationActivity();
+        }
 
     }
 }

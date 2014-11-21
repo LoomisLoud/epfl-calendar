@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 import ch.epfl.calendar.R;
@@ -32,12 +31,12 @@ public class CalendarClient implements CalendarClientInterface {
 	public static final String TAG = "CalendarClient Class::";
 
     private Activity mParentActivity = null;
-    private CalendarClientDownloadInterface mObjectActivity = null;
-    private TequilaAuthenticationTask task = null;
+    private CalendarClientDownloadInterface mDownloadInterface = null;
+    private TequilaAuthenticationTask mTask = null;
 
-    public CalendarClient(Activity activity, CalendarClientDownloadInterface objectActivity) {
+    public CalendarClient(Activity activity, CalendarClientDownloadInterface downloadInterface) {
         this.mParentActivity = activity;
-        this.mObjectActivity = objectActivity;
+        this.mDownloadInterface = downloadInterface;
     }
 
     /* (non-Javadoc)
@@ -46,49 +45,57 @@ public class CalendarClient implements CalendarClientInterface {
      */
     @Override
     public void getISAInformations() {
-        getIsaTimetableOnline(mParentActivity);
-    }
-    
-
-    private void getIsaTimetableOnline(Context context) {
-        task = new TequilaAuthenticationTask(mParentActivity,
-                          new TequilaAuthenticationHandler(),
-                          null,
-                          null);
-        task.execute(null, null);
+        mTask = new TequilaAuthenticationTask(mParentActivity,
+                new TequilaAuthenticationHandler(),
+                null,
+                null);
+        mTask.execute(null, null);
     }
 
-
-    private void callback() throws TequilaAuthenticationException, CalendarClientException {
+    private void callback(boolean success) throws TequilaAuthenticationException, CalendarClientException {
         List<Course> coursesList = new ArrayList<Course>();
-        try {
-            byte[] timeTableBytes = task.getResult().getBytes("UTF-8");
-            coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
-            throw new CalendarClientException(e);
-        } catch (ParsingException e) {
-            Log.e(TAG + "ParsingException", e.getMessage());
-            //We don't want that the user sees this exception
-        } catch (NullPointerException e) {
-            Log.e(TAG + "NullPointerException", e.getMessage());
-            //We don't want that the user sees this exception
+        if (success) {
+            try {
+                byte[] timeTableBytes = mTask.getResult().getBytes("UTF-8");
+                coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
+            } catch (UnsupportedEncodingException e) {
+                Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
+                throw new CalendarClientException(e);
+            } catch (ParsingException e) {
+                Log.e(TAG + "ParsingException", e.getMessage());
+                //We don't want that the user sees this exception
+            } catch (NullPointerException e) {
+                Log.e(TAG + "NullPointerException", e.getMessage());
+                //We don't want that the user sees this exception
+            }
         }
-        mObjectActivity.callbackDownload(coursesList);
+        mDownloadInterface.callbackDownload(success, coursesList);
     }
     
     /**
-     * A Handler that manage the onError and onSuccess function for Tequila Authentication
+     * A Handler that manages the onError and onSuccess function for Tequila Authentication
      * @author AblionGE
      *
      */
     private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
         @Override
         public void onError(String msg) {
+            boolean exceptionOccured = false;
+            String errMessage = "";
             if (msg.equals(mParentActivity.getString(R.string.error_disconnected))) {
                 TequilaAuthenticationAPI.getInstance().clearStoredData(mParentActivity);
             }
             Toast.makeText(mParentActivity, msg, Toast.LENGTH_LONG).show();
+            try {
+                callback(false);
+            } catch (TequilaAuthenticationException e) {
+                errMessage = e.getMessage();
+            } catch (CalendarClientException e) {
+                errMessage = e.getMessage();
+            }
+            if (!exceptionOccured) {
+                Log.i("Unexpected error : ", errMessage);
+            }
         }
         @Override
         public void onSuccess(String sessionID) {
@@ -98,7 +105,7 @@ public class CalendarClient implements CalendarClientInterface {
             boolean exceptionOccured = false;
             String errMessage = "";
             try {
-                callback();
+                callback(true);
             } catch (TequilaAuthenticationException e) {
                 errMessage = e.getMessage();
             } catch (CalendarClientException e) {

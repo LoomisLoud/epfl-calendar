@@ -1,4 +1,4 @@
-package ch.epfl.calendar.test;
+package ch.epfl.calendar.tests;
 
 import junit.framework.TestCase;
 

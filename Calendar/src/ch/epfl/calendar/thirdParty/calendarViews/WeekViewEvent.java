@@ -5,6 +5,9 @@ package ch.epfl.calendar.thirdParty.calendarViews;
  */
 import java.util.Calendar;
 
+import ch.epfl.calendar.data.PeriodType;
+
+import android.graphics.Color;
 
 /**
  * @author LoomisLoud
@@ -15,6 +18,8 @@ public class WeekViewEvent {
     private Calendar mStartTime;
     private Calendar mEndTime;
     private String mName;
+    private String mDescription;
+    private PeriodType mType;
     private int mColor;
 
     public WeekViewEvent() {
@@ -80,11 +85,27 @@ public class WeekViewEvent {
      *            The time when the event ends.
      */
     public WeekViewEvent(long id, String name, Calendar startTime,
-            Calendar endTime) {
+            Calendar endTime, PeriodType type, String description) {
         this.mId = id;
         this.mName = name;
         this.mStartTime = startTime;
         this.mEndTime = endTime;
+        this.mType = type;
+        this.mDescription=description;
+        setColorWithType(type);
+
+    }
+
+    private void setColorWithType(PeriodType type) {
+        if (type == PeriodType.LECTURE) {
+            mColor = Color.BLUE;
+        } else if (type == PeriodType.EXERCISES) {
+            mColor = Color.GREEN;
+        } else if (type == PeriodType.PROJECT){
+            mColor = Color.RED;
+        } else {
+            mColor = Color.MAGENTA;
+        }
     }
 
     public Calendar getStartTime() {
@@ -125,5 +146,21 @@ public class WeekViewEvent {
 
     public void setId(long id) {
         this.mId = id;
+    }
+    
+    public PeriodType getmType() {
+        return mType;
+    }
+
+    public void setmType(PeriodType mType) {
+        this.mType = mType;
+    }
+    
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
     }
 }

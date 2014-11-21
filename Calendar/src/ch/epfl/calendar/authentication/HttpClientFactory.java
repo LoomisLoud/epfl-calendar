@@ -25,15 +25,12 @@ import android.util.Log;
  * @author lweingart
  *
  */
-public final class HttpClientFactory {
+public class HttpClientFactory {
 
     private static AbstractHttpClient httpClient;
     private static final int HTTP_PORT = 80;
     private static final int HTTPS_PORT = 443;
-
-    private HttpClientFactory() {
-        // do nothing but needs to be private
-    }
+    private static final String DEBUG = "Debug";
 
     public static synchronized AbstractHttpClient getInstance() {
         if (httpClient == null) {
@@ -46,7 +43,11 @@ public final class HttpClientFactory {
     }
 
     public static synchronized void setInstance(AbstractHttpClient instance) {
-        httpClient = instance;
+        if (instance == null) {
+            Log.d(DEBUG, "Argument of setInstance is null");
+        } else {
+            httpClient = instance;
+        }
     }
 
     private static final RedirectHandler REDIRECT_NO_FOLLOW = new RedirectHandler() {
