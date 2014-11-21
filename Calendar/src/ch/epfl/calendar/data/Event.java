@@ -5,17 +5,65 @@ package ch.epfl.calendar.data;
 
 import java.util.Calendar;
 
+import ch.epfl.calendar.App;
+
 /**
  * @author gilbrechbuhler
  *
  */
 public class Event {
+
     private String mName;
     private Calendar mStartDate;
     private Calendar mEndDate;
-    private String mType; // Maybe Enum, we have to look
-    // Next is optional (like there is nothing in
-    private String mLinkedCourse; // See if you want a string with the name of the course or the course itself.
+    private String mType;
+    private String mLinkedCourse;
+
+    /**
+     * Construct the event object.
+     * date format must be of format dd.mm.yyyy
+     * startTime and endTime must be of format hh:mm
+     * @param date
+     * @param name
+     * @param startTime
+     * @param endTime
+     * @param type
+     * @param linkedCourse
+     */
+    public Event(String date, String name, String startTime, String endTime, String type, String linkedCourse) {
+    	this.mName = name;
+    	this.mStartDate = App.createCalendar(date, startTime);
+    	this.mEndDate = App.createCalendar(date, endTime);
+        if (this.mStartDate != null && this.mEndDate != null) {
+            if (mStartDate.after(mEndDate)) {
+                Calendar temp = mStartDate;
+                mStartDate = mEndDate;
+                mEndDate = temp;
+            }
+        }
+        if (type != null) {
+            setType(type);
+        }
+        this.mLinkedCourse = linkedCourse;
+    }
+
+    /**
+     * Construct the event object.
+     * startTime and endTime must be of format hh:mm
+     * @param name
+     * @param startTime
+     * @param endTime
+     * @param type
+     * @param course
+     */
+    public Event(String name, String startTime, String endTime, String type, String linkedCourse) {
+    	this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX),
+    		 name,
+    		 startTime.substring(App.START_TIME_INDEX),
+    		 endTime.substring(App.START_TIME_INDEX),
+    		 type,
+    		 linkedCourse);
+    }
 
     /**
      * @return the mName
@@ -56,13 +104,13 @@ public class Event {
     /**
      * @return the mType
      */
-    public String getmType() {
+    public String getType() {
         return mType;
     }
     /**
      * @param type the mType to set
      */
-    public void setmType(String type) {
+    public void setType(String type) {
         this.mType = type;
     }
     /**

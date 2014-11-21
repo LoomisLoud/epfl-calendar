@@ -11,9 +11,9 @@ import android.os.Parcelable;
 
 /**
  * A course of EPFL with its informations : - Name - Date - Period classes
- * 
+ *
  * @author AblionGE
- * 
+ *
  */
 public class Course implements Parcelable {
     private String mName;
@@ -32,6 +32,16 @@ public class Course implements Parcelable {
         this.mCredits = 0;
     }
 
+    public Course(String name, List<Period> periods, String teacher, int credits,
+    		String code, String description) {
+    	this.mName = name;
+    	this.mPeriods = periods;
+    	this.mTeacher = teacher;
+    	this.mCredits = credits;
+    	this.mCode = code;
+    	this.mDescription = description;
+    }
+
     // FIXME : DELETE !!! ???
     public Course(String name) {
         this.setName(name);
@@ -43,7 +53,7 @@ public class Course implements Parcelable {
     /**
      * Builds a full course. Used in
      * {@link ch.epfl.calendar.data.Course#parseFromJSON(JSONObject)}
-     * 
+     *
      * @param code
      *            the code of the course
      * @param name
@@ -66,7 +76,7 @@ public class Course implements Parcelable {
 
     /**
      * Add a period to the current list of periods
-     * 
+     *
      * @param period
      */
     public void addPeriod(Period period) {
@@ -165,7 +175,7 @@ public class Course implements Parcelable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -175,7 +185,7 @@ public class Course implements Parcelable {
     }
 
     /**
-     * 
+     *
      * @param jsonObject
      *            the JSONObject to parse.
      * @return A Course filled with the informations from the JSON
@@ -183,7 +193,7 @@ public class Course implements Parcelable {
      */
     public static Course parseFromJSON(JSONObject jsonObject)
         throws JSONException {
-        
+
         String code = jsonObject.getString("code");
         String name = jsonObject.getString("name");
         String description = jsonObject.getString("description");
