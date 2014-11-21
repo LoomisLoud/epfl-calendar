@@ -45,7 +45,8 @@
     <string name="title_activity_add_blocks">AddBlocksActivity</string>
     <string name="greeter_add_blocks">It seems like you did not fill all your week up with your timetable according to your credits. To add an element to the timetable, click on the course:</string>
     <string name="action_add_blocks">Add blocks of credits</string>
-    
+    <string name="description_event_edit">Enter the description of the event</string>
+
     <!-- Toast messages -->
     <string name="authenticated">Authenticated</string>
     <string name="updated">Updated</string>

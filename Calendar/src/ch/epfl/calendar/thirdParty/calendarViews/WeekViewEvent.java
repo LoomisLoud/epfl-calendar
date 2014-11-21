@@ -18,9 +18,8 @@ public class WeekViewEvent {
     private Calendar mStartTime;
     private Calendar mEndTime;
     private String mName;
+    private String mDescription;
     private PeriodType mType;
-   
-
     private int mColor;
 
     public WeekViewEvent() {
@@ -86,11 +85,13 @@ public class WeekViewEvent {
      *            The time when the event ends.
      */
     public WeekViewEvent(long id, String name, Calendar startTime,
-            Calendar endTime, PeriodType type) {
+            Calendar endTime, PeriodType type, String description) {
         this.mId = id;
         this.mName = name;
         this.mStartTime = startTime;
         this.mEndTime = endTime;
+        this.mType = type;
+        this.mDescription=description;
         setColorWithType(type);
 
     }
@@ -153,5 +154,13 @@ public class WeekViewEvent {
 
     public void setmType(PeriodType mType) {
         this.mType = mType;
+    }
+    
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
     }
 }

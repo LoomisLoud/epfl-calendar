@@ -6,7 +6,10 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -17,8 +20,8 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
+import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
@@ -157,8 +160,8 @@ public class MainActivity extends Activity implements
                 mOnNavigationListener);
     }
 
-        // TODO : At the beginning of the application, we "logout" the user
-//        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+    // TODO : At the beginning of the application, we "logout" the user
+    // TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
             int sizeColumnGap, int sizeFront, int sizeFrontEvent) {
@@ -279,7 +282,7 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
+    public List<WeekViewEvent> onMonthChange() {
 
         // Populate the week view with some events.
 
@@ -287,7 +290,7 @@ public class MainActivity extends Activity implements
             for (Period p : c.getPeriods()) {
                 mMListEvents.add(new WeekViewEvent(mIdEvent,
                         getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
-                        p.getType()));
+                        p.getType(),c.getDescription()));
             }
             mIdEvent++;
         }
@@ -315,10 +318,40 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(MainActivity.this,
-                "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT)
-                .show();
+    public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
+        if (event.getmType() == PeriodType.EXERCISES
+                || event.getmType() == PeriodType.LECTURE
+                || event.getmType() == PeriodType.PROJECT) {
+            Toast.makeText(this, "You can not delete this event",
+                    Toast.LENGTH_LONG).show();
+
+        } else {
+
+            AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
+            deleteDialog.setTitle("Delete Event");
+            deleteDialog.setCancelable(false);
+            deleteDialog.setMessage("Do you really want to delete this event");
+            deleteDialog.setPositiveButton("Yes", new OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mMListEvents.remove(event);
+                    mWeekView.notifyDatasetChanged();
+                    dialog.cancel();
+
+                }
+            });
+            deleteDialog.setNegativeButton("No", new OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+
+                }
+            });
+            deleteDialog.create();
+            deleteDialog.show();
+        }
     }
 
     @Override
@@ -332,6 +365,8 @@ public class MainActivity extends Activity implements
 
         if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
             String name = data.getExtras().get("nameInfo").toString();
+            String description = data.getExtras().getString("descriptionEvent").toString();
+            
             int startYear = data.getExtras().getInt("startYear");
             int startMonth = data.getExtras().getInt("startMonth");
             int startDay = data.getExtras().getInt("startDay");
@@ -348,9 +383,9 @@ public class MainActivity extends Activity implements
                     startHour, startMinute);
             Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
                     endMinute);
-            
+
             mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
-                    PeriodType.DEFAULT));
+                    PeriodType.DEFAULT, description));
 
             mWeekView.notifyDatasetChanged();
         }
@@ -373,8 +408,6 @@ public class MainActivity extends Activity implements
         TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
         switchToAuthenticationActivity();
     }
-
-    
 
     public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
