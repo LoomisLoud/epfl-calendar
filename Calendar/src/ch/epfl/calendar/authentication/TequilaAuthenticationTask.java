@@ -22,6 +22,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.utils.AuthenticationUtils;
 import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.HttpUtils;
 import ch.epfl.calendar.utils.InputStreamUtils;
@@ -53,6 +54,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private String mUsername;
     private String mPassword;
     private String mCurrentToken;
+    private AuthenticationUtils mAuthUtils;
 
     private static final String PASSWORD = "password";
     private static final String REQUEST_KEY = "requestkey";
@@ -65,6 +67,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private static final String DOMAIN_TEQUILA = "tequila.epfl.ch";
     private static final String PATH_ISA = "/service";
     private static final int TIMEOUT_AUTHENTICATION = 10;
+    private static final String TEQUILA_ENCODING = "ISO-8859-1";
 
     /**
      * @author lweingart
@@ -88,6 +91,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         mTequilaApi = TequilaAuthenticationAPI.getInstance();
         mGlobalPrefs = GlobalPreferences.getInstance();
         mHttpUtils = new HttpUtils();
+        mAuthUtils = new AuthenticationUtils();
     }
 
     public String getResult() {
@@ -115,8 +119,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             boolean firstTry = true;
             String tokenList = "";
 
-            Log.d(TAG, "AUTHENTICATED : " + getGlobalPrefs().isAuthenticated(mContext));
-            if (getGlobalPrefs().isAuthenticated(mContext)) {
+            Log.d(TAG, "AUTHENTICATED : " + getAuthUtils().isAuthenticated(mContext));
+            if (getAuthUtils().isAuthenticated(mContext)) {
                 mSessionID = getTequilaApi().getSessionID(mContext);
                 mUsername = getTequilaApi().getUsername(mContext);
                 String tequilaKey = getTequilaApi().getTequilaKey(mContext);
@@ -180,7 +184,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 throw new ClientProtocolException("Authentication Timeout");
             }
             
-            result = InputStreamUtils.readInputStream(getRespGetTimetable().getEntity().getContent());
+            result = InputStreamUtils.readInputStream(getRespGetTimetable().getEntity().getContent(), TEQUILA_ENCODING);
 
         } catch (ClientProtocolException e) {
             mExceptionOccured = true;
@@ -205,8 +209,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         }
 
         if (!this.isCancelled()) {
-            getTequilaApi().setUsername(mContext, getGlobalPrefs().getTequilaUsernameCookie().getValue());
-            getTequilaApi().setTequilaKey(mContext, getGlobalPrefs().getTequilaKeyCookie().getValue());
+            getTequilaApi().setUsername(mContext, 
+                    getGlobalPrefs().getTequilaUsernameCookie().getValue());
+            getTequilaApi().setTequilaKey(mContext, 
+                    getGlobalPrefs().getTequilaKeyCookie().getValue());
             return result;
         } else {
             // onCancelled() will be called instead of onPostExecute()
@@ -348,7 +354,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     }
     
     private void storeCookiesFromTequila() {
-        getGlobalPrefs().setTequilaUsernameCookie(getHttpUtils().getCookie(getClient(), TEQUILA_USER));
+        getGlobalPrefs().setTequilaUsernameCookie(getHttpUtils().getCookie(getClient(), 
+                TEQUILA_USER));
         getGlobalPrefs().setTequilaKeyCookie(getHttpUtils().getCookie(getClient(), TEQUILA_KEY));
     }
     
@@ -366,6 +373,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
     public GlobalPreferences getGlobalPrefs() {
         return mGlobalPrefs;
+    }
+    
+    public AuthenticationUtils getAuthUtils() {
+        return mAuthUtils;
     }
 
     public HttpUtils getHttpUtils() {

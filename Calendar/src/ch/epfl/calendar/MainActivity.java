@@ -32,12 +32,12 @@ import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
-import ch.epfl.calendar.utils.GlobalPreferences;
+import ch.epfl.calendar.utils.AuthenticationUtils;
 
 /**
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
@@ -69,6 +69,8 @@ public class MainActivity extends Activity implements
     private ProgressDialog mDialog;
 
     private Activity mThisActivity;
+    
+    private AuthenticationUtils mAuthUtils;
 
     public static final String TAG = "MainActivity::";
     public static final int AUTH_ACTIVITY_CODE = 1;
@@ -79,6 +81,7 @@ public class MainActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mThisActivity = this;
+        mAuthUtils = new AuthenticationUtils();
 
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
@@ -103,7 +106,7 @@ public class MainActivity extends Activity implements
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
         } else {
-            if (!GlobalPreferences.getInstance().isAuthenticated(mThisActivity)) {
+            if (!mAuthUtils.isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
             } else {
                 mListCourses = new ArrayList<Course>();
@@ -282,7 +285,7 @@ public class MainActivity extends Activity implements
             for (Period p : c.getPeriods()) {
                 mMListEvents.add(new WeekViewEvent(mIdEvent,
                         getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
-                        p.getType(),c.getDescription()));
+                        p.getType(), c.getDescription()));
             }
             mIdEvent++;
         }
@@ -358,7 +361,7 @@ public class MainActivity extends Activity implements
         if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
             String name = data.getExtras().get("nameInfo").toString();
             String description = data.getExtras().getString("descriptionEvent").toString();
-            
+
             int startYear = data.getExtras().getInt("startYear");
             int startMonth = data.getExtras().getInt("startMonth");
             int startDay = data.getExtras().getInt("startDay");
@@ -401,7 +404,8 @@ public class MainActivity extends Activity implements
         switchToAuthenticationActivity();
     }
 
-    public void callbackDownload(boolean success, List<Course> courses) {
+    @Override
+	public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
             mListCourses = courses;
             mWeekView.notifyDatasetChanged();
