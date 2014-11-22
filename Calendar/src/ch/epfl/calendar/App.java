@@ -112,6 +112,11 @@ public class App extends Application {
 	 */
 	private static final int MINUTE_MAX = 59;
 
+	/**
+	 * 10 in a constant.
+	 */
+	private static final int NUMERIC_TEN = 10;
+
 
 	@Override
 	public void onCreate() {
@@ -206,5 +211,45 @@ public class App extends Application {
             throw new NullPointerException(
                     "Date or Hour is null in createCalendar()");
         }
+    }
+
+    /**
+     * Method to write a calendar in the form 'dd.mm.yyy hh:mm'
+     *
+     * @param date
+     * @return
+     */
+    public static String calendarToBasicFormatString(Calendar date) {
+    	String dd;
+    	String mm;
+    	String yyyy = Integer.toString(date.get(Calendar.YEAR));
+    	String hh;
+    	String min;
+
+    	int day = date.get(Calendar.DAY_OF_MONTH);
+    	dd = Integer.toString(day);
+    	if (day < NUMERIC_TEN) {
+    		dd = "0".concat(dd);
+		}
+
+    	int month = date.get(Calendar.MONTH);
+    	mm = Integer.toString(month);
+    	if (month < NUMERIC_TEN) {
+			mm = "0".concat(mm);
+		}
+
+    	int hour = date.get(Calendar.HOUR_OF_DAY);
+    	hh = Integer.toString(hour);
+    	if (hour < NUMERIC_TEN) {
+			hh = "0".concat(hh);
+		}
+
+    	int minutes = date.get(Calendar.MINUTE);
+    	min = Integer.toString(minutes);
+    	if (minutes < NUMERIC_TEN) {
+			min = "0".concat(min);
+		}
+
+    	return dd+"."+mm+"."+yyyy+" "+hh+":"+min;
     }
 }
