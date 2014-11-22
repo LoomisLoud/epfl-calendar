@@ -9,7 +9,7 @@ export REPO_DIR=/home/jenkins/workspace/2014-sweng-team-lame-app-inc
 export SCRIPTS_DIR=$REPO_DIR/CI
 
 # Run android tests
-ant_cmd="ant -Demma.filter=\"ch.epfl.calendar.thirdParty.*\" clean emma debug install test"
+ant_cmd="ant -Demma.filter=\"-ch.epfl.calendar.thirdParty.*\" clean emma debug install test"
 cd $REPO_DIR
 android update project --path $PROJECT_NAME --target android-18
 android update test-project --path $TEST_PROJECT --main ../$PROJECT_NAME
