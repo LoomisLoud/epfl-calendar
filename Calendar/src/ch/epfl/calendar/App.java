@@ -157,6 +157,15 @@ public class App extends Application {
 				.replace("]", ""));
 	}
 
+	/**
+	 * Create a calendar object from two strings.
+	 * date must be of format dd.mm.yyy
+	 * hourArg must be of format hh:mm
+	 *
+	 * @param date
+	 * @param hourArg
+	 * @return
+	 */
     public static Calendar createCalendar(String date, String hourArg) {
         if (date != null && hourArg != null) {
             // Format of date : dd.mm.yyyy
