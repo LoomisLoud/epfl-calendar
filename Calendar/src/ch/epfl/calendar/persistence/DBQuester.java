@@ -70,6 +70,6 @@ public interface DBQuester {
 	 * @param dbh
 	 * @param event
 	 */
-	void storEvent(DBHelper dbh, Event event);
+	void storeEvent(DBHelper dbh, Event event);
 
 }

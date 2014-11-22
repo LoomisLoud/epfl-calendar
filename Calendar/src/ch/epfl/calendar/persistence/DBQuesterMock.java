@@ -42,7 +42,7 @@ public class DBQuesterMock implements DBQuester {
     }
 
     @Override
-    public void storEvent(DBHelper dbh, Event event) {
+    public void storeEvent(DBHelper dbh, Event event) {
     }
 
 }

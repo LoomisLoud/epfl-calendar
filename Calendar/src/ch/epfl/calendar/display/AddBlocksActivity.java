@@ -34,12 +34,13 @@ public class AddBlocksActivity extends Activity implements
 	private ListView mListView;
 	private List<Course> mCourses = new ArrayList<Course>();
 	private TextView mGreeter;
-
+	private Intent intent;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_blocks);
-
+		
+		intent = new Intent(this, AddEventBlockActivity.class);
 		mGreeter = (TextView) findViewById(R.id.greeter);
 		mListView = (ListView) findViewById(R.id.credits_blocks_list);
 
@@ -109,8 +110,8 @@ public class AddBlocksActivity extends Activity implements
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-
-				// TODO When we click on an item, add it to events
+				intent.putExtra("courseName", finalBlockList.get(position).get("Block name"));
+				startActivity(intent);
 			}
 
 		});

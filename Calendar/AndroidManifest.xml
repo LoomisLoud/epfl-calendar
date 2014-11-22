@@ -46,8 +46,12 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog" >
         </activity>
         <activity
-            android:name="ch.epfl.calendar.display.AddBlocksActivity"
+            android:name=".display.AddBlocksActivity"
             android:label="@string/title_activity_add_blocks" >
+        </activity>
+        <activity
+            android:name="ch.epfl.calendar.display.AddEventBlockActivity"
+            android:label="@string/title_activity_add_event_block" >
         </activity>
     </application>
 

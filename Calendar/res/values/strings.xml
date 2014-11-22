@@ -47,11 +47,24 @@
     <string name="greeter_no_more_blocks">There are no more blocks to be placed into the calendar, your week is full, good work !</string>
     <string name="action_add_blocks">Add blocks of credits</string>
     <string name="description_event_edit">Enter the description of the event</string>
+    <string name="choose_day_block"> Which day of the week do you wish to work on</string>
+    <string-array name="week_days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+    <string name="from">From:</string>
+    <string name="to">To:</string>
 
     <!-- Toast messages -->
     <string name="authenticated">Authenticated</string>
     <string name="updated">Updated</string>
     <string name="title_activity_credits">Credits</string>
     <string name="ok">OK</string>
-    
+    <string name="title_activity_add_event_block">AddEventBlockActivity</string>
+
 </resources>
