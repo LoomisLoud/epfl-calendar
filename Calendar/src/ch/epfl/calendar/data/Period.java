@@ -87,7 +87,7 @@ public class Period implements Parcelable {
     }
 
     /**
-     * @param mType
+     * @param type
      *            the mType to set
      */
     public void setType(PeriodType type) {
@@ -97,6 +97,10 @@ public class Period implements Parcelable {
         this.mType = type;
     }
 
+    /**
+     * @param type
+     * 			  the mType to set
+     */
     public void setType(String type) {
         if (type == null) {
             throw new NullPointerException();
