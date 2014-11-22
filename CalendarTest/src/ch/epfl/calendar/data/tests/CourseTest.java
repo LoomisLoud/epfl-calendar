@@ -242,18 +242,18 @@ public class CourseTest extends TestCase {
     }
 
     // FIXME: Since refactoring of classe course, this test doesn't pass anymore
-//	public void testParcelable() {
-//	    // Obtain a Parcel object and write the parcelable object to it:
-//	    Parcel parcel = Parcel.obtain();
-//	    mCourse.writeToParcel(parcel, 0);
-//
-//	    // After you're done with writing, you need to reset the parcel for reading:
-//	    parcel.setDataPosition(0);
-//
-//	    // Reconstruct object from parcel and asserts:
-//	    Course createdFromParcel = Course.CREATOR.createFromParcel(parcel);
-//
-//	    parcel.recycle();
-//	    assertEquals(mCourse, createdFromParcel);
-//	}
+	public void testParcelable() {
+	    // Obtain a Parcel object and write the parcelable object to it:
+	    Parcel parcel = Parcel.obtain();
+	    mCourse.writeToParcel(parcel, 0);
+
+	    // After you're done with writing, you need to reset the parcel for reading:
+	    parcel.setDataPosition(0);
+
+	    // Reconstruct object from parcel and asserts:
+	    Course createdFromParcel = Course.CREATOR.createFromParcel(parcel);
+
+	    parcel.recycle();
+	    assertEquals(mCourse, createdFromParcel);
+	}
 }
