@@ -11,9 +11,9 @@ import android.os.Parcelable;
 
 /**
  * A course of EPFL with its informations : - Name - Date - Period classes
- * 
+ *
  * @author AblionGE
- * 
+ *
  */
 public class Course implements Parcelable {
     private String mName;
@@ -32,6 +32,16 @@ public class Course implements Parcelable {
         this.mCredits = 0;
     }
 
+    public Course(String name, List<Period> periods, String teacher, int credits,
+    		String code, String description) {
+    	this.mName = name;
+    	this.mPeriods = periods;
+    	this.mTeacher = teacher;
+    	this.mCredits = credits;
+    	this.mCode = code;
+    	this.mDescription = description;
+    }
+
     // FIXME : DELETE !!! ???
     public Course(String name) {
         this.setName(name);
@@ -43,7 +53,7 @@ public class Course implements Parcelable {
     /**
      * Builds a full course. Used in
      * {@link ch.epfl.calendar.data.Course#parseFromJSON(JSONObject)}
-     * 
+     *
      * @param code
      *            the code of the course
      * @param name
@@ -66,7 +76,7 @@ public class Course implements Parcelable {
 
     /**
      * Add a period to the current list of periods
-     * 
+     *
      * @param period
      */
     public void addPeriod(Period period) {
@@ -165,7 +175,7 @@ public class Course implements Parcelable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -175,7 +185,7 @@ public class Course implements Parcelable {
     }
 
     /**
-     * 
+     *
      * @param jsonObject
      *            the JSONObject to parse.
      * @return A Course filled with the informations from the JSON
@@ -183,7 +193,7 @@ public class Course implements Parcelable {
      */
     public static Course parseFromJSON(JSONObject jsonObject)
         throws JSONException {
-        
+
         String code = jsonObject.getString("code");
         String name = jsonObject.getString("name");
         String description = jsonObject.getString("description");
@@ -193,24 +203,88 @@ public class Course implements Parcelable {
         return new Course(code, name, description, professorName,
                 numberOfCredits);
     }
+    /**
+    * Return if classes are equals. Either object can't be null to return true.
+    * if they are the same object (==), return true.
+    * if they don't have the same reference, the method test each member of the class and check if they are all equals.
+    */
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof Course)) {
+            return false;
+        }
+        Course otherCourse = (Course) other;
+        //test each member
+        if (!this.getName().equals(otherCourse.getName())) {
+            return false;
+        }
+        if (this.getPeriods().size() == otherCourse.getPeriods().size()) {
+            for (int i = 0; i < this.getPeriods().size(); i++) {
+                if (!this.getPeriods().get(i).equals(otherCourse.getPeriods().get(i))) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        if (!this.getTeacher().equals(otherCourse.getTeacher())) {
+            return false;
+        }
+        if (this.getCredits() != otherCourse.getCredits()) {
+            return false;
+        }
+        if (!this.getCode().equals(otherCourse.getCode())) {
+            return false;
+        }
+        if (!this.getDescription().equals(otherCourse.getDescription())) {
+            return false;
+        }
+        //all member are equals
+        return true;
+    }
+    /**
+     * Respect the contract of equals methods
+     * @see java.lang.Object#equals(Object)
+     */
+    @Override
+    public int hashCode() {
+        int result = 0;
+        result += mName.hashCode() + mTeacher.hashCode() + mCredits + mCode.hashCode()
+                 + mDescription.hashCode();
+        for (Period p : mPeriods) {
+            result += p.hashCode();
+        }
+        return result;
+    }
+
     
     // Parcelable ----------------
+    // using setter and getter to check for property in case of memory error or any problem that could happen
+    // at execution between writing and reading and corrupt integrity.
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mName);
-        parcel.writeString(mTeacher);
-        parcel.writeInt(mCredits);
-        parcel.writeString(mCode);
-        parcel.writeString(mDescription);
+        parcel.writeString(getName());
+        parcel.writeList(getPeriods());
+        parcel.writeString(getTeacher());
+        parcel.writeInt(getCredits());
+        parcel.writeString(getCode());
+        parcel.writeString(getDescription());
     }
     
     private Course(Parcel in) {
-        mName = in.readString();
-        //FIXME change periods
-        mPeriods = null;
-        mTeacher = in.readString();
-        mCredits = in.readInt();
-        mCode = in.readString();
-        mDescription = in.readString();
+        setName(in.readString());
+        ArrayList<Period> periodList = new ArrayList<Period>();
+        in.readList(periodList, Period.class.getClassLoader());
+        setPeriods(periodList);
+        setTeacher(in.readString());
+        setCredits(in.readInt());
+        setCode(in.readString());
+        setDescription(in.readString());
     }
 
     @Override

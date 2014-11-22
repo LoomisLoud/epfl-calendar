@@ -32,6 +32,7 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
 import ch.epfl.calendar.authentication.TequilaResponseHandler;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 import ch.epfl.calendar.testing.utils.MockTestCase;
+import ch.epfl.calendar.utils.AuthenticationUtils;
 import ch.epfl.calendar.utils.GlobalPreferences;
 import ch.epfl.calendar.utils.HttpUtils;
 import ch.epfl.calendar.utils.NetworkException;
@@ -51,6 +52,7 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
     private TequilaAuthenticationTask task = null;
     private TequilaAuthenticationListener listener = null;
     private GlobalPreferences globalPreferences = null;
+    private AuthenticationUtils authUtils = null;
     private TequilaAuthenticationAPI tequilaApi = null;
     private TequilaAuthenticationTask instance = null;
     private Context context = null;
@@ -66,7 +68,8 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
         //Network works
         Mockito.doReturn(true).when(instance).isNetworkWorking(context);
         //Authenticated = true
-        Mockito.doReturn(true).when(globalPreferences).isAuthenticated(Mockito.any(Context.class));
+        Mockito.doReturn(true).when(authUtils).isAuthenticated(Mockito.any(Context.class));
+        Mockito.doReturn(authUtils).when(instance).getAuthUtils();
         Mockito.doReturn("test").when(tequilaApi).getSessionID(Mockito.any(Context.class));
         Mockito.doReturn("test").when(tequilaApi).getUsername(Mockito.any(Context.class));
         Mockito.doReturn("test").when(tequilaApi).getTequilaKey(Mockito.any(Context.class));
@@ -97,10 +100,10 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
         httpUtils = Mockito.mock(HttpUtils.class);
         httpEntity = Mockito.mock(HttpEntity.class);
         listener = Mockito.mock(TequilaAuthenticationListener.class);
-        globalPreferences = Mockito.mock(GlobalPreferences.class);
         tequilaApi = Mockito.mock(TequilaAuthenticationAPI.class);
         context = getInstrumentation().getTargetContext();
         instance = Mockito.spy(new TequilaAuthenticationTask(context, listener, "test", "test"));
+        authUtils = Mockito.mock(AuthenticationUtils.class);
 
         Mockito.doReturn(client).when(task).getClient();
         Mockito.doReturn(statusLine).when(response).getStatusLine();
@@ -385,7 +388,7 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
       //Authenticated = false
         content = new ByteArrayInputStream("blablabla".getBytes());
         Mockito.doReturn(content).when(httpEntity).getContent();
-        Mockito.doReturn(false).when(globalPreferences).isAuthenticated(Mockito.any(Context.class));
+        Mockito.doReturn(false).when(authUtils).isAuthenticated(Mockito.any(Context.class));
         String resultNotAuthenticated = (String) doInBackground.invoke(instance, new Object[] {new Void[]{}});
         assertEquals("blablabla", resultNotAuthenticated);
     }
@@ -455,10 +458,11 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
             Mockito.doReturn(httpUtils).when(instance).getHttpUtils();
             Mockito.doReturn("token").when(httpUtils)
                 .getTokenFromHeader(Mockito.any(Header.class));
-            Mockito.doReturn(globalPreferences).when(instance).getGlobalPrefs();
+            //Mockito.doReturn(globalPreferences).when(instance).getGlobalPrefs();
             Cookie cookie = Mockito.mock(Cookie.class);
-            Mockito.doReturn(cookie).when(globalPreferences).getSessionIDCookie();
             Mockito.doReturn("sessionID").when(cookie).getValue();
+            Mockito.doReturn(cookie).when(httpUtils).getCookie(Mockito.any(AbstractHttpClient.class), 
+                    Mockito.any(String.class));
 
             result = (String) doInBackground.invoke(instance, new Object[] {new Void[]{}});
 
