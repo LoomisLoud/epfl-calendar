@@ -24,20 +24,18 @@ public class Course implements Parcelable {
     private String mDescription;
     private List<Event> mEvents;
 
+    //Constructor for courses get for ISA
     public Course(String name, String date, String startTime, String endTime,
-            String type, List<String> rooms, List<Event> events) {
+            String type, List<String> rooms) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
         this.addPeriod(new Period(date, startTime, endTime, type, rooms));
         this.mTeacher = null;
         this.mCredits = 0;
-        if (events == null) {
-            this.mEvents = new ArrayList<Event>();
-        } else {
-            this.mEvents = events;
-        }
+        this.mEvents = new ArrayList<Event>();
     }
 
+    //Constructor for courses get from local DB
     public Course(String name, List<Period> periods, String teacher, int credits,
     		String code, String description, List<Event> events) {
     	this.mName = name;
@@ -53,7 +51,6 @@ public class Course implements Parcelable {
         }
     }
 
-    // FIXME : DELETE !!! ???
     public Course(String name) {
         this.setName(name);
         this.mPeriods = new ArrayList<Period>();

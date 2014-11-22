@@ -33,7 +33,7 @@ public class CourseTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 	    super.setUp();
-	    mCourse = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>(), null);
+	    mCourse = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
 	    mCourse.setTeacher("Pr Waffle Blue");
 	    mCourse.setCredits(FIVE_CREDITS);
 	    mCourse.setCode("CS-42");
@@ -46,7 +46,7 @@ public class CourseTest extends TestCase {
 
 
 	public void testAddPeriod() {
-		Course course = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>(), null);
+		Course course = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
 		Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
 		Period periodAnything = new Period("10.10.2010", "08:15", "09:15", "Anything", new ArrayList<String>());
 
@@ -69,7 +69,7 @@ public class CourseTest extends TestCase {
 
 	public void testConstructors() {
 		Course course = new Course("test", "16.06.2014", "16:15", "17:15",
-				"cours", new ArrayList<String>(), null);
+				"cours", new ArrayList<String>());
 		Course courseOnlyName = new Course("testName");
 		Course courseWithInfo = new Course("3030", "testName", "Description",
 				"Hello", FIVE_CREDITS);
@@ -92,7 +92,7 @@ public class CourseTest extends TestCase {
 
 	public void testSetters() {
 		Course course = new Course("test", "16.06.2014", "16:15", "17:15",
-				"cours", new ArrayList<String>(), null);
+				"cours", new ArrayList<String>());
 		Period period = new Period("16.06.2014", "16:15", "17:15", "Exercices",
 				new ArrayList<String>());
 		ArrayList<Period> list = new ArrayList<Period>();
@@ -212,7 +212,7 @@ public class CourseTest extends TestCase {
 	}
 
 	public void testEqualsDifferentReference() {
-	    Course course2 = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>(), null);
+	    Course course2 = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
         course2.setTeacher("Pr Waffle Blue");
         course2.setCredits(FIVE_CREDITS);
         course2.setCode("CS-42");
@@ -229,7 +229,7 @@ public class CourseTest extends TestCase {
     }
 
     public void testHashDifferentReference() {
-        Course course2 = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>(), null);
+        Course course2 = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
         course2.setTeacher("Pr Waffle Blue");
         course2.setCredits(FIVE_CREDITS);
         course2.setCode("CS-42");
