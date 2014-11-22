@@ -49,7 +49,7 @@ public class Event {
 
     /**
      * Construct the event object.
-     * startTime and endTime must be of format hh:mm
+     * startTime and endTime must be of format 'dd.mm.yyy hh:mm'
      * @param name
      * @param startTime
      * @param endTime
@@ -65,60 +65,88 @@ public class Event {
     		 linkedCourse);
     }
 
+    @Override
+    public String toString() {
+    	String name = this.mName;
+    	String startDate = App.calendarToBasicFormatString(this.mStartDate);
+    	String endDate = App.calendarToBasicFormatString(this.mEndDate);
+    	String type = this.mType;
+    	String linkedCourse = this.mLinkedCourse;
+
+    	return name
+    			.concat(" ")
+    			.concat(startDate)
+    			.concat(" ")
+    			.concat(endDate)
+    			.concat(" ")
+    			.concat(type)
+    			.concat(" ")
+    			.concat(linkedCourse);
+    }
+
     /**
      * @return the mName
      */
     public String getName() {
         return mName;
     }
+
     /**
      * @param name the mName to set
      */
     public void setName(String name) {
         this.mName = name;
     }
+
     /**
      * @return the mStartDate
      */
     public Calendar getStartDate() {
         return (Calendar) mStartDate.clone();
     }
+
     /**
      * @param mStartDate the mStartDate to set
      */
     public void setStartDate(Calendar startDate) {
         this.mStartDate = (Calendar) startDate.clone();
     }
+
     /**
      * @return the mEndDate
      */
     public Calendar getEndDate() {
         return (Calendar) mEndDate.clone();
     }
+
     /**
      * @param mEndDate the mEndDate to set
      */
     public void setEndDate(Calendar endDate) {
         this.mEndDate = (Calendar) endDate.clone();
     }
+
     /**
      * @return the mType
      */
     public String getType() {
         return mType;
     }
+
     /**
      * @param type the mType to set
      */
     public void setType(String type) {
         this.mType = type;
     }
+
     /**
      * @return the mLinkedCourse
      */
     public String getLinkedCourse() {
         return mLinkedCourse;
     }
+
     /**
      * @param linkedCourse the mLinkedCourse to set
      */
