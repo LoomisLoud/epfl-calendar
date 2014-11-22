@@ -4,6 +4,7 @@
 package ch.epfl.calendar.test;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import android.util.Log;
 
@@ -20,8 +21,14 @@ import junit.framework.TestCase;
  */
 public class AppTest extends TestCase {
 
-	public static final String CSV = "foo,bar,foobar";
-	public static final ArrayList<String> ARRAY = constructArray();
+	private static final String CSV = "foo,bar,foobar";
+	private static final ArrayList<String> ARRAY = constructArray();
+	private static final String CALENDAR_IN_STRING = "03.09.2007 08:36";
+	private static final int YEAR = 2007;
+	private static final int MONTH = 9;
+	private static final int DAY = 3;
+	private static final int HOUR = 8;
+	private static final int MINUTES = 36;
 
 
 	public void testParseFromCSVString() {
@@ -48,7 +55,7 @@ public class AppTest extends TestCase {
 		return result;
 	}
 
-	public void testCreateCalendar() {
+	public static void testCreateCalendar() {
 		try {
 			//Null Period
 			new Period(null, null, null, null, null);
@@ -152,5 +159,14 @@ public class AppTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			//success
 		}
+	}
+
+	public static void testCalendarToBasicFormatString() {
+		GregorianCalendar cal = new GregorianCalendar(YEAR, MONTH, DAY, HOUR, MINUTES);
+		String expectedResult = CALENDAR_IN_STRING;
+		String result = App.calendarToBasicFormatString(cal);
+		Log.i("String expectedResult = ", expectedResult);
+		Log.i("String result = ", result);
+		assertEquals(expectedResult, result);
 	}
 }
