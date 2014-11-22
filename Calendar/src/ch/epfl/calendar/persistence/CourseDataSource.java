@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.Logger;
 
@@ -67,8 +68,10 @@ public class CourseDataSource implements DAO {
 						cursor.getColumnIndex(CourseTable.COLUMN_NAME_CODE));
 				String description = cursor.getString(
 						cursor.getColumnIndex(CourseTable.COLUMN_NAME_DESCRIPTION));
+				// TODO find a way to select all corresponding events
+				ArrayList<Event> events = new ArrayList<Event>();
 
-				courses.add(new Course(name, periods, teacher, credits, code, description));
+				courses.add(new Course(name, periods, teacher, credits, code, description, events));
 			}
 		}
 

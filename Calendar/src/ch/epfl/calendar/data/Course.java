@@ -22,24 +22,27 @@ public class Course implements Parcelable {
     private int mCredits;
     private String mCode;
     private String mDescription;
+    private List<Event> mEvents;
 
     public Course(String name, String date, String startTime, String endTime,
-            String type, List<String> rooms) {
+            String type, List<String> rooms, List<Event> events) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
         this.addPeriod(new Period(date, startTime, endTime, type, rooms));
         this.mTeacher = null;
         this.mCredits = 0;
+        this.mEvents = events;
     }
 
     public Course(String name, List<Period> periods, String teacher, int credits,
-    		String code, String description) {
+    		String code, String description, List<Event> events) {
     	this.mName = name;
     	this.mPeriods = periods;
     	this.mTeacher = teacher;
     	this.mCredits = credits;
     	this.mCode = code;
     	this.mDescription = description;
+    	this.mEvents = events;
     }
 
     // FIXME : DELETE !!! ???
@@ -173,6 +176,21 @@ public class Course implements Parcelable {
         mDescription = description;
     }
 
+    /**
+     * @return the mEvents
+     */
+    public List<Event> getEvents() {
+    	return new ArrayList<Event>(mEvents);
+    }
+
+    /**
+     * @param mEvents
+     * 			 the mEvents to set
+     */
+    public void setEvents(List<Event> events) {
+    	this.mEvents = new ArrayList<Event>(events);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -180,8 +198,13 @@ public class Course implements Parcelable {
      */
     @Override
     public String toString() {
-        return mName + ", Periods : " + mPeriods + ", Teacher : " + mTeacher
-                + ", nb Credits : " + mCredits;
+    	if (mEvents == null) {
+    		return mName + ", Periods : " + mPeriods + ", Teacher : " + mTeacher
+    				+ ", nb Credits : " + mCredits;
+		} else {
+    		return mName + ", Periods : " + mPeriods + ", Teacher : " + mTeacher
+    				+ ", nb Credits : " + mCredits + ", Events : " + mEvents;
+		}
     }
 
     /**
@@ -263,19 +286,21 @@ public class Course implements Parcelable {
         return result;
     }
 
-    
+
     // Parcelable ----------------
     // using setter and getter to check for property in case of memory error or any problem that could happen
     // at execution between writing and reading and corrupt integrity.
-    public void writeToParcel(Parcel parcel, int i) {
+    @Override
+	public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getName());
         parcel.writeList(getPeriods());
         parcel.writeString(getTeacher());
         parcel.writeInt(getCredits());
         parcel.writeString(getCode());
         parcel.writeString(getDescription());
+        parcel.writeList(getEvents());
     }
-    
+
     private Course(Parcel in) {
         setName(in.readString());
         ArrayList<Period> periodList = new ArrayList<Period>();
@@ -285,6 +310,9 @@ public class Course implements Parcelable {
         setCredits(in.readInt());
         setCode(in.readString());
         setDescription(in.readString());
+        ArrayList<Event> eventList = new ArrayList<Event>();
+        in.readList(eventList, Event.class.getClassLoader());
+        setEvents(eventList);
     }
 
     @Override
@@ -292,13 +320,15 @@ public class Course implements Parcelable {
         // TODO Auto-generated method stub
         return 0;
     }
-    
+
     public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
-        public Course createFromParcel(Parcel in) {
+        @Override
+		public Course createFromParcel(Parcel in) {
             return new Course(in);
         }
 
-        public Course[] newArray(int size) {
+        @Override
+		public Course[] newArray(int size) {
             return new Course[size];
         }
     };
