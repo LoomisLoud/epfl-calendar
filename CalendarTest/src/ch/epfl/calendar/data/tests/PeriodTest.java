@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.os.Parcel;
+import android.util.Log;
 
 import junit.framework.TestCase;
 import ch.epfl.calendar.data.Period;
@@ -26,6 +27,16 @@ public class PeriodTest extends TestCase {
 	    ArrayList<String> rooms = new ArrayList<String>();
 	    rooms.add("CO2");
 	    mFullPeriod = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
+	}
+
+	public void testTwoConstructorsSameObject() {
+	    ArrayList<String> rooms = new ArrayList<String>();
+	    rooms.add("CO2");
+	    Period firstPeriod = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
+	    Period secondPeriod = new Period("cours", "16.10.2014 16:15", "16.10.2014 17:15", rooms);
+		Log.i("1st period = ", firstPeriod.toString());
+		Log.i("2nd period = ", secondPeriod.toString());
+		assertEquals(firstPeriod, secondPeriod);
 	}
 
 	public void testInvertedDate() {
