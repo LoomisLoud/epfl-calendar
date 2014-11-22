@@ -241,7 +241,6 @@ public class CourseTest extends TestCase {
         assertEquals(mCourse.hashCode(), course2.hashCode());
     }
 
-    // FIXME: Since refactoring of classe course, this test doesn't pass anymore
 	public void testParcelable() {
 	    // Obtain a Parcel object and write the parcelable object to it:
 	    Parcel parcel = Parcel.obtain();

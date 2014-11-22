@@ -31,7 +31,11 @@ public class Course implements Parcelable {
         this.addPeriod(new Period(date, startTime, endTime, type, rooms));
         this.mTeacher = null;
         this.mCredits = 0;
-        this.mEvents = events;
+        if (events == null) {
+            this.mEvents = new ArrayList<Event>();
+        } else {
+            this.mEvents = events;
+        }
     }
 
     public Course(String name, List<Period> periods, String teacher, int credits,
@@ -42,7 +46,11 @@ public class Course implements Parcelable {
     	this.mCredits = credits;
     	this.mCode = code;
     	this.mDescription = description;
-    	this.mEvents = events;
+    	if (events == null) {
+            this.mEvents = new ArrayList<Event>();
+        } else {
+            this.mEvents = events;
+        }
     }
 
     // FIXME : DELETE !!! ???
@@ -51,6 +59,7 @@ public class Course implements Parcelable {
         this.mPeriods = new ArrayList<Period>();
         this.setTeacher(null);
         this.setCredits(0);
+        this.mEvents = new ArrayList<Event>();
     }
 
     /**
