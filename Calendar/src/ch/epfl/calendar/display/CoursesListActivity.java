@@ -101,13 +101,14 @@ public class CoursesListActivity extends Activity implements
 
         for (Course cours : coursesList) {
             Map<String, String> courseMap = new HashMap<String, String>();
+            int creditImage = getCreditImage(cours);
 
             Set<String> periods = new HashSet<String>();
             for (Period period : cours.getPeriods()) {
                 periods.add(period.toString());
             }
 
-            courseMap.put("credit_image", Integer.toString(R.drawable.deux));
+            courseMap.put("credit_image", Integer.toString(creditImage));
             courseMap.put("course", cours.getName());
             courseMap.put("info", "Professor : " + cours.getTeacher()
                     + ", Credits : " + cours.getCredits() + "\n" + periods);
@@ -118,9 +119,9 @@ public class CoursesListActivity extends Activity implements
         final List<Map<String, String>> courseInfoList = coursesName;
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
-                R.layout.listview_images, new String[] {
-                        "credit_image", "course", "info" }, new int[] {
-                        R.id.credit_image, R.id.course, R.id.info});
+                R.layout.listview_images, new String[] { "credit_image",
+                        "course", "info" }, new int[] { R.id.credit_image,
+                        R.id.course, R.id.info });
 
         mListView.setAdapter(simpleAdapter);
 
@@ -130,8 +131,7 @@ public class CoursesListActivity extends Activity implements
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
 
-                openCourseDetails(courseInfoList.get(position).get(
-                        "Course name"));
+                openCourseDetails(courseInfoList.get(position).get("course"));
 
             }
 
@@ -167,5 +167,38 @@ public class CoursesListActivity extends Activity implements
             switchToAuthenticationActivity();
         }
 
+    }
+
+    private int getCreditImage(Course cours) {
+        switch (cours.getCredits()) {
+        case 1:
+            return R.drawable.un;
+        case 2:
+            return R.drawable.deux;
+        case 3:
+            return R.drawable.trois;
+        case 4:
+            return R.drawable.quatre;
+        case 5:
+            return R.drawable.cinq;
+        case 6:
+            return R.drawable.six;
+        case 7:
+            return R.drawable.sept;
+        case 8:
+            return R.drawable.huit;
+        case 9:
+            return R.drawable.neuf;
+        case 10:
+            return R.drawable.dix;
+        case 11:
+            return R.drawable.onze;
+        case 12:
+            return R.drawable.douze;
+
+        default:
+            return R.drawable.vingt;
+
+        }
     }
 }
