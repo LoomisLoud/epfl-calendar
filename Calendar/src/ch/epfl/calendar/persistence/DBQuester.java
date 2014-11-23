@@ -8,7 +8,6 @@ import java.util.List;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
@@ -34,7 +33,7 @@ public class DBQuester implements DatabaseInterface {
     private static final String ID = "id ";
     private static final String UNDERSCORE_ID = "_id";
 
-    /* (non-Javadoc)
+    /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
      */
     @Override
@@ -67,7 +66,7 @@ public class DBQuester implements DatabaseInterface {
         return courses;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllPeriodsFromCourse(
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
@@ -99,7 +98,7 @@ public class DBQuester implements DatabaseInterface {
         return periods;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllEventsFromCourse(
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
@@ -128,7 +127,7 @@ public class DBQuester implements DatabaseInterface {
         return events;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see ch.epfl.calendar.persistence.DBQuester#storeCourse(
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
@@ -138,7 +137,7 @@ public class DBQuester implements DatabaseInterface {
 
     }
 
-    /* (non-Javadoc)
+    /**
      * @see ch.epfl.calendar.persistence.DBQuester#storeCourses(
      * ch.epfl.calendar.persistence.DBHelper, java.util.List)
      */
@@ -148,7 +147,7 @@ public class DBQuester implements DatabaseInterface {
 
     }
 
-    /* (non-Javadoc)
+    /**
      * @see ch.epfl.calendar.persistence.DBQuester#storeEventsFromCourse(
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
@@ -158,7 +157,7 @@ public class DBQuester implements DatabaseInterface {
 
     }
 
-    /* (non-Javadoc)
+    /**
      * @see ch.epfl.calendar.persistence.DBQuester#storeEvent(
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Event)
      */
