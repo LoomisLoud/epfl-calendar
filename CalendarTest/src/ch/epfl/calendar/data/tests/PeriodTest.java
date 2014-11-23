@@ -6,10 +6,9 @@ package ch.epfl.calendar.data.tests;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import junit.framework.TestCase;
 import android.os.Parcel;
 import android.util.Log;
-
-import junit.framework.TestCase;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 
@@ -27,16 +26,16 @@ public class PeriodTest extends TestCase {
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
         mFullPeriod = new Period("16.10.2014", "16:15", "17:15", "cours",
-                rooms, "idPeriod");
+                rooms, "periodId");
     }
 
     public void testTwoConstructorsSameObject() {
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
         Period firstPeriod = new Period("16.10.2014", "16:15", "17:15",
-                "cours", rooms, "idPeriod");
+                "cours", rooms, "periodId");
         Period secondPeriod = new Period("cours", "16.10.2014 16:15",
-                "16.10.2014 17:15", rooms, "idPeriod");
+                "16.10.2014 17:15", rooms, "periodId");
         Log.i("1st period = ", firstPeriod.toString());
         Log.i("2nd period = ", secondPeriod.toString());
         assertEquals(firstPeriod, secondPeriod);
@@ -52,7 +51,7 @@ public class PeriodTest extends TestCase {
 
     public void testSetters() {
         mPeriod = new Period("16.01.2014", "16:15", "17:15", "cours", null,
-                "idPeriod");
+                null);
         ArrayList<String> testArray = null;
         Calendar testCal = null;
         try {
@@ -152,7 +151,7 @@ public class PeriodTest extends TestCase {
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
         Period period2 = new Period("16.10.2014", "16:15", "17:15", "cours",
-                rooms, "idPeriod");
+                rooms, "periodId");
         assertEquals(mFullPeriod, period2);
     }
 
@@ -164,7 +163,7 @@ public class PeriodTest extends TestCase {
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
         Period period2 = new Period("16.10.2014", "16:15", "17:15", "cours",
-                rooms, "idPeriod");
+                rooms, "periodId");
         assertEquals(mFullPeriod.hashCode(), period2.hashCode());
     }
 

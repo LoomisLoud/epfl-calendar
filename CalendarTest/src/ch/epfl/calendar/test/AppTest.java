@@ -6,12 +6,10 @@ package ch.epfl.calendar.test;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
+import junit.framework.TestCase;
 import android.util.Log;
-
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Period;
-
-import junit.framework.TestCase;
 
 /**
  * Test class for the App class.

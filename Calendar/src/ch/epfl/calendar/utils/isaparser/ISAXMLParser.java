@@ -267,7 +267,7 @@ public class ISAXMLParser {
         if (mParser == null) {
             throw new NullPointerException("Parser is null");
         }
-        mParser.require(XmlPullParser.START_TAG, NMP, "name");
+        mParser.require(XmlPullParser.START_TAG, NMP, "id");
         String id = null;
         while (mParser.next() != XmlPullParser.END_TAG) {
             if (mParser.getEventType() != XmlPullParser.START_TAG) {

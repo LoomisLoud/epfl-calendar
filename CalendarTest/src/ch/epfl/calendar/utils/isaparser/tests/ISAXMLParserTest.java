@@ -36,6 +36,7 @@ public class ISAXMLParserTest extends MockTestCase {
     private static Method skip;
     private static Method readText;
     private static Method readName;
+    private static Method readId;
     private static Method readType;
     private static Method readRoom;
     private static Method readCourse;
@@ -75,6 +76,8 @@ public class ISAXMLParserTest extends MockTestCase {
         readText.setAccessible(true);
         readName = (ISAXMLParser.class).getDeclaredMethod("readName", new Class[] {});
         readName.setAccessible(true);
+        readId = (ISAXMLParser.class).getDeclaredMethod("readId", new Class[] {});
+        readId.setAccessible(true);
         readType = (ISAXMLParser.class).getDeclaredMethod("readType", new Class[] {});
         readType.setAccessible(true);
         readRoom = (ISAXMLParser.class).getDeclaredMethod("readRoom", new Class[] {});
@@ -541,6 +544,24 @@ public class ISAXMLParserTest extends MockTestCase {
             parser.nextTag();
             assertNull(readName.invoke(new ISAXMLParser(parser), new Object[] {}));
         } finally { }
+    }
+
+    public void testReadId() throws IllegalAccessException, IllegalArgumentException {
+        XmlPullParser parser = Xml.newPullParser();
+        
+        //With Null argument
+        try {
+            readName.invoke(new ISAXMLParser(), new Object[] {});
+            fail("readName : Fail test null pointer");
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof NullPointerException) {
+                if (e.getTargetException().getMessage().equals("Parser is null")) {
+                  //waited exception
+                } else {
+                    fail("readName wrong NullPointerException");
+                }
+            }
+        }
     }
 
     public void testReadText() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
