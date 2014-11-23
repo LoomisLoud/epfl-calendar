@@ -80,6 +80,8 @@ public class DBQuester implements DatabaseInterface {
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
+                String id = cursor.getString(cursor
+                        .getColumnIndex(PeriodTable.COLUMN_NAME_ID));
                 String type = cursor.getString(cursor
                         .getColumnIndex(PeriodTable.COLUMN_NAME_TYPE));
                 String startDate = cursor.getString(cursor
@@ -90,8 +92,7 @@ public class DBQuester implements DatabaseInterface {
                         .getColumnIndex(PeriodTable.COLUMN_NAME_ROOMS));
                 ArrayList<String> rooms = App.parseFromCSVString(roomsCSV);
 
-                //FIXME : BLA
-                periods.add(new Period(type, startDate, endDate, rooms, null));
+                periods.add(new Period(type, startDate, endDate, rooms, id));
             }
         }
 
