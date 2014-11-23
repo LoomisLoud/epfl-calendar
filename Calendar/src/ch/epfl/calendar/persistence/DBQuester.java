@@ -111,18 +111,20 @@ public class DBQuester implements DatabaseInterface {
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
-            String name = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_NAME));
-            String startDate = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
-            String endDate = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
-            String type = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
-            String courseName = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+            while (!cursor.isAfterLast()) {
+                String name = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_NAME));
+                String startDate = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
+                String endDate = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
+                String type = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
+                String courseName = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
 
-            events.add(new Event(name, startDate, endDate, type, courseName));
+                events.add(new Event(name, startDate, endDate, type, courseName));
+            }
         }
 
         return events;
