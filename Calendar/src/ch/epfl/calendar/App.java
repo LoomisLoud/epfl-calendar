@@ -10,7 +10,6 @@ import java.util.List;
 
 import android.app.Application;
 import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
 import ch.epfl.calendar.persistence.DBHelper;
 
 /**
