@@ -125,7 +125,7 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
-        Log.i("ME VOILA", "ON CREATE");
+        Log.i("BLABLABLA", "ON CREATE");
         super.onCreate();
         App.mContext = this.getApplicationContext();
         App.mDBHelper = new DBHelper(App.mContext);

@@ -31,7 +31,7 @@ public class EventTable {
                 + EventTable.COLUMN_NAME_STARTDATE + " TEXT, "
                 + EventTable.COLUMN_NAME_ENDDATE + " TEXT, "
                 + EventTable.COLUMN_NAME_TYPE + " TEXT, "
-                + EventTable.COLUMN_NAME_COURSE + " TEXT"
+                + EventTable.COLUMN_NAME_COURSE + " TEXT, "
                 + FOREIGN_KEY + "(" + EventTable.COLUMN_NAME_COURSE + ")"
                 + REFERENCES + CourseTable.TABLE_NAME_COURSE + "(" + CourseTable.COLUMN_NAME_NAME + ")"
                 + ");");

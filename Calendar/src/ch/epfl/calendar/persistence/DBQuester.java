@@ -28,7 +28,7 @@ public class DBQuester implements DatabaseInterface {
     private static final String FROM = " FROM ";
     private static final String SELECT_ALL_FROM = "SELECT * FROM ";
     private static final String WHERE = " WHERE ";
-    private static final String ORDER_BY = "ORDER BY ";
+    private static final String ORDER_BY = " ORDER BY ";
     private static final String ASC = "ASC";
     private static final String CODE = "code ";
     private static final String EQUAL = " = ";
@@ -84,8 +84,8 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + PeriodTable.TABLE_NAME_PERIOD + WHERE
-                + PeriodTable.COLUMN_NAME_COURSE + EQUAL + courseName
-                + ORDER_BY + ID + ASC, null);
+                + PeriodTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName + "\""
+                + ORDER_BY + "\"" + ID + "\"" + ASC, null);
         ArrayList<Period> periods = new ArrayList<Period>();
 
         if (cursor.moveToFirst()) {
@@ -118,7 +118,7 @@ public class DBQuester implements DatabaseInterface {
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_ID + EQUAL + id + ORDER_BY
-                + UNDERSCORE_ID + ASC, null);
+                + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
         Event event = null;
 
         if (cursor.moveToFirst()) {
@@ -135,7 +135,7 @@ public class DBQuester implements DatabaseInterface {
     public List<Event> getAllEvents() {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
-                + EventTable.TABLE_NAME_EVENT + ORDER_BY + UNDERSCORE_ID + ASC,
+                + EventTable.TABLE_NAME_EVENT + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC,
                 null);
         ArrayList<Event> events = new ArrayList<Event>();
 
@@ -160,8 +160,8 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_COURSE + NOT_EQUAL + NO_COURSE
-                + ORDER_BY + UNDERSCORE_ID + ASC, null);
+                + EventTable.COLUMN_NAME_COURSE + NOT_EQUAL + "\"" + NO_COURSE + "\""
+                + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
@@ -181,8 +181,8 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_COURSE + EQUAL + NO_COURSE + ORDER_BY
-                + UNDERSCORE_ID + ASC, null);
+                + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + NO_COURSE + "\"" + ORDER_BY
+                + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
 
         ArrayList<Event> events = new ArrayList<Event>();
         if (cursor.moveToFirst()) {
@@ -202,8 +202,8 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + CourseTable.TABLE_NAME_COURSE + WHERE
-                + CourseTable.COLUMN_NAME_NAME + EQUAL + courseName + ORDER_BY
-                + CODE + ASC, null);
+                + CourseTable.COLUMN_NAME_NAME + EQUAL + "\"" + courseName + "\"" + ORDER_BY
+                + "\"" + CODE + "\"" + ASC, null);
 
         Course course = null;
         if (cursor.moveToFirst()) {
@@ -323,6 +323,13 @@ public class DBQuester implements DatabaseInterface {
         } else {
             eds.update(event, App.NO_COURSE);
         }
+    }
+    
+    public void deleteAllDB() {
+        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + PeriodTable.TABLE_NAME_PERIOD);
+        db.execSQL("DROP TABLE IF EXISTS " + EventTable.TABLE_NAME_EVENT);
+        db.execSQL("DROP TABLE IF EXISTS " + CourseTable.TABLE_NAME_COURSE);
     }
 
     private Event createEvent(Cursor cursor) {

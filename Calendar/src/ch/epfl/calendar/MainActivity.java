@@ -64,6 +64,8 @@ public class MainActivity extends DefaultActionBarActivity implements
     private Activity mThisActivity;
     
     private AuthenticationUtils mAuthUtils;
+    
+    private DBQuester mDB;
 
     public static final String TAG = "MainActivity::";
 
@@ -97,14 +99,20 @@ public class MainActivity extends DefaultActionBarActivity implements
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
         } else {
-            DBQuester db = new DBQuester();
-            db.getAllCourses();
+            mDB = new DBQuester();
+//            mDB.deleteAllDB();
+            this.deleteDatabase(App.DATABASE_NAME);
+            mListCourses = mDB.getAllCourses();
             
-            if (!mAuthUtils.isAuthenticated(mThisActivity)) {
-                switchToAuthenticationActivity();
+            if (mListCourses.isEmpty()) {
+                if (!mAuthUtils.isAuthenticated(mThisActivity)) {
+                    switchToAuthenticationActivity();
+                } else {
+                    mListCourses = new ArrayList<Course>();
+                    populateCalendar();
+                }
             } else {
-                mListCourses = new ArrayList<Course>();
-                populateCalendar();
+                mWeekView.notifyDatasetChanged();
             }
         }
     }
@@ -357,6 +365,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
             mListCourses = courses;
+            mDB.storeCourses(courses);
             mWeekView.notifyDatasetChanged();
         } else {
             this.logout();
