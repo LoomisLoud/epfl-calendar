@@ -29,8 +29,11 @@ public class DBQuester implements DatabaseInterface {
     private static final String ASC = "ASC";
     private static final String CODE = "code ";
     private static final String EQUAL = " = ";
+    private static final String NOT_EQUAL = " <> ";
     private static final String ID = "id ";
     private static final String UNDERSCORE_ID = "_id";
+    
+    private static final String NO_COURSE = "NoCourse";
 
     /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
@@ -106,7 +109,8 @@ public class DBQuester implements DatabaseInterface {
     public List<Event> getAllEventsFromCourse(String course) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
-                + EventTable.TABLE_NAME_EVENT + ORDER_BY + UNDERSCORE_ID + ASC, null);
+                + EventTable.TABLE_NAME_EVENT + WHERE + EventTable.COLUMN_NAME_COURSE 
+                + NOT_EQUAL + NO_COURSE + ORDER_BY + UNDERSCORE_ID + ASC, null);
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
@@ -127,6 +131,64 @@ public class DBQuester implements DatabaseInterface {
         }
 
         return events;
+    }
+
+    @Override
+    public List<Event> getAllEventsWithoutCourse() {
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+                + EventTable.TABLE_NAME_EVENT + WHERE + EventTable.COLUMN_NAME_COURSE 
+                + EQUAL + NO_COURSE + ORDER_BY + UNDERSCORE_ID + ASC, null);
+
+        ArrayList<Event> events = new ArrayList<Event>();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String name = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_NAME));
+                String startDate = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
+                String endDate = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
+                String type = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
+                String courseName = cursor.getString(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+
+                events.add(new Event(name, startDate, endDate, type, courseName));
+            }
+        }
+
+        return events;
+    }
+
+    @Override
+    public Course getCourse(String courseName) {
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+                + CourseTable.TABLE_NAME_COURSE + WHERE + CourseTable.COLUMN_NAME_NAME
+                + EQUAL + courseName + ORDER_BY + CODE + ASC, null);
+
+        Course course = null;
+        if (cursor.moveToFirst()) {
+            String name = cursor.getString(cursor
+                    .getColumnIndex(CourseTable.COLUMN_NAME_NAME));
+            List<Period> periods = getAllPeriodsFromCourse(courseName);
+            String teacher = cursor.getString(cursor
+                    .getColumnIndex(CourseTable.COLUMN_NAME_TEACHER));
+            int credits = cursor.getInt(cursor
+                    .getColumnIndex(CourseTable.COLUMN_NAME_CREDITS));
+            String code = cursor.getString(cursor
+                    .getColumnIndex(CourseTable.COLUMN_NAME_CODE));
+            String description = cursor.getString(cursor
+                    .getColumnIndex(CourseTable.COLUMN_NAME_DESCRIPTION));
+            List<Event> events = getAllEventsFromCourse(courseName);
+
+            course = new Course(name, periods, teacher, credits, code,
+                    description, events);
+        }
+
+        return course;
+
     }
 
     /**

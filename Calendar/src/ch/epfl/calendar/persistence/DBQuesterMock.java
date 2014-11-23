@@ -46,4 +46,9 @@ public class DBQuesterMock implements DatabaseInterface {
     public void storeEvent(Event event) {
     }
 
+    @Override
+    public Course getCourse(String courseName) {
+        return null;
+    }
+
 }

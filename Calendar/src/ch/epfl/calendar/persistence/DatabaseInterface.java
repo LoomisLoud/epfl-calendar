@@ -23,6 +23,13 @@ public interface DatabaseInterface {
     List<Course> getAllCourses();
 
     /**
+     * Get a Course from the database
+     * @param courseName
+     * @return the course from the database
+     */
+    Course getCourse(String courseName);
+
+    /**
      * @param course
      * @return the list of all periods in the course.
      */
@@ -33,6 +40,12 @@ public interface DatabaseInterface {
      * @return the list of all events in the course.
      */
     List<Event> getAllEventsFromCourse(String courseName);
+    
+    /**
+     * 
+     * @return the list of all events that are not related to a course
+     */
+    List<Event> getAllEventsWithoutCourse();
 
     /**
      * Store a course in the database.

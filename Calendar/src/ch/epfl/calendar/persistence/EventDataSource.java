@@ -22,6 +22,8 @@ public class EventDataSource implements DAO {
     private static final String SUCCESS_CREATE = "Event successfully created!";
     private static final String SUCCESS_DELETE = "Event successfully deleted";
     private static final String SUCCESS_UPDATE = "Event successfully updated";
+    
+    private static final String NO_COURSE = "NoCourse";
 
     private static EventDataSource mEventDataSource;
 
@@ -34,12 +36,15 @@ public class EventDataSource implements DAO {
 
     /**
      * Create an event.
-     *
+     * If no specific, then use null
      * @param obj
      * @throws SQLiteCalendarException
      */
     @Override
     public void create(Object obj, String key) {
+        if (key == null) {
+            key = NO_COURSE;
+        }
         Event event = (Event) obj;
         assert event != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
@@ -62,12 +67,15 @@ public class EventDataSource implements DAO {
 
     /**
      * Update an event.
-     *
+     * If no specific key, then use null
      * @param obj
      * @throws SQLiteCalendarException
      */
     @Override
     public void update(Object obj, String key) {
+        if (key == null) {
+            key = NO_COURSE;
+        }
         Event event = (Event) obj;
         assert event != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
