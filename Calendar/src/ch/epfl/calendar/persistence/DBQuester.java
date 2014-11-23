@@ -102,6 +102,32 @@ public class DBQuester implements DatabaseInterface {
     }
 
     @Override
+    public Event getEvent(int id) {
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+                + EventTable.TABLE_NAME_EVENT + WHERE + EventTable.COLUMN_NAME_ID
+                + EQUAL + id + ORDER_BY + UNDERSCORE_ID + ASC, null);
+        Event event = null;
+
+        if (cursor.moveToFirst()) {
+            String name = cursor.getString(cursor
+                    .getColumnIndex(EventTable.COLUMN_NAME_NAME));
+            String startDate = cursor.getString(cursor
+                    .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
+            String endDate = cursor.getString(cursor
+                    .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
+            String type = cursor.getString(cursor
+                    .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
+            String courseName = cursor.getString(cursor
+                    .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+
+            event = new Event(name, startDate, endDate, type, courseName, id);
+        }
+
+        return event;
+    }
+
+    @Override
     public List<Event> getAllEvents() {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM

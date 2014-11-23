@@ -37,6 +37,13 @@ public interface DatabaseInterface {
 
     /**
      * 
+     * @param id
+     * @return The event that has id
+     */
+    Event getEvent(int id);
+
+    /**
+     * 
      * @return the list of all events in the database
      */
     List<Event> getAllEvents();
