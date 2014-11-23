@@ -156,11 +156,11 @@ public class Event {
         this.mLinkedCourse = linkedCourse;
     }
 
-    protected int getId() {
+    public int getId() {
         return mId;
     }
 
-    protected void setId(int id) {
+    public void setId(int id) {
         this.mId = id;
     }
 }
