@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.persistence;
 
@@ -15,8 +15,8 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 
 /**
- * Implementation of the DBQuester interface
- * 
+ * Implementation of the Database interface
+ *
  * This class provides the methods to save and get informations from
  * the local SQLite database
  * @author AblionGE
