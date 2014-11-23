@@ -9,9 +9,9 @@ import ch.epfl.calendar.utils.Logger;
 
 /**
  * DAO for {@link Event}
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class EventDataSource implements DAO {
 
@@ -34,23 +34,20 @@ public class EventDataSource implements DAO {
 
     /**
      * Create an event.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
     @Override
-    public void create(Object obj) {
+    public void create(Object obj, String key) {
         Event event = (Event) obj;
         assert event != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(EventTable.COLUMN_NAME_NAME, event.getName());
-        // TODO check the return value of Calendar toString method
-        values.put(EventTable.COLUMN_NAME_STARTDATE, event.getStartDate()
-                .toString());
-        values.put(EventTable.COLUMN_NAME_ENDDATE, event.getEndDate()
-                .toString());
+        values.put(EventTable.COLUMN_NAME_STARTDATE, App.calendarToBasicFormatString(event.getStartDate()));
+        values.put(EventTable.COLUMN_NAME_ENDDATE, App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
 
@@ -65,23 +62,20 @@ public class EventDataSource implements DAO {
 
     /**
      * Update an event.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
     @Override
-    public void update(Object obj) {
+    public void update(Object obj, String key) {
         Event event = (Event) obj;
         assert event != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(EventTable.COLUMN_NAME_NAME, event.getName());
-        // TODO check the return value of Calendar toString method
-        values.put(EventTable.COLUMN_NAME_STARTDATE, event.getStartDate()
-                .toString());
-        values.put(EventTable.COLUMN_NAME_ENDDATE, event.getEndDate()
-                .toString());
+        values.put(EventTable.COLUMN_NAME_STARTDATE, App.calendarToBasicFormatString(event.getStartDate()));
+        values.put(EventTable.COLUMN_NAME_ENDDATE, App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
 
@@ -98,12 +92,12 @@ public class EventDataSource implements DAO {
 
     /**
      * Delete an event.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
     @Override
-    public void delete(Object obj) {
+    public void delete(Object obj, String key) {
         Event event = (Event) obj;
         assert event != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();

@@ -50,7 +50,7 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void create(Object obj) throws SQLiteCalendarException {
+    public void create(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
@@ -65,13 +65,13 @@ public class CourseDataSource implements DAO {
         PeriodDataSource pds = PeriodDataSource.getInstance();
         List<Period> periods = course.getPeriods();
         for (Period period : periods) {
-			pds.create(period);
+			pds.create(period, course.getName());
 		}
 
         EventDataSource eds = EventDataSource.getInstance();
         List<Event> events = course.getEvents();
         for (Event event : events) {
-			eds.create(event);
+			eds.create(event, course.getName());
 		}
 
         long rowId = db.insert(CourseTable.TABLE_NAME_COURSE, null, values);
@@ -90,7 +90,7 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void update(Object obj) throws SQLiteCalendarException {
+    public void update(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
@@ -105,13 +105,13 @@ public class CourseDataSource implements DAO {
         PeriodDataSource pds = PeriodDataSource.getInstance();
         List<Period> periods = course.getPeriods();
         for (Period period : periods) {
-			pds.update(period);
+			pds.update(period, course.getName());
 		}
 
         EventDataSource eds = EventDataSource.getInstance();
         List<Event> events = course.getEvents();
         for (Event event : events) {
-			eds.update(event);
+			eds.update(event, course.getName());
 		}
 
         long rowId = db.update(CourseTable.TABLE_NAME_COURSE, values,
@@ -132,7 +132,7 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void delete(Object obj) throws SQLiteCalendarException {
+    public void delete(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
