@@ -64,15 +64,6 @@ public class MainActivity extends Activity implements
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private List<WeekViewEvent> mMListEvents = new ArrayList<WeekViewEvent>();
-
-    public List<WeekViewEvent> getmMListEvents() {
-        return mMListEvents;
-    }
-
-    public void setmMListEvents(List<WeekViewEvent> mMListEvents) {
-        this.mMListEvents = mMListEvents;
-    }
-
     private long mIdEvent = 0;
     private List<Course> mListCourses = new ArrayList<Course>();
     private ProgressDialog mDialog;
@@ -430,6 +421,14 @@ public class MainActivity extends Activity implements
         } else {
             this.logout();
         }
+    }
+
+    public List<WeekViewEvent> getmMListEvents() {
+        return mMListEvents;
+    }
+
+    public void setmMListEvents(List<WeekViewEvent> mMListEvents) {
+        this.mMListEvents = mMListEvents;
     }
 
     public void weeklyEvent(Calendar end, WeekViewEvent event) {
