@@ -44,7 +44,7 @@ public class DBQuester implements DatabaseInterface {
      */
     @Override
     public List<Course> getAllCourses() {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + CourseTable.TABLE_NAME_COURSE + ORDER_BY + CODE + ASC, null);
         ArrayList<Course> courses = new ArrayList<Course>();
@@ -81,7 +81,7 @@ public class DBQuester implements DatabaseInterface {
      */
     @Override
     public List<Period> getAllPeriodsFromCourse(String courseName) {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + PeriodTable.TABLE_NAME_PERIOD + WHERE
                 + PeriodTable.COLUMN_NAME_COURSE + EQUAL + courseName
@@ -100,7 +100,7 @@ public class DBQuester implements DatabaseInterface {
                         .getColumnIndex(PeriodTable.COLUMN_NAME_ENDDATE));
                 String roomsCSV = cursor.getString(cursor
                         .getColumnIndex(PeriodTable.COLUMN_NAME_ROOMS));
-                ArrayList<String> rooms = App.getInstance().parseFromCSVString(roomsCSV);
+                ArrayList<String> rooms = App.parseFromCSVString(roomsCSV);
 
                 periods.add(new Period(type, startDate, endDate, rooms, id));
             }
@@ -114,7 +114,7 @@ public class DBQuester implements DatabaseInterface {
 
     @Override
     public Event getEvent(int id) {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_ID + EQUAL + id + ORDER_BY
@@ -133,7 +133,7 @@ public class DBQuester implements DatabaseInterface {
 
     @Override
     public List<Event> getAllEvents() {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + ORDER_BY + UNDERSCORE_ID + ASC,
                 null);
@@ -157,7 +157,7 @@ public class DBQuester implements DatabaseInterface {
      */
     @Override
     public List<Event> getAllEventsFromCourse(String course) {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_COURSE + NOT_EQUAL + NO_COURSE
@@ -178,7 +178,7 @@ public class DBQuester implements DatabaseInterface {
 
     @Override
     public List<Event> getAllEventsWithoutCourse() {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_COURSE + EQUAL + NO_COURSE + ORDER_BY
@@ -199,7 +199,7 @@ public class DBQuester implements DatabaseInterface {
 
     @Override
     public Course getCourse(String courseName) {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + CourseTable.TABLE_NAME_COURSE + WHERE
                 + CourseTable.COLUMN_NAME_NAME + EQUAL + courseName + ORDER_BY
@@ -236,7 +236,7 @@ public class DBQuester implements DatabaseInterface {
      */
     @Override
     public void storeCourse(Course course) {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         CourseDataSource cds = CourseDataSource.getInstance();
 
         List<String> storedCourses = new ArrayList<String>();
@@ -266,7 +266,7 @@ public class DBQuester implements DatabaseInterface {
      */
     @Override
     public void storeCourses(List<Course> courses) {
-        SQLiteDatabase db = App.getInstance().getDBHelper().getReadableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         CourseDataSource cds = CourseDataSource.getInstance();
 
         List<String> storedCourses = new ArrayList<String>();

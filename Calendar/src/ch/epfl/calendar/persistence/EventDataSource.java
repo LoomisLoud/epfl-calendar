@@ -9,9 +9,9 @@ import ch.epfl.calendar.utils.Logger;
 
 /**
  * DAO for {@link Event}
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class EventDataSource implements DAO {
 
@@ -33,8 +33,8 @@ public class EventDataSource implements DAO {
     }
 
     /**
-     * Create an event. If no specific, then use null
-     * 
+     * Create an event.
+     * If no specific, then use null
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -45,15 +45,12 @@ public class EventDataSource implements DAO {
         }
         Event event = (Event) obj;
         assert event != null;
-        SQLiteDatabase db = App.getInstance().getDBHelper()
-                .getWritableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(EventTable.COLUMN_NAME_NAME, event.getName());
-        values.put(EventTable.COLUMN_NAME_STARTDATE, App.getInstance()
-                .calendarToBasicFormatString(event.getStartDate()));
-        values.put(EventTable.COLUMN_NAME_ENDDATE, App.getInstance()
-                .calendarToBasicFormatString(event.getEndDate()));
+        values.put(EventTable.COLUMN_NAME_STARTDATE, App.calendarToBasicFormatString(event.getStartDate()));
+        values.put(EventTable.COLUMN_NAME_ENDDATE, App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
 
@@ -67,8 +64,8 @@ public class EventDataSource implements DAO {
     }
 
     /**
-     * Update an event. If no specific key, then use null
-     * 
+     * Update an event.
+     * If no specific key, then use null
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -79,15 +76,12 @@ public class EventDataSource implements DAO {
         }
         Event event = (Event) obj;
         assert event != null;
-        SQLiteDatabase db = App.getInstance().getDBHelper()
-                .getWritableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(EventTable.COLUMN_NAME_NAME, event.getName());
-        values.put(EventTable.COLUMN_NAME_STARTDATE, App.getInstance()
-                .calendarToBasicFormatString(event.getStartDate()));
-        values.put(EventTable.COLUMN_NAME_ENDDATE, App.getInstance()
-                .calendarToBasicFormatString(event.getEndDate()));
+        values.put(EventTable.COLUMN_NAME_STARTDATE, App.calendarToBasicFormatString(event.getStartDate()));
+        values.put(EventTable.COLUMN_NAME_ENDDATE, App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
 
@@ -104,7 +98,7 @@ public class EventDataSource implements DAO {
 
     /**
      * Delete an event.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -112,11 +106,11 @@ public class EventDataSource implements DAO {
     public void delete(Object obj, String key) {
         Event event = (Event) obj;
         assert event != null;
-        SQLiteDatabase db = App.getInstance().getDBHelper()
-                .getWritableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         long rowId = db.delete(EventTable.TABLE_NAME_EVENT,
-                EventTable.COLUMN_NAME_ID + " = '" + event.getId() + "'", null);
+                EventTable.COLUMN_NAME_ID + " = '" + event.getId() + "'",
+                null);
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_DELETE);
             throw new SQLiteCalendarException(EventDataSource.ERROR_DELETE);
@@ -130,8 +124,7 @@ public class EventDataSource implements DAO {
      */
     @Override
     public void deleteAll() {
-        SQLiteDatabase db = App.getInstance().getDBHelper()
-                .getWritableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
         db.delete(EventTable.TABLE_NAME_EVENT, null, null);
 
     }
