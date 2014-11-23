@@ -3,18 +3,22 @@
  */
 package ch.epfl.calendar.persistence;
 
+import java.util.List;
+
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
+import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.Logger;
 
 /**
  * DAO for {@link Course}.
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class CourseDataSource implements DAO {
 
@@ -28,6 +32,10 @@ public class CourseDataSource implements DAO {
 
     private static CourseDataSource mCourseDataSource;
 
+    /**
+     *
+     * @return
+     */
     public static CourseDataSource getInstance() {
         if (CourseDataSource.mCourseDataSource == null) {
             CourseDataSource.mCourseDataSource = new CourseDataSource();
@@ -37,7 +45,7 @@ public class CourseDataSource implements DAO {
 
     /**
      * Create a course.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -54,9 +62,17 @@ public class CourseDataSource implements DAO {
         values.put(CourseTable.COLUMN_NAME_CODE, course.getCode());
         values.put(CourseTable.COLUMN_NAME_DESCRIPTION, course.getDescription());
 
-        // TODO find a way to insert rows in Period table for each period of the
-        // course.
-        // solution: insert in PeriodTable
+        PeriodDataSource pds = PeriodDataSource.getInstance();
+        List<Period> periods = course.getPeriods();
+        for (Period period : periods) {
+			pds.create(period);
+		}
+
+        EventDataSource eds = EventDataSource.getInstance();
+        List<Event> events = course.getEvents();
+        for (Event event : events) {
+			eds.create(event);
+		}
 
         long rowId = db.insert(CourseTable.TABLE_NAME_COURSE, null, values);
         if (rowId == -1) {
@@ -69,7 +85,7 @@ public class CourseDataSource implements DAO {
 
     /**
      * Update a course.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -103,7 +119,7 @@ public class CourseDataSource implements DAO {
 
     /**
      * Delete a course.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
