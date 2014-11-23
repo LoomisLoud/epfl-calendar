@@ -14,169 +14,174 @@ import ch.epfl.calendar.persistence.DBHelper;
 
 /**
  * @author lweingart
- *
+ * 
  */
 public class App extends Application {
 
-	/**
-	 * Database file name.
-	 */
-	public static final String DATABASE_NAME = "calendar.db";
+    /**
+     * Database file name.
+     */
+    public static final String DATABASE_NAME = "calendar.db";
 
-	/**
-	 * Default value for event course name.
-	 */
-	public static final String NO_COURSE = "NoCourse";
+    /**
+     * Default value for event course name.
+     */
+    public static final String NO_COURSE = "NoCourse";
 
-	/**
-	 * Database version. This number must be increased whenever the database
-	 * schema is upgraded in order to trigger the
-	 * {@link SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)}
-	 * method.
-	 */
-	public static final int DATABASE_VERSION = 1;
+    /**
+     * Database version. This number must be increased whenever the database
+     * schema is upgraded in order to trigger the
+     * {@link SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)}
+     * method.
+     */
+    public static final int DATABASE_VERSION = 1;
 
-	/**
-	 * Index 0.
-	 */
-	public static final int ZERO_INDEX = 0;
+    /**
+     * Index 0.
+     */
+    public static final int ZERO_INDEX = 0;
 
-	/**
-	 * Index value of the beginning of the field time in a calendar string.
-	 */
-	public static final int START_TIME_INDEX = 11;
+    /**
+     * Index value of the beginning of the field time in a calendar string.
+     */
+    public static final int START_TIME_INDEX = 11;
 
-	/**
-	 * Index value of the end of the field date in a calendar string
-	 */
-	public static final int END_DATE_INDEX = 10;
+    /**
+     * Index value of the end of the field date in a calendar string
+     */
+    public static final int END_DATE_INDEX = 10;
 
-	/**
-	 * Length of the date part in a split calendar string.
-	 */
-	private static final int DATE_PARTS_LENGTH = 3;
+    /**
+     * Length of the date part in a split calendar string.
+     */
+    private static final int DATE_PARTS_LENGTH = 3;
 
-	/**
-	 * Length of the hour part in a split calendar string.
-	 */
-	private static final int HOUR_PARTS_LENGTH = 2;
+    /**
+     * Length of the hour part in a split calendar string.
+     */
+    private static final int HOUR_PARTS_LENGTH = 2;
 
-	/**
-	 * Smallest index of a day in a month.
-	 */
-	private static final int DAY_MIN = 1;
+    /**
+     * Smallest index of a day in a month.
+     */
+    private static final int DAY_MIN = 1;
 
-	/**
-	 * Greatest index of a day in a month.
-	 */
-	private static final int DAY_MAX = 31;
+    /**
+     * Greatest index of a day in a month.
+     */
+    private static final int DAY_MAX = 31;
 
     // In a gregorian java calendar, a month starts at 0 and ends at 11
-	/**
-	 * Smallest index of a month in a year.
-	 */
-	private static final int MONTH_MIN = 0;
+    /**
+     * Smallest index of a month in a year.
+     */
+    private static final int MONTH_MIN = 0;
 
-	/**
-	 * Greatest index of a month in a year.
-	 */
-	private static final int MONTH_MAX = 11;
+    /**
+     * Greatest index of a month in a year.
+     */
+    private static final int MONTH_MAX = 11;
 
-	/**
-	 * 1st year of the epoch.
-	 */
-	private static final int YEAR_MIN = 1970;
+    /**
+     * 1st year of the epoch.
+     */
+    private static final int YEAR_MIN = 1970;
 
-	/**
-	 * 1st hour in a day.
-	 */
-	private static final int HOUR_MIN = 0;
+    /**
+     * 1st hour in a day.
+     */
+    private static final int HOUR_MIN = 0;
 
-	/**
-	 * Last hour in a day.
-	 */
-	private static final int HOUR_MAX = 23;
+    /**
+     * Last hour in a day.
+     */
+    private static final int HOUR_MAX = 23;
 
-	/**
-	 * 1st minute in an hour.
-	 */
-	private static final int MINUTE_MIN = 0;
+    /**
+     * 1st minute in an hour.
+     */
+    private static final int MINUTE_MIN = 0;
 
-	/**
-	 * Last minute in an hour.
-	 */
-	private static final int MINUTE_MAX = 59;
+    /**
+     * Last minute in an hour.
+     */
+    private static final int MINUTE_MAX = 59;
 
-	/**
-	 * 10 in a constant.
-	 */
-	private static final int NUMERIC_TEN = 10;
+    /**
+     * 10 in a constant.
+     */
+    private static final int NUMERIC_TEN = 10;
 
-	/**
-	 * Database helper.
-	 */
-	private static DBHelper mDBHelper;
+    /**
+     * Database helper.
+     */
+    private static DBHelper mDBHelper;
 
-	/**
-	 * Application context.
-	 */
-	private static Context mContext;
+    /**
+     * Application context.
+     */
+    private static Context mContext;
+    
+    private static App mInstance = null;
 
+    public static App getInstance() {
+        if (mInstance == null) {
+            mInstance = new App();
+        }
+        return mInstance;
+    }
+    
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        App.mContext = this.getApplicationContext();
+        App.mDBHelper = new DBHelper(App.mContext);
+    }
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		App.mContext = this.getApplicationContext();
-		App.mDBHelper = new DBHelper(App.mContext);
-	}
+    public DBHelper getDBHelper() {
+        return App.mDBHelper;
+    }
 
-	public static DBHelper getDBHelper() {
-		return App.mDBHelper;
-	}
+    public Context getAppContext() {
+        return App.mContext;
+    }
 
-	public static Context getAppContext() {
-		return App.mContext;
-	}
+    /**
+     * Parse a csv string into an array list of strings.
+     * 
+     * @param csv
+     * @return
+     */
+    public ArrayList<String> parseFromCSVString(String csv) {
+        String[] ary = csv.split(",");
+        ArrayList<String> result = new ArrayList<String>();
+        for (int i = 0; i < ary.length; i++) {
+            result.add(ary[i]);
+        }
+        return result;
+    }
 
-	/**
-	 * Parse a csv string into an array list of strings.
-	 *
-	 * @param csv
-	 * @return
-	 */
-	public static ArrayList<String> parseFromCSVString(String csv) {
-		String[] ary = csv.split(",");
-		ArrayList<String> result = new ArrayList<String>();
-		for (int i = 0; i < ary.length; i++) {
-			result.add(ary[i]);
-		}
-		return result;
-	}
+    /**
+     * Transform an array list of string into a csv string.
+     * 
+     * @param array
+     * @return
+     */
+    public String csvStringFromList(List<String> list) {
+        ArrayList<String> array = new ArrayList<String>(list);
+        return new String(array.toString().replace("[", "").replace(", ", ",")
+                .replace("]", ""));
+    }
 
-	/**
-	 * Transform an array list of string into a csv string.
-	 *
-	 * @param array
-	 * @return
-	 */
-	public static String csvStringFromList(List<String> list) {
-		ArrayList<String> array = new ArrayList<String>(list);
-		return new String(array.toString()
-				.replace("[", "")
-				.replace(", ", ",")
-				.replace("]", ""));
-	}
-
-	/**
-	 * Create a calendar object from two strings.
-	 * date must be of format dd.mm.yyy
-	 * hourArg must be of format hh:mm
-	 *
-	 * @param date
-	 * @param hourArg
-	 * @return
-	 */
-    public static Calendar createCalendar(String date, String hourArg) {
+    /**
+     * Create a calendar object from two strings. date must be of format
+     * dd.mm.yyy hourArg must be of format hh:mm
+     * 
+     * @param date
+     * @param hourArg
+     * @return
+     */
+    public Calendar createCalendar(String date, String hourArg) {
         if (date != null && hourArg != null) {
             // Format of date : dd.mm.yyyy
             String[] dateParts = date.split("\\.");
@@ -220,41 +225,41 @@ public class App extends Application {
 
     /**
      * Method to write a calendar in the form 'dd.mm.yyy hh:mm'
-     *
+     * 
      * @param date
      * @return
      */
-    public static String calendarToBasicFormatString(Calendar date) {
-    	String dd;
-    	String mm;
-    	String yyyy = Integer.toString(date.get(Calendar.YEAR));
-    	String hh;
-    	String min;
+    public String calendarToBasicFormatString(Calendar date) {
+        String dd;
+        String mm;
+        String yyyy = Integer.toString(date.get(Calendar.YEAR));
+        String hh;
+        String min;
 
-    	int day = date.get(Calendar.DAY_OF_MONTH);
-    	dd = Integer.toString(day);
-    	if (day < NUMERIC_TEN) {
-    		dd = "0".concat(dd);
-		}
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        dd = Integer.toString(day);
+        if (day < NUMERIC_TEN) {
+            dd = "0".concat(dd);
+        }
 
-    	int month = date.get(Calendar.MONTH);
-    	mm = Integer.toString(month);
-    	if (month < NUMERIC_TEN) {
-			mm = "0".concat(mm);
-		}
+        int month = date.get(Calendar.MONTH);
+        mm = Integer.toString(month);
+        if (month < NUMERIC_TEN) {
+            mm = "0".concat(mm);
+        }
 
-    	int hour = date.get(Calendar.HOUR_OF_DAY);
-    	hh = Integer.toString(hour);
-    	if (hour < NUMERIC_TEN) {
-			hh = "0".concat(hh);
-		}
+        int hour = date.get(Calendar.HOUR_OF_DAY);
+        hh = Integer.toString(hour);
+        if (hour < NUMERIC_TEN) {
+            hh = "0".concat(hh);
+        }
 
-    	int minutes = date.get(Calendar.MINUTE);
-    	min = Integer.toString(minutes);
-    	if (minutes < NUMERIC_TEN) {
-			min = "0".concat(min);
-		}
+        int minutes = date.get(Calendar.MINUTE);
+        min = Integer.toString(minutes);
+        if (minutes < NUMERIC_TEN) {
+            min = "0".concat(min);
+        }
 
-    	return dd+"."+mm+"."+yyyy+" "+hh+":"+min;
+        return dd + "." + mm + "." + yyyy + " " + hh + ":" + min;
     }
 }

@@ -53,7 +53,7 @@ public class CourseDataSource implements DAO {
     public void create(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = App.getInstance().getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
@@ -93,7 +93,7 @@ public class CourseDataSource implements DAO {
     public void update(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = App.getInstance().getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
@@ -135,7 +135,7 @@ public class CourseDataSource implements DAO {
     public void delete(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = App.getInstance().getDBHelper().getWritableDatabase();
 
         long rowId = db.delete(CourseTable.TABLE_NAME_COURSE,
                 CourseTable.COLUMN_NAME_NAME + " = '" + course.getName() + "'",
@@ -153,7 +153,7 @@ public class CourseDataSource implements DAO {
      */
     @Override
     public void deleteAll() {
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = App.getInstance().getDBHelper().getWritableDatabase();
         db.delete(CourseTable.TABLE_NAME_COURSE, null, null);
     }
 }
