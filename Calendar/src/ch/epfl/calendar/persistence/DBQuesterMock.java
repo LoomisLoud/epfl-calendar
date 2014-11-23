@@ -61,4 +61,9 @@ public class DBQuesterMock implements DatabaseInterface {
         return new ArrayList<Event>();
     }
 
+	@Override
+	public Event getEvent(int id) {
+		return null;
+	}
+
 }

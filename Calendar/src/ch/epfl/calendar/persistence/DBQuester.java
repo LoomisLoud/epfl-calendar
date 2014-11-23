@@ -23,6 +23,8 @@ import ch.epfl.calendar.data.Period;
  */
 public class DBQuester implements DatabaseInterface {
 
+	private static final String SELECT = "SELECT ";
+	private static final String FROM = " FROM ";
     private static final String SELECT_ALL_FROM = "SELECT * FROM ";
     private static final String WHERE = " WHERE ";
     private static final String ORDER_BY = "ORDER BY ";
@@ -32,8 +34,9 @@ public class DBQuester implements DatabaseInterface {
     private static final String NOT_EQUAL = " <> ";
     private static final String ID = "id ";
     private static final String UNDERSCORE_ID = "_id";
-    
     private static final String NO_COURSE = "NoCourse";
+
+	private static final int NO_ID = -1;
 
     /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
@@ -102,32 +105,6 @@ public class DBQuester implements DatabaseInterface {
     }
 
     @Override
-    public Event getEvent(int id) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
-                + EventTable.TABLE_NAME_EVENT + WHERE + EventTable.COLUMN_NAME_ID
-                + EQUAL + id + ORDER_BY + UNDERSCORE_ID + ASC, null);
-        Event event = null;
-
-        if (cursor.moveToFirst()) {
-            String name = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_NAME));
-            String startDate = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
-            String endDate = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
-            String type = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
-            String courseName = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
-
-            event = new Event(name, startDate, endDate, type, courseName, id);
-        }
-
-        return event;
-    }
-
-    @Override
     public List<Event> getAllEvents() {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
@@ -164,7 +141,7 @@ public class DBQuester implements DatabaseInterface {
     public List<Event> getAllEventsFromCourse(String course) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
-                + EventTable.TABLE_NAME_EVENT + WHERE + EventTable.COLUMN_NAME_COURSE 
+                + EventTable.TABLE_NAME_EVENT + WHERE + EventTable.COLUMN_NAME_COURSE
                 + NOT_EQUAL + NO_COURSE + ORDER_BY + UNDERSCORE_ID + ASC, null);
         ArrayList<Event> events = new ArrayList<Event>();
 
@@ -194,7 +171,7 @@ public class DBQuester implements DatabaseInterface {
     public List<Event> getAllEventsWithoutCourse() {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
-                + EventTable.TABLE_NAME_EVENT + WHERE + EventTable.COLUMN_NAME_COURSE 
+                + EventTable.TABLE_NAME_EVENT + WHERE + EventTable.COLUMN_NAME_COURSE
                 + EQUAL + NO_COURSE + ORDER_BY + UNDERSCORE_ID + ASC, null);
 
         ArrayList<Event> events = new ArrayList<Event>();
@@ -256,8 +233,26 @@ public class DBQuester implements DatabaseInterface {
      */
     @Override
     public void storeCourse(Course course) {
+    	SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
     	CourseDataSource cds = CourseDataSource.getInstance();
-    	cds.create(course, null);
+
+    	List<String> storedCourses = new ArrayList<String>();
+        Cursor cursor = db.rawQuery(SELECT
+        		+ CourseTable.COLUMN_NAME_NAME
+        		+ FROM + CourseTable.TABLE_NAME_COURSE,
+        		null);
+        if (cursor.moveToFirst()) {
+        	while (!cursor.isAfterLast()) {
+				String courseName = cursor.getString(cursor.getColumnIndex(CourseTable.COLUMN_NAME_NAME));
+				storedCourses.add(courseName);
+			}
+        }
+
+        if (storedCourses.contains(course.getName())) {
+			cds.update(course, null);
+		} else {
+			cds.create(course, null);
+		}
     }
 
     /**
@@ -266,8 +261,28 @@ public class DBQuester implements DatabaseInterface {
      */
     @Override
     public void storeCourses(List<Course> courses) {
-        // TODO Auto-generated method stub
+    	SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+    	CourseDataSource cds = CourseDataSource.getInstance();
 
+    	List<String> storedCourses = new ArrayList<String>();
+        Cursor cursor = db.rawQuery(SELECT
+        		+ CourseTable.COLUMN_NAME_NAME
+        		+ FROM + CourseTable.TABLE_NAME_COURSE,
+        		null);
+        if (cursor.moveToFirst()) {
+        	while (!cursor.isAfterLast()) {
+				String courseName = cursor.getString(cursor.getColumnIndex(CourseTable.COLUMN_NAME_NAME));
+				storedCourses.add(courseName);
+			}
+        }
+
+    	for (Course course : courses) {
+            if (storedCourses.contains(course.getName())) {
+    			cds.update(course, null);
+    		} else {
+    			cds.create(course, null);
+    		}
+		}
     }
 
     /**
@@ -276,8 +291,16 @@ public class DBQuester implements DatabaseInterface {
      */
     @Override
     public void storeEventsFromCourse(Course course) {
-        // TODO Auto-generated method stub
+    	EventDataSource eds = EventDataSource.getInstance();
 
+    	List<Event> events = course.getEvents();
+    	for (Event event : events) {
+			if (event.getId() == NO_ID) {
+				eds.create(event, course.getName());
+			} else {
+				eds.update(event, course.getName());
+			}
+		}
     }
 
     /**
@@ -289,5 +312,11 @@ public class DBQuester implements DatabaseInterface {
         // TODO Auto-generated method stub
 
     }
+
+	@Override
+	public Event getEvent(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
