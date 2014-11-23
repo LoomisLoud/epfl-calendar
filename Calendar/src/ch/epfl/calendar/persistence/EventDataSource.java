@@ -22,7 +22,7 @@ public class EventDataSource implements DAO {
     private static final String SUCCESS_CREATE = "Event successfully created!";
     private static final String SUCCESS_DELETE = "Event successfully deleted";
     private static final String SUCCESS_UPDATE = "Event successfully updated";
-    
+
     private static final String NO_COURSE = "NoCourse";
 
     private static EventDataSource mEventDataSource;
@@ -88,8 +88,8 @@ public class EventDataSource implements DAO {
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
 
         long rowId = db.update(EventTable.TABLE_NAME_EVENT, values,
-                EventTable.COLUMN_NAME_NAME + " = ?",
-                new String[] {event.getName()});
+                EventTable.COLUMN_NAME_ID + " = ?",
+                new String[] {Integer.toString(event.getId())});
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_UPDATE);
             throw new SQLiteCalendarException(EventDataSource.ERROR_UPDATE);
@@ -111,7 +111,7 @@ public class EventDataSource implements DAO {
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         long rowId = db.delete(EventTable.TABLE_NAME_EVENT,
-                EventTable.COLUMN_NAME_NAME + " = '" + event.getName() + "'",
+                EventTable.COLUMN_NAME_ID + " = '" + event.getId() + "'",
                 null);
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_DELETE);
