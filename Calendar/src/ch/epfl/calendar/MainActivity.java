@@ -308,8 +308,16 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        String cours = event.getName().split("\n")[0];
-        switchToCourseDetails(cours);
+        if (event.getmType().equals(PeriodType.LECTURE)
+                || event.getmType().equals(PeriodType.PROJECT)
+                || event.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = event.getName().split("\n")[0];
+            switchToCourseDetails(cours);
+        } else {
+            Toast.makeText(MainActivity.this,
+                    "Short pressed event: " + event.getName(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -405,7 +413,7 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-	public void callbackDownload(boolean success, List<Course> courses) {
+    public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
             mListCourses = courses;
             mWeekView.notifyDatasetChanged();

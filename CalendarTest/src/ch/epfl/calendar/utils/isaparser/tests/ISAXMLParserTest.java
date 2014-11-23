@@ -12,13 +12,13 @@ import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.mockito.Mockito;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.PeriodType;
+import ch.epfl.calendar.testing.utils.MockTestCase;
 import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
 import ch.epfl.calendar.utils.isaparser.ParsingException;
 
@@ -31,7 +31,7 @@ import android.util.Xml;
  * @author AblionGE
  *
  */
-public class ISAXMLParserTest extends TestCase {
+public class ISAXMLParserTest extends MockTestCase {
     
     private static Method skip;
     private static Method readText;
@@ -152,7 +152,7 @@ public class ISAXMLParserTest extends TestCase {
         text = new ByteArrayInputStream("<start>bla</start>".getBytes("UTF-8"));
     }
 
-    public void testParse() throws ParsingException {
+    public void testParseWithNull() throws ParsingException {
         //With null argument
         try {
             new ISAXMLParser().parse(null);
@@ -166,10 +166,55 @@ public class ISAXMLParserTest extends TestCase {
         }
     }
 
+    public void testParseWithExceptions() throws IOException, XmlPullParserException {
+        //Test to have an XmlPullParserException
+        try {
+            new ISAXMLParser().parse(new ByteArrayInputStream("".getBytes()));
+        } catch (ParsingException e) {
+            if (e.getMessage().equals("Parsing Error during XML Parsing")) {
+                //Waited exception
+            } else {
+                fail();
+            }
+        }
+        
+        //Tests to have an IOException
+        XmlPullParser mockParser = Mockito.mock(XmlPullParser.class);
+        Mockito.doThrow(new IOException("ERROR")).when(mockParser).nextTag();
+        
+        InputStream in = new ByteArrayInputStream("<tag>salut</tag>".getBytes());
+        try {
+            new ISAXMLParser(mockParser).parse(in);
+        } catch (ParsingException e) {
+            if (e.getMessage().equals("IO Error during XML Parsing (nextTag())")) {
+                //Waited exception
+            } else {
+                fail();
+            }
+        }
+        
+        in = Mockito.mock(InputStream.class);
+        Mockito.doThrow(new IOException("ERROR")).when(in).close();
+        try {
+            new ISAXMLParser().parse(in);
+        } catch (ParsingException e) {
+            if (e.getMessage().equals("Closing IO Error during XML Parsing")) {
+                //Waited exception
+            } else {
+                fail();
+            }
+        }
+    }
+
+    public void testParseWithCorrectInput() {
+        List<Course> courses = new ISAXMLParser().parse(standardInput);
+        assertEquals(2, courses.size());
+    }
+
     public void testReadData() throws IllegalAccessException, IllegalArgumentException, 
         InvocationTargetException, ParsingException, XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
-        
+
       //With Null argument
         try {
             readData.invoke(new ISAXMLParser(), new Object[] {});
@@ -183,8 +228,8 @@ public class ISAXMLParserTest extends TestCase {
                 }
             }
         }
-        
-        //With null arguments
+
+        //With empty XML
         try {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(standardReadDataNull, null);
@@ -193,7 +238,7 @@ public class ISAXMLParserTest extends TestCase {
             List<Course> courses = (List<Course>) readData.invoke(new ISAXMLParser(parser), new Object[] {});
             assertEquals(0, courses.size());
         } finally { }
-        
+
         //With standard input with 1 Course
         try {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -203,7 +248,7 @@ public class ISAXMLParserTest extends TestCase {
             List<Course> courses = (List<Course>) readData.invoke(new ISAXMLParser(parser), new Object[] {});
             assertEquals(1, courses.size());
         } finally { }
-        
+
       //With standard input with 2 Course (3 periods)
         try {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -214,6 +259,39 @@ public class ISAXMLParserTest extends TestCase {
             assertEquals(2, courses.size());
             assertEquals(2, courses.get(0).getPeriods().size());
         } finally { }
+
+        //With throwing Exceptions
+        //XmlPullParserException
+        XmlPullParser mockParser = Mockito.mock(XmlPullParser.class);
+        Mockito.doThrow(new XmlPullParserException("ERROR")).when(mockParser).next();
+
+        try {
+            readData.invoke(new ISAXMLParser(mockParser), new Object[] {});
+            
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof ParsingException) {
+                if (e.getTargetException().getMessage().equals("Parsing Error during XML Parsing")) {
+                    //waited exception
+                } else {
+                    fail();
+                }
+            }
+        }
+
+        //IOException
+        mockParser = Mockito.mock(XmlPullParser.class);
+        Mockito.doThrow(new IOException("ERROR")).when(mockParser).next();
+        try {
+            readData.invoke(new ISAXMLParser(mockParser), new Object[] {});
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof ParsingException) {
+                if (e.getTargetException().getMessage().equals("IO Error during XML Parsing")) {
+                    //waited exception
+                } else {
+                    fail();
+                }
+            }
+        }
     }
 
     public void testReadStudyPeriod() throws IllegalAccessException, IllegalArgumentException,
