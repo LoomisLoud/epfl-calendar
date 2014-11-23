@@ -34,7 +34,19 @@ public class CoursesListActivity extends Activity implements
     public static final int AUTH_ACTIVITY_CODE = 1;
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
-
+    private static final int ONE = 1;
+    private static final int TWO = 2;
+    private static final int THREE = 3;
+    private static final int FOUR = 4;
+    private static final int FIVE = 5;
+    private static final int SIX = 6;
+    private static final int SEVEN = 7;
+    private static final int EIGHT = 8;
+    private static final int NINE = 9;
+    private static final int TEN = 10;
+    private static final int ELEVEN = 11;
+    private static final int TWELVE = 12;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,9 +131,9 @@ public class CoursesListActivity extends Activity implements
         final List<Map<String, String>> courseInfoList = coursesName;
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
-                R.layout.listview_images, new String[] { "credit_image",
-                        "course", "info" }, new int[] { R.id.credit_image,
-                        R.id.course, R.id.info });
+                R.layout.listview_images,
+                new String[] {"credit_image", "course", "info" },
+                new int[] {R.id.credit_image, R.id.course, R.id.info });
 
         mListView.setAdapter(simpleAdapter);
 
@@ -171,33 +183,33 @@ public class CoursesListActivity extends Activity implements
 
     private int getCreditImage(Course cours) {
         switch (cours.getCredits()) {
-        case 1:
-            return R.drawable.un;
-        case 2:
-            return R.drawable.deux;
-        case 3:
-            return R.drawable.trois;
-        case 4:
-            return R.drawable.quatre;
-        case 5:
-            return R.drawable.cinq;
-        case 6:
-            return R.drawable.six;
-        case 7:
-            return R.drawable.sept;
-        case 8:
-            return R.drawable.huit;
-        case 9:
-            return R.drawable.neuf;
-        case 10:
-            return R.drawable.dix;
-        case 11:
-            return R.drawable.onze;
-        case 12:
-            return R.drawable.douze;
+            case ONE:
+                return R.drawable.un;
+            case TWO:
+                return R.drawable.deux;
+            case THREE:
+                return R.drawable.trois;
+            case FOUR:
+                return R.drawable.quatre;
+            case FIVE:
+                return R.drawable.cinq;
+            case SIX:
+                return R.drawable.six;
+            case SEVEN:
+                return R.drawable.sept;
+            case EIGHT:
+                return R.drawable.huit;
+            case NINE:
+                return R.drawable.neuf;
+            case TEN:
+                return R.drawable.dix;
+            case ELEVEN:
+                return R.drawable.onze;
+            case TWELVE:
+                return R.drawable.douze;
 
-        default:
-            return R.drawable.vingt;
+            default:
+                return R.drawable.vingt;
 
         }
     }
