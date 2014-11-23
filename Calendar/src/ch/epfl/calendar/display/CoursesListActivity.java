@@ -215,7 +215,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
                 return R.drawable.douze;
 
             default:
-                return R.drawable.vingt;
+                return R.drawable.zero;
 
         }
     }
