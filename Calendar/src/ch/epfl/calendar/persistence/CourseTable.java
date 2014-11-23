@@ -24,12 +24,12 @@ public class CourseTable {
      * See {@link SQLiteDatabase#onCreate(SQLiteDatabase}
      */
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE" + CourseTable.TABLE_NAME_COURSE + "("
-                + CourseTable.COLUMN_NAME_NAME + "TEXT PRIMARY KEY, "
-                + CourseTable.COLUMN_NAME_TEACHER + "TEXT, "
-                + CourseTable.COLUMN_NAME_CREDITS + "INTEGER, "
-                + CourseTable.COLUMN_NAME_CODE + "TEXT, "
-                + CourseTable.COLUMN_NAME_DESCRIPTION + "TEXT)");
+        db.execSQL("CREATE TABLE " + CourseTable.TABLE_NAME_COURSE + "("
+                + CourseTable.COLUMN_NAME_NAME + " TEXT PRIMARY KEY, "
+                + CourseTable.COLUMN_NAME_TEACHER + " TEXT, "
+                + CourseTable.COLUMN_NAME_CREDITS + " INTEGER, "
+                + CourseTable.COLUMN_NAME_CODE + " TEXT, "
+                + CourseTable.COLUMN_NAME_DESCRIPTION + " TEXT)");
     }
 
     /**

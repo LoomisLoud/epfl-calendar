@@ -22,6 +22,7 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
+import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.AuthenticationUtils;
@@ -96,6 +97,9 @@ public class MainActivity extends DefaultActionBarActivity implements
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
         } else {
+            DBQuester db = new DBQuester();
+            db.getAllCourses();
+            
             if (!mAuthUtils.isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
             } else {

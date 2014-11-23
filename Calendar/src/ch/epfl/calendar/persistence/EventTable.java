@@ -17,19 +17,24 @@ public class EventTable {
     public static final String COLUMN_NAME_ENDDATE = "enddate";
     public static final String COLUMN_NAME_TYPE = "type";
     public static final String COLUMN_NAME_COURSE = "course";
+    private static final String FOREIGN_KEY = " FOREIGN KEY ";
+    private static final String REFERENCES = " REFERENCES ";
 
     /**
      * See {@link SQLiteDatabase#onCreate(SQLiteDatabase}
      */
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE" + EventTable.TABLE_NAME_EVENT + "("
+        db.execSQL("CREATE TABLE " + EventTable.TABLE_NAME_EVENT + "("
                 + EventTable.COLUMN_NAME_ID
-                + "INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + EventTable.COLUMN_NAME_NAME + "TEXT, "
-                + EventTable.COLUMN_NAME_STARTDATE + "TEXT, "
-                + EventTable.COLUMN_NAME_ENDDATE + "TEXT, "
-                + EventTable.COLUMN_NAME_TYPE + "TEXT, "
-                + EventTable.COLUMN_NAME_COURSE + "TEXT INTEGER FOREIGN KEY)");
+                + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + EventTable.COLUMN_NAME_NAME + " TEXT, "
+                + EventTable.COLUMN_NAME_STARTDATE + " TEXT, "
+                + EventTable.COLUMN_NAME_ENDDATE + " TEXT, "
+                + EventTable.COLUMN_NAME_TYPE + " TEXT, "
+                + EventTable.COLUMN_NAME_COURSE + " TEXT"
+                + FOREIGN_KEY + "(" + EventTable.COLUMN_NAME_COURSE + ")"
+                + REFERENCES + CourseTable.TABLE_NAME_COURSE + "(" + CourseTable.COLUMN_NAME_NAME + ")"
+                + ");");
     }
 
     /**
