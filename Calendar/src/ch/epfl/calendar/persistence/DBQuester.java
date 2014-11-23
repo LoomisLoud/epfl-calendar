@@ -120,8 +120,10 @@ public class DBQuester implements DatabaseInterface {
                         .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
                 String courseName = cursor.getString(cursor
                         .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+                int id = cursor.getInt(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_ID));
 
-                events.add(new Event(name, startDate, endDate, type, courseName));
+                events.add(new Event(name, startDate, endDate, type, courseName, id));
             }
         }
 
@@ -152,8 +154,10 @@ public class DBQuester implements DatabaseInterface {
                         .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
                 String courseName = cursor.getString(cursor
                         .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+                int id = cursor.getInt(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_ID));
 
-                events.add(new Event(name, startDate, endDate, type, courseName));
+                events.add(new Event(name, startDate, endDate, type, courseName, id));
             }
         }
 
@@ -180,8 +184,10 @@ public class DBQuester implements DatabaseInterface {
                         .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
                 String courseName = cursor.getString(cursor
                         .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+                int id = cursor.getInt(cursor
+                        .getColumnIndex(EventTable.COLUMN_NAME_ID));
 
-                events.add(new Event(name, startDate, endDate, type, courseName));
+                events.add(new Event(name, startDate, endDate, type, courseName, id));
             }
         }
 

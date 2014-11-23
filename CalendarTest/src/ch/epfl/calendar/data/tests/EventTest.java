@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 public class EventTest extends TestCase {
 
 	public void testTwoConstructorsSameObject() {
-		Event firstEvent = new Event("sweng", "12.10.2014 08:15", "12.10.2014 09:15", "Default", "gym");
+		Event firstEvent = new Event("sweng", "12.10.2014 08:15", "12.10.2014 09:15", "Default", "gym", "eventID");
 		Event secondEvent = new Event("12.10.2014", "sweng", "08:15", "09:15", "Default", "gym");
 		Log.i("1st event = ", firstEvent.toString());
 		Log.i("2nd event = ", secondEvent.toString());
@@ -26,7 +26,7 @@ public class EventTest extends TestCase {
 	}
 
 	public void testToString() {
-		Event event = new Event("sweng", "12.10.2014 08:15", "12.10.2014 09:15", "Default", "gym");
+		Event event = new Event("sweng", "12.10.2014 08:15", "12.10.2014 09:15", "Default", "gym", "eventID");
 		Calendar startDate = event.getStartDate();
 		Log.i("Event = ", event.toString());
 		Log.i("Calendar toString = ", App.calendarToBasicFormatString(startDate));
