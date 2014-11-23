@@ -35,9 +35,9 @@ import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.AuthenticationUtils;
 
 /**
- *
+ * 
  * @author lweingart
- *
+ * 
  */
 public class MainActivity extends Activity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
@@ -64,12 +64,21 @@ public class MainActivity extends Activity implements
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private List<WeekViewEvent> mMListEvents = new ArrayList<WeekViewEvent>();
+
+    public List<WeekViewEvent> getmMListEvents() {
+        return mMListEvents;
+    }
+
+    public void setmMListEvents(List<WeekViewEvent> mMListEvents) {
+        this.mMListEvents = mMListEvents;
+    }
+
     private long mIdEvent = 0;
     private List<Course> mListCourses = new ArrayList<Course>();
     private ProgressDialog mDialog;
 
     private Activity mThisActivity;
-    
+
     private AuthenticationUtils mAuthUtils;
 
     public static final String TAG = "MainActivity::";
@@ -240,26 +249,26 @@ public class MainActivity extends Activity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
-            case R.id.action_courses_list:
-                switchToCoursesList();
-                return true;
-            case R.id.action_settings:
-                switchToCreditsActivity();
-                return true;
-            case R.id.add_event:
-                switchToAddEventsActivity();
-                return true;
-            case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            case R.id.action_update_activity:
-                populateCalendar();
-                return true;
-            case R.id.action_logout:
-                logout();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case R.id.action_courses_list:
+            switchToCoursesList();
+            return true;
+        case R.id.action_settings:
+            switchToCreditsActivity();
+            return true;
+        case R.id.add_event:
+            switchToAddEventsActivity();
+            return true;
+        case R.id.action_today:
+            mWeekView.goToToday();
+            return true;
+        case R.id.action_update_activity:
+            populateCalendar();
+            return true;
+        case R.id.action_logout:
+            logout();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
 
         }
     }
@@ -368,7 +377,8 @@ public class MainActivity extends Activity implements
 
         if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
             String name = data.getExtras().get("nameInfo").toString();
-            String description = data.getExtras().getString("descriptionEvent").toString();
+            String description = data.getExtras().getString("descriptionEvent")
+                    .toString();
 
             int startYear = data.getExtras().getInt("startYear");
             int startMonth = data.getExtras().getInt("startMonth");
@@ -420,6 +430,16 @@ public class MainActivity extends Activity implements
         } else {
             this.logout();
         }
+    }
+
+    public void weeklyEvent(Calendar end, WeekViewEvent event) {
+        List<WeekViewEvent> list = getmMListEvents();
+        while (event.getEndTime().getTimeInMillis() <= end.getTimeInMillis()) {
+            list.add(event);
+            event.getStartTime().add(Calendar.DAY_OF_MONTH, 7);
+            event.getEndTime().add(Calendar.DAY_OF_MONTH, 7);
+        }
+        setmMListEvents(list);
     }
 
 }
