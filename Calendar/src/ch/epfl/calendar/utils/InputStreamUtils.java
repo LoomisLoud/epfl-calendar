@@ -14,8 +14,14 @@ public final class InputStreamUtils {
     
     private static final int BUF_SIZE = 1024;
     
-    public static String readInputStream(InputStream is) throws IOException {
-        Reader in = new InputStreamReader(is, "ISO-8859-1");
+    public static String readInputStream(InputStream is, String encoding) throws IOException {
+        if (is == null) {
+            throw new IOException("The input stream is null");
+        }
+        if (encoding == null) {
+            throw new IOException("The string to set the encoding is null");
+        }
+        Reader in = new InputStreamReader(is, encoding);
         char[] buffer = new char[BUF_SIZE];
         int read = in.read(buffer);
         StringBuilder sb = new StringBuilder();

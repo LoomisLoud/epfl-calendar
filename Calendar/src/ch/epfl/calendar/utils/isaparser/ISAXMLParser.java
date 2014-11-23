@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.utils.isaparser;
 
@@ -24,15 +24,15 @@ public class ISAXMLParser {
     // We don't use namespaces
     private static final String NMP = null;
     private XmlPullParser mParser = null;
-    
+
     public ISAXMLParser() {
         mParser = Xml.newPullParser();
     }
-    
+
     public ISAXMLParser(XmlPullParser parser) {
         mParser = parser;
     }
-   
+
     /**
      * Parse an InputStream
      * @param in
@@ -52,9 +52,7 @@ public class ISAXMLParser {
         } catch (XmlPullParserException e) {
             throw new ParsingException("Parsing Error during XML Parsing");
         } catch (IOException e) {
-            throw new ParsingException("IO Error during XML Parsing");
-        } catch (IllegalArgumentException e) {
-            throw new ParsingException(e.getMessage());
+            throw new ParsingException("IO Error during XML Parsing (nextTag())");
         } finally {
             try {
                 in.close();
@@ -63,7 +61,7 @@ public class ISAXMLParser {
             }
         }
     }
-    
+
     /**
      * Read Data
      * @param mParser
@@ -99,7 +97,7 @@ public class ISAXMLParser {
                 } else {
                     skip();
                 }
-            }  
+            }
             return courses;
         }  catch (XmlPullParserException e) {
             throw new ParsingException("Parsing Error during XML Parsing");
@@ -107,7 +105,7 @@ public class ISAXMLParser {
             throw new ParsingException("IO Error during XML Parsing");
         }
     }
-    
+
     /**
      * Processes different tags to construct a Course Object.
      * @param mParser
@@ -150,7 +148,7 @@ public class ISAXMLParser {
         return new Course(course, date, startTime, endTime, type, rooms);
     }
 
-    
+
     /**
      * Processes course tags.
      * @param mParser
@@ -177,7 +175,7 @@ public class ISAXMLParser {
         }
         return name;
     }
-    
+
     /**
      * Processes Type tags.
      * @param mParser
@@ -205,7 +203,7 @@ public class ISAXMLParser {
         }
         return text;
     }
-    
+
     /**
      * Processes room tags.
      * @param mParser
@@ -233,8 +231,8 @@ public class ISAXMLParser {
         return name;
     }
 
-    
-    
+
+
     /**
      * Processes text tags.
      * @param mParser
@@ -281,7 +279,7 @@ public class ISAXMLParser {
         }
         return result;
     }
-    
+
     /**
      * Skip tags don't needed
      * @param mParser
