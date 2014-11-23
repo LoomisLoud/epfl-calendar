@@ -8,9 +8,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import ch.epfl.calendar.App;
 import android.os.Parcel;
 import android.os.Parcelable;
+import ch.epfl.calendar.App;
 
 
 /**
@@ -26,6 +26,7 @@ public class Period implements Parcelable {
     private Calendar mStartDate;
     private Calendar mEndDate;
     private List<String> mRooms;
+    private String mId;
 
     private static final int DOUBLE_DIGIT = 10;
 
@@ -37,7 +38,7 @@ public class Period implements Parcelable {
     private static final String TYPE_LECTURE_EN = "Lecture";
 
     /**
-     * Constuct the period object.
+     * Construct the period object.
      * date format must be of format dd.mm.yyyy
      * startTime and endTime must be of format hh:mm
      * @param date
@@ -64,19 +65,20 @@ public class Period implements Parcelable {
     }
 
     /**
-     * Construc the period object.
+     * Construct the period object.
      * startDate and endDate must be of format 'dd.mm.yyyy hh:mm'
      * @param type
      * @param startDate
      * @param endDate
      * @param rooms
      */
-    public Period(String type, String startDate, String endDate, List<String> rooms) {
+    public Period(String type, String startDate, String endDate, List<String> rooms, String id) {
     	this(startDate.substring(App.ZERO_INDEX, App.END_DATE_INDEX),
     		 startDate.substring(App.START_TIME_INDEX),
     		 endDate.substring(App.START_TIME_INDEX),
     		 type,
     		 rooms);
+    	this.mId = id;
     }
 
     /**
@@ -160,6 +162,14 @@ public class Period implements Parcelable {
             throw new NullPointerException();
         }
         this.mEndDate = endDate;
+    }
+
+    public String getId() {
+    	return mId;
+    }
+
+    public void setId(String id) {
+    	this.mId = id;
     }
 
     /*
@@ -255,6 +265,9 @@ public class Period implements Parcelable {
         } else {
             return false;
         }
+        if (!this.mId.equals(otherPeriod.getId())) {
+        	return false;
+		}
         return true;
     }
 
@@ -281,6 +294,7 @@ public class Period implements Parcelable {
         parcel.writeSerializable(getStartDate());
         parcel.writeSerializable(getEndDate());
         parcel.writeList(getRooms());
+        parcel.writeSerializable(getId());
     }
 
     private Period(Parcel in) {
@@ -290,6 +304,7 @@ public class Period implements Parcelable {
         ArrayList<String> rooms = new ArrayList<String>();
         in.readList(rooms, String.class.getClassLoader());
         this.setRooms(rooms);
+        this.setId((String) in.readSerializable());
     }
 
     @Override
