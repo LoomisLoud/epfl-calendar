@@ -29,7 +29,7 @@ public class Course implements Parcelable {
             String type, List<String> rooms) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
-        this.addPeriod(new Period(date, startTime, endTime, type, rooms));
+        this.addPeriod(new Period(date, startTime, endTime, type, rooms, null));
         this.mTeacher = null;
         this.mCredits = 0;
         this.mEvents = new ArrayList<Event>();

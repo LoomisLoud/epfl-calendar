@@ -6,10 +6,9 @@ package ch.epfl.calendar.data.tests;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import junit.framework.TestCase;
 import android.os.Parcel;
 import android.util.Log;
-
-import junit.framework.TestCase;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 
@@ -26,28 +25,28 @@ public class PeriodTest extends TestCase {
 	protected void setUp() throws Exception {
 	    ArrayList<String> rooms = new ArrayList<String>();
 	    rooms.add("CO2");
-	    mFullPeriod = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
+	    mFullPeriod = new Period("16.10.2014", "16:15", "17:15", "cours", rooms, null);
 	}
 
 	public void testTwoConstructorsSameObject() {
 	    ArrayList<String> rooms = new ArrayList<String>();
 	    rooms.add("CO2");
-	    Period firstPeriod = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
-	    Period secondPeriod = new Period("cours", "16.10.2014 16:15", "16.10.2014 17:15", rooms);
+	    Period firstPeriod = new Period("16.10.2014", "16:15", "17:15", "cours", rooms, null);
+	    Period secondPeriod = new Period("cours", "16.10.2014 16:15", "16.10.2014 17:15", rooms, null);
 		Log.i("1st period = ", firstPeriod.toString());
 		Log.i("2nd period = ", secondPeriod.toString());
 		assertEquals(firstPeriod, secondPeriod);
 	}
 
 	public void testInvertedDate() {
-		mPeriod = new Period("16.01.2014", "17:15", "16:15", null, null);
-		Period normalPeriod = new Period("16.01.2014", "16:15", "17:15", null, null);
+		mPeriod = new Period("16.01.2014", "17:15", "16:15", null, null, null);
+		Period normalPeriod = new Period("16.01.2014", "16:15", "17:15", null, null, null);
 		assertEquals(mPeriod.getStartDate(), normalPeriod.getStartDate());
 		assertEquals(mPeriod.getEndDate(), normalPeriod.getEndDate());
 	}
 
 	public void testSetters() {
-		mPeriod = new Period("16.01.2014", "16:15", "17:15", "cours", null);
+		mPeriod = new Period("16.01.2014", "16:15", "17:15", "cours", null, null);
 		ArrayList<String> testArray = null;
 		Calendar testCal = null;
 		try {
@@ -131,7 +130,7 @@ public class PeriodTest extends TestCase {
 			//success
 		}
 
-		Period p = new Period("10.10.2010", "10:12", "10:15", null, null);
+		Period p = new Period("10.10.2010", "10:12", "10:15", null, null, null);
 		mPeriod.setStartDate(p.getStartDate());
 		assertEquals(mPeriod.getStartDate(), p.getStartDate());
 
@@ -146,7 +145,7 @@ public class PeriodTest extends TestCase {
     public void testEqualsDifferentReference() {
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
-        Period period2 = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
+        Period period2 = new Period("16.10.2014", "16:15", "17:15", "cours", rooms, null);
         assertEquals(mFullPeriod, period2);
     }
 
@@ -157,7 +156,7 @@ public class PeriodTest extends TestCase {
     public void testHashDifferentReference() {
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
-        Period period2 = new Period("16.10.2014", "16:15", "17:15", "cours", rooms);
+        Period period2 = new Period("16.10.2014", "16:15", "17:15", "cours", rooms, null);
         assertEquals(mFullPeriod.hashCode(), period2.hashCode());
     }
 

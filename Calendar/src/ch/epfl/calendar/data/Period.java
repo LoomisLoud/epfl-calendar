@@ -48,7 +48,7 @@ public class Period implements Parcelable {
      * @param rooms
      */
     public Period(String date, String startTime, String endTime, String type,
-            List<String> rooms) {
+            List<String> rooms, String id) {
         this.mStartDate = App.createCalendar(date, startTime);
         this.mEndDate = App.createCalendar(date, endTime);
         if (this.mStartDate != null && this.mEndDate != null) {
@@ -62,6 +62,7 @@ public class Period implements Parcelable {
             setType(type);
         }
         this.mRooms = rooms;
+        this.mId = id;
     }
 
     /**
@@ -77,8 +78,8 @@ public class Period implements Parcelable {
     		 startDate.substring(App.START_TIME_INDEX),
     		 endDate.substring(App.START_TIME_INDEX),
     		 type,
-    		 rooms);
-    	this.mId = id;
+    		 rooms,
+    		 id);
     }
 
     /**

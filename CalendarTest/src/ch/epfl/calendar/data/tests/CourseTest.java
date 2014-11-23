@@ -40,15 +40,15 @@ public class CourseTest extends TestCase {
 	    mCourse.setDescription("Waffle's knowledge  of the world");
 	    ArrayList<String> rooms = new ArrayList<String>();
 	    rooms.add("CO2");
-        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms, null);
         mCourse.addPeriod(periodNormal);
 	}
 
 
 	public void testAddPeriod() {
 		Course course = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
-		Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
-		Period periodAnything = new Period("10.10.2010", "08:15", "09:15", "Anything", new ArrayList<String>());
+		Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>(), null);
+		Period periodAnything = new Period("10.10.2010", "08:15", "09:15", "Anything", new ArrayList<String>(), null);
 
 		course.addPeriod(periodAnything);
 
@@ -94,7 +94,7 @@ public class CourseTest extends TestCase {
 		Course course = new Course("test", "16.06.2014", "16:15", "17:15",
 				"cours", new ArrayList<String>());
 		Period period = new Period("16.06.2014", "16:15", "17:15", "Exercices",
-				new ArrayList<String>());
+				new ArrayList<String>(), null);
 		ArrayList<Period> list = new ArrayList<Period>();
 		list.add(period);
 
@@ -219,7 +219,7 @@ public class CourseTest extends TestCase {
         course2.setDescription("Waffle's knowledge  of the world");
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
-        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms, null);
         course2.addPeriod(periodNormal);
         assertEquals(mCourse, course2);
 	}
@@ -236,7 +236,7 @@ public class CourseTest extends TestCase {
         course2.setDescription("Waffle's knowledge  of the world");
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
-        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms, null);
         course2.addPeriod(periodNormal);
         assertEquals(mCourse.hashCode(), course2.hashCode());
     }
