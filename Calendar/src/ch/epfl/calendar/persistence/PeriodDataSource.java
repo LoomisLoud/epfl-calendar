@@ -6,16 +6,15 @@ package ch.epfl.calendar.persistence;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.Logger;
 
 /**
  * DAO for {@link Period}.
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class PeriodDataSource implements DAO {
 
@@ -38,27 +37,24 @@ public class PeriodDataSource implements DAO {
 
     /**
      * Create a period.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
     @Override
-    public void create(Object obj) throws SQLiteCalendarException {
+    public void create(Object obj, String key) throws SQLiteCalendarException {
         Period period = (Period) obj;
         assert period != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(PeriodTable.COLUMN_NAME_ID, period.getId());
         values.put(PeriodTable.COLUMN_NAME_TYPE, period.getType().toString());
-        // TODO check the return value of Calendar toString method
-        values.put(PeriodTable.COLUMN_NAME_STARTDATE, period.getStartDate()
-                .toString());
-        values.put(PeriodTable.COLUMN_NAME_ENDDATE, period.getEndDate()
-                .toString());
+        values.put(PeriodTable.COLUMN_NAME_STARTDATE, App.calendarToBasicFormatString(period.getStartDate()));
+        values.put(PeriodTable.COLUMN_NAME_ENDDATE, App.calendarToBasicFormatString(period.getEndDate()));
         String roomsCSV = App.csvStringFromList(period.getRooms());
         values.put(PeriodTable.COLUMN_NAME_ROOMS, roomsCSV);
-        // TODO check how to store this foreign key value
-        // values.put(PeriodTable.COLUMN_NAME_COURSE_ID, ???);
+        values.put(PeriodTable.COLUMN_NAME_COURSE, key);
 
         long rowId = db.insert(PeriodTable.TABLE_NAME_PERIOD, null, values);
         if (rowId == -1) {
@@ -71,35 +67,28 @@ public class PeriodDataSource implements DAO {
 
     /**
      * Update a period.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
     @Override
-    public void update(Object obj) throws SQLiteCalendarException {
+    public void update(Object obj, String key) throws SQLiteCalendarException {
         Period period = (Period) obj;
         assert period != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(PeriodTable.COLUMN_NAME_ID, period.getId());
         values.put(PeriodTable.COLUMN_NAME_TYPE, period.getType().toString());
-        // TODO check the return value of Calendar toString method
-        values.put(PeriodTable.COLUMN_NAME_STARTDATE, period.getStartDate()
-                .toString());
-        values.put(PeriodTable.COLUMN_NAME_ENDDATE, period.getEndDate()
-                .toString());
+        values.put(PeriodTable.COLUMN_NAME_STARTDATE, App.calendarToBasicFormatString(period.getStartDate()));
+        values.put(PeriodTable.COLUMN_NAME_ENDDATE, App.calendarToBasicFormatString(period.getEndDate()));
         String roomsCSV = App.csvStringFromList(period.getRooms());
         values.put(PeriodTable.COLUMN_NAME_ROOMS, roomsCSV);
-        // TODO check how to store this foreign key value
-        // values.put(PeriodTable.COLUMN_NAME_COURSE_ID, ???);
+        values.put(PeriodTable.COLUMN_NAME_COURSE, key);
 
-        // TODO create id attribute and getter in Period class
         long rowId = db.update(PeriodTable.TABLE_NAME_PERIOD, values,
-                PeriodTable.COLUMN_NAME_TYPE + " = ?",
-                // TODO change this column to select the period, this is done
-                // for
-                // compiling purpose
-                new String[] {String.valueOf(period.getType())});
+                PeriodTable.COLUMN_NAME_ID + " = ?",
+                new String[] {String.valueOf(period.getId())});
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_UPDATE);
             throw new SQLiteCalendarException(PeriodDataSource.ERROR_UPDATE);
@@ -110,23 +99,19 @@ public class PeriodDataSource implements DAO {
 
     /**
      * Delete a period,
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
     @Override
-    public void delete(Object obj) throws SQLiteCalendarException {
+    public void delete(Object obj, String key) throws SQLiteCalendarException {
         Period period = (Period) obj;
         assert period != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
-        // TODO create id attribute and getter in Period class
         long rowId = db.delete(
                 PeriodTable.TABLE_NAME_PERIOD,
-                // TODO change this column to select the period, this is done
-                // for
-                // compiling purpose
-                PeriodTable.COLUMN_NAME_TYPE + " = '" + period.getType() + "'",
+                PeriodTable.COLUMN_NAME_ID + " = " + period.getId(),
                 null);
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_DELETE);
