@@ -11,62 +11,55 @@ import ch.epfl.calendar.data.Period;
 
 /**
  * Allow requests on the SQLite database of the app.
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public interface DatabaseInterface {
 
     /**
-     * @param dbh
      * @return the list of all courses in the database.
      */
-    List<Course> getAllCourses(DBHelper dbh);
+    List<Course> getAllCourses();
 
     /**
-     * @param dbh
      * @param course
      * @return the list of all periods in the course.
      */
-    List<Period> getAllPeriodsFromCourse(DBHelper dbh, String courseName);
+    List<Period> getAllPeriodsFromCourse(String courseName);
 
     /**
-     * @param dbh
      * @param course
      * @return the list of all events in the course.
      */
-    List<Event> getAllEventsFromCourse(DBHelper dbh, String courseName);
+    List<Event> getAllEventsFromCourse(String courseName);
 
     /**
      * Store a course in the database.
-     * 
-     * @param dbh
+     *
      * @param course
      */
-    void storeCourse(DBHelper dbh, Course course);
+    void storeCourse(Course course);
 
     /**
      * Store a list of courses in the database.
-     * 
-     * @param dbh
+     *
      * @param courses
      */
-    void storeCourses(DBHelper dbh, List<Course> courses);
+    void storeCourses(List<Course> courses);
 
     /**
      * Store a list of events from a course in the database.
-     * 
-     * @param dbh
+     *
      * @param course
      */
-    void storeEventsFromCourse(DBHelper dbh, Course course);
+    void storeEventsFromCourse(Course course);
 
     /**
      * Store an event in the database.
-     * 
-     * @param dbh
+     *
      * @param event
      */
-    void storeEvent(DBHelper dbh, Event event);
+    void storeEvent(Event event);
 
 }

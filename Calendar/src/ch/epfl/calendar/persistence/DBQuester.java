@@ -36,7 +36,7 @@ public class DBQuester implements DatabaseInterface {
      * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
      */
     @Override
-    public List<Course> getAllCourses(DBHelper dbh) {
+    public List<Course> getAllCourses() {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + CourseTable.TABLE_NAME_COURSE + ORDER_BY + CODE + ASC, null);
@@ -46,7 +46,7 @@ public class DBQuester implements DatabaseInterface {
             while (!cursor.isAfterLast()) {
                 String courseName = cursor.getString(cursor
                         .getColumnIndex(CourseTable.COLUMN_NAME_NAME));
-                List<Period> periods = getAllPeriodsFromCourse(dbh, courseName);
+                List<Period> periods = getAllPeriodsFromCourse(courseName);
                 String teacher = cursor.getString(cursor
                         .getColumnIndex(CourseTable.COLUMN_NAME_TEACHER));
                 int credits = cursor.getInt(cursor
@@ -55,7 +55,7 @@ public class DBQuester implements DatabaseInterface {
                         .getColumnIndex(CourseTable.COLUMN_NAME_CODE));
                 String description = cursor.getString(cursor
                         .getColumnIndex(CourseTable.COLUMN_NAME_DESCRIPTION));
-                List<Event> events = getAllEventsFromCourse(dbh, courseName);
+                List<Event> events = getAllEventsFromCourse(courseName);
 
                 courses.add(new Course(courseName, periods, teacher, credits, code,
                         description, events));
@@ -70,7 +70,7 @@ public class DBQuester implements DatabaseInterface {
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
     @Override
-    public List<Period> getAllPeriodsFromCourse(DBHelper dbh, String courseName) {
+    public List<Period> getAllPeriodsFromCourse(String courseName) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + PeriodTable.TABLE_NAME_PERIOD + WHERE + PeriodTable.COLUMN_NAME_COURSE
@@ -103,7 +103,7 @@ public class DBQuester implements DatabaseInterface {
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
     @Override
-    public List<Event> getAllEventsFromCourse(DBHelper dbh, String course) {
+    public List<Event> getAllEventsFromCourse(String course) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + ORDER_BY + UNDERSCORE_ID + ASC, null);
@@ -134,9 +134,9 @@ public class DBQuester implements DatabaseInterface {
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
     @Override
-    public void storeCourse(DBHelper dbh, Course course) {
-        // TODO Auto-generated method stub
-
+    public void storeCourse(Course course) {
+    	CourseDataSource cds = CourseDataSource.getInstance();
+    	cds.create(course, null);
     }
 
     /**
@@ -144,7 +144,7 @@ public class DBQuester implements DatabaseInterface {
      * ch.epfl.calendar.persistence.DBHelper, java.util.List)
      */
     @Override
-    public void storeCourses(DBHelper dbh, List<Course> courses) {
+    public void storeCourses(List<Course> courses) {
         // TODO Auto-generated method stub
 
     }
@@ -154,7 +154,7 @@ public class DBQuester implements DatabaseInterface {
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
     @Override
-    public void storeEventsFromCourse(DBHelper dbh, Course course) {
+    public void storeEventsFromCourse(Course course) {
         // TODO Auto-generated method stub
 
     }
@@ -164,7 +164,7 @@ public class DBQuester implements DatabaseInterface {
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Event)
      */
     @Override
-    public void storeEvent(DBHelper dbh, Event event) {
+    public void storeEvent(Event event) {
         // TODO Auto-generated method stub
 
     }
