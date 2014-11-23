@@ -143,7 +143,7 @@ public class ISAXMLParser {
             } else if (nameParser.equals("room")) {
                 rooms.add(readRoom());
             } else if (nameParser.equals("id")) {
-                idPeriod = readId();
+                idPeriod = readText();
             } else {
                 skip();
             }
@@ -261,26 +261,6 @@ public class ISAXMLParser {
             }
         }
         return text;
-    }
-
-    private String readId() throws IOException, XmlPullParserException {
-        if (mParser == null) {
-            throw new NullPointerException("Parser is null");
-        }
-        mParser.require(XmlPullParser.START_TAG, NMP, "id");
-        String id = null;
-        while (mParser.next() != XmlPullParser.END_TAG) {
-            if (mParser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String nameParser = mParser.getName();
-            if (nameParser.equals("id")) {
-                id = readText();
-            } else {
-                skip();
-            }
-        }
-        return id;
     }
 
     /**
