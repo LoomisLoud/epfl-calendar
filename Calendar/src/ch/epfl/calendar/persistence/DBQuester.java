@@ -110,18 +110,7 @@ public class DBQuester implements DatabaseInterface {
         Event event = null;
 
         if (cursor.moveToFirst()) {
-            String name = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_NAME));
-            String startDate = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
-            String endDate = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
-            String type = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
-            String courseName = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
-
-            event = new Event(name, startDate, endDate, type, courseName, id);
+            event = createEvent(cursor);
         }
 
         return event;
@@ -136,20 +125,7 @@ public class DBQuester implements DatabaseInterface {
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                String name = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_NAME));
-                String startDate = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
-                String endDate = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
-                String type = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
-                String courseName = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
-                int id = cursor.getInt(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_ID));
-
-                events.add(new Event(name, startDate, endDate, type, courseName, id));
+                events.add(createEvent(cursor));
             }
         }
 
@@ -170,20 +146,7 @@ public class DBQuester implements DatabaseInterface {
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                String name = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_NAME));
-                String startDate = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
-                String endDate = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
-                String type = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
-                String courseName = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
-                int id = cursor.getInt(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_ID));
-
-                events.add(new Event(name, startDate, endDate, type, courseName, id));
+                events.add(createEvent(cursor));
             }
         }
 
@@ -200,20 +163,7 @@ public class DBQuester implements DatabaseInterface {
         ArrayList<Event> events = new ArrayList<Event>();
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                String name = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_NAME));
-                String startDate = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
-                String endDate = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
-                String type = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
-                String courseName = cursor.getString(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
-                int id = cursor.getInt(cursor
-                        .getColumnIndex(EventTable.COLUMN_NAME_ID));
-
-                events.add(new Event(name, startDate, endDate, type, courseName, id));
+                events.add(createEvent(cursor));
             }
         }
 
@@ -288,6 +238,22 @@ public class DBQuester implements DatabaseInterface {
     public void storeEvent(Event event) {
         // TODO Auto-generated method stub
 
+    }
+
+    private Event createEvent(Cursor cursor) {
+        String name = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_NAME));
+        String startDate = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
+        String endDate = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
+        String type = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
+        String courseName = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+        int id = cursor.getInt(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_ID));
+        return new Event(name, startDate, endDate, type, courseName, id);
     }
 
 }
