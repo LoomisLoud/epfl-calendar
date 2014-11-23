@@ -102,9 +102,17 @@ public class CourseDataSource implements DAO {
         values.put(CourseTable.COLUMN_NAME_CODE, course.getCode());
         values.put(CourseTable.COLUMN_NAME_DESCRIPTION, course.getDescription());
 
-        // TODO find a way to insert rows in Period table for each period of the
-        // course.
-        // solution: update in PeriodTable
+        PeriodDataSource pds = PeriodDataSource.getInstance();
+        List<Period> periods = course.getPeriods();
+        for (Period period : periods) {
+			pds.update(period);
+		}
+
+        EventDataSource eds = EventDataSource.getInstance();
+        List<Event> events = course.getEvents();
+        for (Event event : events) {
+			eds.update(event);
+		}
 
         long rowId = db.update(CourseTable.TABLE_NAME_COURSE, values,
                 CourseTable.COLUMN_NAME_NAME + " = ?",
