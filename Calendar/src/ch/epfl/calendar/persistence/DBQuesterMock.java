@@ -51,4 +51,14 @@ public class DBQuesterMock implements DatabaseInterface {
         return null;
     }
 
+    @Override
+    public List<Event> getAllEvents() {
+        return new ArrayList<Event>();
+    }
+
+    @Override
+    public List<Event> getAllEventsWithoutCourse() {
+        return new ArrayList<Event>();
+    }
+
 }

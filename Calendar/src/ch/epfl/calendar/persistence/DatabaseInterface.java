@@ -36,6 +36,12 @@ public interface DatabaseInterface {
     List<Period> getAllPeriodsFromCourse(String courseName);
 
     /**
+     * 
+     * @return the list of all events in the database
+     */
+    List<Event> getAllEvents();
+
+    /**
      * @param course
      * @return the list of all events in the course.
      */
