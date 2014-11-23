@@ -3,10 +3,7 @@
  */
 package ch.epfl.calendar.persistence;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -37,31 +34,6 @@ public class PeriodDataSource implements DAO {
             PeriodDataSource.mPeriodDataSource = new PeriodDataSource();
         }
         return PeriodDataSource.mPeriodDataSource;
-    }
-
-    public ArrayList<Period> findAll() {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "
-                + PeriodTable.TABLE_NAME_PERIOD + "ORDER BY id ASC", null);
-        ArrayList<Period> periods = new ArrayList<Period>();
-
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                String type = cursor.getString(cursor
-                        .getColumnIndex(PeriodTable.COLUMN_NAME_TYPE));
-                String startDate = cursor.getString(cursor
-                        .getColumnIndex(PeriodTable.COLUMN_NAME_STARTDATE));
-                String endDate = cursor.getString(cursor
-                        .getColumnIndex(PeriodTable.COLUMN_NAME_ENDDATE));
-                String roomsCSV = cursor.getString(cursor
-                        .getColumnIndex(PeriodTable.COLUMN_NAME_ROOMS));
-                ArrayList<String> rooms = App.parseFromCSVString(roomsCSV);
-
-                periods.add(new Period(type, startDate, endDate, rooms));
-            }
-        }
-
-        return periods;
     }
 
     /**

@@ -1,9 +1,6 @@
 package ch.epfl.calendar.persistence;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import ch.epfl.calendar.App;
@@ -33,35 +30,6 @@ public class EventDataSource implements DAO {
             EventDataSource.mEventDataSource = new EventDataSource();
         }
         return EventDataSource.mEventDataSource;
-    }
-
-    /**
-     * Find all events.
-     * 
-     * @return
-     */
-    public ArrayList<Event> findAll() {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "
-                + EventTable.TABLE_NAME_EVENT + " ORDER BY _id ASC", null);
-        ArrayList<Event> events = new ArrayList<Event>();
-
-        if (cursor.moveToFirst()) {
-            String name = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_NAME));
-            String startDate = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
-            String endDate = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
-            String type = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
-            String course = cursor.getString(cursor
-                    .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
-
-            events.add(new Event(name, startDate, endDate, type, course));
-        }
-
-        return events;
     }
 
     /**

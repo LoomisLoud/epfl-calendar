@@ -3,16 +3,11 @@
  */
 package ch.epfl.calendar.persistence;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.data.Event;
-import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.Logger;
 
 /**
@@ -38,42 +33,6 @@ public class CourseDataSource implements DAO {
             CourseDataSource.mCourseDataSource = new CourseDataSource();
         }
         return CourseDataSource.mCourseDataSource;
-    }
-
-    /**
-     * Find all the courses.
-     * 
-     * @return
-     */
-    public ArrayList<Course> findAll() {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "
-                + CourseTable.TABLE_NAME_COURSE + " ORDER BY code ASC", null);
-        ArrayList<Course> courses = new ArrayList<Course>();
-
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                String name = cursor.getString(cursor
-                        .getColumnIndex(CourseTable.COLUMN_NAME_NAME));
-                // TODO find a way to select all corresponding period
-                ArrayList<Period> periods = null;
-                String teacher = cursor.getString(cursor
-                        .getColumnIndex(CourseTable.COLUMN_NAME_TEACHER));
-                int credits = cursor.getInt(cursor
-                        .getColumnIndex(CourseTable.COLUMN_NAME_CREDITS));
-                String code = cursor.getString(cursor
-                        .getColumnIndex(CourseTable.COLUMN_NAME_CODE));
-                String description = cursor.getString(cursor
-                        .getColumnIndex(CourseTable.COLUMN_NAME_DESCRIPTION));
-                // TODO find a way to select all corresponding events
-                ArrayList<Event> events = new ArrayList<Event>();
-
-                courses.add(new Course(name, periods, teacher, credits, code,
-                        description, events));
-            }
-        }
-
-        return courses;
     }
 
     /**
