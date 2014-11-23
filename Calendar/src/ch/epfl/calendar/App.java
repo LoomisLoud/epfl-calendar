@@ -52,16 +52,6 @@ public class App extends Application {
 	public static final int END_DATE_INDEX = 10;
 
 	/**
-	 * Database helper.
-	 */
-	private static DBHelper mDBHelper;
-
-	/**
-	 * Application context.
-	 */
-	private static Context mContext;
-
-	/**
 	 * Length of the date part in a split calendar string.
 	 */
 	private static final int DATE_PARTS_LENGTH = 3;
@@ -121,6 +111,16 @@ public class App extends Application {
 	 * 10 in a constant.
 	 */
 	private static final int NUMERIC_TEN = 10;
+
+	/**
+	 * Database helper.
+	 */
+	private static DBHelper mDBHelper;
+
+	/**
+	 * Application context.
+	 */
+	private static Context mContext;
 
 
 	@Override
