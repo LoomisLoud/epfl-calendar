@@ -9,8 +9,9 @@ import ch.epfl.calendar.data.Period;
 
 /**
  * Mock for the DBQuesterMock
+ * 
  * @author AblionGE
- *
+ * 
  */
 public class DBQuesterMock implements DBQuester {
 
