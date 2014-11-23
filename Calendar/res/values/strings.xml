@@ -47,8 +47,8 @@
     <!-- Toast messages -->
     <string name="authenticated">Authenticated</string>
     <string name="updated">Updated</string>
-    
     <string name="title_activity_credits">Credits</string>
     <string name="ok">OK</string>
+    <string name="title_activity_default_action_bar">DefaultActionBarActivity</string>
 
 </resources>

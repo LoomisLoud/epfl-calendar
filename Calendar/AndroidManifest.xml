@@ -45,6 +45,10 @@
             android:name=".CreditsActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog" >
         </activity>
+        <activity
+            android:name=".DefaultActionBarActivity"
+            android:label="@string/title_activity_default_action_bar" >
+        </activity>
     </application>
 
 </manifest>
