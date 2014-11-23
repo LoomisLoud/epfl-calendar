@@ -8,9 +8,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import ch.epfl.calendar.persistence.DBHelper;
 import android.app.Application;
 import android.content.Context;
+import ch.epfl.calendar.persistence.DBHelper;
 
 /**
  * @author lweingart
