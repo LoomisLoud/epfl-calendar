@@ -18,6 +18,7 @@ public class Event {
     private Calendar mEndDate;
     private String mType;
     private String mLinkedCourse;
+    private String mDescription;
 
     /**
      * Construct the event object.
@@ -30,7 +31,7 @@ public class Event {
      * @param type
      * @param linkedCourse
      */
-    public Event(String date, String name, String startTime, String endTime, String type, String linkedCourse) {
+    public Event(String date, String name, String startTime, String endTime, String type, String linkedCourse, String description) {
     	this.mName = name;
     	this.mStartDate = App.createCalendar(date, startTime);
     	this.mEndDate = App.createCalendar(date, endTime);
@@ -45,6 +46,7 @@ public class Event {
             setType(type);
         }
         this.mLinkedCourse = linkedCourse;
+        this.mDescription = description;
     }
 
     /**
@@ -56,13 +58,13 @@ public class Event {
      * @param type
      * @param course
      */
-    public Event(String name, String startTime, String endTime, String type, String linkedCourse) {
+    public Event(String name, String startTime, String endTime, String type, String linkedCourse, String description) {
     	this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX),
     		 name,
     		 startTime.substring(App.START_TIME_INDEX),
     		 endTime.substring(App.START_TIME_INDEX),
     		 type,
-    		 linkedCourse);
+    		 linkedCourse,description);
     }
 
     @Override
@@ -152,5 +154,13 @@ public class Event {
      */
     public void setLinkedCourse(String linkedCourse) {
         this.mLinkedCourse = linkedCourse;
+    }
+    
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
     }
 }
