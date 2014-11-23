@@ -23,8 +23,6 @@ public class EventDataSource implements DAO {
     private static final String SUCCESS_DELETE = "Event successfully deleted";
     private static final String SUCCESS_UPDATE = "Event successfully updated";
 
-    private static final String NO_COURSE = "NoCourse";
-
     private static EventDataSource mEventDataSource;
 
     public static EventDataSource getInstance() {
@@ -43,7 +41,7 @@ public class EventDataSource implements DAO {
     @Override
     public void create(Object obj, String key) {
         if (key == null) {
-            key = NO_COURSE;
+            key = App.NO_COURSE;
         }
         Event event = (Event) obj;
         assert event != null;
@@ -74,7 +72,7 @@ public class EventDataSource implements DAO {
     @Override
     public void update(Object obj, String key) {
         if (key == null) {
-            key = NO_COURSE;
+            key = App.NO_COURSE;
         }
         Event event = (Event) obj;
         assert event != null;

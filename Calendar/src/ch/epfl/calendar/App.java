@@ -10,6 +10,7 @@ import java.util.List;
 
 import android.app.Application;
 import android.content.Context;
+import android.database.sqlite.SQLiteOpenHelper;
 import ch.epfl.calendar.persistence.DBHelper;
 
 /**
@@ -22,6 +23,11 @@ public class App extends Application {
 	 * Database file name.
 	 */
 	public static final String DATABASE_NAME = "calendar.db";
+
+	/**
+	 * Default value for event course name.
+	 */
+	public static final String NO_COURSE = "NoCourse";
 
 	/**
 	 * Database version. This number must be increased whenever the database
