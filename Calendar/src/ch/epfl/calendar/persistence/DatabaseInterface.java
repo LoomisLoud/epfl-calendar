@@ -28,14 +28,14 @@ public interface DatabaseInterface {
      * @param course
      * @return the list of all periods in the course.
      */
-    List<Period> getAllPeriodsFromCourse(DBHelper dbh, Course course);
+    List<Period> getAllPeriodsFromCourse(DBHelper dbh, String courseName);
 
     /**
      * @param dbh
      * @param course
      * @return the list of all events in the course.
      */
-    List<Event> getAllEventsFromCourse(DBHelper dbh, Course course);
+    List<Event> getAllEventsFromCourse(DBHelper dbh, String courseName);
 
     /**
      * Store a course in the database.

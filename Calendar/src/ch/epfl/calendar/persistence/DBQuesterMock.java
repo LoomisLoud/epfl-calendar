@@ -21,12 +21,12 @@ public class DBQuesterMock implements DatabaseInterface {
     }
 
     @Override
-    public List<Period> getAllPeriodsFromCourse(DBHelper dbh, Course course) {
+    public List<Period> getAllPeriodsFromCourse(DBHelper dbh, String course) {
         return new ArrayList<Period>();
     }
 
     @Override
-    public List<Event> getAllEventsFromCourse(DBHelper dbh, Course course) {
+    public List<Event> getAllEventsFromCourse(DBHelper dbh, String course) {
         return new ArrayList<Event>();
     }
 

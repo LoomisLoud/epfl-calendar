@@ -24,22 +24,31 @@ import ch.epfl.calendar.data.Period;
  */
 public class DBQuester implements DatabaseInterface {
 
+    private static final String SELECT = "SELECT ";
+    private static final String SELECT_ALL_FROM = "SELECT * FROM ";
+    private static final String WHERE = " WHERE ";
+    private static final String ORDER_BY = "ORDER BY ";
+    private static final String ASC = "ASC";
+    private static final String CODE = "code ";
+    private static final String EQUAL = " = ";
+    private static final String ID = "id ";
+    private static final String UNDERSCORE_ID = "_id";
+
     /* (non-Javadoc)
      * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
      */
     @Override
     public List<Course> getAllCourses(DBHelper dbh) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "
-                + CourseTable.TABLE_NAME_COURSE + " ORDER BY code ASC", null);
+        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+                + CourseTable.TABLE_NAME_COURSE + ORDER_BY + CODE + ASC, null);
         ArrayList<Course> courses = new ArrayList<Course>();
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                String name = cursor.getString(cursor
+                String courseName = cursor.getString(cursor
                         .getColumnIndex(CourseTable.COLUMN_NAME_NAME));
-                // TODO find a way to select all corresponding period
-                ArrayList<Period> periods = null;
+                List<Period> periods = getAllPeriodsFromCourse(dbh, courseName);
                 String teacher = cursor.getString(cursor
                         .getColumnIndex(CourseTable.COLUMN_NAME_TEACHER));
                 int credits = cursor.getInt(cursor
@@ -48,10 +57,9 @@ public class DBQuester implements DatabaseInterface {
                         .getColumnIndex(CourseTable.COLUMN_NAME_CODE));
                 String description = cursor.getString(cursor
                         .getColumnIndex(CourseTable.COLUMN_NAME_DESCRIPTION));
-                // TODO find a way to select all corresponding events
-                ArrayList<Event> events = new ArrayList<Event>();
+                List<Event> events = getAllEventsFromCourse(dbh, courseName);
 
-                courses.add(new Course(name, periods, teacher, credits, code,
+                courses.add(new Course(courseName, periods, teacher, credits, code,
                         description, events));
             }
         }
@@ -64,10 +72,11 @@ public class DBQuester implements DatabaseInterface {
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
     @Override
-    public List<Period> getAllPeriodsFromCourse(DBHelper dbh, Course course) {
+    public List<Period> getAllPeriodsFromCourse(DBHelper dbh, String courseName) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "
-                + PeriodTable.TABLE_NAME_PERIOD + "ORDER BY id ASC", null);
+        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+                + PeriodTable.TABLE_NAME_PERIOD + WHERE + PeriodTable.COLUMN_NAME_COURSE
+                + EQUAL + courseName + ORDER_BY + ID + ASC, null);
         ArrayList<Period> periods = new ArrayList<Period>();
 
         if (cursor.moveToFirst()) {
@@ -95,10 +104,10 @@ public class DBQuester implements DatabaseInterface {
      * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
     @Override
-    public List<Event> getAllEventsFromCourse(DBHelper dbh, Course course) {
+    public List<Event> getAllEventsFromCourse(DBHelper dbh, String course) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "
-                + EventTable.TABLE_NAME_EVENT + " ORDER BY _id ASC", null);
+        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+                + EventTable.TABLE_NAME_EVENT + ORDER_BY + UNDERSCORE_ID + ASC, null);
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
