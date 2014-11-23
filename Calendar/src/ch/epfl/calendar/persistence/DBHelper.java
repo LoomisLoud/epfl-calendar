@@ -3,11 +3,10 @@
  */
 package ch.epfl.calendar.persistence;
 
-import ch.epfl.calendar.App;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import ch.epfl.calendar.App;
 
 /**
  * Class for managing the persistent storage in DB.
@@ -24,12 +23,10 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public DBHelper(Context context) {
         super(context, App.DATABASE_NAME, null, App.DATABASE_VERSION);
-        Log.i("JE RENTRE DANS", "DBHELPER");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.i("JDKSAJDSAKDSAJDSAKSA","JKDLSAJDLKLJAJLAS");
         PeriodTable.onCreate(db);
         CourseTable.onCreate(db);
         EventTable.onCreate(db);

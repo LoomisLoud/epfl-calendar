@@ -28,9 +28,9 @@ import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.AuthenticationUtils;
 
 /**
- *
+ * 
  * @author lweingart
- *
+ * 
  */
 public class MainActivity extends DefaultActionBarActivity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
@@ -62,9 +62,9 @@ public class MainActivity extends DefaultActionBarActivity implements
     private ProgressDialog mDialog;
 
     private Activity mThisActivity;
-    
+
     private AuthenticationUtils mAuthUtils;
-    
+
     private DBQuester mDB;
 
     public static final String TAG = "MainActivity::";
@@ -100,10 +100,10 @@ public class MainActivity extends DefaultActionBarActivity implements
                     .getParcelableArrayList("listCourses");
         } else {
             mDB = new DBQuester();
-//            mDB.deleteAllDB();
-            this.deleteDatabase(App.DATABASE_NAME);
+            // Used for destroy the database
+            // this.deleteDatabase(App.DATABASE_NAME);
             mListCourses = mDB.getAllCourses();
-            
+            System.out.println(mListCourses.toString());
             if (mListCourses.isEmpty()) {
                 if (!mAuthUtils.isAuthenticated(mThisActivity)) {
                     switchToAuthenticationActivity();
@@ -112,6 +112,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                     populateCalendar();
                 }
             } else {
+                // FIXME : Seems it doesn't work
                 mWeekView.notifyDatasetChanged();
             }
         }
@@ -163,9 +164,6 @@ public class MainActivity extends DefaultActionBarActivity implements
                 mOnNavigationListener);
     }
 
-    // TODO : At the beginning of the application, we "logout" the user
-    // TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-
     private void changeCalendarView(int typeView, int numberVisibleDays,
             int sizeColumnGap, int sizeFront, int sizeFrontEvent) {
         if (mWeekViewType != typeView) {
@@ -190,7 +188,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -201,7 +199,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the activity state
@@ -327,7 +325,8 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
             String name = data.getExtras().get("nameInfo").toString();
-            String description = data.getExtras().getString("descriptionEvent").toString();
+            String description = data.getExtras().getString("descriptionEvent")
+                    .toString();
 
             int startYear = data.getExtras().getInt("startYear");
             int startMonth = data.getExtras().getInt("startMonth");

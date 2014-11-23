@@ -10,7 +10,6 @@ import java.util.List;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 import ch.epfl.calendar.persistence.DBHelper;
 
 /**
@@ -125,7 +124,6 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
-        Log.i("BLABLABLA", "ON CREATE");
         super.onCreate();
         App.mContext = this.getApplicationContext();
         App.mDBHelper = new DBHelper(App.mContext);

@@ -66,6 +66,7 @@ public class DBQuester implements DatabaseInterface {
 
                 courses.add(new Course(courseName, periods, teacher, credits,
                         code, description, events));
+                cursor.moveToNext();
             }
         }
 
@@ -103,6 +104,7 @@ public class DBQuester implements DatabaseInterface {
                 ArrayList<String> rooms = App.parseFromCSVString(roomsCSV);
 
                 periods.add(new Period(type, startDate, endDate, rooms, id));
+                cursor.moveToNext();
             }
         }
 
@@ -123,6 +125,7 @@ public class DBQuester implements DatabaseInterface {
 
         if (cursor.moveToFirst()) {
             event = createEvent(cursor);
+            cursor.moveToNext();
         }
 
         closeCursor(cursor);
@@ -142,6 +145,7 @@ public class DBQuester implements DatabaseInterface {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 events.add(createEvent(cursor));
+                cursor.moveToNext();
             }
         }
 
@@ -167,6 +171,7 @@ public class DBQuester implements DatabaseInterface {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 events.add(createEvent(cursor));
+                cursor.moveToNext();
             }
         }
 
@@ -188,6 +193,7 @@ public class DBQuester implements DatabaseInterface {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 events.add(createEvent(cursor));
+                cursor.moveToNext();
             }
         }
 
@@ -247,6 +253,7 @@ public class DBQuester implements DatabaseInterface {
                 String courseName = cursor.getString(cursor
                         .getColumnIndex(CourseTable.COLUMN_NAME_NAME));
                 storedCourses.add(courseName);
+                cursor.moveToNext();
             }
         }
 
@@ -277,6 +284,7 @@ public class DBQuester implements DatabaseInterface {
                 String courseName = cursor.getString(cursor
                         .getColumnIndex(CourseTable.COLUMN_NAME_NAME));
                 storedCourses.add(courseName);
+                cursor.moveToNext();
             }
         }
 
