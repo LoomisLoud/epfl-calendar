@@ -23,7 +23,6 @@ import ch.epfl.calendar.data.Period;
  */
 public class DBQuester implements DatabaseInterface {
 
-    private static final String SELECT = "SELECT ";
     private static final String SELECT_ALL_FROM = "SELECT * FROM ";
     private static final String WHERE = " WHERE ";
     private static final String ORDER_BY = "ORDER BY ";
