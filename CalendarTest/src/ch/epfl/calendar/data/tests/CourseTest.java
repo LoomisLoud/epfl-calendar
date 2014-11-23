@@ -33,22 +33,25 @@ public class CourseTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 	    super.setUp();
-	    mCourse = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+	    mCourse = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>(), "idPeriod");
 	    mCourse.setTeacher("Pr Waffle Blue");
 	    mCourse.setCredits(FIVE_CREDITS);
 	    mCourse.setCode("CS-42");
 	    mCourse.setDescription("Waffle's knowledge  of the world");
 	    ArrayList<String> rooms = new ArrayList<String>();
 	    rooms.add("CO2");
-        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms, "idPeriod");
         mCourse.addPeriod(periodNormal);
 	}
 
 
 	public void testAddPeriod() {
-		Course course = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
-		Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
-		Period periodAnything = new Period("10.10.2010", "08:15", "09:15", "Anything", new ArrayList<String>());
+		Course course = new Course("test", "16.06.2014", "16:15", "17:15",
+		        "Exercices", new ArrayList<String>(), "idPeriod");
+		Period periodNormal = new Period("16.06.2014", "16:15", "17:15",
+		        "Exercices", new ArrayList<String>(), "idPeriod");
+		Period periodAnything = new Period("10.10.2010", "08:15", "09:15",
+		        "Anything", new ArrayList<String>(), "idPeriod");
 
 		course.addPeriod(periodAnything);
 
@@ -69,7 +72,7 @@ public class CourseTest extends TestCase {
 
 	public void testConstructors() {
 		Course course = new Course("test", "16.06.2014", "16:15", "17:15",
-				"cours", new ArrayList<String>());
+				"cours", new ArrayList<String>(), "idPeriod");
 		Course courseOnlyName = new Course("testName");
 		Course courseWithInfo = new Course("3030", "testName", "Description",
 				"Hello", FIVE_CREDITS);
@@ -92,9 +95,9 @@ public class CourseTest extends TestCase {
 
 	public void testSetters() {
 		Course course = new Course("test", "16.06.2014", "16:15", "17:15",
-				"cours", new ArrayList<String>());
+				"cours", new ArrayList<String>(), "idPeriod");
 		Period period = new Period("16.06.2014", "16:15", "17:15", "Exercices",
-				new ArrayList<String>());
+				new ArrayList<String>(), "idPeriod");
 		ArrayList<Period> list = new ArrayList<Period>();
 		list.add(period);
 
@@ -212,14 +215,15 @@ public class CourseTest extends TestCase {
 	}
 
 	public void testEqualsDifferentReference() {
-	    Course course2 = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+	    Course course2 = new Course("test", "16.06.2014", "16:15", "17:15",
+	            "Exercices", new ArrayList<String>(), "idPeriod");
         course2.setTeacher("Pr Waffle Blue");
         course2.setCredits(FIVE_CREDITS);
         course2.setCode("CS-42");
         course2.setDescription("Waffle's knowledge  of the world");
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
-        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms, "idPeriod");
         course2.addPeriod(periodNormal);
         assertEquals(mCourse, course2);
 	}
@@ -229,14 +233,15 @@ public class CourseTest extends TestCase {
     }
 
     public void testHashDifferentReference() {
-        Course course2 = new Course("test", "16.06.2014", "16:15", "17:15", "Exercices", new ArrayList<String>());
+        Course course2 = new Course("test", "16.06.2014", "16:15", "17:15",
+                "Exercices", new ArrayList<String>(), "idPeriod");
         course2.setTeacher("Pr Waffle Blue");
         course2.setCredits(FIVE_CREDITS);
         course2.setCode("CS-42");
         course2.setDescription("Waffle's knowledge  of the world");
         ArrayList<String> rooms = new ArrayList<String>();
         rooms.add("CO2");
-        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms);
+        Period periodNormal = new Period("16.06.2014", "16:15", "17:15", "Exercices", rooms, "idPeriod");
         course2.addPeriod(periodNormal);
         assertEquals(mCourse.hashCode(), course2.hashCode());
     }

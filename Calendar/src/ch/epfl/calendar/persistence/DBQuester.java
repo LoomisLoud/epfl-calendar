@@ -82,7 +82,8 @@ public class DBQuester implements DatabaseInterface {
                         .getColumnIndex(PeriodTable.COLUMN_NAME_ROOMS));
                 ArrayList<String> rooms = App.parseFromCSVString(roomsCSV);
 
-                periods.add(new Period(type, startDate, endDate, rooms));
+                //FIXME : BLA
+                periods.add(new Period(type, startDate, endDate, rooms, null));
             }
         }
 

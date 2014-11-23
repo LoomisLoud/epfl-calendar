@@ -123,6 +123,7 @@ public class ISAXMLParser {
         String startTime = null;
         String endTime = null;
         String type = null;
+        String idPeriod = null;
         List<String> rooms = new ArrayList<String>();
         while (mParser.next() != XmlPullParser.END_TAG) {
             if (mParser.getEventType() != XmlPullParser.START_TAG) {
@@ -141,11 +142,13 @@ public class ISAXMLParser {
                 type = readType();
             } else if (nameParser.equals("room")) {
                 rooms.add(readRoom());
+            } else if (nameParser.equals("id")) {
+                idPeriod = readId();
             } else {
                 skip();
             }
         }
-        return new Course(course, date, startTime, endTime, type, rooms);
+        return new Course(course, date, startTime, endTime, type, rooms, idPeriod);
     }
 
 
@@ -260,6 +263,25 @@ public class ISAXMLParser {
         return text;
     }
 
+    private String readId() throws IOException, XmlPullParserException {
+        if (mParser == null) {
+            throw new NullPointerException("Parser is null");
+        }
+        mParser.require(XmlPullParser.START_TAG, NMP, "name");
+        String id = null;
+        while (mParser.next() != XmlPullParser.END_TAG) {
+            if (mParser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String nameParser = mParser.getName();
+            if (nameParser.equals("id")) {
+                id = readText();
+            } else {
+                skip();
+            }
+        }
+        return id;
+    }
 
     /**
      * Used for read the name

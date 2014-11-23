@@ -26,10 +26,10 @@ public class Course implements Parcelable {
 
     //Constructor for courses get for ISA
     public Course(String name, String date, String startTime, String endTime,
-            String type, List<String> rooms) {
+            String type, List<String> rooms, String idPeriod) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
-        this.addPeriod(new Period(date, startTime, endTime, type, rooms));
+        this.addPeriod(new Period(date, startTime, endTime, type, rooms, idPeriod));
         this.mTeacher = null;
         this.mCredits = 0;
         this.mEvents = new ArrayList<Event>();

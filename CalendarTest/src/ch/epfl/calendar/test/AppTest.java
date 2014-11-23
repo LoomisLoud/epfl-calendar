@@ -58,7 +58,7 @@ public class AppTest extends TestCase {
 	public static void testCreateCalendar() {
 		try {
 			//Null Period
-			new Period(null, null, null, null, null);
+			new Period(null, null, null, null, null, null);
 			fail("Should have thrown NullPointerException");
 		} catch (NullPointerException e) {
 			//success
@@ -66,7 +66,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of date
-			new Period("", "16:15", "17:15", null, null);
+			new Period("", "16:15", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -74,7 +74,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of start date
-			new Period("16.10.2014", "", "17:15", null, null);
+			new Period("16.10.2014", "", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -82,7 +82,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of end date
-			new Period("16.10.2014", "16:15", "", null, null);
+			new Period("16.10.2014", "16:15", "", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -90,7 +90,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of day
-			new Period("-1.10.2014", "16:15", "17:15", null, null);
+			new Period("-1.10.2014", "16:15", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -98,7 +98,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of day
-			new Period("32.10.2014", "16:15", "17:15", null, null);
+			new Period("32.10.2014", "16:15", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -106,7 +106,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of month
-			new Period("16.00.2014", "16:15", "17:15", null, null);
+			new Period("16.00.2014", "16:15", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -114,7 +114,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of month
-			new Period("16.13.2014", "16:15", "17:15", null, null);
+			new Period("16.13.2014", "16:15", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -122,7 +122,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of year
-			new Period("16.01.1969", "16:15", "17:15", null, null);
+			new Period("16.01.1969", "16:15", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -130,7 +130,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of hour
-			new Period("16.01.2014", "-1:15", "17:15", null, null);
+			new Period("16.01.2014", "-1:15", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -138,7 +138,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of hour
-			new Period("16.01.2014", "24:15", "17:15", null, null);
+			new Period("16.01.2014", "24:15", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -146,7 +146,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of minute
-			new Period("16.01.2014", "16:-1", "17:15", null, null);
+			new Period("16.01.2014", "16:-1", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
@@ -154,7 +154,7 @@ public class AppTest extends TestCase {
 
 		try {
 			//Bad format of minute
-			new Period("16.01.2014", "16:60", "17:15", null, null);
+			new Period("16.01.2014", "16:60", "17:15", null, null, null);
 			fail("Should have thrown IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			//success
