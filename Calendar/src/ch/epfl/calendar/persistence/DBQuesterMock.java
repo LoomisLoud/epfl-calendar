@@ -13,7 +13,7 @@ import ch.epfl.calendar.data.Period;
  * @author AblionGE
  * 
  */
-public class DBQuesterMock implements DBQuester {
+public class DBQuesterMock implements DatabaseInterface {
 
     @Override
     public List<Course> getAllCourses(DBHelper dbh) {

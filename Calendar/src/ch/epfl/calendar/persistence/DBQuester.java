@@ -1,5 +1,5 @@
 /**
- *
+ * 
  */
 package ch.epfl.calendar.persistence;
 
@@ -10,63 +10,82 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 
 /**
- * Allow requests on the SQLite database of the app.
+ * Implementation of the DBQuester interface
  * 
- * @author lweingart
- * 
+ * This class provides the methods to save and get informations from
+ * the local SQLite database
+ * @author AblionGE
+ *
  */
-public interface DBQuester {
+public class DBQuester implements DatabaseInterface {
 
-    /**
-     * @param dbh
-     * @return the list of all courses in the database.
+    /* (non-Javadoc)
+     * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
      */
-    List<Course> getAllCourses(DBHelper dbh);
+    @Override
+    public List<Course> getAllCourses(DBHelper dbh) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-    /**
-     * @param dbh
-     * @param course
-     * @return the list of all periods in the course.
+    /* (non-Javadoc)
+     * @see ch.epfl.calendar.persistence.DBQuester#getAllPeriodsFromCourse(
+     * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
-    List<Period> getAllPeriodsFromCourse(DBHelper dbh, Course course);
+    @Override
+    public List<Period> getAllPeriodsFromCourse(DBHelper dbh, Course course) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-    /**
-     * @param dbh
-     * @param course
-     * @return the list of all events in the course.
+    /* (non-Javadoc)
+     * @see ch.epfl.calendar.persistence.DBQuester#getAllEventsFromCourse(
+     * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
-    List<Event> getAllEventsFromCourse(DBHelper dbh, Course course);
+    @Override
+    public List<Event> getAllEventsFromCourse(DBHelper dbh, Course course) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-    /**
-     * Store a course in the database.
-     * 
-     * @param dbh
-     * @param course
+    /* (non-Javadoc)
+     * @see ch.epfl.calendar.persistence.DBQuester#storeCourse(
+     * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
-    void storeCourse(DBHelper dbh, Course course);
+    @Override
+    public void storeCourse(DBHelper dbh, Course course) {
+        // TODO Auto-generated method stub
 
-    /**
-     * Store a list of courses in the database.
-     * 
-     * @param dbh
-     * @param courses
-     */
-    void storeCourses(DBHelper dbh, List<Course> courses);
+    }
 
-    /**
-     * Store a list of events from a course in the database.
-     * 
-     * @param dbh
-     * @param course
+    /* (non-Javadoc)
+     * @see ch.epfl.calendar.persistence.DBQuester#storeCourses(
+     * ch.epfl.calendar.persistence.DBHelper, java.util.List)
      */
-    void storeEventsFromCourse(DBHelper dbh, Course course);
+    @Override
+    public void storeCourses(DBHelper dbh, List<Course> courses) {
+        // TODO Auto-generated method stub
 
-    /**
-     * Store an event in the database.
-     * 
-     * @param dbh
-     * @param event
+    }
+
+    /* (non-Javadoc)
+     * @see ch.epfl.calendar.persistence.DBQuester#storeEventsFromCourse(
+     * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Course)
      */
-    void storeEvent(DBHelper dbh, Event event);
+    @Override
+    public void storeEventsFromCourse(DBHelper dbh, Course course) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see ch.epfl.calendar.persistence.DBQuester#storeEvent(
+     * ch.epfl.calendar.persistence.DBHelper, ch.epfl.calendar.data.Event)
+     */
+    @Override
+    public void storeEvent(DBHelper dbh, Event event) {
+        // TODO Auto-generated method stub
+
+    }
 
 }
