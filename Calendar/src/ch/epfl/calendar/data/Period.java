@@ -237,24 +237,13 @@ public class Period implements Parcelable {
         }
         Period otherPeriod = (Period) other;
         //test each member
-        if (!this.getType().equals(otherPeriod.getType())) {
+        if (!this.getType().equals(otherPeriod.getType())
+                || !this.mStartDate.equals(otherPeriod.getStartDate())
+                || !this.mEndDate.equals(otherPeriod.getEndDate())
+                || !this.getRooms().equals(otherPeriod.getRooms())) {
             return false;
         }
-        if (!this.mStartDate.equals(otherPeriod.getStartDate())) {
-            return false;
-        }
-        if (!this.mEndDate.equals(otherPeriod.getEndDate())) {
-            return false;
-        }
-        if (this.getRooms().size() == otherPeriod.getRooms().size()) {
-            for (int i = 0; i < this.getRooms().size(); i++) {
-                if (!this.getRooms().get(i).equals(otherPeriod.getRooms().get(i))) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
+        // All members are equals
         return true;
     }
 
