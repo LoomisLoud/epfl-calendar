@@ -29,6 +29,7 @@ public class AddEventActivity extends Activity implements
         CalendarClientDownloadInterface {
 
     private EditText mNameEvent;
+    private EditText mDescriptionEvent;
     private DatePicker mStartEventDate;
 
     private TimePicker mStartEventHour;
@@ -48,6 +49,7 @@ public class AddEventActivity extends Activity implements
         setContentView(R.layout.activity_add_event);
 
         mNameEvent = (EditText) findViewById(R.id.name_event_text);
+        mDescriptionEvent = (EditText) findViewById(R.id.description_event_text);
 
         mStartEventDate = (DatePicker) findViewById(R.id.start_event_picker_date);
         mStartEventHour = (TimePicker) findViewById(R.id.start_event_picker_hour);
@@ -73,6 +75,7 @@ public class AddEventActivity extends Activity implements
         Intent i = getIntent();
 
         i.putExtra("nameInfo", mNameEvent.getText().toString() + mNewNameEvent);
+        i.putExtra("descriptionEvent", mDescriptionEvent.getText().toString());
 
         i.putExtra("startYear", mStartEventDate.getYear());
         i.putExtra("startMonth", mStartEventDate.getMonth());
