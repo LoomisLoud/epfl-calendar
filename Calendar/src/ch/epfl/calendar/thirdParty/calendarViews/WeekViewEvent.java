@@ -93,6 +93,7 @@ public class WeekViewEvent {
         this.mType = type;
         this.mDescription=description;
         setColorWithType(type);
+        this.mType = type;
 
     }
 
