@@ -3,9 +3,11 @@ package ch.epfl.calendar.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -14,19 +16,17 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
-import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Course;
 
 /**
  * @author LoomisLoud
  * 
  */
-public class AddEventActivity extends Activity implements
-        CalendarClientDownloadInterface {
+public class AddEventActivity extends DefaultActionBarActivity {
 
     private EditText mNameEvent;
     private EditText mDescriptionEvent;
@@ -47,6 +47,8 @@ public class AddEventActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
+
+        addEventActionBar();
 
         mNameEvent = (EditText) findViewById(R.id.name_event_text);
         mDescriptionEvent = (EditText) findViewById(R.id.description_event_text);
@@ -69,6 +71,20 @@ public class AddEventActivity extends Activity implements
             retrieveCourse();
         }
 
+    }
+    
+    private void addEventActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("New Event");
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean retour = super.onCreateOptionsMenu(menu);
+        MenuItem addEventItem = (MenuItem) menu.findItem(R.id.add_event);
+        addEventItem.setVisible(false);
+        this.invalidateOptionsMenu();
+        return retour;
     }
 
     private void transferData() {
@@ -113,12 +129,6 @@ public class AddEventActivity extends Activity implements
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    private void switchToAuthenticationActivity() {
-        Intent displayAuthenticationActivtyIntent = new Intent(this,
-                AuthenticationActivity.class);
-        this.startActivityForResult(displayAuthenticationActivtyIntent,
-                AUTH_ACTIVITY_CODE);
-    }
 
     @Override
     public void callbackDownload(boolean success, List<Course> courses) {
