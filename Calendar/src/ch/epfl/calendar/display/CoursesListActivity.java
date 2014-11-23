@@ -7,19 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import android.app.Activity;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
-import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.ConstructListCourse;
@@ -28,8 +29,8 @@ import ch.epfl.calendar.utils.ConstructListCourse;
  * @author Maxime
  * 
  */
-public class CoursesListActivity extends Activity implements
-        CalendarClientDownloadInterface, AppEngineDownloadInterface {
+public class CoursesListActivity extends DefaultActionBarActivity implements
+        AppEngineDownloadInterface {
 
     public static final int AUTH_ACTIVITY_CODE = 1;
     private ListView mListView;
@@ -52,6 +53,8 @@ public class CoursesListActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses_list);
 
+        coursesListActionBar();
+
         mListView = (ListView) findViewById(R.id.coursesListView);
 
         // Check whether we're recreating a previously destroyed instance
@@ -66,6 +69,20 @@ public class CoursesListActivity extends Activity implements
             retrieveCourse();
         }
 
+    }
+
+    private void coursesListActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("My Courses");
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean retour = super.onCreateOptionsMenu(menu);
+        MenuItem addEventItem = (MenuItem) menu.findItem(R.id.action_courses_list);
+        addEventItem.setVisible(false);
+        this.invalidateOptionsMenu();
+        return retour;
     }
 
     @Override
@@ -148,17 +165,6 @@ public class CoursesListActivity extends Activity implements
             }
 
         });
-    }
-
-    /**
-     * FIXME : NOT CLEAN TO DO THIS WAY
-     */
-    private void switchToAuthenticationActivity() {
-        Intent displayAuthenticationActivtyIntent = new Intent(this,
-                AuthenticationActivity.class);
-        this.startActivityForResult(displayAuthenticationActivtyIntent,
-                AUTH_ACTIVITY_CODE);
-
     }
 
     @Override

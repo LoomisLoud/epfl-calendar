@@ -15,21 +15,13 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
-import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
-import ch.epfl.calendar.apiInterface.CalendarClientInterface;
-import ch.epfl.calendar.authentication.AuthenticationActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
-import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CourseDetailsActivity;
-import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.AuthenticationUtils;
@@ -39,9 +31,9 @@ import ch.epfl.calendar.utils.AuthenticationUtils;
  * @author lweingart
  *
  */
-public class MainActivity extends Activity implements
+public class MainActivity extends DefaultActionBarActivity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
-        WeekView.EventLongPressListener, CalendarClientDownloadInterface {
+        WeekView.EventLongPressListener {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -73,8 +65,6 @@ public class MainActivity extends Activity implements
     private AuthenticationUtils mAuthUtils;
 
     public static final String TAG = "MainActivity::";
-    public static final int AUTH_ACTIVITY_CODE = 1;
-    public static final int ADD_EVENT_ACTIVITY_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +115,6 @@ public class MainActivity extends Activity implements
 
     private void actionBarMainActivity() {
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
@@ -184,26 +173,30 @@ public class MainActivity extends Activity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_today:
+                mWeekView.goToToday();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the activity state
         savedInstanceState.putParcelableArrayList("listCourses",
                 new ArrayList<Course>(mListCourses));
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    private void switchToCoursesList() {
-        Intent coursesListActivityIntent = new Intent(this,
-                CoursesListActivity.class);
-        startActivity(coursesListActivityIntent);
     }
 
     private void switchToCourseDetails(String courseName) {
@@ -216,52 +209,6 @@ public class MainActivity extends Activity implements
         mDialog = new ProgressDialog(this);
         mDialog.setMessage("Charging course details");
         mDialog.show();
-    }
-
-    private void switchToAddEventsActivity() {
-        Intent addEventsActivityIntent = new Intent(this,
-                AddEventActivity.class);
-        startActivityForResult(addEventsActivityIntent, ADD_EVENT_ACTIVITY_CODE);
-    }
-
-    private void switchToAuthenticationActivity() {
-        Intent displayAuthenticationActivtyIntent = new Intent(mThisActivity,
-                AuthenticationActivity.class);
-        mThisActivity.startActivityForResult(
-                displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
-    }
-
-    private void switchToCreditsActivity() {
-        Intent i = new Intent(mThisActivity, CreditsActivity.class);
-        startActivity(i);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.action_courses_list:
-                switchToCoursesList();
-                return true;
-            case R.id.action_settings:
-                switchToCreditsActivity();
-                return true;
-            case R.id.add_event:
-                switchToAddEventsActivity();
-                return true;
-            case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            case R.id.action_update_activity:
-                populateCalendar();
-                return true;
-            case R.id.action_logout:
-                logout();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
     }
 
     public Calendar createCalendar(int year, int month, int day, int hour,
@@ -400,16 +347,6 @@ public class MainActivity extends Activity implements
         if (mDialog != null) {
             mDialog.dismiss();
         }
-    }
-
-    protected void populateCalendar() {
-        CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
-        cal.getISAInformations();
-    }
-
-    private void logout() {
-        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-        switchToAuthenticationActivity();
     }
 
     @Override

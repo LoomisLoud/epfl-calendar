@@ -1,5 +1,6 @@
 package ch.epfl.calendar.display;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,8 @@ public class CourseDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_details);
 
+        courseDetailsActionBar();
+
         // get the intent that started the Activity
         Intent startingIntent = getIntent();
 
@@ -57,6 +60,12 @@ public class CourseDetailsActivity extends Activity {
                 mTask.execute(mCourseName);
             }
         }
+    }
+
+    private void courseDetailsActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setTitle("Course Details");
     }
 
     @Override
