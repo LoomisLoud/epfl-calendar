@@ -92,6 +92,8 @@ public class CourseDetailsActivity extends Activity {
         String courseProfessor = mCourse.getTeacher();
         String courseCredits = Integer.toString(mCourse.getCredits());
         String courseDescription = mCourse.getDescription();
+        //FIXME
+        //List<Event> linkedEvents = mCourse.getEvents();
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
@@ -107,6 +109,11 @@ public class CourseDetailsActivity extends Activity {
         textView.setText(bodyToSpannable("Description: "
                 + courseDescription));
         textView.setMovementMethod(new ScrollingMovementMethod());
+        
+        //FIXME
+        //TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
+        //textView2.setText(linkedEvents.toString());
+        
     }
 
     private SpannableString titleToSpannable(String title) {

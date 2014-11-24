@@ -22,6 +22,7 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
+import ch.epfl.calendar.display.EventDetailActivity;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.AuthenticationUtils;
@@ -210,6 +211,14 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.setMessage("Charging course details");
         mDialog.show();
     }
+    
+    private void switchToEventDetail(String description) {
+        Intent eventDetailActivityIntent = new Intent(this,
+                EventDetailActivity.class);
+        
+        eventDetailActivityIntent.putExtra("description", description);
+        startActivity(eventDetailActivityIntent);
+    }
 
     public Calendar createCalendar(int year, int month, int day, int hour,
             int minute) {
@@ -261,9 +270,9 @@ public class MainActivity extends DefaultActionBarActivity implements
             String cours = event.getName().split("\n")[0];
             switchToCourseDetails(cours);
         } else {
-            Toast.makeText(MainActivity.this,
-                    "Short pressed event: " + event.getName(),
-                    Toast.LENGTH_SHORT).show();
+            
+            String description = event.getmDescription();
+            switchToEventDetail(description);
         }
     }
 
