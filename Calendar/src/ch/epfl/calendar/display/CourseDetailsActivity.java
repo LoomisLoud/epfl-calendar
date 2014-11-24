@@ -1,5 +1,7 @@
 package ch.epfl.calendar.display;
 
+import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -14,9 +16,12 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
 import android.widget.Toast;
+import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
+import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.utils.HttpUtils;
 
 /**
@@ -24,7 +29,7 @@ import ch.epfl.calendar.utils.HttpUtils;
  * 
  */
 
-public class CourseDetailsActivity extends Activity {
+public class CourseDetailsActivity extends DefaultActionBarActivity {
 
     private static final float SIZE_OF_TITLE = 1.5f;
 
@@ -66,7 +71,7 @@ public class CourseDetailsActivity extends Activity {
 
     private void courseDetailsActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
+        //actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle("Course Details");
     }
 
@@ -86,6 +91,8 @@ public class CourseDetailsActivity extends Activity {
             TextView textView = (TextView) findViewById(R.id.courseName);
             textView.setText(mCourseName + " not found in data base.");
         } else {
+            mCourse.setPeriods(new ArrayList<Period>());
+            mCourse.setEvents(new DBQuester().getAllEventsFromCourse(mCourseName));
             setTextViewsFromCourse();
         }
     }
