@@ -18,9 +18,9 @@ public class EventTest extends TestCase {
 
     public void testTwoConstructorsSameObject() {
         Event firstEvent = new Event("sweng", "12.10.2014 08:15",
-                "12.10.2014 09:15", "Default", "gym", 0);
+                "12.10.2014 09:15", "Default", "gym", "description", 0);
         Event secondEvent = new Event("12.10.2014", "sweng", "08:15", "09:15",
-                "Default", "gym");
+                "Default", "gym", "description");
         Log.i("1st event = ", firstEvent.toString());
         Log.i("2nd event = ", secondEvent.toString());
         //assertEquals(firstEvent, secondEvent);
@@ -29,7 +29,7 @@ public class EventTest extends TestCase {
 
     public void testToString() {
         Event event = new Event("sweng", "12.10.2014 08:15",
-                "12.10.2014 09:15", "Default", "gym", 0);
+                "12.10.2014 09:15", "Default", "gym", "description", 0);
         Calendar startDate = event.getStartDate();
         Log.i("Event = ", event.toString());
         Log.i("Calendar toString = ",
