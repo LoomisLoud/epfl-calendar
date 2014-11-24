@@ -94,33 +94,23 @@ public class MainActivity extends DefaultActionBarActivity implements
         mWeekView.setEventLongPressListener(this);
 
         actionBarMainActivity();
-        
+
         mDB = new DBQuester();
 
-        if (savedInstanceState != null) {
-            // Restore value of members from saved state
-            // System.out.println("Loading courses in savedInstanceState");
-            mListCourses = savedInstanceState
-                    .getParcelableArrayList("listCourses");
-            // FIXME
-            mListCourses = mDB.getAllCourses();
-            mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
-        } else {
-            // Used for destroy the database
-            // this.deleteDatabase(App.DATABASE_NAME);
-            mListCourses = mDB.getAllCourses();
-            mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
-            if (mListCourses.isEmpty()) {
-                if (!mAuthUtils.isAuthenticated(mThisActivity)) {
-                    switchToAuthenticationActivity();
-                } else {
-                    mListCourses = new ArrayList<Course>();
-                    populateCalendarFromISA();
-                }
+        // Used for destroy the database
+        // this.deleteDatabase(App.DATABASE_NAME);
+        mListCourses = mDB.getAllCourses();
+        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+        if (mListCourses.isEmpty()) {
+            if (!mAuthUtils.isAuthenticated(mThisActivity)) {
+                switchToAuthenticationActivity();
             } else {
-                // FIXME : Seems it doesn't work
-                mWeekView.notifyDatasetChanged();
+                mListCourses = new ArrayList<Course>();
+                populateCalendarFromISA();
             }
+        } else {
+            // FIXME : Seems it doesn't work
+            mWeekView.notifyDatasetChanged();
         }
     }
 
@@ -204,15 +194,6 @@ public class MainActivity extends DefaultActionBarActivity implements
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the activity state
-        savedInstanceState.putParcelableArrayList("listCourses",
-                new ArrayList<Course>(mListCourses));
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
     }
 
     private void switchToCourseDetails(String courseName) {
