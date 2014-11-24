@@ -126,7 +126,7 @@ public class CourseDetailsActivity extends Activity {
         sb.setSpan(bss, 0, bodyBold.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE); // make first characters Bold
         return sb;
     }
-    
+    //WARNING decomment test in testSuite if you use this method again
     /*private SpannableString bodyToSpannable(String body) {
         SpannableString spannable = new SpannableString(body);
         StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
