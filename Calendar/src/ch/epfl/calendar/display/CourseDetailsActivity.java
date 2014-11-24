@@ -89,7 +89,7 @@ public class CourseDetailsActivity extends Activity {
             textView.setText(mCourseName + " not found in data base.");
         } else {
            
-            //mCourse.setEvents(new DBQuester().getAllEventsFromCourse(mCourseName));
+            mCourse.setEvents(new DBQuester().getAllEventsFromCourse(mCourseName));
             setTextViewsFromCourse();
         }
     }
