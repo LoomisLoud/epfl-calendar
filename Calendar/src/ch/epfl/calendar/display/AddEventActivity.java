@@ -115,7 +115,7 @@ public class AddEventActivity extends DefaultActionBarActivity {
         Event e = new Event(mNameEvent.getText().toString(),
                 App.calendarToBasicFormatString(start),
                 App.calendarToBasicFormatString(end),
-                PeriodType.DEFAULT.toString(), mLinkedCourse, mDescriptionEvent
+                PeriodType.DEFAULT, mLinkedCourse, mDescriptionEvent
                         .getText().toString(), DBQuester.NO_ID);
         DBQuester dbQuester = new DBQuester();
         dbQuester.storeEvent(e);

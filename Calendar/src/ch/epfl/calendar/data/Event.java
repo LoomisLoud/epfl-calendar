@@ -17,7 +17,7 @@ public class Event {
     private String mName;
     private Calendar mStartDate;
     private Calendar mEndDate;
-    private String mType;
+    private PeriodType mType;
     private String mLinkedCourse;
     private String mDescription;
 
@@ -33,7 +33,7 @@ public class Event {
      * @param linkedCourse
      */
     public Event(String date, String name, String startTime, String endTime,
-            String type, String linkedCourse, String description) {
+            PeriodType type, String linkedCourse, String description) {
         this.mName = name;
         this.mStartDate = App.createCalendar(date, startTime);
         this.mEndDate = App.createCalendar(date, endTime);
@@ -62,7 +62,7 @@ public class Event {
      * @param course
      */
 
-    public Event(String name, String startTime, String endTime, String type,
+    public Event(String name, String startTime, String endTime, PeriodType type,
             String linkedCourse, String description, int id) {
         this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX), name,
                 startTime.substring(App.START_TIME_INDEX), endTime
@@ -76,11 +76,11 @@ public class Event {
         String name = this.mName;
         String startDate = App.calendarToBasicFormatString(this.mStartDate);
         String endDate = App.calendarToBasicFormatString(this.mEndDate);
-        String type = this.mType;
+        PeriodType type = this.mType;
         String linkedCourse = this.mLinkedCourse;
 
         return name.concat(" ").concat(startDate).concat(" ").concat(endDate)
-                .concat(" ").concat(type).concat(" ").concat(linkedCourse);
+                .concat(" ").concat(type.toString()).concat(" ").concat(linkedCourse);
     }
 
     /**
@@ -131,7 +131,7 @@ public class Event {
     /**
      * @return the mType
      */
-    public String getType() {
+    public PeriodType getType() {
         return mType;
     }
 
@@ -139,7 +139,7 @@ public class Event {
      * @param type
      *            the mType to set
      */
-    public void setType(String type) {
+    public void setType(PeriodType type) {
         this.mType = type;
     }
 
