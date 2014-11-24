@@ -59,7 +59,6 @@ public class CourseDetailsActivity extends Activity {
             // Retrieve course for first time
             //System.out.println("Retrieving courses for first time");
             if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
-                // course = new DownloadCourseTask().execute(courseName).get();
                 mTask = new AppEngineTask(this, new AppEngineHandler());
                 mTask.execute(mCourseName);
             }
@@ -88,7 +87,6 @@ public class CourseDetailsActivity extends Activity {
             TextView textView = (TextView) findViewById(R.id.courseName);
             textView.setText(mCourseName + " not found in data base.");
         } else {
-           
             mCourse.setEvents(new DBQuester().getAllEventsFromCourse(mCourseName));
             setTextViewsFromCourse();
         }
@@ -119,6 +117,7 @@ public class CourseDetailsActivity extends Activity {
         for (Event event: linkedEvents) {
             linkedEventsToString.concat(event.toString());
         }
+        
         TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
         textView2.setText(linkedEventsToString);
         

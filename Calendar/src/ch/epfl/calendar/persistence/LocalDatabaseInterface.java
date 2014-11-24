@@ -40,7 +40,7 @@ public interface LocalDatabaseInterface {
      * @param id
      * @return The event that has id
      */
-    Event getEvent(int id);
+    Event getEvent(long id);
 
     /**
      * 
