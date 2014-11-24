@@ -115,7 +115,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                     switchToAuthenticationActivity();
                 } else {
                     mListCourses = new ArrayList<Course>();
-                    populateCalendar();
+                    populateCalendarFromISA();
                 }
             } else {
                 // FIXME : Seems it doesn't work
@@ -234,7 +234,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
-                mMListEvents.add(new WeekViewEvent(mIdEvent,
+                mMListEvents.add(new WeekViewEvent(mIdEvent++,
                         getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
                         p.getType(), c.getDescription()));
             }
@@ -242,7 +242,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
         for (Event event : mListEventWithoutCourse) {
             mMListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
-                    event.getStartDate(), event.getEndDate(), event.getType(),
+                    event.getStartDate(), event.getEndDate(), PeriodType.DEFAULT,
                     event.getmDescription()));
         }
 
@@ -318,7 +318,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             mListCourses = new ArrayList<Course>();
-            populateCalendar();
+            populateCalendarFromISA();
         }
 
         super.onActivityResult(requestCode, resultCode, data);

@@ -85,7 +85,8 @@ public interface DatabaseInterface {
      * Store an event in the database.
      *
      * @param event
+     * @return 
      */
-    void storeEvent(Event event);
+    long storeEvent(Event event);
 
 }

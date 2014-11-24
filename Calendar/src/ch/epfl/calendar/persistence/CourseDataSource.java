@@ -50,7 +50,7 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void create(Object obj, String key) throws SQLiteCalendarException {
+    public long create(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
@@ -81,6 +81,8 @@ public class CourseDataSource implements DAO {
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_CREATE);
+        
+        return rowId;
     }
 
     /**
@@ -90,7 +92,7 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void update(Object obj, String key) throws SQLiteCalendarException {
+    public long update(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
@@ -123,6 +125,8 @@ public class CourseDataSource implements DAO {
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_UPDATE);
+        
+        return rowId;
     }
 
     /**

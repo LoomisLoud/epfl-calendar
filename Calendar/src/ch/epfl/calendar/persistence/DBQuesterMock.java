@@ -43,7 +43,8 @@ public class DBQuesterMock implements DatabaseInterface {
     }
 
     @Override
-    public void storeEvent(Event event) {
+    public long storeEvent(Event event) {
+        return 0;
     }
 
     @Override
