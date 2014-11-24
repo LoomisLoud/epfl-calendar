@@ -94,6 +94,8 @@ public class MainActivity extends DefaultActionBarActivity implements
         mWeekView.setEventLongPressListener(this);
 
         actionBarMainActivity();
+        
+        mDB = new DBQuester();
 
         if (savedInstanceState != null) {
             // Restore value of members from saved state
@@ -104,7 +106,6 @@ public class MainActivity extends DefaultActionBarActivity implements
             mListCourses = mDB.getAllCourses();
             mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
         } else {
-            mDB = new DBQuester();
             // Used for destroy the database
             // this.deleteDatabase(App.DATABASE_NAME);
             mListCourses = mDB.getAllCourses();
