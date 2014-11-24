@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
@@ -98,14 +100,13 @@ public class CourseDetailsActivity extends Activity {
         textView.setText(titleToSpannable(mCourse.getName()));
 
         textView = (TextView) findViewById(R.id.courseProfessor);
-        textView.setText(bodyToSpannable("Professor: " + courseProfessor));
+        textView.setText(bodyToSpannableConcatAndBold("Professor: ", courseProfessor));
 
         textView = (TextView) findViewById(R.id.courseCredits);
-        textView.setText(bodyToSpannable(courseCredits + " crédits"));
+        textView.setText(bodyToSpannableConcatAndBold("Crédits: ", courseCredits));
 
         textView = (TextView) findViewById(R.id.courseDescription);
-        textView.setText(bodyToSpannable("Description: "
-                + courseDescription));
+        textView.setText(bodyToSpannableConcatAndBold("Description: ", courseDescription));
         textView.setMovementMethod(new ScrollingMovementMethod());
     }
 
@@ -119,13 +120,20 @@ public class CourseDetailsActivity extends Activity {
         return spannable;
     }
 
-    private SpannableString bodyToSpannable(String body) {
+    private SpannableStringBuilder bodyToSpannableConcatAndBold(String bodyBold, String body) {
+        SpannableStringBuilder sb = new SpannableStringBuilder(bodyBold + body);
+        StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD); // Span to make text bold
+        sb.setSpan(bss, 0, bodyBold.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE); // make first characters Bold
+        return sb;
+    }
+    //WARNING decomment test in testSuite if you use this method again
+    /*private SpannableString bodyToSpannable(String body) {
         SpannableString spannable = new SpannableString(body);
         StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
         spannable.setSpan(boldSpan, 0, body.length(), 0);
 
         return spannable;
-    }
+    }*/
 
     /**
      * 
