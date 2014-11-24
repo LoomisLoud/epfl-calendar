@@ -8,17 +8,16 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import ch.epfl.calendar.App;
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import ch.epfl.calendar.App;
 
 /**
  * A period is a date, a start time and an end time + the type (exercises,
  * lesson) and the rooms of a course
- *
+ * 
  * @author AblionGE
- *
+ * 
  */
 public class Period implements Parcelable {
 
@@ -26,6 +25,7 @@ public class Period implements Parcelable {
     private Calendar mStartDate;
     private Calendar mEndDate;
     private List<String> mRooms;
+    private String mId;
 
     private static final int DOUBLE_DIGIT = 10;
 
@@ -37,9 +37,9 @@ public class Period implements Parcelable {
     private static final String TYPE_LECTURE_EN = "Lecture";
 
     /**
-     * Constuct the period object.
-     * date format must be of format dd.mm.yyyy
+     * Construct the period object. date format must be of format dd.mm.yyyy
      * startTime and endTime must be of format hh:mm
+     * 
      * @param date
      * @param startTime
      * @param endTime
@@ -47,7 +47,7 @@ public class Period implements Parcelable {
      * @param rooms
      */
     public Period(String date, String startTime, String endTime, String type,
-            List<String> rooms) {
+            List<String> rooms, String id) {
         this.mStartDate = App.createCalendar(date, startTime);
         this.mEndDate = App.createCalendar(date, endTime);
         if (this.mStartDate != null && this.mEndDate != null) {
@@ -61,22 +61,23 @@ public class Period implements Parcelable {
             setType(type);
         }
         this.mRooms = rooms;
+        this.mId = id;
     }
 
     /**
-     * Construc the period object.
-     * startDate and endDate must be of format 'dd.mm.yyyy hh:mm'
+     * Construct the period object. startDate and endDate must be of format
+     * 'dd.mm.yyyy hh:mm'
+     * 
      * @param type
      * @param startDate
      * @param endDate
      * @param rooms
      */
-    public Period(String type, String startDate, String endDate, List<String> rooms) {
-    	this(startDate.substring(App.ZERO_INDEX, App.END_DATE_INDEX),
-    		 startDate.substring(App.START_TIME_INDEX),
-    		 endDate.substring(App.START_TIME_INDEX),
-    		 type,
-    		 rooms);
+    public Period(String type, String startDate, String endDate,
+            List<String> rooms, String id) {
+        this(startDate.substring(App.ZERO_INDEX, App.END_DATE_INDEX), startDate
+                .substring(App.START_TIME_INDEX), endDate
+                .substring(App.START_TIME_INDEX), type, rooms, id);
     }
 
     /**
@@ -99,7 +100,7 @@ public class Period implements Parcelable {
 
     /**
      * @param type
-     * 			  the mType to set
+     *            the mType to set
      */
     public void setType(String type) {
         if (type == null) {
@@ -162,9 +163,16 @@ public class Period implements Parcelable {
         this.mEndDate = endDate;
     }
 
+    public String getId() {
+        return mId;
+    }
+
+    public void setId(String id) {
+        this.mId = id;
+    }
+
     /*
      * (non-Javadoc)
-     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -219,10 +227,12 @@ public class Period implements Parcelable {
     private boolean isSingleDigit(int number) {
         return number < DOUBLE_DIGIT;
     }
+
     /**
      * Return if classes are equals. Either object can't be null to return true.
-     * if they are the same object (==), return true.
-     * if they don't have the same reference, the method test each member of the class and check if they are all equals.
+     * if they are the same object (==), return true. if they don't have the
+     * same reference, the method test each member of the class and check if
+     * they are all equals.
      */
     @Override
     public boolean equals(Object other) {
@@ -236,25 +246,29 @@ public class Period implements Parcelable {
             return false;
         }
         Period otherPeriod = (Period) other;
-        //test each member
+        // test each member
         if (!this.getType().equals(otherPeriod.getType())
                 || !this.mStartDate.equals(otherPeriod.getStartDate())
                 || !this.mEndDate.equals(otherPeriod.getEndDate())
                 || !this.getRooms().equals(otherPeriod.getRooms())) {
             return false;
         }
-        // All members are equals
+        if (!this.mId.equals(otherPeriod.getId())) {
+            return false;
+        }
         return true;
     }
 
     /**
      * Respect the contract of equals methods
+     * 
      * @see java.lang.Object#equals(Object)
      */
     @Override
     public int hashCode() {
         int result = 0;
-        result += mType.hashCode() + mStartDate.hashCode() + mEndDate.hashCode();
+        result += mType.hashCode() + mStartDate.hashCode()
+                + mEndDate.hashCode();
         for (String str : getRooms()) {
             result += str.hashCode();
         }
@@ -262,14 +276,16 @@ public class Period implements Parcelable {
     }
 
     // Parcelable ----------------
-    // using setter and getter to check for property in case of memory error or any problem that could happen
+    // using setter and getter to check for property in case of memory error or
+    // any problem that could happen
     // at execution between writing and reading and corrupt integrity.
     @Override
-	public void writeToParcel(Parcel parcel, int i) {
+    public void writeToParcel(Parcel parcel, int i) {
         parcel.writeSerializable(getType());
         parcel.writeSerializable(getStartDate());
         parcel.writeSerializable(getEndDate());
         parcel.writeList(getRooms());
+        parcel.writeSerializable(getId());
     }
 
     private Period(Parcel in) {
@@ -279,6 +295,7 @@ public class Period implements Parcelable {
         ArrayList<String> rooms = new ArrayList<String>();
         in.readList(rooms, String.class.getClassLoader());
         this.setRooms(rooms);
+        this.setId((String) in.readSerializable());
     }
 
     @Override
@@ -289,12 +306,12 @@ public class Period implements Parcelable {
 
     public static final Parcelable.Creator<Period> CREATOR = new Parcelable.Creator<Period>() {
         @Override
-		public Period createFromParcel(Parcel in) {
+        public Period createFromParcel(Parcel in) {
             return new Period(in);
         }
 
         @Override
-		public Period[] newArray(int size) {
+        public Period[] newArray(int size) {
             return new Period[size];
         }
     };
