@@ -144,6 +144,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 firstTry = false;
             } else {
                 httpCode = getAccessToIsa(null, null);
+                if (mRespGetTimetable != null) {
+                    mRespGetTimetable.getEntity().getContent().close();
+                }
             }
 
             int timeoutAuthentication = TIMEOUT_AUTHENTICATION;

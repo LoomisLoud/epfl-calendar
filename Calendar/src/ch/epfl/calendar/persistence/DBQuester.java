@@ -85,8 +85,9 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + PeriodTable.TABLE_NAME_PERIOD + WHERE
-                + PeriodTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName
-                + "\"" + ORDER_BY + "\"" + ID + "\"" + ASC, null);
+                + PeriodTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName + "\""
+//                + ORDER_BY + "\"" + ID + "\"" + ASC, null);
+                , null);
         ArrayList<Period> periods = new ArrayList<Period>();
 
         if (cursor.moveToFirst()) {
