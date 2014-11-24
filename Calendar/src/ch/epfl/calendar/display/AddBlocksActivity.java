@@ -21,6 +21,7 @@ import ch.epfl.calendar.apiInterface.CalendarClientInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Block;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.ConstructListCourse;
 
 /**
@@ -36,6 +37,7 @@ public class AddBlocksActivity extends Activity implements
 	private ListView mListView;
 	private List<Course> mCourses = new ArrayList<Course>();
 	private List<Block> blockList = new ArrayList<Block>();
+	private List<Period> periodList = new ArrayList<Period>();
 	private TextView mGreeter;
 	private Intent intentToEventCreation;
 	private SimpleAdapter simpleAdapter;
@@ -165,10 +167,14 @@ public class AddBlocksActivity extends Activity implements
 		for (Block b : blockList) {
 			if (b.getRemainingCredits() > 0.00) {
 				Map<String, String> blockMap = new HashMap<String, String>();
-
+				ArrayList<Period> periods = new ArrayList<Period>(b.getCourse().getPeriods());
+				
 				blockMap.put("Block name", b.getCourse().getName());
 				blockMap.put("Remaining credits", b.creditsToString());
-
+				
+				
+				periodList.add(periods.get(periods.size() - 1));
+				
 				blockListAdapter.add(blockMap);
 			}
 		}
@@ -193,6 +199,8 @@ public class AddBlocksActivity extends Activity implements
 
 				intentToEventCreation.putExtra("courseName", finalBlockList
 						.get(position).get("Block name"));
+				intentToEventCreation.putExtra("period", periodList.get(position));
+				
 				startActivityForResult(intentToEventCreation,
 						BLOCK_ACTIVITY_CODE);
 			}

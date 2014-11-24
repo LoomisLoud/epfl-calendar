@@ -55,7 +55,7 @@ public class AddEventBlockActivity extends Activity {
 		// FIXME Implement the storing of the data in the DB 
 		Intent i = getIntent();
 		
-		i.putExtra("day", mAskDay.getText());
+		i.putExtra("day", mSpinnerDays.getSelectedItemPosition());
 		i.putExtra("courseName", mCourseName);
 		i.putExtra("nameEvent", "Do " + mCourseName + " homework");
 
@@ -65,6 +65,8 @@ public class AddEventBlockActivity extends Activity {
 		i.putExtra("endHour", mEndBlockEventHour.getCurrentHour());
 		i.putExtra("endMinute", mEndBlockEventHour.getCurrentMinute());
 
+		i.putExtra("period", i.getParcelableExtra("period"));
+		
 		setResult(RESULT_OK, i);
 	}
 }
