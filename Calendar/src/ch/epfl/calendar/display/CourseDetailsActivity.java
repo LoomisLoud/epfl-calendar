@@ -100,6 +100,7 @@ public class CourseDetailsActivity extends Activity {
         String courseDescription = mCourse.getDescription();
         
         List<Event> linkedEvents = mCourse.getEvents();
+        String linkedEventsToString = "";
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
@@ -115,9 +116,11 @@ public class CourseDetailsActivity extends Activity {
         textView.setText(bodyToSpannableConcatAndBold("Description: ", courseDescription));
         textView.setMovementMethod(new ScrollingMovementMethod());
         
-        
+        for (Event event: linkedEvents) {
+            linkedEventsToString.concat(event.toString());
+        }
         TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
-        textView2.setText(linkedEvents.toString());
+        textView2.setText(linkedEventsToString);
         
     }
 
