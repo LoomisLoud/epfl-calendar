@@ -119,7 +119,6 @@ public class AddEventActivity extends DefaultActionBarActivity {
                         .getText().toString(), DBQuester.NO_ID);
         DBQuester dbQuester = new DBQuester();
         dbQuester.storeEvent(e);
-
     }
 
     public void finishActivity(View v) {
