@@ -11,9 +11,9 @@ import ch.epfl.calendar.data.Period;
 
 /**
  * Allow requests on the SQLite database of the app.
- *
+ * 
  * @author lweingart
- *
+ * 
  */
 public interface LocalDatabaseInterface {
 
@@ -23,7 +23,13 @@ public interface LocalDatabaseInterface {
     List<Course> getAllCourses();
 
     /**
+     * @return the list of names of all courses in the database
+     */
+    List<String> getAllCoursesNames();
+
+    /**
      * Get a Course from the database
+     * 
      * @param courseName
      * @return the course from the database
      */
@@ -40,7 +46,7 @@ public interface LocalDatabaseInterface {
      * @param id
      * @return The event that has id
      */
-    Event getEvent(int id);
+    Event getEvent(long id);
 
     /**
      * 
@@ -53,7 +59,7 @@ public interface LocalDatabaseInterface {
      * @return the list of all events in the course.
      */
     List<Event> getAllEventsFromCourse(String courseName);
-    
+
     /**
      * 
      * @return the list of all events that are not related to a course
@@ -62,30 +68,38 @@ public interface LocalDatabaseInterface {
 
     /**
      * Store a course in the database.
-     *
+     * 
      * @param course
      */
     void storeCourse(Course course);
 
     /**
      * Store a list of courses in the database.
-     *
+     * 
      * @param courses
      */
     void storeCourses(List<Course> courses);
 
     /**
      * Store a list of events from a course in the database.
-     *
+     * 
      * @param course
      */
     void storeEventsFromCourse(Course course);
 
     /**
      * Store an event in the database.
+     * 
      * @param event
      * @return
      */
     long storeEvent(Event event);
+
+    /**
+     * Delete an event
+     * 
+     * @param event
+     */
+    void deleteEvent(Event event);
 
 }

@@ -22,7 +22,7 @@ import ch.epfl.calendar.data.Period;
  * @author AblionGE
  * 
  */
-public class DBQuester implements DatabaseInterface {
+public class DBQuester implements LocalDatabaseInterface {
 
     private static final String SELECT = "SELECT ";
     private static final String FROM = " FROM ";
@@ -37,7 +37,7 @@ public class DBQuester implements DatabaseInterface {
     private static final String UNDERSCORE_ID = "_id";
     private static final String NO_COURSE = "NoCourse";
 
-    private static final int NO_ID = -1;
+    public static final int NO_ID = -1;
 
     /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
@@ -76,6 +76,29 @@ public class DBQuester implements DatabaseInterface {
         return courses;
     }
 
+    @Override
+    public List<String> getAllCoursesNames() {
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME + FROM
+                + CourseTable.TABLE_NAME_COURSE + ORDER_BY + CODE + ASC, null);
+        ArrayList<String> coursesNames = new ArrayList<String>();
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String courseName = cursor.getString(cursor
+                        .getColumnIndex(CourseTable.COLUMN_NAME_NAME));
+
+                coursesNames.add(courseName);
+                cursor.moveToNext();
+            }
+        }
+
+        closeCursor(cursor);
+        close(db);
+
+        return coursesNames;
+    }
+
     /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllPeriodsFromCourse(ch.epfl.calendar.persistence.DBHelper,
      *      ch.epfl.calendar.data.Course)
@@ -85,8 +108,8 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + PeriodTable.TABLE_NAME_PERIOD + WHERE
-                + PeriodTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName + "\""
-                + ORDER_BY + "\"" + ID + "\"" + ASC, null);
+                + PeriodTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName
+                + "\"" + ORDER_BY + "\"" + ID + "\"" + ASC, null);
         ArrayList<Period> periods = new ArrayList<Period>();
 
         if (cursor.moveToFirst()) {
@@ -115,12 +138,12 @@ public class DBQuester implements DatabaseInterface {
     }
 
     @Override
-    public Event getEvent(int id) {
+    public Event getEvent(long id) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_ID + EQUAL + id + ORDER_BY
-                + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
+                + EventTable.COLUMN_NAME_ID + EQUAL + id + ORDER_BY + "\""
+                + UNDERSCORE_ID + "\"" + ASC, null);
         Event event = null;
 
         if (cursor.moveToFirst()) {
@@ -138,8 +161,8 @@ public class DBQuester implements DatabaseInterface {
     public List<Event> getAllEvents() {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
-                + EventTable.TABLE_NAME_EVENT + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC,
-                null);
+                + EventTable.TABLE_NAME_EVENT + ORDER_BY + "\"" + UNDERSCORE_ID
+                + "\"" + ASC, null);
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
@@ -164,8 +187,8 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_COURSE + NOT_EQUAL + "\"" + NO_COURSE + "\""
-                + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
+                + EventTable.COLUMN_NAME_COURSE + NOT_EQUAL + "\"" + NO_COURSE
+                + "\"" + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
@@ -186,8 +209,8 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + NO_COURSE + "\"" + ORDER_BY
-                + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
+                + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + NO_COURSE
+                + "\"" + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
 
         ArrayList<Event> events = new ArrayList<Event>();
         if (cursor.moveToFirst()) {
@@ -202,7 +225,7 @@ public class DBQuester implements DatabaseInterface {
 
         return events;
     }
-    
+
     public Event getEventWithRowId(long id) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
@@ -224,8 +247,8 @@ public class DBQuester implements DatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + CourseTable.TABLE_NAME_COURSE + WHERE
-                + CourseTable.COLUMN_NAME_NAME + EQUAL + "\"" + courseName + "\"" + ORDER_BY
-                + "\"" + CODE + "\"" + ASC, null);
+                + CourseTable.COLUMN_NAME_NAME + EQUAL + "\"" + courseName
+                + "\"" + ORDER_BY + "\"" + CODE + "\"" + ASC, null);
 
         Course course = null;
         if (cursor.moveToFirst()) {
@@ -343,12 +366,20 @@ public class DBQuester implements DatabaseInterface {
         EventDataSource eds = EventDataSource.getInstance();
 
         if (event.getId() == NO_ID) {
-            return eds.create(event, App.NO_COURSE);
+
+            return eds.create(event, event.getLinkedCourse());
         } else {
-            return eds.update(event, App.NO_COURSE);
+            return eds.update(event, event.getLinkedCourse());
         }
+
     }
-    
+
+    public void deleteEvent(Event event) {
+        EventDataSource eds = EventDataSource.getInstance();
+
+        eds.delete(event, null);
+    }
+
     public void deleteAllDB() {
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + PeriodTable.TABLE_NAME_PERIOD);
@@ -367,9 +398,12 @@ public class DBQuester implements DatabaseInterface {
                 .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
         String courseName = cursor.getString(cursor
                 .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+        String description = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_DESCRIPTION));
         int id = cursor
                 .getInt(cursor.getColumnIndex(EventTable.COLUMN_NAME_ID));
-        return new Event(name, startDate, endDate, type, courseName, id);
+        return new Event(name, startDate, endDate, type, courseName,
+                description, id);
     }
 
     private void close(SQLiteDatabase db) {

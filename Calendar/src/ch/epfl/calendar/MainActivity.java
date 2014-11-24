@@ -99,8 +99,8 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         // Used for destroy the database
         // this.deleteDatabase(App.DATABASE_NAME);
-        mListCourses = mDB.getAllCourses();
-        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+        updateListsFromDB();
+
         if (mListCourses.isEmpty()) {
             if (!mAuthUtils.isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
@@ -109,9 +109,13 @@ public class MainActivity extends DefaultActionBarActivity implements
                 populateCalendarFromISA();
             }
         } else {
-            // FIXME : Seems it doesn't work
             mWeekView.notifyDatasetChanged();
         }
+    }
+
+    private void updateListsFromDB() {
+        mListCourses = mDB.getAllCourses();
+        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
     }
 
     private ArrayList<String> spinnerList() {
@@ -208,31 +212,31 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.show();
     }
 
-    public Calendar createCalendar(int year, int month, int day, int hour,
-            int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.YEAR, year);
-
-        return calendar;
-    }
-
     @Override
     public List<WeekViewEvent> onMonthChange() {
 
         // Populate the week view with some events.
+        mMListEvents = new ArrayList<WeekViewEvent>();
 
         for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
-                mMListEvents.add(new WeekViewEvent(mIdEvent,
-                        getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
-                        p.getType(), c.getDescription()));
+                mMListEvents.add(new WeekViewEvent(mIdEvent++, getEventTitle(c,
+                        p), p.getStartDate(), p.getEndDate(), p.getType(), c
+                        .getDescription()));
             }
-            mIdEvent++;
+            for (Event event : c.getEvents()) {
+                mMListEvents.add(new WeekViewEvent(event.getId(), event
+                        .getName(), event.getStartDate(), event.getEndDate(),
+                        PeriodType.DEFAULT, event.getmDescription()));
+            }
+
         }
+        for (Event event : mListEventWithoutCourse) {
+            mMListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
+                    event.getStartDate(), event.getEndDate(),
+                    PeriodType.DEFAULT, event.getmDescription()));
+        }
+
         return mMListEvents;
     }
 
@@ -282,7 +286,10 @@ public class MainActivity extends DefaultActionBarActivity implements
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    mMListEvents.remove(event);
+                    long id = event.getId();
+                    Event eventFromDB = mDB.getEvent(id);
+                    mDB.deleteEvent(eventFromDB);
+                    updateListsFromDB();
                     mWeekView.notifyDatasetChanged();
                     dialog.cancel();
 
@@ -309,39 +316,14 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            String name = data.getExtras().get("nameInfo").toString();
-            String description = data.getExtras().getString("descriptionEvent")
-                    .toString();
-
-            int startYear = data.getExtras().getInt("startYear");
-            int startMonth = data.getExtras().getInt("startMonth");
-            int startDay = data.getExtras().getInt("startDay");
-            int startHour = data.getExtras().getInt("startHour");
-            int startMinute = data.getExtras().getInt("startMinute");
-
-            int endYear = data.getExtras().getInt("endYear");
-            int endMonth = data.getExtras().getInt("endMonth");
-            int endDay = data.getExtras().getInt("endDay");
-            int endHour = data.getExtras().getInt("endHour");
-            int endMinute = data.getExtras().getInt("endMinute");
-
-            Calendar start = createCalendar(startYear, startMonth, startDay,
-                    startHour, startMinute);
-            Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
-                    endMinute);
-
-            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
-                    PeriodType.DEFAULT, description));
-
-            mWeekView.notifyDatasetChanged();
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        mListCourses = mDB.getAllCourses();
+        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+        mWeekView.notifyDatasetChanged();
         if (mDialog != null) {
             mDialog.dismiss();
         }
@@ -352,10 +334,40 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (success) {
             mListCourses = courses;
             mDB.storeCourses(courses);
+            updateListsFromDB();
             mWeekView.notifyDatasetChanged();
         } else {
             this.logout();
         }
+    }
+
+    public List<WeekViewEvent> getmMListEvents() {
+        return mMListEvents;
+    }
+
+    public void setmMListEvents(List<WeekViewEvent> listEvents) {
+        this.mMListEvents = listEvents;
+    }
+
+    public void weeklyEvent(int day, int startH, int startM, int endH,
+            int endM, Calendar end, String name, String description) {
+        Calendar startTime = Calendar.getInstance();
+        startTime.set(Calendar.HOUR_OF_DAY, startH);
+        startTime.set(Calendar.MINUTE, startM);
+        while (startTime.get(Calendar.DAY_OF_WEEK) != day) {
+            startTime.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        List<WeekViewEvent> list = getmMListEvents();
+        while (startTime.getTimeInMillis() <= end.getTimeInMillis()) {
+            Calendar endTime = (Calendar) startTime.clone();
+            list.add(new WeekViewEvent(mIdEvent++, name, startTime, endTime,
+                    PeriodType.DEFAULT, description));
+            startTime.add(Calendar.DAY_OF_MONTH, 7);
+
+        }
+        setmMListEvents(list);
+        mWeekView.notifyDatasetChanged();
     }
 
 }
