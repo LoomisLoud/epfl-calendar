@@ -295,10 +295,11 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         if (sessionID != null) {
             getTimetable = setCookiesAndHeaders(getTimetable, sessionID);
+            if (mRespGetTimetable != null) {
+                mRespGetTimetable.getEntity().getContent().close();
+            }
         }
-        if (mRespGetTimetable != null) {
-            mRespGetTimetable.getEntity().getContent().close();
-        }
+        
         mRespGetTimetable = getHttpUtils().executeGet(getClient(), getTimetable, mLocalContext);
 
         Log.i("INFO : ", "Http code received when trying access to ISA Service : "

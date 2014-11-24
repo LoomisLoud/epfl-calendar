@@ -39,7 +39,7 @@ public class EventDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void create(Object obj, String key) {
+    public long create(Object obj, String key) {
         if (key == null) {
             key = App.NO_COURSE;
         }
@@ -61,6 +61,7 @@ public class EventDataSource implements DAO {
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_CREATE);
+        return rowId;
     }
 
     /**
@@ -70,7 +71,7 @@ public class EventDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void update(Object obj, String key) {
+    public long update(Object obj, String key) {
         if (key == null) {
             key = App.NO_COURSE;
         }
@@ -94,6 +95,8 @@ public class EventDataSource implements DAO {
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_UPDATE);
+        
+        return rowId;
     }
 
     /**

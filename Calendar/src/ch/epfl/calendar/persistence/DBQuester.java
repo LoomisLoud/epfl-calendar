@@ -202,6 +202,22 @@ public class DBQuester implements DatabaseInterface {
 
         return events;
     }
+    
+    public Event getEventWithRowId(long id) {
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+                + EventTable.TABLE_NAME_EVENT + WHERE
+                + EventTable.COLUMN_NAME_ID + EQUAL + id, null);
+
+        Event event = null;
+        cursor.moveToFirst();
+        createEvent(cursor);
+
+        closeCursor(cursor);
+        close(db);
+
+        return event;
+    }
 
     @Override
     public Course getCourse(String courseName) {
@@ -323,13 +339,13 @@ public class DBQuester implements DatabaseInterface {
      *      ch.epfl.calendar.data.Event)
      */
     @Override
-    public void storeEvent(Event event) {
+    public long storeEvent(Event event) {
         EventDataSource eds = EventDataSource.getInstance();
 
         if (event.getId() == NO_ID) {
-            eds.create(event, App.NO_COURSE);
+            return eds.create(event, App.NO_COURSE);
         } else {
-            eds.update(event, App.NO_COURSE);
+            return eds.update(event, App.NO_COURSE);
         }
     }
     

@@ -115,7 +115,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                     switchToAuthenticationActivity();
                 } else {
                     mListCourses = new ArrayList<Course>();
-                    populateCalendar();
+                    populateCalendarFromISA();
                 }
             } else {
                 // FIXME : Seems it doesn't work
@@ -324,7 +324,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             mListCourses = new ArrayList<Course>();
-            populateCalendar();
+            populateCalendarFromISA();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
