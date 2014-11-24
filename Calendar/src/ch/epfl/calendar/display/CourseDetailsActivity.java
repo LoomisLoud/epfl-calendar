@@ -127,13 +127,13 @@ public class CourseDetailsActivity extends Activity {
         return sb;
     }
     
-    private SpannableString bodyToSpannable(String body) {
+    /*private SpannableString bodyToSpannable(String body) {
         SpannableString spannable = new SpannableString(body);
         StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
         spannable.setSpan(boldSpan, 0, body.length(), 0);
 
         return spannable;
-    }
+    }*/
 
     /**
      * 
