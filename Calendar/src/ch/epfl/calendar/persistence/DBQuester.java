@@ -351,9 +351,11 @@ public class DBQuester implements DatabaseInterface {
                 .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
         String courseName = cursor.getString(cursor
                 .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+        String description = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_DESCRIPTION));
         int id = cursor
                 .getInt(cursor.getColumnIndex(EventTable.COLUMN_NAME_ID));
-        return new Event(name, startDate, endDate, type, courseName, id);
+        return new Event(name, startDate, endDate, type, courseName, description, id);
     }
 
     private void close(SQLiteDatabase db) {

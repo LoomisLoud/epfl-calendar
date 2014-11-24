@@ -53,6 +53,7 @@ public class EventDataSource implements DAO {
         values.put(EventTable.COLUMN_NAME_ENDDATE, App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
+        values.put(EventTable.COLUMN_NAME_COURSE, event.getmDescription());
 
         long rowId = db.insert(EventTable.TABLE_NAME_EVENT, null, values);
         if (rowId == -1) {
@@ -84,6 +85,7 @@ public class EventDataSource implements DAO {
         values.put(EventTable.COLUMN_NAME_ENDDATE, App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
+        values.put(EventTable.COLUMN_NAME_COURSE, event.getmDescription());
 
         long rowId = db.update(EventTable.TABLE_NAME_EVENT, values,
                 EventTable.COLUMN_NAME_ID + " = ?",
