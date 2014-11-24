@@ -1368,25 +1368,6 @@ public class WeekView extends View {
     public interface EventLongPressListener {
         void onEventLongPress(WeekViewEvent event, RectF eventRect);
     }
-
-    /**
-     * Checks if an integer array contains a particular value.
-     * 
-     * @param list
-     *            The haystack.
-     * @param value
-     *            The needle.
-     * @return True if the array contains the value. Otherwise returns false.
-     */
-    private boolean containsValue(int[] list, int value) {
-        for (int i = 0; i < list.length; i++) {
-            if (list[i] == value) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * Converts an int (0-23) to time string (e.g. 12 PM).
      * 

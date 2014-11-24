@@ -23,7 +23,8 @@ public class AppTest extends TestCase {
 	private static final ArrayList<String> ARRAY = constructArray();
 	private static final String CALENDAR_IN_STRING = "03.09.2007 08:36";
 	private static final int YEAR = 2007;
-	private static final int MONTH = 9;
+	//Month for GregorianCalendar begin at 0 for Januar
+	private static final int MONTH = 8;
 	private static final int DAY = 3;
 	private static final int HOUR = 8;
 	private static final int MINUTES = 36;
