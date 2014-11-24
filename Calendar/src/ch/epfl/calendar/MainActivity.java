@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
@@ -59,6 +60,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     private List<WeekViewEvent> mMListEvents = new ArrayList<WeekViewEvent>();
     private long mIdEvent = 0;
     private List<Course> mListCourses = new ArrayList<Course>();
+    private List<Event> mListEventWithoutCourse = new ArrayList<Event>();
     private ProgressDialog mDialog;
 
     private Activity mThisActivity;
@@ -103,6 +105,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             // Used for destroy the database
             // this.deleteDatabase(App.DATABASE_NAME);
             mListCourses = mDB.getAllCourses();
+            mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
             System.out.println(mListCourses.toString());
             if (mListCourses.isEmpty()) {
                 if (!mAuthUtils.isAuthenticated(mThisActivity)) {
