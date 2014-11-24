@@ -63,7 +63,7 @@ public class DBQuesterMock implements LocalDatabaseInterface {
     }
 
 	@Override
-	public Event getEvent(int id) {
+	public Event getEvent(long id) {
 		return null;
 	}
 

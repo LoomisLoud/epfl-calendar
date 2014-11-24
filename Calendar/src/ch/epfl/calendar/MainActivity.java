@@ -99,8 +99,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         // Used for destroy the database
         // this.deleteDatabase(App.DATABASE_NAME);
-        mListCourses = mDB.getAllCourses();
-        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+        updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
             if (!mAuthUtils.isAuthenticated(mThisActivity)) {
@@ -112,6 +111,11 @@ public class MainActivity extends DefaultActionBarActivity implements
         } else {
             mWeekView.notifyDatasetChanged();
         }
+    }
+
+    private void updateListsFromDB() {
+        mListCourses = mDB.getAllCourses();
+        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
     }
 
     private ArrayList<String> spinnerList() {
@@ -212,6 +216,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     public List<WeekViewEvent> onMonthChange() {
 
         // Populate the week view with some events.
+        mMListEvents = new ArrayList<WeekViewEvent>();
 
         for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
@@ -281,7 +286,10 @@ public class MainActivity extends DefaultActionBarActivity implements
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    mMListEvents.remove(event);
+                    long id = event.getId();
+                    Event eventFromDB = mDB.getEvent(id);
+                    mDB.deleteEvent(eventFromDB);
+                    updateListsFromDB();
                     mWeekView.notifyDatasetChanged();
                     dialog.cancel();
 
@@ -326,8 +334,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (success) {
             mListCourses = courses;
             mDB.storeCourses(courses);
-            mListCourses = mDB.getAllCourses();
-            mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+            updateListsFromDB();
             mWeekView.notifyDatasetChanged();
         } else {
             this.logout();

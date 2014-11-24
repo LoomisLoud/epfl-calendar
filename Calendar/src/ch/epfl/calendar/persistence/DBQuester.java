@@ -22,7 +22,7 @@ import ch.epfl.calendar.data.Period;
  * @author AblionGE
  * 
  */
-public class DBQuester implements DatabaseInterface {
+public class DBQuester implements LocalDatabaseInterface {
 
     private static final String SELECT = "SELECT ";
     private static final String FROM = " FROM ";
@@ -115,7 +115,7 @@ public class DBQuester implements DatabaseInterface {
     }
 
     @Override
-    public Event getEvent(int id) {
+    public Event getEvent(long id) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
