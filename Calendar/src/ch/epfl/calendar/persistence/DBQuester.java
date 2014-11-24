@@ -37,7 +37,7 @@ public class DBQuester implements DatabaseInterface {
     private static final String UNDERSCORE_ID = "_id";
     private static final String NO_COURSE = "NoCourse";
 
-    private static final int NO_ID = -1;
+    public static final int NO_ID = -1;
 
     /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
@@ -327,9 +327,9 @@ public class DBQuester implements DatabaseInterface {
         EventDataSource eds = EventDataSource.getInstance();
 
         if (event.getId() == NO_ID) {
-            eds.create(event, App.NO_COURSE);
+            eds.create(event, event.getLinkedCourse());
         } else {
-            eds.update(event, App.NO_COURSE);
+            eds.update(event, event.getLinkedCourse());
         }
     }
     

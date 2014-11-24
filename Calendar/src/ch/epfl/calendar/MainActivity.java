@@ -221,17 +221,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.show();
     }
 
-    public Calendar createCalendar(int year, int month, int day, int hour,
-            int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.YEAR, year);
-
-        return calendar;
-    }
+    
 
     @Override
     public List<WeekViewEvent> onMonthChange() {
@@ -322,34 +312,6 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            String name = data.getExtras().get("nameInfo").toString();
-            String description = data.getExtras().getString("descriptionEvent")
-                    .toString();
-
-            int startYear = data.getExtras().getInt("startYear");
-            int startMonth = data.getExtras().getInt("startMonth");
-            int startDay = data.getExtras().getInt("startDay");
-            int startHour = data.getExtras().getInt("startHour");
-            int startMinute = data.getExtras().getInt("startMinute");
-
-            int endYear = data.getExtras().getInt("endYear");
-            int endMonth = data.getExtras().getInt("endMonth");
-            int endDay = data.getExtras().getInt("endDay");
-            int endHour = data.getExtras().getInt("endHour");
-            int endMinute = data.getExtras().getInt("endMinute");
-
-            Calendar start = createCalendar(startYear, startMonth, startDay,
-                    startHour, startMinute);
-            Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
-                    endMinute);
-
-            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
-                    PeriodType.DEFAULT, description));
-
-            mWeekView.notifyDatasetChanged();
-        }
     }
 
     @Override
