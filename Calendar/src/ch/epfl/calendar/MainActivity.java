@@ -100,7 +100,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             // System.out.println("Loading courses in savedInstanceState");
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
-            //FIXME
+            // FIXME
             mListCourses = mDB.getAllCourses();
             mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
         } else {
@@ -109,7 +109,6 @@ public class MainActivity extends DefaultActionBarActivity implements
             // this.deleteDatabase(App.DATABASE_NAME);
             mListCourses = mDB.getAllCourses();
             mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
-            System.out.println(mListCourses.toString());
             if (mListCourses.isEmpty()) {
                 if (!mAuthUtils.isAuthenticated(mThisActivity)) {
                     switchToAuthenticationActivity();

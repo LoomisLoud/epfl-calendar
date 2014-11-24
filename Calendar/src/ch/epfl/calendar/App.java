@@ -234,6 +234,7 @@ public class App extends Application {
         }
 
         int month = date.get(Calendar.MONTH);
+        month = month + 1;
         mm = Integer.toString(month);
         if (month < NUMERIC_TEN) {
             mm = "0".concat(mm);
