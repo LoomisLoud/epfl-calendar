@@ -295,9 +295,6 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
         if (sessionID != null) {
             getTimetable = setCookiesAndHeaders(getTimetable, sessionID);
-            if (mRespGetTimetable != null) {
-                mRespGetTimetable.getEntity().getContent().close();
-            }
         }
         
         mRespGetTimetable = getHttpUtils().executeGet(getClient(), getTimetable, mLocalContext);
