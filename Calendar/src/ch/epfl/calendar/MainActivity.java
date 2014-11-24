@@ -272,9 +272,9 @@ public class MainActivity extends DefaultActionBarActivity implements
             switchToCourseDetails(cours);
         } else {
             Event event = new DBQuester().getEvent(weekEvent.getId());
-            if (event.getLinkedCourse().equals(App.NO_COURSE)){
+            if (event.getLinkedCourse().equals(App.NO_COURSE)) {
                 String description = weekEvent.getmDescription();
-                switchToEventDetail(description);
+                switchToEventDetail(event.getName() + " : " + description);
             } else {
                 String coursName = event.getLinkedCourse();
                 switchToCourseDetails(coursName);

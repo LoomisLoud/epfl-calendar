@@ -87,6 +87,7 @@ public class CourseDetailsActivity extends Activity {
             TextView textView = (TextView) findViewById(R.id.courseName);
             textView.setText(mCourseName + " not found in data base.");
         } else {
+            
             mCourse.setEvents(new DBQuester().getAllEventsFromCourse(mCourseName));
             setTextViewsFromCourse();
         }
@@ -96,9 +97,10 @@ public class CourseDetailsActivity extends Activity {
         String courseProfessor = mCourse.getTeacher();
         String courseCredits = Integer.toString(mCourse.getCredits());
         String courseDescription = mCourse.getDescription();
-        
-        List<Event> linkedEvents = mCourse.getEvents();
         String linkedEventsToString = "";
+        List<Event> linkedEvents = mCourse.getEvents();
+        
+        
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
@@ -115,8 +117,10 @@ public class CourseDetailsActivity extends Activity {
         textView.setMovementMethod(new ScrollingMovementMethod());
         
         for (Event event: linkedEvents) {
-            linkedEventsToString.concat(event.toString());
+            linkedEventsToString += event.toString();
         }
+        
+        
         
         TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
         textView2.setText(linkedEventsToString);
