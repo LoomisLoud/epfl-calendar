@@ -76,6 +76,29 @@ public class DBQuester implements LocalDatabaseInterface {
         return courses;
     }
 
+    @Override
+    public List<String> getAllCoursesNames() {
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME + FROM
+                + CourseTable.TABLE_NAME_COURSE + ORDER_BY + CODE + ASC, null);
+        ArrayList<String> coursesNames = new ArrayList<String>();
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String courseName = cursor.getString(cursor
+                        .getColumnIndex(CourseTable.COLUMN_NAME_NAME));
+
+                coursesNames.add(courseName);
+                cursor.moveToNext();
+            }
+        }
+
+        closeCursor(cursor);
+        close(db);
+
+        return coursesNames;
+    }
+
     /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllPeriodsFromCourse(ch.epfl.calendar.persistence.DBHelper,
      *      ch.epfl.calendar.data.Course)
@@ -85,8 +108,8 @@ public class DBQuester implements LocalDatabaseInterface {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + PeriodTable.TABLE_NAME_PERIOD + WHERE
-                + PeriodTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName + "\""
-                + ORDER_BY + "\"" + ID + "\"" + ASC, null);
+                + PeriodTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName
+                + "\"" + ORDER_BY + "\"" + ID + "\"" + ASC, null);
         ArrayList<Period> periods = new ArrayList<Period>();
 
         if (cursor.moveToFirst()) {
@@ -350,10 +373,10 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
     }
-    
+
     public void deleteEvent(Event event) {
         EventDataSource eds = EventDataSource.getInstance();
-        
+
         eds.delete(event, null);
     }
 

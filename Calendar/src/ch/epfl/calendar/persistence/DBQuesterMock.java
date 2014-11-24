@@ -73,4 +73,10 @@ public class DBQuesterMock implements LocalDatabaseInterface {
         
     }
 
+    @Override
+    public List<String> getAllCoursesNames() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
