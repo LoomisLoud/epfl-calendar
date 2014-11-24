@@ -387,6 +387,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             event.getEndTime().add(Calendar.DAY_OF_MONTH, 7);
         }
         setmMListEvents(list);
+        mWeekView.notifyDatasetChanged(); 
     }
 
 }
