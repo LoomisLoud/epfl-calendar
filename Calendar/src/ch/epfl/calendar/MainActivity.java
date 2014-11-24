@@ -76,6 +76,7 @@ public class MainActivity extends Activity implements
     public static final String TAG = "MainActivity::";
     public static final int AUTH_ACTIVITY_CODE = 1;
     public static final int ADD_EVENT_ACTIVITY_CODE = 2;
+	private static final int BLOCK_ACTIVITY_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,8 +239,8 @@ public class MainActivity extends Activity implements
     }
 
     private void switchToAddBlocksActivity() {
-    	Intent i = new Intent(mThisActivity, AddBlocksActivity.class);
-    	startActivity(i);
+    	Intent addBlockActivityIntent = new Intent(mThisActivity, AddBlocksActivity.class);
+    	startActivityForResult(addBlockActivityIntent, BLOCK_ACTIVITY_CODE);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -369,6 +370,33 @@ public class MainActivity extends Activity implements
         if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
             String name = data.getExtras().get("nameInfo").toString();
             String description = data.getExtras().getString("descriptionEvent").toString();
+
+            int startYear = data.getExtras().getInt("startYear");
+            int startMonth = data.getExtras().getInt("startMonth");
+            int startDay = data.getExtras().getInt("startDay");
+            int startHour = data.getExtras().getInt("startHour");
+            int startMinute = data.getExtras().getInt("startMinute");
+
+            int endYear = data.getExtras().getInt("endYear");
+            int endMonth = data.getExtras().getInt("endMonth");
+            int endDay = data.getExtras().getInt("endDay");
+            int endHour = data.getExtras().getInt("endHour");
+            int endMinute = data.getExtras().getInt("endMinute");
+
+            Calendar start = createCalendar(startYear, startMonth, startDay,
+                    startHour, startMinute);
+            Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
+                    endMinute);
+
+            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
+                    PeriodType.DEFAULT, description));
+
+            mWeekView.notifyDatasetChanged();
+        }
+        
+        if (requestCode == BLOCK_ACTIVITY_CODE && resultCode == RESULT_OK) {
+        	String name = data.getExtras().get("nameEvent").toString();
+            String description = "Homework block for the course: " + data.getExtras().get("courseName");
 
             int startYear = data.getExtras().getInt("startYear");
             int startMonth = data.getExtras().getInt("startMonth");

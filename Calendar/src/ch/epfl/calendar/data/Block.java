@@ -10,7 +10,7 @@ package ch.epfl.calendar.data;
 public class Block {
 	
 	private Course mCourse;
-	private int mRemainingCredits;
+	private double mRemainingCredits;
 	
 	public Block(Course course, int remainingCredits) {
 		this.mCourse = course;
@@ -32,13 +32,13 @@ public class Block {
 	/**
 	 * @return the mRemainingCredits
 	 */
-	public int getRemainingCredits() {
+	public double getRemainingCredits() {
 		return mRemainingCredits;
 	}
 	/**
 	 * @param remainingCredits the mRemainingCredits to set
 	 */
-	public void setRemainingCredits(int remainingCredits) {
+	public void setRemainingCredits(double remainingCredits) {
 		this.mRemainingCredits = remainingCredits;
 	}
 	
@@ -57,6 +57,15 @@ public class Block {
 	public void placingCredits(int credits) {
 		setRemainingCredits(this.mRemainingCredits - credits);
 	}
+	
+	/**
+	 * Returns whether this is a block of said name
+	 * @param name 
+	 * @return true if this is a block with the parameter's name
+	 */
+	public boolean isBlockOf(String name) {
+		return getCourse().getName().equals(name);
+	}
 
 	@Override
 	public String toString() {
@@ -64,6 +73,6 @@ public class Block {
 	}
 	
 	public String creditsToString() {
-		return "Remaining credits: " + this.mRemainingCredits;
+		return "Remaining credits: " + Math.floor(this.mRemainingCredits);
 	}
 }
