@@ -184,7 +184,6 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
         } else {
             switchToAuthenticationActivity();
         }
-
     }
 
     private int getCreditImage(Course cours) {
