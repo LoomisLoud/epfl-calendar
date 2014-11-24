@@ -56,7 +56,7 @@ public class DefaultActionBarActivity extends Activity implements
                 switchToAddEventsActivity();
                 return true;
             case R.id.action_update_activity:
-                populateCalendar();
+                populateCalendarFromISA();
                 return true;
             case R.id.action_logout:
                 logout();
@@ -95,7 +95,7 @@ public class DefaultActionBarActivity extends Activity implements
                 displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
     }
 
-    public void populateCalendar() {
+    public void populateCalendarFromISA() {
         CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
         cal.getISAInformations();
     }

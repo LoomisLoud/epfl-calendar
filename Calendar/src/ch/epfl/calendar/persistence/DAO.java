@@ -11,29 +11,29 @@ package ch.epfl.calendar.persistence;
  */
 public interface DAO {
 
-	/**
-	 * Insert a new object.
-	 *
-	 * @param obj
-	 */
-	void create(Object obj);
+    /**
+     * Insert a new object.
+     *
+     * @param obj
+     */
+    long create(Object obj, String key);
 
-	/**
-	 * Update an existing object.
-	 *
-	 * @param obj
-	 */
-	void update(Object obj);
+    /**
+     * Update an existing object.
+     *
+     * @param obj
+     */
+    long update(Object obj, String key);
 
-	/**
-	 * Delete an existing object.
-	 *
-	 * @param obj
-	 */
-	void delete(Object obj);
+    /**
+     * Delete an existing object.
+     *
+     * @param obj
+     */
+    void delete(Object obj, String key);
 
-	/**
-	 * Delete all element from table.
-	 */
-	void deleteAll();
+    /**
+     * Delete all element from table.
+     */
+    void deleteAll();
 }
