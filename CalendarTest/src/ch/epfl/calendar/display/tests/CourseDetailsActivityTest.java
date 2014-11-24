@@ -43,7 +43,7 @@ public class CourseDetailsActivityTest extends TestCase {
         assertEquals(sizeSpan[0].getSizeChange(), SIZE_OF_TITLE);
     }
     
-    public void testBodyToSpannable() throws NoSuchMethodException, IllegalAccessException, 
+    /*public void testBodyToSpannable() throws NoSuchMethodException, IllegalAccessException, 
     	IllegalArgumentException, InvocationTargetException {
     	CourseDetailsActivity cs = new CourseDetailsActivity();
     	Method bodyToSpannable = cs.getClass().getDeclaredMethod("bodyToSpannable", String.class);
@@ -56,5 +56,5 @@ public class CourseDetailsActivityTest extends TestCase {
         assertEquals(0, body.getSpanStart(styleSpan[0]));
         assertEquals(body.length(), body.getSpanEnd(styleSpan[0]));
         assertEquals(styleSpan[0].getStyle(), Typeface.BOLD);
-    }
+    }*/
 }
