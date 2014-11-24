@@ -13,6 +13,7 @@ import ch.epfl.calendar.App;
  */
 public class Event {
 
+    private int mId;
     private String mName;
     private Calendar mStartDate;
     private Calendar mEndDate;
@@ -58,13 +59,15 @@ public class Event {
      * @param type
      * @param course
      */
-    public Event(String name, String startTime, String endTime, String type, String linkedCourse, String description) {
+
+    public Event(String name, String startTime, String endTime, String type, String linkedCourse, String description, int id) {
     	this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX),
     		 name,
     		 startTime.substring(App.START_TIME_INDEX),
     		 endTime.substring(App.START_TIME_INDEX),
     		 type,
     		 linkedCourse,description);
+    	this.mId = id;
     }
 
     @Override
@@ -162,5 +165,13 @@ public class Event {
 
     public void setmDescription(String mDescription) {
         this.mDescription = mDescription;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        this.mId = id;
     }
 }
