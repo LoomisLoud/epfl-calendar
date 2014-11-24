@@ -100,6 +100,9 @@ public class MainActivity extends DefaultActionBarActivity implements
             // System.out.println("Loading courses in savedInstanceState");
             mListCourses = savedInstanceState
                     .getParcelableArrayList("listCourses");
+            //FIXME
+            mListCourses = mDB.getAllCourses();
+            mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
         } else {
             mDB = new DBQuester();
             // Used for destroy the database
