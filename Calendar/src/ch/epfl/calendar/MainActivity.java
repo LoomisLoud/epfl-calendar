@@ -313,6 +313,9 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        mListCourses = mDB.getAllCourses();
+        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+        mWeekView.notifyDatasetChanged();
         if (mDialog != null) {
             mDialog.dismiss();
         }
@@ -323,6 +326,8 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (success) {
             mListCourses = courses;
             mDB.storeCourses(courses);
+            mListCourses = mDB.getAllCourses();
+            mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
             mWeekView.notifyDatasetChanged();
         } else {
             this.logout();
