@@ -1,5 +1,7 @@
 package ch.epfl.calendar.display;
 
+import java.util.List;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
+import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.utils.HttpUtils;
 
 /**
@@ -42,8 +46,6 @@ public class CourseDetailsActivity extends Activity {
         Intent startingIntent = getIntent();
 
         mCourseName = startingIntent.getStringExtra("course");
-
-        // Course course = null;
 
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
@@ -84,6 +86,8 @@ public class CourseDetailsActivity extends Activity {
             TextView textView = (TextView) findViewById(R.id.courseName);
             textView.setText(mCourseName + " not found in data base.");
         } else {
+           
+            //mCourse.setEvents(new DBQuester().getAllEventsFromCourse(mCourseName));
             setTextViewsFromCourse();
         }
     }
@@ -92,8 +96,8 @@ public class CourseDetailsActivity extends Activity {
         String courseProfessor = mCourse.getTeacher();
         String courseCredits = Integer.toString(mCourse.getCredits());
         String courseDescription = mCourse.getDescription();
-        //FIXME
-        //List<Event> linkedEvents = mCourse.getEvents();
+        
+        List<Event> linkedEvents = mCourse.getEvents();
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
@@ -110,9 +114,9 @@ public class CourseDetailsActivity extends Activity {
                 + courseDescription));
         textView.setMovementMethod(new ScrollingMovementMethod());
         
-        //FIXME
-        //TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
-        //textView2.setText(linkedEvents.toString());
+        
+        TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
+        textView2.setText(linkedEvents.toString());
         
     }
 
