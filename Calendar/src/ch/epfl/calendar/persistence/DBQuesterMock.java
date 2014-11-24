@@ -13,7 +13,7 @@ import ch.epfl.calendar.data.Period;
  * @author AblionGE
  *
  */
-public class DBQuesterMock implements DatabaseInterface {
+public class DBQuesterMock implements LocalDatabaseInterface {
 
     @Override
     public List<Course> getAllCourses() {
@@ -66,5 +66,11 @@ public class DBQuesterMock implements DatabaseInterface {
 	public Event getEvent(int id) {
 		return null;
 	}
+
+    @Override
+    public void deleteEvent(Event event) {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

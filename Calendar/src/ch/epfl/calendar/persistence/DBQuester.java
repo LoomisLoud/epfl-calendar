@@ -350,6 +350,12 @@ public class DBQuester implements DatabaseInterface {
         }
 
     }
+    
+    public void deleteEvent(Event event) {
+        EventDataSource eds = EventDataSource.getInstance();
+        
+        eds.delete(event, null);
+    }
 
     public void deleteAllDB() {
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
