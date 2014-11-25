@@ -23,7 +23,7 @@ public class EventTest extends TestCase {
                 "Default", "gym", "description", true);
         Log.i("1st event = ", firstEvent.toString());
         Log.i("2nd event = ", secondEvent.toString());
-        //assertEquals(firstEvent, secondEvent);
+        // assertEquals(firstEvent, secondEvent);
         // TODO test fails, for who knows the reason
     }
 
