@@ -26,10 +26,10 @@ public class Course implements Parcelable {
 
     //Constructor for courses get for ISA
     public Course(String name, String date, String startTime, String endTime,
-            String type, List<String> rooms) {
+            String type, List<String> rooms, String idPeriod) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
-        this.addPeriod(new Period(date, startTime, endTime, type, rooms));
+        this.addPeriod(new Period(date, startTime, endTime, type, rooms, idPeriod));
         this.mTeacher = null;
         this.mCredits = 0;
         this.mEvents = new ArrayList<Event>();
@@ -250,28 +250,12 @@ public class Course implements Parcelable {
         }
         Course otherCourse = (Course) other;
         //test each member
-        if (!this.getName().equals(otherCourse.getName())) {
-            return false;
-        }
-        if (this.getPeriods().size() == otherCourse.getPeriods().size()) {
-            for (int i = 0; i < this.getPeriods().size(); i++) {
-                if (!this.getPeriods().get(i).equals(otherCourse.getPeriods().get(i))) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        if (!this.getTeacher().equals(otherCourse.getTeacher())) {
-            return false;
-        }
-        if (this.getCredits() != otherCourse.getCredits()) {
-            return false;
-        }
-        if (!this.getCode().equals(otherCourse.getCode())) {
-            return false;
-        }
-        if (!this.getDescription().equals(otherCourse.getDescription())) {
+        if (!this.getName().equals(otherCourse.getName())
+                || !this.getPeriods().equals(otherCourse.getPeriods())
+                || !this.getTeacher().equals(otherCourse.getTeacher())
+                || this.getCredits() != otherCourse.getCredits()
+                || !this.getCode().equals(otherCourse.getCode())
+                || !this.getDescription().equals(otherCourse.getDescription())) {
             return false;
         }
         //all member are equals

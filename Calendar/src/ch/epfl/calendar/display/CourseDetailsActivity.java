@@ -1,19 +1,29 @@
 package ch.epfl.calendar.display;
 
+
+import java.util.List;
+import java.util.ArrayList;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
 import android.widget.Toast;
+import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
+import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
+import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.utils.HttpUtils;
 
 /**
@@ -21,7 +31,7 @@ import ch.epfl.calendar.utils.HttpUtils;
  * 
  */
 
-public class CourseDetailsActivity extends Activity {
+public class CourseDetailsActivity extends DefaultActionBarActivity {
 
     private static final float SIZE_OF_TITLE = 1.5f;
 
@@ -35,12 +45,12 @@ public class CourseDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_details);
 
+        courseDetailsActionBar();
+
         // get the intent that started the Activity
         Intent startingIntent = getIntent();
 
         mCourseName = startingIntent.getStringExtra("course");
-
-        // Course course = null;
 
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
@@ -52,11 +62,16 @@ public class CourseDetailsActivity extends Activity {
             // Retrieve course for first time
             //System.out.println("Retrieving courses for first time");
             if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
-                // course = new DownloadCourseTask().execute(courseName).get();
                 mTask = new AppEngineTask(this, new AppEngineHandler());
                 mTask.execute(mCourseName);
             }
         }
+    }
+
+    private void courseDetailsActionBar() {
+        ActionBar actionBar = getActionBar();
+        //actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setTitle("Course Details");
     }
 
     @Override
@@ -75,6 +90,8 @@ public class CourseDetailsActivity extends Activity {
             TextView textView = (TextView) findViewById(R.id.courseName);
             textView.setText(mCourseName + " not found in data base.");
         } else {
+            mCourse.setPeriods(new ArrayList<Period>());
+            mCourse.setEvents(new DBQuester().getAllEventsFromCourse(mCourseName));
             setTextViewsFromCourse();
         }
     }
@@ -83,21 +100,34 @@ public class CourseDetailsActivity extends Activity {
         String courseProfessor = mCourse.getTeacher();
         String courseCredits = Integer.toString(mCourse.getCredits());
         String courseDescription = mCourse.getDescription();
+        String linkedEventsToString = "";
+        List<Event> linkedEvents = mCourse.getEvents();
+        
+        
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
         textView.setText(titleToSpannable(mCourse.getName()));
 
         textView = (TextView) findViewById(R.id.courseProfessor);
-        textView.setText(bodyToSpannable("Professor: " + courseProfessor));
+        textView.setText(bodyToSpannableConcatAndBold("Professor: ", courseProfessor));
 
         textView = (TextView) findViewById(R.id.courseCredits);
-        textView.setText(bodyToSpannable(courseCredits + " crédits"));
+        textView.setText(bodyToSpannableConcatAndBold("Crédits: ", courseCredits));
 
         textView = (TextView) findViewById(R.id.courseDescription);
-        textView.setText(bodyToSpannable("Description: "
-                + courseDescription));
+        textView.setText(bodyToSpannableConcatAndBold("Description: ", courseDescription));
         textView.setMovementMethod(new ScrollingMovementMethod());
+        
+        for (Event event: linkedEvents) {
+            linkedEventsToString += event.toString();
+        }
+        
+        
+        
+        TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
+        textView2.setText(linkedEventsToString);
+        
     }
 
     private SpannableString titleToSpannable(String title) {
@@ -110,13 +140,20 @@ public class CourseDetailsActivity extends Activity {
         return spannable;
     }
 
-    private SpannableString bodyToSpannable(String body) {
+    private SpannableStringBuilder bodyToSpannableConcatAndBold(String bodyBold, String body) {
+        SpannableStringBuilder sb = new SpannableStringBuilder(bodyBold + body);
+        StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD); // Span to make text bold
+        sb.setSpan(bss, 0, bodyBold.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE); // make first characters Bold
+        return sb;
+    }
+    //WARNING decomment test in testSuite if you use this method again
+    /*private SpannableString bodyToSpannable(String body) {
         SpannableString spannable = new SpannableString(body);
         StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
         spannable.setSpan(boldSpan, 0, body.length(), 0);
 
         return spannable;
-    }
+    }*/
 
     /**
      * 

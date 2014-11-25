@@ -52,9 +52,7 @@ public class ISAXMLParser {
         } catch (XmlPullParserException e) {
             throw new ParsingException("Parsing Error during XML Parsing");
         } catch (IOException e) {
-            throw new ParsingException("IO Error during XML Parsing");
-        } catch (IllegalArgumentException e) {
-            throw new ParsingException(e.getMessage());
+            throw new ParsingException("IO Error during XML Parsing (nextTag())");
         } finally {
             try {
                 in.close();
@@ -125,6 +123,7 @@ public class ISAXMLParser {
         String startTime = null;
         String endTime = null;
         String type = null;
+        String idPeriod = null;
         List<String> rooms = new ArrayList<String>();
         while (mParser.next() != XmlPullParser.END_TAG) {
             if (mParser.getEventType() != XmlPullParser.START_TAG) {
@@ -143,11 +142,13 @@ public class ISAXMLParser {
                 type = readType();
             } else if (nameParser.equals("room")) {
                 rooms.add(readRoom());
+            } else if (nameParser.equals("id")) {
+                idPeriod = readText();
             } else {
                 skip();
             }
         }
-        return new Course(course, date, startTime, endTime, type, rooms);
+        return new Course(course, date, startTime, endTime, type, rooms, idPeriod);
     }
 
 
@@ -261,7 +262,6 @@ public class ISAXMLParser {
         }
         return text;
     }
-
 
     /**
      * Used for read the name
