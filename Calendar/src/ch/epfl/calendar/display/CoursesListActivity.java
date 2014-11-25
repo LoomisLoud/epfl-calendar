@@ -81,7 +81,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
         this.invalidateOptionsMenu();
         return retour;
     }
-    
+
     /**
      * Launches the CourseDetailsActivity of a specific courseName
      * 
@@ -99,7 +99,6 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
 
     @Override
     public void updateData() {
-
         mCourses = mDB.getAllCourses();
 
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
@@ -128,7 +127,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
                 new String[] {
                     "credit_image",
                     "course", "info"
-                }, 
+                },
                 new int[] {
                     R.id.credit_image,
                     R.id.course, R.id.info

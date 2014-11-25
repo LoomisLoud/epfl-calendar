@@ -1,0 +1,66 @@
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context="ch.epfl.calendar.AddEventBlockActivity" >
+    
+        <TextView
+            android:id="@+id/ask_block_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    
+        <Spinner
+            android:id="@+id/spinner_week_days"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ask_block_day"
+            android:layout_marginBottom="10sp"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="10sp"
+            android:background="@drawable/background_customised"
+            android:padding="10dp" />
+        
+         <TextView
+            android:id="@+id/from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_below="@id/spinner_week_days" 
+            android:text="@string/from" />
+        
+        <TimePicker
+            android:id="@+id/from_picker_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/from" />
+        
+        <TextView
+            android:id="@+id/to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_below="@id/from_picker_hour"
+            android:text="@string/to" />
+        
+        <TimePicker
+            android:id="@+id/to_picker_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/to" /> 
+            
+        <Button
+            android:id="@+id/valid_block_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/to_picker_hour"
+            android:onClick="finishActivity"
+            android:text="@string/valid_event" />
+        
+    </RelativeLayout>
+    
+</ScrollView>

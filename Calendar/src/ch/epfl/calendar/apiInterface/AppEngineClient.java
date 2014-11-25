@@ -3,16 +3,13 @@
  */
 package ch.epfl.calendar.apiInterface;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.net.URLEncoder;
-
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -23,6 +20,7 @@ import org.json.JSONObject;
 
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.utils.HttpUtils;
+import ch.epfl.calendar.utils.InputStreamUtils;
 
 /**
  * URL to use to access App Engine : http://versatile-hull-742.appspot.com
@@ -33,7 +31,10 @@ import ch.epfl.calendar.utils.HttpUtils;
  */
 public class AppEngineClient implements AppEngineDatabaseInterface {
     
+    private static final String APP_ENGINE_ENCODING = "UTF-8";
+    
     private String mDBUrl;
+    private HttpClient mHttpClient;
     
     /**
      * 
@@ -46,6 +47,7 @@ public class AppEngineClient implements AppEngineDatabaseInterface {
             throw new CalendarClientException(malformedUrlException);
         }
         mDBUrl = dbUrl;
+        mHttpClient = new DefaultHttpClient();
     }
     
     /* (non-Javadoc)
@@ -57,7 +59,9 @@ public class AppEngineClient implements AppEngineDatabaseInterface {
         try {
             nameUrlized = URLEncoder.encode(name.toLowerCase(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new CalendarClientException();
+            throw new CalendarClientException("An error occured in the request.");
+        } catch (NullPointerException e) {
+            throw new CalendarClientException("An error occured in the request.");
         }
         String url = mDBUrl + AppEngineURLs.GET_COURSE + "?name=" + nameUrlized;
         return getCourse(url);
@@ -73,13 +77,21 @@ public class AppEngineClient implements AppEngineDatabaseInterface {
     }
     
     /**
+     *
+     * @return the {@link HttpClient} used by the methods of this class
+     */
+    public HttpClient getHttpClient() {
+        return mHttpClient;
+    }
+    
+    /**
      * Returns a String containing the content of the passed InputStream.
      * 
      * @param is the {@link InputStream} to read.
      * @return the content of is in a String.
      * @throws IOException
      */
-    private String readStream(InputStream inputStream) throws IOException {
+    /*private String readStream(InputStream inputStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();  
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream),
                 NetworkConstants.BUFFERED_READER_SIZE);
@@ -88,19 +100,19 @@ public class AppEngineClient implements AppEngineDatabaseInterface {
         }  
         inputStream.close();  
         return stringBuilder.toString();
-    }
+    }*/
     
     private Course getCourse(String fullUrl) throws CalendarClientException {
         Course course = null;
         InputStream inputStream;
         try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpClient.execute(new HttpGet(fullUrl));
+            //HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse httpResponse = getHttpClient().execute(new HttpGet(fullUrl));
             int responseCode = httpResponse.getStatusLine().getStatusCode();
             HttpUtils.handleResponse(responseCode);
             inputStream = httpResponse.getEntity().getContent();
             if (inputStream != null) {
-                String responseBody = readStream(inputStream);
+                String responseBody = InputStreamUtils.readInputStream(inputStream, APP_ENGINE_ENCODING);
                 JSONObject jsonObject = new JSONObject(responseBody);
                 if (jsonObject.length() >= 1) {
                     course = Course.parseFromJSON(jsonObject);

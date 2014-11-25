@@ -34,5 +34,12 @@
         android:layout_below="@id/courseCredits" />
         <!-- android:maxLines="50" /> -->
         <!-- android:scrollbars="vertical" -->
+        
+            <TextView
+        android:id="@+id/linkedEvents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/courseDescription" />
+
 
 </RelativeLayout>

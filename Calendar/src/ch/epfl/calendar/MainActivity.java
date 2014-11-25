@@ -1,7 +1,6 @@
 package ch.epfl.calendar;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -23,6 +22,7 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
+import ch.epfl.calendar.display.EventDetailActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
@@ -68,7 +68,6 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("ON CREATE");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         super.setUdpateData(this);
@@ -93,7 +92,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDB = new DBQuester();
 
         // Used for destroy the database
-        // this.deleteDatabase(App.DATABASE_NAME);
+        //this.deleteDatabase(App.DATABASE_NAME);
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
@@ -208,6 +207,14 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.setMessage("Charging course details");
         mDialog.show();
     }
+    
+    private void switchToEventDetail(String description) {
+        Intent eventDetailActivityIntent = new Intent(this,
+                EventDetailActivity.class);
+        
+        eventDetailActivityIntent.putExtra("description", description);
+        startActivity(eventDetailActivityIntent);
+    }
 
     @Override
     public List<WeekViewEvent> onMonthChange() {
@@ -252,16 +259,22 @@ public class MainActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        if (event.getmType().equals(PeriodType.LECTURE)
-                || event.getmType().equals(PeriodType.PROJECT)
-                || event.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = event.getName().split("\n")[0];
+    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
+        if (weekEvent.getmType().equals(PeriodType.LECTURE)
+                || weekEvent.getmType().equals(PeriodType.PROJECT)
+                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = weekEvent.getName().split("\n")[0];
             switchToCourseDetails(cours);
         } else {
-            Toast.makeText(MainActivity.this,
-                    "Short pressed event: " + event.getName(),
-                    Toast.LENGTH_SHORT).show();
+            Event event = new DBQuester().getEvent(weekEvent.getId());
+            if (event.getLinkedCourse().equals(App.NO_COURSE)) {
+                String description = weekEvent.getmDescription();
+                switchToEventDetail(event.getName() + " : " + description);
+            } else {
+                String coursName = event.getLinkedCourse();
+                switchToCourseDetails(coursName);
+            }
+            
         }
     }
 
@@ -332,34 +345,4 @@ public class MainActivity extends DefaultActionBarActivity implements
         updateListsFromDB();
         mWeekView.notifyDatasetChanged();
     }
-
-    public List<WeekViewEvent> getmMListEvents() {
-        return mMListEvents;
-    }
-
-    public void setmMListEvents(List<WeekViewEvent> listEvents) {
-        this.mMListEvents = listEvents;
-    }
-
-    public void weeklyEvent(int day, int startH, int startM, int endH,
-            int endM, Calendar end, String name, String description) {
-        Calendar startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, startH);
-        startTime.set(Calendar.MINUTE, startM);
-        while (startTime.get(Calendar.DAY_OF_WEEK) != day) {
-            startTime.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        List<WeekViewEvent> list = getmMListEvents();
-        while (startTime.getTimeInMillis() <= end.getTimeInMillis()) {
-            Calendar endTime = (Calendar) startTime.clone();
-            list.add(new WeekViewEvent(mIdEvent++, name, startTime, endTime,
-                    PeriodType.DEFAULT, description));
-            startTime.add(Calendar.DAY_OF_MONTH, 7);
-
-        }
-        setmMListEvents(list);
-        mWeekView.notifyDatasetChanged();
-    }
-
 }

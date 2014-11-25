@@ -15,6 +15,7 @@ import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.display.AddBlocksActivity;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.AppEngineDownloadInterface;
 import ch.epfl.calendar.display.CoursesListActivity;
@@ -67,6 +68,9 @@ public class DefaultActionBarActivity extends Activity implements
             case R.id.action_courses_list:
                 switchToCoursesList();
                 return true;
+            case R.id.add_event_block:
+            	switchToAddBlockActivity();
+            	return true;
             case R.id.action_settings:
                 switchToCreditsActivity();
                 return true;
@@ -93,6 +97,12 @@ public class DefaultActionBarActivity extends Activity implements
         Intent coursesListActivityIntent = new Intent(this,
                 CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
+    }
+    
+    private void switchToAddBlockActivity() {
+        Intent blockActivityIntent = new Intent(this,
+                AddBlocksActivity.class);
+        startActivity(blockActivityIntent);
     }
 
     private void switchToAddEventsActivity() {

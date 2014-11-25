@@ -1,7 +1,9 @@
 package ch.epfl.calendar.display;
 
+
+import java.util.List;
+
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -12,17 +14,20 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
+import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.persistence.DBQuester;
+
 
 /**
  * @author LoomisLoud
  * 
  */
 
-public class CourseDetailsActivity extends Activity implements
+public class CourseDetailsActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
     private static final float SIZE_OF_TITLE = 1.5f;
@@ -50,7 +55,7 @@ public class CourseDetailsActivity extends Activity implements
 
     private void courseDetailsActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
+        //actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle("Course Details");
     }
 
@@ -58,6 +63,10 @@ public class CourseDetailsActivity extends Activity implements
         String courseProfessor = mCourse.getTeacher();
         String courseCredits = Integer.toString(mCourse.getCredits());
         String courseDescription = mCourse.getDescription();
+        String linkedEventsToString = "";
+        List<Event> linkedEvents = mCourse.getEvents();
+        
+        
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
@@ -75,6 +84,16 @@ public class CourseDetailsActivity extends Activity implements
         textView.setText(bodyToSpannableConcatAndBold("Description: ",
                 courseDescription));
         textView.setMovementMethod(new ScrollingMovementMethod());
+        
+        for (Event event: linkedEvents) {
+            linkedEventsToString += event.toString();
+        }
+        
+        
+        
+        TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
+        textView2.setText(linkedEventsToString);
+        
     }
 
     private SpannableString titleToSpannable(String title) {
