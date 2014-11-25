@@ -5,9 +5,8 @@ package ch.epfl.calendar.thirdParty.calendarViews;
  */
 import java.util.Calendar;
 
-import ch.epfl.calendar.data.PeriodType;
-
 import android.graphics.Color;
+import ch.epfl.calendar.data.PeriodType;
 
 /**
  * @author LoomisLoud

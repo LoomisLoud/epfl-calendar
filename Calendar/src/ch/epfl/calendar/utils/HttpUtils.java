@@ -16,7 +16,6 @@ import org.apache.http.protocol.HttpContext;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 
 /**
