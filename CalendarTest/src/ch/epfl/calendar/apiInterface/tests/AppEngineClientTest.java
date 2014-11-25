@@ -6,21 +6,18 @@ package ch.epfl.calendar.apiInterface.tests;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONObject;
 import org.mockito.Mockito;
 
 
 import ch.epfl.calendar.apiInterface.AppEngineClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.apiInterface.DatabaseInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.testing.utils.MockHttpClient;
 
@@ -35,7 +32,9 @@ import junit.framework.TestCase;
 public class AppEngineClientTest extends TestCase {
 
     private static final int HTTP_OK = 200;
+    private static final int HTTP_NOT_OK = 404;
     private static final String CORRECT_URL = "http://www.test.ch/";
+    private static final String NOT_EXISTING_URL = "http://not-existing-page.com/";
     private static final String INCORRECT_URL = "http.not.a.good.url.ch";
     private static final String UTF8_ENCODING = "UTF-8";
     private static final String COURSE_JSON_STRING = "{\"code\":\"BIO-341\",\"professorName\":\"Naef\","
@@ -128,5 +127,21 @@ public class AppEngineClientTest extends TestCase {
         assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
         assertEquals(COURSE_DESCRIPTION, returnedCourse.getDescription());
         assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
+    }
+    
+    public void testGetCourseWhenBadUrl() throws CalendarClientException, NoSuchMethodException, 
+        IllegalAccessException, IllegalArgumentException {
+        AppEngineClient client = new AppEngineClient(CORRECT_URL);
+        Method getCourse;
+        getCourse = (AppEngineClient.class).getDeclaredMethod("getCourse", String.class);
+        getCourse.setAccessible(true);
+        
+        try {
+            getCourse.invoke(client, NOT_EXISTING_URL);
+        } catch (InvocationTargetException e) {
+            if (!(e.getCause() instanceof CalendarClientException)) {
+                fail("CalendarClientException should be raised here.");
+            }
+        }
     }
 }
