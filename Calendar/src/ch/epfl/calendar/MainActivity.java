@@ -15,34 +15,27 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
-import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
-import ch.epfl.calendar.apiInterface.CalendarClientInterface;
-import ch.epfl.calendar.authentication.AuthenticationActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
-import ch.epfl.calendar.display.AddBlocksActivity;
-import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CourseDetailsActivity;
-import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 import ch.epfl.calendar.utils.AuthenticationUtils;
 
 /**
- *
+ * 
  * @author lweingart
- *
+ * 
  */
-public class MainActivity extends Activity implements
+public class MainActivity extends DefaultActionBarActivity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
-        WeekView.EventLongPressListener, CalendarClientDownloadInterface {
+        WeekView.EventLongPressListener {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -67,16 +60,16 @@ public class MainActivity extends Activity implements
     private List<WeekViewEvent> mMListEvents = new ArrayList<WeekViewEvent>();
     private long mIdEvent = 0;
     private List<Course> mListCourses = new ArrayList<Course>();
+    private List<Event> mListEventWithoutCourse = new ArrayList<Event>();
     private ProgressDialog mDialog;
 
     private Activity mThisActivity;
-    
+
     private AuthenticationUtils mAuthUtils;
 
+    private DBQuester mDB;
+
     public static final String TAG = "MainActivity::";
-    public static final int AUTH_ACTIVITY_CODE = 1;
-    public static final int ADD_EVENT_ACTIVITY_CODE = 2;
-	private static final int BLOCK_ACTIVITY_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,19 +95,27 @@ public class MainActivity extends Activity implements
 
         actionBarMainActivity();
 
-        if (savedInstanceState != null) {
-            // Restore value of members from saved state
-            // System.out.println("Loading courses in savedInstanceState");
-            mListCourses = savedInstanceState
-                    .getParcelableArrayList("listCourses");
-        } else {
+        mDB = new DBQuester();
+
+        // Used for destroy the database
+        // this.deleteDatabase(App.DATABASE_NAME);
+        updateListsFromDB();
+
+        if (mListCourses.isEmpty()) {
             if (!mAuthUtils.isAuthenticated(mThisActivity)) {
                 switchToAuthenticationActivity();
             } else {
                 mListCourses = new ArrayList<Course>();
-                populateCalendar();
+                populateCalendarFromISA();
             }
+        } else {
+            mWeekView.notifyDatasetChanged();
         }
+    }
+
+    private void updateListsFromDB() {
+        mListCourses = mDB.getAllCourses();
+        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
     }
 
     private ArrayList<String> spinnerList() {
@@ -127,7 +128,6 @@ public class MainActivity extends Activity implements
 
     private void actionBarMainActivity() {
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
@@ -164,9 +164,6 @@ public class MainActivity extends Activity implements
                 mOnNavigationListener);
     }
 
-    // TODO : At the beginning of the application, we "logout" the user
-    // TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-
     private void changeCalendarView(int typeView, int numberVisibleDays,
             int sizeColumnGap, int sizeFront, int sizeFrontEvent) {
         if (mWeekViewType != typeView) {
@@ -186,26 +183,21 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the activity state
-        savedInstanceState.putParcelableArrayList("listCourses",
-                new ArrayList<Course>(mListCourses));
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void switchToCoursesList() {
-        Intent coursesListActivityIntent = new Intent(this,
-                CoursesListActivity.class);
-        startActivity(coursesListActivityIntent);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_today:
+                mWeekView.goToToday();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void switchToCourseDetails(String courseName) {
@@ -220,84 +212,31 @@ public class MainActivity extends Activity implements
         mDialog.show();
     }
 
-    private void switchToAddEventsActivity() {
-        Intent addEventsActivityIntent = new Intent(this,
-                AddEventActivity.class);
-        startActivityForResult(addEventsActivityIntent, ADD_EVENT_ACTIVITY_CODE);
-    }
-
-    private void switchToAuthenticationActivity() {
-        Intent displayAuthenticationActivtyIntent = new Intent(mThisActivity,
-                AuthenticationActivity.class);
-        mThisActivity.startActivityForResult(
-                displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
-    }
-
-    private void switchToCreditsActivity() {
-        Intent i = new Intent(mThisActivity, CreditsActivity.class);
-        startActivity(i);
-    }
-
-    private void switchToAddBlocksActivity() {
-    	Intent addBlockActivityIntent = new Intent(mThisActivity, AddBlocksActivity.class);
-    	startActivityForResult(addBlockActivityIntent, BLOCK_ACTIVITY_CODE);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.action_courses_list:
-                switchToCoursesList();
-                return true;
-            case R.id.action_add_blocks:
-            	switchToAddBlocksActivity();
-            	return true;
-            case R.id.action_settings:
-                switchToCreditsActivity();
-                return true;
-            case R.id.add_event:
-                switchToAddEventsActivity();
-                return true;
-            case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            case R.id.action_update_activity:
-                populateCalendar();
-                return true;
-            case R.id.action_logout:
-                logout();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
-
-    public Calendar createCalendar(int year, int month, int day, int hour,
-            int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.YEAR, year);
-
-        return calendar;
-    }
-
     @Override
     public List<WeekViewEvent> onMonthChange() {
 
         // Populate the week view with some events.
+        mMListEvents = new ArrayList<WeekViewEvent>();
 
         for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
-                mMListEvents.add(new WeekViewEvent(mIdEvent,
-                        getEventTitle(c, p), p.getStartDate(), p.getEndDate(),
-                        p.getType(), c.getDescription()));
+                mMListEvents.add(new WeekViewEvent(mIdEvent++, getEventTitle(c,
+                        p), p.getStartDate(), p.getEndDate(), p.getType(), c
+                        .getDescription()));
             }
-            mIdEvent++;
+            for (Event event : c.getEvents()) {
+                mMListEvents.add(new WeekViewEvent(event.getId(), event
+                        .getName(), event.getStartDate(), event.getEndDate(),
+                        PeriodType.DEFAULT, event.getmDescription()));
+            }
+
         }
+        for (Event event : mListEventWithoutCourse) {
+            mMListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
+                    event.getStartDate(), event.getEndDate(),
+                    PeriodType.DEFAULT, event.getmDescription()));
+        }
+
         return mMListEvents;
     }
 
@@ -317,8 +256,16 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        String cours = event.getName().split("\n")[0];
-        switchToCourseDetails(cours);
+        if (event.getmType().equals(PeriodType.LECTURE)
+                || event.getmType().equals(PeriodType.PROJECT)
+                || event.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = event.getName().split("\n")[0];
+            switchToCourseDetails(cours);
+        } else {
+            Toast.makeText(MainActivity.this,
+                    "Short pressed event: " + event.getName(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -339,7 +286,10 @@ public class MainActivity extends Activity implements
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    mMListEvents.remove(event);
+                    long id = event.getId();
+                    Event eventFromDB = mDB.getEvent(id);
+                    mDB.deleteEvent(eventFromDB);
+                    updateListsFromDB();
                     mWeekView.notifyDatasetChanged();
                     dialog.cancel();
 
@@ -362,61 +312,29 @@ public class MainActivity extends Activity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             mListCourses = new ArrayList<Course>();
-            populateCalendar();
+            populateCalendarFromISA();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == ADD_EVENT_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            String name = data.getExtras().get("nameInfo").toString();
-            String description = data.getExtras().getString("descriptionEvent").toString();
-
-            int startYear = data.getExtras().getInt("startYear");
-            int startMonth = data.getExtras().getInt("startMonth");
-            int startDay = data.getExtras().getInt("startDay");
-            int startHour = data.getExtras().getInt("startHour");
-            int startMinute = data.getExtras().getInt("startMinute");
-
-            int endYear = data.getExtras().getInt("endYear");
-            int endMonth = data.getExtras().getInt("endMonth");
-            int endDay = data.getExtras().getInt("endDay");
-            int endHour = data.getExtras().getInt("endHour");
-            int endMinute = data.getExtras().getInt("endMinute");
-
-            Calendar start = createCalendar(startYear, startMonth, startDay,
-                    startHour, startMinute);
-            Calendar end = createCalendar(endYear, endMonth, endDay, endHour,
-                    endMinute);
-
-            mMListEvents.add(new WeekViewEvent(mIdEvent++, name, start, end,
-                    PeriodType.DEFAULT, description));
-
-            mWeekView.notifyDatasetChanged();
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        mListCourses = mDB.getAllCourses();
+        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+        mWeekView.notifyDatasetChanged();
         if (mDialog != null) {
             mDialog.dismiss();
         }
     }
 
-    protected void populateCalendar() {
-        CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
-        cal.getISAInformations();
-    }
-
-    private void logout() {
-        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-        switchToAuthenticationActivity();
-    }
-
     @Override
-	public void callbackDownload(boolean success, List<Course> courses) {
+    public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
             mListCourses = courses;
+            mDB.storeCourses(courses);
+            updateListsFromDB();
             mWeekView.notifyDatasetChanged();
         } else {
             this.logout();
@@ -450,6 +368,35 @@ public class MainActivity extends Activity implements
         return list;
         //setmMListEvents(list);
         //mWeekView.notifyDatasetChanged();
+    }
+
+    public List<WeekViewEvent> getmMListEvents() {
+        return mMListEvents;
+    }
+
+    public void setmMListEvents(List<WeekViewEvent> listEvents) {
+        this.mMListEvents = listEvents;
+    }
+
+    public void weeklyEvent(int day, int startH, int startM, int endH,
+            int endM, Calendar end, String name, String description) {
+        Calendar startTime = Calendar.getInstance();
+        startTime.set(Calendar.HOUR_OF_DAY, startH);
+        startTime.set(Calendar.MINUTE, startM);
+        while (startTime.get(Calendar.DAY_OF_WEEK) != day) {
+            startTime.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        List<WeekViewEvent> list = getmMListEvents();
+        while (startTime.getTimeInMillis() <= end.getTimeInMillis()) {
+            Calendar endTime = (Calendar) startTime.clone();
+            list.add(new WeekViewEvent(mIdEvent++, name, startTime, endTime,
+                    PeriodType.DEFAULT, description));
+            startTime.add(Calendar.DAY_OF_MONTH, 7);
+
+        }
+        setmMListEvents(list);
+        mWeekView.notifyDatasetChanged();
     }
 
 }

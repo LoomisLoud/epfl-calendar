@@ -13,6 +13,7 @@
 
     <application
         android:allowBackup="true"
+        android:name="ch.epfl.calendar.App"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -52,6 +53,10 @@
         <activity
             android:name="ch.epfl.calendar.display.AddEventBlockActivity"
             android:label="@string/title_activity_add_event_block" >
+        </activity>
+        <activity
+            android:name=".DefaultActionBarActivity"
+            android:label="@string/title_activity_default_action_bar" >
         </activity>
     </application>
 

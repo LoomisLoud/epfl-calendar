@@ -9,40 +9,74 @@ import ch.epfl.calendar.data.Period;
 
 /**
  * Mock for the DBQuesterMock
+ *
  * @author AblionGE
  *
  */
-public class DBQuesterMock implements DBQuester {
+public class DBQuesterMock implements LocalDatabaseInterface {
 
     @Override
-    public List<Course> getAllCourses(DBHelper dbh) {
+    public List<Course> getAllCourses() {
         return new ArrayList<Course>();
     }
 
     @Override
-    public List<Period> getAllPeriodsFromCourse(DBHelper dbh, Course course) {
+    public List<Period> getAllPeriodsFromCourse(String course) {
         return new ArrayList<Period>();
     }
 
     @Override
-    public List<Event> getAllEventsFromCourse(DBHelper dbh, Course course) {
+    public List<Event> getAllEventsFromCourse(String course) {
         return new ArrayList<Event>();
     }
 
     @Override
-    public void storeCourse(DBHelper dbh, Course course) {
+    public void storeCourse(Course course) {
     }
 
     @Override
-    public void storeCourses(DBHelper dbh, List<Course> courses) {
+    public void storeCourses(List<Course> courses) {
     }
 
     @Override
-    public void storeEventsFromCourse(DBHelper dbh, Course course) {
+    public void storeEventsFromCourse(Course course) {
     }
 
     @Override
-    public void storeEvent(DBHelper dbh, Event event) {
+    public long storeEvent(Event event) {
+        return 0;
+    }
+
+    @Override
+    public Course getCourse(String courseName) {
+        return null;
+    }
+
+    @Override
+    public List<Event> getAllEvents() {
+        return new ArrayList<Event>();
+    }
+
+    @Override
+    public List<Event> getAllEventsWithoutCourse() {
+        return new ArrayList<Event>();
+    }
+
+	@Override
+	public Event getEvent(long id) {
+		return null;
+	}
+
+    @Override
+    public void deleteEvent(Event event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<String> getAllCoursesNames() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

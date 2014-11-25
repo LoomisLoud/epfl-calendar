@@ -66,5 +66,6 @@
     <string name="title_activity_credits">Credits</string>
     <string name="ok">OK</string>
     <string name="title_activity_add_event_block">AddEventBlockActivity</string>
+    <string name="title_activity_default_action_bar">DefaultActionBarActivity</string>
 
 </resources>
