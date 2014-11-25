@@ -59,6 +59,14 @@ public interface LocalDatabaseInterface {
      * @return the list of all events in the course.
      */
     List<Event> getAllEventsFromCourse(String courseName);
+    
+    /**
+     * A block event is an event added for working weekly
+     * corresponding to the credits
+     * @param courseName
+     * @return the list of all blocks events of a Course
+     */
+    List<Event> getAllEventsFromCourseBlock(String courseName);
 
     /**
      * 

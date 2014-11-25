@@ -18,6 +18,7 @@ public class EventTable {
     public static final String COLUMN_NAME_TYPE = "type";
     public static final String COLUMN_NAME_COURSE = "course";
     public static final String COLUMN_NAME_DESCRIPTION = "description";
+    public static final String COLUMN_NAME_IS_BLOCK = "isBlock";
     private static final String FOREIGN_KEY = " FOREIGN KEY ";
     private static final String REFERENCES = " REFERENCES ";
 
@@ -34,6 +35,7 @@ public class EventTable {
                 + EventTable.COLUMN_NAME_TYPE + " TEXT, "
                 + EventTable.COLUMN_NAME_COURSE + " TEXT, "
                 + EventTable.COLUMN_NAME_DESCRIPTION + " TEXT, "
+                + EventTable.COLUMN_NAME_IS_BLOCK + " TEXT, "
                 + FOREIGN_KEY + "(" + EventTable.COLUMN_NAME_COURSE + ")"
                 + REFERENCES + CourseTable.TABLE_NAME_COURSE + "(" + CourseTable.COLUMN_NAME_NAME + ")"
                 + ");");

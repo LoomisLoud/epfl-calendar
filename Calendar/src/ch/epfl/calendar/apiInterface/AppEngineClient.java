@@ -29,7 +29,7 @@ import ch.epfl.calendar.utils.InputStreamUtils;
  * @author gilbrechbuhler
  *
  */
-public class AppEngineClient implements DatabaseInterface {
+public class AppEngineClient implements AppEngineDatabaseInterface {
     
     private static final String APP_ENGINE_ENCODING = "UTF-8";
     
