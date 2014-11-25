@@ -145,7 +145,7 @@ public class DefaultActionBarActivity extends Activity implements
 
     @Override
     public void callbackAppEngine(List<Course> mCourses) {
-        System.out.println("JE SUIS PASSE DANS APP ENGINE");
+//        System.out.println(mCourses.get(0).getDescription());
         mDB.storeCourses(mCourses);
         mUdpateData.updateData();
     }

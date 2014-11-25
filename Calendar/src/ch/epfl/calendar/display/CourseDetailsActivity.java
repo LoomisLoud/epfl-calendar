@@ -27,8 +27,6 @@ public class CourseDetailsActivity extends Activity implements
 
     private static final float SIZE_OF_TITLE = 1.5f;
 
-    private final Activity mThisActivity = this;
-    private AppEngineTask mTask;
     private String mCourseName;
     private Course mCourse;
     private DBQuester mDB;
@@ -47,25 +45,6 @@ public class CourseDetailsActivity extends Activity implements
 
         mCourseName = startingIntent.getStringExtra("course");
 
-        // Course course = null;
-
-        // FIXME
-        // // Check whether we're recreating a previously destroyed instance
-        // if (savedInstanceState != null) {
-        // // Restore value of members from saved state
-        // //System.out.println("Loading courses in savedInstanceState");
-        // mCourse = savedInstanceState.getParcelable("course");
-        // setTextViewsFromCourse();
-        // } else {
-        // // Retrieve course for first time
-        // //System.out.println("Retrieving courses for first time");
-        // if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
-        // // course = new DownloadCourseTask().execute(courseName).get();
-        // mTask = new AppEngineTask(this, new AppEngineHandler());
-        // mTask.execute(mCourseName);
-        // }
-        // }
-
         updateData();
     }
 
@@ -74,27 +53,6 @@ public class CourseDetailsActivity extends Activity implements
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle("Course Details");
     }
-
-    // FIXME
-    // @Override
-    // public void onSaveInstanceState(Bundle savedInstanceState) {
-    // // Save the activity state
-    // savedInstanceState.putParcelable("course", mCourse);
-    // //System.out.println("Saving state");
-    //
-    // // Always call the superclass so it can save the view hierarchy state
-    // super.onSaveInstanceState(savedInstanceState);
-    // }
-    //
-    // private void callback() {
-    // mCourse = mTask.getCourse();
-    // if (mCourse == null) {
-    // TextView textView = (TextView) findViewById(R.id.courseName);
-    // textView.setText(mCourseName + " not found in data base.");
-    // } else {
-    // setTextViewsFromCourse();
-    // }
-    // }
 
     private void setTextViewsFromCourse() {
         String courseProfessor = mCourse.getTeacher();
@@ -150,27 +108,6 @@ public class CourseDetailsActivity extends Activity implements
      * StyleSpan(Typeface.BOLD); spannable.setSpan(boldSpan, 0, body.length(),
      * 0); return spannable; }
      */
-
-    // FIXME
-    /**
-     * 
-     * @author Maxime
-     * 
-     */
-    // private class AppEngineHandler implements AppEngineListener {
-    //
-    // @Override
-    // public void onError(Context context, String msg) {
-    //
-    // Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-    // }
-    //
-    // @Override
-    // public void onSuccess() {
-    // callback();
-    // }
-    //
-    // }
 
     @Override
     public void updateData() {

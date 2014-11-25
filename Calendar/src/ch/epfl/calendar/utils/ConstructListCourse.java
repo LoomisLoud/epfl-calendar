@@ -62,9 +62,11 @@ public final class ConstructListCourse {
             if (cours != null) {
                 mCourses.get(mTasks.indexOf(task)).setCredits(cours.getCredits());
                 mCourses.get(mTasks.indexOf(task)).setTeacher(cours.getTeacher());
+                mCourses.get(mTasks.indexOf(task)).setDescription(cours.getDescription());
             } else {
                 mCourses.get(mTasks.indexOf(task)).setCredits(0);
                 mCourses.get(mTasks.indexOf(task)).setTeacher("Can't find a teacher");
+                mCourses.get(mTasks.indexOf(task)).setDescription("No description");
             }
             if (numberOfCourse == countOfCallbackCalls && countOfTask == mTasks.size()) {
                 mObjectActivity.callbackAppEngine(mCourses);
