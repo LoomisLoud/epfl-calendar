@@ -11,9 +11,8 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import ch.epfl.calendar.data.Course;
-
 import android.util.Xml;
+import ch.epfl.calendar.data.Course;
 
 /**
  * XML Parser for ISA timetable

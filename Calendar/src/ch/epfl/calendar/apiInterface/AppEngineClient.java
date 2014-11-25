@@ -10,9 +10,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.net.URLEncoder;
-
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

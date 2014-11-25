@@ -1,7 +1,6 @@
 package ch.epfl.calendar;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -98,7 +97,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDB = new DBQuester();
 
         // Used for destroy the database
-        // this.deleteDatabase(App.DATABASE_NAME);
+        //this.deleteDatabase(App.DATABASE_NAME);
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
@@ -340,63 +339,4 @@ public class MainActivity extends DefaultActionBarActivity implements
             this.logout();
         }
     }
-    
-    public List<WeekViewEvent> getmMListEvents() {
-        return mMListEvents;
-    }
-
-    public void setmMListEvents(List<WeekViewEvent> mListEvents) {
-        this.mMListEvents = mListEvents;
-    }
-
-    public List<WeekViewEvent> weeklyEvent(int day, int startH, int startM, int endH, int endM, 
-    		Calendar end, String name, String description) {
-        Calendar startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, startH);
-        startTime.set(Calendar.MINUTE, startM);
-        while (startTime.get(Calendar.DAY_OF_WEEK) != day) {
-            startTime.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        
-        List<WeekViewEvent> list = getmMListEvents();
-        while (startTime.getTimeInMillis() <= end.getTimeInMillis()) {
-            Calendar endTime = (Calendar) startTime.clone();
-            list.add(new WeekViewEvent(mIdEvent++, name, startTime, endTime, PeriodType.DEFAULT, description));
-            startTime.add(Calendar.DAY_OF_MONTH, NUMBER_VISIBLE_DAYS_WEEK);
-            
-        }
-        return list;
-        //setmMListEvents(list);
-        //mWeekView.notifyDatasetChanged();
-    }
-
-    public List<WeekViewEvent> getmMListEvents() {
-        return mMListEvents;
-    }
-
-    public void setmMListEvents(List<WeekViewEvent> listEvents) {
-        this.mMListEvents = listEvents;
-    }
-
-    public void weeklyEvent(int day, int startH, int startM, int endH,
-            int endM, Calendar end, String name, String description) {
-        Calendar startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, startH);
-        startTime.set(Calendar.MINUTE, startM);
-        while (startTime.get(Calendar.DAY_OF_WEEK) != day) {
-            startTime.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        List<WeekViewEvent> list = getmMListEvents();
-        while (startTime.getTimeInMillis() <= end.getTimeInMillis()) {
-            Calendar endTime = (Calendar) startTime.clone();
-            list.add(new WeekViewEvent(mIdEvent++, name, startTime, endTime,
-                    PeriodType.DEFAULT, description));
-            startTime.add(Calendar.DAY_OF_MONTH, 7);
-
-        }
-        setmMListEvents(list);
-        mWeekView.notifyDatasetChanged();
-    }
-
 }
