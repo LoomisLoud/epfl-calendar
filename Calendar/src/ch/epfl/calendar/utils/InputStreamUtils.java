@@ -14,6 +14,9 @@ public final class InputStreamUtils {
     
     private static final int BUF_SIZE = 1024;
     
+    private InputStreamUtils() {
+    }
+    
     public static String readInputStream(InputStream is, String encoding) throws IOException {
         if (is == null) {
             throw new IOException("The input stream is null");
