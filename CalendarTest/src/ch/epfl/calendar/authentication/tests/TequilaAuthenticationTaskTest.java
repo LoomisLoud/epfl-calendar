@@ -51,7 +51,6 @@ public class TequilaAuthenticationTaskTest extends MockTestCase {
     private HttpEntity httpEntity = null;
     private TequilaAuthenticationTask task = null;
     private TequilaAuthenticationListener listener = null;
-    private GlobalPreferences globalPreferences = null;
     private AuthenticationUtils authUtils = null;
     private TequilaAuthenticationAPI tequilaApi = null;
     private TequilaAuthenticationTask instance = null;

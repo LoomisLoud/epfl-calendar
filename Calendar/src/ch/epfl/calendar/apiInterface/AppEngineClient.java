@@ -61,7 +61,9 @@ public class AppEngineClient implements DatabaseInterface {
         try {
             nameUrlized = URLEncoder.encode(name.toLowerCase(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new CalendarClientException();
+            throw new CalendarClientException("An error occured in the request.");
+        } catch (NullPointerException e) {
+            throw new CalendarClientException("An error occured in the request.");
         }
         String url = mDBUrl + AppEngineURLs.GET_COURSE + "?name=" + nameUrlized;
         return getCourse(url);

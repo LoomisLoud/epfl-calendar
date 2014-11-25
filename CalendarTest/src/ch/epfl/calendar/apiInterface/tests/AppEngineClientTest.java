@@ -22,6 +22,7 @@ import ch.epfl.calendar.apiInterface.AppEngineClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.apiInterface.DatabaseInterface;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.testing.utils.MockHttpClient;
 
 import junit.framework.TestCase;
 
@@ -33,7 +34,7 @@ import junit.framework.TestCase;
  */
 public class AppEngineClientTest extends TestCase {
 
-    //private DatabaseInterface dbInterface;
+    private static final int HTTP_OK = 200;
     private static final String CORRECT_URL = "http://www.test.ch/";
     private static final String INCORRECT_URL = "http.not.a.good.url.ch";
     private static final String UTF8_ENCODING = "UTF-8";
@@ -52,30 +53,27 @@ public class AppEngineClientTest extends TestCase {
             + "biological networks.";
     private static final String COURSE_TEACHER = "Naef";
     
-    private DefaultHttpClient mockHttpClient;
+    private MockHttpClient mockHttpClient;
     private HttpResponse mockHttpResponse;
     private StatusLine mockStatusLine;
     private AppEngineClient appEngineClient;
     private HttpEntity mockHttpEntity;
-    private HttpGet httpGet;
     private InputStream is;
     
     public void setUp() throws ClientProtocolException, IOException, CalendarClientException {
-        mockHttpClient = Mockito.mock(DefaultHttpClient.class);
         mockHttpResponse = Mockito.mock(HttpResponse.class);
         mockStatusLine = Mockito.mock(StatusLine.class);
         mockHttpEntity = Mockito.mock(HttpEntity.class);
-        httpGet = new HttpGet();
         
         appEngineClient = Mockito.spy(new AppEngineClient(CORRECT_URL));
         is = new ByteArrayInputStream(COURSE_JSON_STRING.getBytes(UTF8_ENCODING));
         
+        mockHttpClient = new MockHttpClient(mockHttpResponse);
         Mockito.doReturn(mockHttpClient).when(appEngineClient).getHttpClient();
-        Mockito.doReturn(200).when(mockStatusLine).getStatusCode();
+        Mockito.doReturn(HTTP_OK).when(mockStatusLine).getStatusCode();
         Mockito.doReturn(mockStatusLine).when(mockHttpResponse).getStatusLine();
         Mockito.doReturn(mockHttpEntity).when(mockHttpResponse).getEntity();
         Mockito.doReturn(is).when(mockHttpEntity).getContent();
-        Mockito.doReturn(mockHttpResponse).when(mockHttpClient).execute(httpGet);
     }
     
     public void testConstructor() {
@@ -97,7 +95,30 @@ public class AppEngineClientTest extends TestCase {
     public void testGetCourseByName() {
         Course returnedCourse = null;
         try {
-            returnedCourse = appEngineClient.getCourseByCode("BIO-341");
+            returnedCourse = appEngineClient.getCourseByName(COURSE_NAME);
+        } catch (CalendarClientException e) {
+            fail("This exception should not be raised");
+        }
+        
+        assertEquals(COURSE_NAME, returnedCourse.getName());
+        assertEquals(COURSE_CODE, returnedCourse.getCode());
+        assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
+        assertEquals(COURSE_DESCRIPTION, returnedCourse.getDescription());
+        assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
+    }
+    
+    public void testGetCourseByNameWhenArgNull() {
+        try {
+            appEngineClient.getCourseByName(null);
+            fail("An exception should be raised.");
+        } catch (CalendarClientException e) {
+        }
+    }
+    
+    public void testGetCourseByCode() {
+        Course returnedCourse = null;
+        try {
+            returnedCourse = appEngineClient.getCourseByCode(COURSE_CODE);
         } catch (CalendarClientException e) {
             fail("This exception should not be raised");
         }
