@@ -32,7 +32,7 @@ public class DBQuester implements LocalDatabaseInterface {
     private static final String ASC = "ASC";
     private static final String CODE = "code ";
     private static final String EQUAL = " = ";
-    private static final String NOT_EQUAL = " <> ";
+    private static final String UNION = " UNION ";
     private static final String ID = "id ";
     private static final String UNDERSCORE_ID = "_id";
     private static final String NO_COURSE = "NoCourse";
@@ -183,12 +183,37 @@ public class DBQuester implements LocalDatabaseInterface {
      *      ch.epfl.calendar.data.Course)
      */
     @Override
-    public List<Event> getAllEventsFromCourse(String course) {
+    public List<Event> getAllEventsFromCourse(String courseName) {
         SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_COURSE + NOT_EQUAL + "\"" + NO_COURSE
+                + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName
                 + "\"" + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
+        ArrayList<Event> events = new ArrayList<Event>();
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                events.add(createEvent(cursor));
+                cursor.moveToNext();
+            }
+        }
+
+        closeCursor(cursor);
+        close(db);
+
+        return events;
+    }
+    
+    @Override
+    public List<Event> getAllEventsFromCourseBlock(String courseName) {
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+                + EventTable.TABLE_NAME_EVENT + WHERE
+                + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName + "\""
+                + UNION
+                + SELECT_ALL_FROM + EventTable.TABLE_NAME_EVENT + WHERE
+                + EventTable.COLUMN_NAME_IS_BLOCK + EQUAL + "\"" + App.TRUE + "\""
+                 , null);
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
