@@ -121,7 +121,6 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
         ConstructListCourse constructCourse = ConstructListCourse
                 .getInstance(this);
         constructCourse.completeCourse(coursesList, this);
-
     }
 
     public void callbackAppEngine(List<Course> coursesList) {
@@ -153,6 +152,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
                 new int[] {R.id.credit_image, R.id.course, R.id.info });
 
         mListView.setAdapter(simpleAdapter);
+        
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
 

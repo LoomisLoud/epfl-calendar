@@ -50,6 +50,10 @@
             android:name=".DefaultActionBarActivity"
             android:label="@string/title_activity_default_action_bar" >
         </activity>
+        <activity
+            android:name="ch.epfl.calendar.display.EventDetailActivity"
+            android:label="@string/title_activity_event_detail" >
+        </activity>
     </application>
 
 </manifest>

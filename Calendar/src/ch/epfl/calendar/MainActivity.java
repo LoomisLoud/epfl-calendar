@@ -23,6 +23,7 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
+import ch.epfl.calendar.display.EventDetailActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
@@ -211,6 +212,14 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.setMessage("Charging course details");
         mDialog.show();
     }
+    
+    private void switchToEventDetail(String description) {
+        Intent eventDetailActivityIntent = new Intent(this,
+                EventDetailActivity.class);
+        
+        eventDetailActivityIntent.putExtra("description", description);
+        startActivity(eventDetailActivityIntent);
+    }
 
     @Override
     public List<WeekViewEvent> onMonthChange() {
@@ -255,16 +264,22 @@ public class MainActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        if (event.getmType().equals(PeriodType.LECTURE)
-                || event.getmType().equals(PeriodType.PROJECT)
-                || event.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = event.getName().split("\n")[0];
+    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
+        if (weekEvent.getmType().equals(PeriodType.LECTURE)
+                || weekEvent.getmType().equals(PeriodType.PROJECT)
+                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = weekEvent.getName().split("\n")[0];
             switchToCourseDetails(cours);
         } else {
-            Toast.makeText(MainActivity.this,
-                    "Short pressed event: " + event.getName(),
-                    Toast.LENGTH_SHORT).show();
+            Event event = new DBQuester().getEvent(weekEvent.getId());
+            if (event.getLinkedCourse().equals(App.NO_COURSE)) {
+                String description = weekEvent.getmDescription();
+                switchToEventDetail(event.getName() + " : " + description);
+            } else {
+                String coursName = event.getLinkedCourse();
+                switchToCourseDetails(coursName);
+            }
+            
         }
     }
 

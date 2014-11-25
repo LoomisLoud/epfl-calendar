@@ -50,5 +50,7 @@
     <string name="title_activity_credits">Credits</string>
     <string name="ok">OK</string>
     <string name="title_activity_default_action_bar">DefaultActionBarActivity</string>
+    <string name="title_activity_event_detail">EventDetailActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

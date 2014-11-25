@@ -1,7 +1,8 @@
 package ch.epfl.calendar.display;
 
-import java.util.ArrayList;
 
+import java.util.List;
+import java.util.ArrayList;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
 import ch.epfl.calendar.persistence.DBQuester;
@@ -50,8 +52,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity {
 
         mCourseName = startingIntent.getStringExtra("course");
 
-        // Course course = null;
-
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore value of members from saved state
@@ -62,7 +62,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity {
             // Retrieve course for first time
             //System.out.println("Retrieving courses for first time");
             if (HttpUtils.isNetworkWorking(this.mThisActivity)) {
-                // course = new DownloadCourseTask().execute(courseName).get();
                 mTask = new AppEngineTask(this, new AppEngineHandler());
                 mTask.execute(mCourseName);
             }
@@ -101,6 +100,10 @@ public class CourseDetailsActivity extends DefaultActionBarActivity {
         String courseProfessor = mCourse.getTeacher();
         String courseCredits = Integer.toString(mCourse.getCredits());
         String courseDescription = mCourse.getDescription();
+        String linkedEventsToString = "";
+        List<Event> linkedEvents = mCourse.getEvents();
+        
+        
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
@@ -115,6 +118,16 @@ public class CourseDetailsActivity extends DefaultActionBarActivity {
         textView = (TextView) findViewById(R.id.courseDescription);
         textView.setText(bodyToSpannableConcatAndBold("Description: ", courseDescription));
         textView.setMovementMethod(new ScrollingMovementMethod());
+        
+        for (Event event: linkedEvents) {
+            linkedEventsToString += event.toString();
+        }
+        
+        
+        
+        TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
+        textView2.setText(linkedEventsToString);
+        
     }
 
     private SpannableString titleToSpannable(String title) {
