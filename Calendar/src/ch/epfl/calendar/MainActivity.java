@@ -92,7 +92,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDB = new DBQuester();
 
         // Used for destroy the database
-        //this.deleteDatabase(App.DATABASE_NAME);
+        // this.deleteDatabase(App.DATABASE_NAME);
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
@@ -207,11 +207,11 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.setMessage("Charging course details");
         mDialog.show();
     }
-    
+
     private void switchToEventDetail(String description) {
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
-        
+
         eventDetailActivityIntent.putExtra("description", description);
         startActivity(eventDetailActivityIntent);
     }
@@ -274,7 +274,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                 String coursName = event.getLinkedCourse();
                 switchToCourseDetails(coursName);
             }
-            
+
         }
     }
 
