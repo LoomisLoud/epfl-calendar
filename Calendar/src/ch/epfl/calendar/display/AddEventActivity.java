@@ -39,10 +39,13 @@ public class AddEventActivity extends DefaultActionBarActivity {
     private TimePicker mEndEventHour;
 
     private String mLinkedCourse = App.NO_COURSE;
-    public static final int AUTH_ACTIVITY_CODE = 1;
     private Spinner mSpinnerCourses;
     private List<String> mCoursesNames = new ArrayList<String>();
     private DBQuester mDB;
+    
+    private static final boolean IS_BLOCK = false;
+    
+    public static final int AUTH_ACTIVITY_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +111,7 @@ public class AddEventActivity extends DefaultActionBarActivity {
                 App.calendarToBasicFormatString(start),
                 App.calendarToBasicFormatString(end),
                 PeriodType.DEFAULT.toString(), mLinkedCourse, mDescriptionEvent
-                        .getText().toString(), DBQuester.NO_ID);
+                        .getText().toString(), IS_BLOCK, DBQuester.NO_ID);
         DBQuester dbQuester = new DBQuester();
         dbQuester.storeEvent(e);
     }

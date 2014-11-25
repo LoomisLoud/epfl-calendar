@@ -34,7 +34,7 @@ public class App extends Application {
      * {@link SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)}
      * method.
      */
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     /**
      * Index 0.
@@ -50,6 +50,16 @@ public class App extends Application {
      * Index value of the end of the field date in a calendar string
      */
     public static final int END_DATE_INDEX = 10;
+
+    /**
+     * The boolean true in String
+     */
+    public static final String TRUE = "true";
+
+    /**
+     * The boolean false in String
+     */
+    public static final String FALSE = "false";
 
     /**
      * Length of the date part in a split calendar string.
@@ -253,5 +263,17 @@ public class App extends Application {
         }
 
         return dd + "." + mm + "." + yyyy + " " + hh + ":" + min;
+    }
+    
+    public static String boolToString(boolean bool) {
+        if (bool) {
+            return App.TRUE;
+        } else {
+            return App.FALSE;
+        }
+    }
+    
+    public static boolean stringToBool(String strBool) {
+        return strBool.equals(App.TRUE);
     }
 }

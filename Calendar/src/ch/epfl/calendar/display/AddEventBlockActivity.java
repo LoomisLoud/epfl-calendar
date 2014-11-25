@@ -29,6 +29,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
     private Spinner mSpinnerDays;
     private TextView mAskDay;
     private String mCourseName;
+    private static final boolean IS_BLOCK = true;
     public final static int NUMBER_OF_DAYS = 7;
 
     private void setView() {
@@ -84,7 +85,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
                 App.calendarToBasicFormatString(startEvent),
                 App.calendarToBasicFormatString(endEvent),
                 PeriodType.DEFAULT.toString(), mCourseName,
-                "You have to work on " + mCourseName + " now", DBQuester.NO_ID);
+                "You have to work on " + mCourseName + " now", IS_BLOCK, DBQuester.NO_ID);
         dbQuester.storeEvent(event);
 
         while (endDate.getTimeInMillis() > endEvent.getTimeInMillis()) {
@@ -96,7 +97,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
                     App.calendarToBasicFormatString(endEvent),
                     PeriodType.DEFAULT.toString(), mCourseName,
                     "You have to work on " + mCourseName + " now",
-                    DBQuester.NO_ID);
+                    IS_BLOCK, DBQuester.NO_ID);
             dbQuester.storeEvent(e);
         }
     }

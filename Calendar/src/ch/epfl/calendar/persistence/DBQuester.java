@@ -402,8 +402,10 @@ public class DBQuester implements LocalDatabaseInterface {
                 .getColumnIndex(EventTable.COLUMN_NAME_DESCRIPTION));
         int id = cursor
                 .getInt(cursor.getColumnIndex(EventTable.COLUMN_NAME_ID));
+        boolean isBlock = App.stringToBool(cursor
+                .getString(cursor.getColumnIndex(EventTable.COLUMN_NAME_IS_BLOCK)));
         return new Event(name, startDate, endDate, type, courseName,
-                description, id);
+                description, isBlock, id);
     }
 
     private void close(SQLiteDatabase db) {
