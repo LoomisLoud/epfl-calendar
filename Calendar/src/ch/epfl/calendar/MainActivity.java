@@ -393,28 +393,6 @@ public class MainActivity extends Activity implements
 
             mWeekView.notifyDatasetChanged();
         }
-        
-        if (requestCode == BLOCK_ACTIVITY_CODE && resultCode == RESULT_OK) {
-        	
-        	Bundle b = data.getExtras();
-        	
-        	String courseName = b.getString("courseName").toString();
-        	String nameEvent = b.getString("nameEvent").toString();
-        	String description = "Block of homework for the course: " + courseName;
-        	
-        	int day = b.getInt("day");
-        	int startHour = b.getInt("startHour");
-        	int startMinute = b.getInt("startMinute");
-        	int endHour = b.getInt("endHour");
-        	int endMinute = b.getInt("endMinute");
-        	Period period = data.getParcelableExtra("period");
-        	
-        	System.out.println(period.getEndDate().toString());
-        	Calendar test = createCalendar(2014, Calendar.DECEMBER, 25, 20, 4);
-        	//weeklyEvent(day, startHour, startMinute, endHour, endMinute, period.getEndDate(), nameEvent, description);
-        	//weeklyEvent(day, startHour, startMinute, endHour, endMinute, test, nameEvent, description);
-        	weeklyEvent(2, 15, 15, 17, 15, test, "bouh", "temp");
-        }
     }
 
     @Override
@@ -453,7 +431,7 @@ public class MainActivity extends Activity implements
         this.mMListEvents = mListEvents;
     }
 
-    public void weeklyEvent(int day, int startH, int startM, int endH, int endM, 
+    public List<WeekViewEvent> weeklyEvent(int day, int startH, int startM, int endH, int endM, 
     		Calendar end, String name, String description) {
         Calendar startTime = Calendar.getInstance();
         startTime.set(Calendar.HOUR_OF_DAY, startH);
@@ -469,8 +447,9 @@ public class MainActivity extends Activity implements
             startTime.add(Calendar.DAY_OF_MONTH, NUMBER_VISIBLE_DAYS_WEEK);
             
         }
-        setmMListEvents(list);
-        mWeekView.notifyDatasetChanged();
+        return list;
+        //setmMListEvents(list);
+        //mWeekView.notifyDatasetChanged();
     }
 
 }
