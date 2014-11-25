@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -18,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
@@ -26,7 +26,6 @@ import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
-import ch.epfl.calendar.utils.AuthenticationUtils;
 
 /**
  * 
@@ -35,7 +34,7 @@ import ch.epfl.calendar.utils.AuthenticationUtils;
  */
 public class MainActivity extends DefaultActionBarActivity implements
         WeekView.MonthChangeListener, WeekView.EventClickListener,
-        WeekView.EventLongPressListener {
+        WeekView.EventLongPressListener, UpdateDataFromDBInterface {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -63,20 +62,16 @@ public class MainActivity extends DefaultActionBarActivity implements
     private List<Event> mListEventWithoutCourse = new ArrayList<Event>();
     private ProgressDialog mDialog;
 
-    private Activity mThisActivity;
-
-    private AuthenticationUtils mAuthUtils;
-
     private DBQuester mDB;
 
     public static final String TAG = "MainActivity::";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("ON CREATE");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mThisActivity = this;
-        mAuthUtils = new AuthenticationUtils();
+        super.setUdpateData(this);
 
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
@@ -102,12 +97,14 @@ public class MainActivity extends DefaultActionBarActivity implements
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
-            if (!mAuthUtils.isAuthenticated(mThisActivity)) {
-                switchToAuthenticationActivity();
-            } else {
-                mListCourses = new ArrayList<Course>();
-                populateCalendarFromISA();
-            }
+            // FIXME : Test if it works without this code
+            // if (!mAuthUtils.isAuthenticated(mThisActivity)) {
+            // switchToAuthenticationActivity();
+            // } else {
+            // mListCourses = new ArrayList<Course>();
+            // populateCalendarFromISA(this);
+            // }
+            populateCalendarFromISA();
         } else {
             mWeekView.notifyDatasetChanged();
         }
@@ -321,6 +318,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        super.setUdpateData(this);
         mListCourses = mDB.getAllCourses();
         mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
         mWeekView.notifyDatasetChanged();
@@ -330,15 +328,9 @@ public class MainActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    public void callbackDownload(boolean success, List<Course> courses) {
-        if (success) {
-            mListCourses = courses;
-            mDB.storeCourses(courses);
-            updateListsFromDB();
-            mWeekView.notifyDatasetChanged();
-        } else {
-            this.logout();
-        }
+    public void updateData() {
+        updateListsFromDB();
+        mWeekView.notifyDatasetChanged();
     }
 
     public List<WeekViewEvent> getmMListEvents() {

@@ -31,7 +31,7 @@ import ch.epfl.calendar.utils.HttpUtils;
  * @author gilbrechbuhler
  *
  */
-public class AppEngineClient implements DatabaseInterface {
+public class AppEngineClient implements AppEngineDatabaseInterface {
     
     private String mDBUrl;
     

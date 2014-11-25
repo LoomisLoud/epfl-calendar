@@ -6,7 +6,7 @@ package ch.epfl.calendar.apiInterface;
  * @author AblionGE
  *
  */
-public interface UpdateDataFromDB {
+public interface UpdateDataFromDBInterface {
     
     /**
      * This function is used to fetch data from local database
