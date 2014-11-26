@@ -16,6 +16,7 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.display.EventListActivity;
 
 /**
  * @author fouchepi
@@ -57,6 +58,10 @@ public class DefaultActionBarActivity extends Activity implements
                 return true;
             case R.id.action_update_activity:
                 populateCalendarFromISA();
+                return true;
+            case R.id.action_event_list:
+                Intent i = new Intent(this,EventListActivity.class);
+                startActivity(i);
                 return true;
             case R.id.action_logout:
                 logout();
