@@ -208,11 +208,11 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.show();
     }
 
-    private void switchToEventDetail(String description) {
+    private void switchToEventDetail(String name, String description) {
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", description);
+        eventDetailActivityIntent.putExtra("description", new String[]{name, description});
         startActivity(eventDetailActivityIntent);
     }
 
@@ -269,7 +269,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             Event event = new DBQuester().getEvent(weekEvent.getId());
             if (event.getLinkedCourse().equals(App.NO_COURSE)) {
                 String description = weekEvent.getmDescription();
-                switchToEventDetail(event.getName() + " : " + description);
+                switchToEventDetail(event.getName(), description);
             } else {
                 String coursName = event.getLinkedCourse();
                 switchToCourseDetails(coursName);

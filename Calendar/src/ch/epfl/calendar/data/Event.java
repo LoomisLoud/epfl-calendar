@@ -80,11 +80,10 @@ public class Event {
         String name = this.mName;
         String startDate = App.calendarToBasicFormatString(this.mStartDate);
         String endDate = App.calendarToBasicFormatString(this.mEndDate);
-        String type = this.mType;
-        String linkedCourse = this.mLinkedCourse;
+        String description = this.mDescription;
 
-        return name.concat(" ").concat(startDate).concat(" ").concat(endDate)
-                .concat(" ").concat(type).concat(" ").concat(linkedCourse);
+        return name.concat(" from ").concat(startDate).concat(" to ").concat(endDate)
+                .concat(" : ").concat(description);
     }
 
     /**
