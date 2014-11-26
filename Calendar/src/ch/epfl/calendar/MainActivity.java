@@ -8,7 +8,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -25,7 +24,6 @@ import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.EventDetailActivity;
-import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
@@ -71,7 +69,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     private AuthenticationUtils mAuthUtils;
 
     private DBQuester mDB;
-    private Context mContext = this;
+    
 
     public static final String TAG = "MainActivity::";
 
@@ -127,7 +125,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         spinnerList.add("Day");
         spinnerList.add("3 Days");
         spinnerList.add("Week");
-        spinnerList.add("List of Events");
+        
         return spinnerList;
     }
 
@@ -158,11 +156,6 @@ public class MainActivity extends DefaultActionBarActivity implements
                             NUMBER_VISIBLE_DAYS_WEEK, SIZE_COLUMN_GAP_WEEK,
                             SIZE_FRONT_WEEK, SIZE_FRONT_EVENT_WEEK);
 
-                    return true;
-                } else if (position == 3) {
-                    Intent i = new Intent(mContext,EventListActivity.class);
-                    startActivity(i);
-                    
                     return true;
                 }else{
                     return false;

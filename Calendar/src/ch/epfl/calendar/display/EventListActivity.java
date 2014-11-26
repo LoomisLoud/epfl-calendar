@@ -8,7 +8,15 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import ch.epfl.calendar.R;
@@ -23,6 +31,9 @@ public class EventListActivity extends Activity {
 
     private ListView mListView;
     private DBQuester mDbQuester;
+    private Context context = this;
+    
+    private  final int EVENT_LIST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +48,21 @@ public class EventListActivity extends Activity {
         for (Course c : course) {
             for (Period p : c.getPeriods()) {
                 event.add(new EventForList(c.getName(), p.getStartDate(), p
-                        .getEndDate(), p.getType()));
+                        .getEndDate(), p.getType(),-1));
             }
         }
 
         for (Event e : eventCreated) {
             event.add(new EventForList(e.getName(), e.getStartDate(), e
-                    .getEndDate(), stringToPeriodType(e.getType())));
+                    .getEndDate(), stringToPeriodType(e.getType()),e.getId()));
         }
         sort(event);
-       event= removePastEvents(event);
+       final List<EventForList> updatedEvent= removePastEvents(event);
 
-        String eventTab[] = new String[event.size()];
+        String eventTab[] = new String[updatedEvent.size()];
 
-        for (int i = 0; i < event.size(); i++) {
-            eventTab[i] = createString(event, i);
+        for (int i = 0; i < updatedEvent.size(); i++) {
+            eventTab[i] = createString(updatedEvent, i);
 
         }
 
@@ -60,6 +71,41 @@ public class EventListActivity extends Activity {
 
         mListView.setAdapter(adapter);
         mListView.setDividerHeight(10);
+        
+        mListView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int position,
+                    long arg3) {
+                
+                
+            }
+        });
+        
+        mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                  final  int arg2, long arg3) {
+                AlertDialog.Builder dialog= new AlertDialog.Builder(context);
+                dialog.setMessage("What do you want to do ?");
+                dialog.setNegativeButton("Delete", new OnClickListener() {
+                    
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                     int id =updatedEvent.get(arg2).getmId();
+                     mDbQuester.deleteEvent(mDbQuester.getEvent(id));
+                     
+                     
+                     dialog.cancel();
+                        
+                    }
+                });
+                dialog.create();
+                dialog.show();
+                return false;
+            }
+        });
 
     }
 
@@ -138,4 +184,5 @@ public class EventListActivity extends Activity {
         }
         return result;
     }
+    
 }

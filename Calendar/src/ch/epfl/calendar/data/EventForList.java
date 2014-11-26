@@ -8,14 +8,17 @@ public class EventForList {
     private Calendar mStart;
     private Calendar mEnd;
     private PeriodType mType;
-    
-    public EventForList(String name,Calendar start, Calendar end, PeriodType type){
-        mEventName=name;
-        mStart=start;
-        mEnd=end;
-        mType=type;
+    private int mId;
+
+    public EventForList(String name, Calendar start, Calendar end,
+            PeriodType type, int id) {
+        mEventName = name;
+        mStart = start;
+        mEnd = end;
+        mType = type;
+        mId = id;
     }
-    
+
     public String getmEventName() {
         return mEventName;
     }
@@ -46,5 +49,13 @@ public class EventForList {
 
     public void setmType(PeriodType mType) {
         this.mType = mType;
+    }
+
+    public int getmId() {
+        return mId;
+    }
+
+    public void setmId(int mId) {
+        this.mId = mId;
     }
 }
