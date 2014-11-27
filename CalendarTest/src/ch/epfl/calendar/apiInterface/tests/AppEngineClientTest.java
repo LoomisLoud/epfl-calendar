@@ -3,6 +3,24 @@
  */
 package ch.epfl.calendar.apiInterface.tests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.mockito.Mockito;
+
+
+import ch.epfl.calendar.apiInterface.AppEngineClient;
+import ch.epfl.calendar.apiInterface.CalendarClientException;
+import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.testing.utils.MockHttpClient;
+
 import junit.framework.TestCase;
 
 /**
@@ -13,113 +31,126 @@ import junit.framework.TestCase;
  */
 public class AppEngineClientTest extends TestCase {
 
-    //private DatabaseInterface dbInterface;
-
-    // FIXME : see with Jonas to have a local app engine on the jenkins server.
-    /*public void testGetCourseErrors() {
+    private static final int HTTP_OK = 200;
+    private static final int HTTP_NOT_OK = 404;
+    private static final String CORRECT_URL = "http://www.test.ch/";
+    private static final String NOT_EXISTING_URL = "http://not-existing-page.com/";
+    private static final String INCORRECT_URL = "http.not.a.good.url.ch";
+    private static final String UTF8_ENCODING = "UTF-8";
+    private static final String COURSE_JSON_STRING = "{\"code\":\"BIO-341\",\"professorName\":\"Naef\","
+            + "\"name\":\"Mod\u00e9lisation math\u00e9matique et computationnelle en biologie\","
+            + "\"numberOfCredits\":4,\"description\":\"This course introduces dynamical systems theory for "
+            + "modeling simple biological networks. Qualitative analysis of non-linear dynamical models will "
+            + "be developed in conjunction with simulations. The focus is on applications to "
+            + "biological networks.\"}";
+    private static final String COURSE_NAME = "Modélisation mathématique et computationnelle en biologie";
+    private static final String COURSE_CODE = "BIO-341";
+    private static final int COURSE_CREDITS = 4;
+    private static final String COURSE_DESCRIPTION = "This course introduces dynamical systems theory for "
+            + "modeling simple biological networks. Qualitative analysis of non-linear dynamical models will "
+            + "be developed in conjunction with simulations. The focus is on applications to "
+            + "biological networks.";
+    private static final String COURSE_TEACHER = "Naef";
+    
+    private MockHttpClient mockHttpClient;
+    private HttpResponse mockHttpResponse;
+    private StatusLine mockStatusLine;
+    private AppEngineClient appEngineClient;
+    private HttpEntity mockHttpEntity;
+    private InputStream is;
+    
+    public void setUp() throws ClientProtocolException, IOException, CalendarClientException {
+        mockHttpResponse = Mockito.mock(HttpResponse.class);
+        mockStatusLine = Mockito.mock(StatusLine.class);
+        mockHttpEntity = Mockito.mock(HttpEntity.class);
+        
+        appEngineClient = Mockito.spy(new AppEngineClient(CORRECT_URL));
+        is = new ByteArrayInputStream(COURSE_JSON_STRING.getBytes(UTF8_ENCODING));
+        
+        mockHttpClient = new MockHttpClient(mockHttpResponse);
+        Mockito.doReturn(mockHttpClient).when(appEngineClient).getHttpClient();
+        Mockito.doReturn(HTTP_OK).when(mockStatusLine).getStatusCode();
+        Mockito.doReturn(mockStatusLine).when(mockHttpResponse).getStatusLine();
+        Mockito.doReturn(mockHttpEntity).when(mockHttpResponse).getEntity();
+        Mockito.doReturn(is).when(mockHttpEntity).getContent();
+    }
+    
+    public void testConstructor() {
         try {
-            dbInterface = new AppEngineClient("http://10.0.2.2:8080");
-            Course course = dbInterface.getCourseByCode("notExisitingCode");
-            assertNull(course);
-        } catch (CalendarClientException calendarClientException) {
-            System.out.println("An error occured.");
-        }
-
-        try {
-            dbInterface = new AppEngineClient("http://10.0:8080");
-            dbInterface.getCourseByCode("CS-470");
-            fail("Missing exception");
-        } catch (CalendarClientException calendarClientExc) {
+            AppEngineClient testClient = new AppEngineClient(CORRECT_URL);
+        } catch (CalendarClientException e) {
+            fail("This exception should not be raised.");
         }
     }
-
+    
+    public void testConstructorWhenBadUrl() {
+        try {
+            AppEngineClient testClient = new AppEngineClient(INCORRECT_URL);
+            fail("This exception should not be raised.");
+        } catch (CalendarClientException e) {
+        }
+    }
+    
+    public void testGetCourseByName() {
+        Course returnedCourse = null;
+        try {
+            returnedCourse = appEngineClient.getCourseByName(COURSE_NAME);
+        } catch (CalendarClientException e) {
+            fail("This exception should not be raised");
+        }
+        
+        assertEquals(COURSE_NAME, returnedCourse.getName());
+        assertEquals(COURSE_CODE, returnedCourse.getCode());
+        assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
+        assertEquals(COURSE_DESCRIPTION, returnedCourse.getDescription());
+        assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
+    }
+    
+    public void testGetCourseByNameWhenArgNull() {
+        try {
+            appEngineClient.getCourseByName(null);
+            fail("An exception should be raised.");
+        } catch (CalendarClientException e) {
+        }
+    }
+    
     public void testGetCourseByCode() {
+        Course returnedCourse = null;
         try {
-            dbInterface = new AppEngineClient("http://10.0.2.2:8080");
-            Course course = dbInterface.getCourseByCode("CS-470");
-            assertEquals("CS-470", course.getCode());
-            assertEquals("", course.getDescription());
-            assertEquals("Advanced computer architecture", course.getName());
-            assertEquals("Pr. Ienne", course.getTeacher());
-            assertEquals(4, course.getCredits());
-        } catch (CalendarClientException calendarClientException) {
-            fail("An error occured.");
+            returnedCourse = appEngineClient.getCourseByCode(COURSE_CODE);
+        } catch (CalendarClientException e) {
+            fail("This exception should not be raised");
+        }
+        
+        assertEquals(COURSE_NAME, returnedCourse.getName());
+        assertEquals(COURSE_CODE, returnedCourse.getCode());
+        assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
+        assertEquals(COURSE_DESCRIPTION, returnedCourse.getDescription());
+        assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
+    }
+    
+    public void testNotHTTPOKCode() {
+        Mockito.doReturn(HTTP_NOT_OK).when(mockStatusLine).getStatusCode();
+        try {
+            appEngineClient.getCourseByCode(COURSE_CODE);
+            fail("An exception should be raised.");
+        } catch (CalendarClientException e) {
         }
     }
-
-    public void testGetPeriodsByCourseCode() {
+    
+    public void testGetCourseWhenBadUrl() throws CalendarClientException, NoSuchMethodException, 
+        IllegalAccessException, IllegalArgumentException {
+        AppEngineClient client = new AppEngineClient(CORRECT_URL);
+        Method getCourse;
+        getCourse = (AppEngineClient.class).getDeclaredMethod("getCourse", String.class);
+        getCourse.setAccessible(true);
+        
         try {
-            dbInterface = new AppEngineClient("http://10.0.2.2:8080");
-            Course course = dbInterface.getCourseByCode("CS-470");
-            assertEquals(2, course.getPeriods().size());
-            assertEquals("08.10.2014", course.getPeriods().get(0).getDate());
-            assertEquals("16:00", course.getPeriods().get(0).getStartTime());
-            assertEquals("18:00", course.getPeriods().get(0).getEndTime());
-            assertEquals("exercises", course.getPeriods().get(0).getType());
-            assertEquals("GCA331", course.getPeriods().get(0).getRooms().get(0));
-            assertEquals("GCB331", course.getPeriods().get(0).getRooms().get(1));
-            try {
-                course.getPeriods().get(0).getJSONFromPeriod(course.getCode());
-            } catch (JSONException jsonException) {
-                jsonException.printStackTrace();
+            getCourse.invoke(client, NOT_EXISTING_URL);
+        } catch (InvocationTargetException e) {
+            if (!(e.getCause() instanceof CalendarClientException)) {
+                fail("CalendarClientException should be raised here.");
             }
-
-            assertEquals("05.10.2014", course.getPeriods().get(1).getDate());
-            assertEquals("12:00", course.getPeriods().get(1).getStartTime());
-            assertEquals("14:00", course.getPeriods().get(1).getEndTime());
-            assertEquals("lecture", course.getPeriods().get(1).getType());
-            assertEquals("GCA331", course.getPeriods().get(1).getRooms().get(0));
-            assertEquals("GCB331", course.getPeriods().get(1).getRooms().get(1));
-        } catch (CalendarClientException calendarClientException) {
-            fail("Exception occured");
         }
     }
-
-    public void testCreatePeriod() {
-        try {
-            dbInterface = new AppEngineClient("http://10.0.2.2:8080");
-            Course course = dbInterface.getCourseByCode("CS-472");
-            List<String> rooms = new ArrayList<String>();
-            rooms.add("CO2");
-            Period period = new Period("25.12.2014", "14:00", "16:00", "Labs", rooms);
-            course.addPeriod(period);
-            dbInterface.createPeriod(period, course.getCode());
-
-            Course newCourse = dbInterface.getCourseByCode("CS-472");
-            assertEquals("25.12.2014", newCourse.getPeriods().get(0).getDate());
-            assertEquals("14:00", newCourse.getPeriods().get(0).getStartTime());
-            assertEquals("16:00", newCourse.getPeriods().get(0).getEndTime());
-            assertEquals("Labs", newCourse.getPeriods().get(0).getType());
-            assertEquals("CO2", newCourse.getPeriods().get(0).getRooms().get(0));
-        } catch (CalendarClientException calendarClientException) {
-            fail("Exception occured");
-        }
-    }*/
-
-//    public void testOnlineURL() {
-//        try {
-//            dbInterface = new AppEngineClient("http://versatile-hull-742.appspot.com");
-//            Course course = dbInterface.getCourseByCode("CS-470");
-//            /*System.out.println(course.getDescription());
-//            System.out.println("GET DESCRIPTION");
-//            System.out.println(course.getDescription());*/
-//            assertEquals("CS-470", course.getCode());
-//            assertEquals("Augmenter au maximum la performance :\n"
-//                +"\n\n\nPrincipes de parallelisme au niveau des instructions.\n"
-//                + "\"Register renaming\".\n"
-//                +"Prediction et speculation.\n"
-//                +"\"Simultaneous multithreading\".\n"
-//                + "VLIWs et techniques de compilation pour ILP.\n"
-//                +"\"Dynamic binary translation\". \n"
-//                +"\nProcesseurs embarqués :\n"
-//                + "\n\n\n"
-//                +"Particularités par rapport aux processeurs non-embarqués.\n"
-//                +"Survol des DSP et de leur défis pour la compilation.\n"
-//                +"Processeurs configurables et customisation.\n", course.getDescription());
-//            assertEquals("Ienne", course.getTeacher());
-//            assertEquals(4, course.getCredits());
-//        } catch (CalendarClientException calendarClientException) {
-//            fail("An error occured.");
-//        }
-//    }
 }

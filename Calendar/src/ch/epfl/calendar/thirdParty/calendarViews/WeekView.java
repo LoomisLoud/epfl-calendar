@@ -1368,6 +1368,7 @@ public class WeekView extends View {
     public interface EventLongPressListener {
         void onEventLongPress(WeekViewEvent event, RectF eventRect);
     }
+
     /**
      * Converts an int (0-23) to time string (e.g. 12 PM).
      * 

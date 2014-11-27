@@ -11,21 +11,30 @@ import android.view.MenuItem;
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.display.AddBlocksActivity;
 import ch.epfl.calendar.display.AddEventActivity;
+import ch.epfl.calendar.display.AppEngineDownloadInterface;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.display.EventListActivity;
+import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.utils.AuthenticationUtils;
+import ch.epfl.calendar.utils.ConstructListCourse;
 
 /**
  * @author fouchepi
  * 
  */
 public class DefaultActionBarActivity extends Activity implements
-        CalendarClientDownloadInterface {
+        CalendarClientDownloadInterface, AppEngineDownloadInterface {
 
     private Activity mThisActivity;
+    private DBQuester mDB;
+    private UpdateDataFromDBInterface mUdpateData;
+    private AuthenticationUtils mAuthUtils;
     public static final int AUTH_ACTIVITY_CODE = 1;
     public static final int ADD_EVENT_ACTIVITY_CODE = 2;
 
@@ -34,7 +43,17 @@ public class DefaultActionBarActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_action_bar);
         mThisActivity = this;
+        mDB = new DBQuester();
+        mAuthUtils = new AuthenticationUtils();
         defaultActionBar();
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
+            populateCalendarFromISA();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -50,6 +69,9 @@ public class DefaultActionBarActivity extends Activity implements
             case R.id.action_courses_list:
                 switchToCoursesList();
                 return true;
+            case R.id.add_event_block:
+            	switchToAddBlockActivity();
+            	return true;
             case R.id.action_settings:
                 switchToCreditsActivity();
                 return true;
@@ -81,6 +103,12 @@ public class DefaultActionBarActivity extends Activity implements
                 CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
     }
+    
+    private void switchToAddBlockActivity() {
+        Intent blockActivityIntent = new Intent(this,
+                AddBlocksActivity.class);
+        startActivity(blockActivityIntent);
+    }
 
     private void switchToAddEventsActivity() {
         Intent addEventsActivityIntent = new Intent(this,
@@ -101,8 +129,18 @@ public class DefaultActionBarActivity extends Activity implements
     }
 
     public void populateCalendarFromISA() {
-        CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
-        cal.getISAInformations();
+        if (!mAuthUtils.isAuthenticated(mThisActivity)) {
+            switchToAuthenticationActivity();
+        } else {
+            CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
+            cal.getISAInformations();
+        }
+    }
+    
+    public void completeCalendarFromAppEngine(List<Course> coursesList) {
+        ConstructListCourse constructCourse = ConstructListCourse
+                .getInstance(this);
+        constructCourse.completeCourse(coursesList, this);
     }
 
     public void logout() {
@@ -112,8 +150,27 @@ public class DefaultActionBarActivity extends Activity implements
 
     @Override
     public void callbackDownload(boolean success, List<Course> courses) {
-        // TODO Auto-generated method stub
+        if (success) {
+//            mDB.storeCourses(courses);
+            completeCalendarFromAppEngine(courses);
+        } else {
+            this.logout();
+        }
+    }
 
+    @Override
+    public void callbackAppEngine(List<Course> mCourses) {
+//        System.out.println(mCourses.get(0).getDescription());
+        mDB.storeCourses(mCourses);
+        mUdpateData.updateData();
+    }
+
+    public UpdateDataFromDBInterface getUdpateData() {
+        return mUdpateData;
+    }
+
+    public void setUdpateData(UpdateDataFromDBInterface udpateData) {
+        this.mUdpateData = udpateData;
     }
 
 }

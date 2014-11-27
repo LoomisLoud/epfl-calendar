@@ -19,18 +19,18 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
-import ch.epfl.calendar.apiInterface.CalendarClient;
-import ch.epfl.calendar.apiInterface.CalendarClientInterface;
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.utils.ConstructListCourse;
+import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.persistence.LocalDatabaseInterface;
 
 /**
  * @author Maxime
  * 
  */
 public class CoursesListActivity extends DefaultActionBarActivity implements
-        AppEngineDownloadInterface {
+        UpdateDataFromDBInterface {
 
     public static final int AUTH_ACTIVITY_CODE = 1;
     private ListView mListView;
@@ -47,7 +47,9 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
     private static final int TEN = 10;
     private static final int ELEVEN = 11;
     private static final int TWELVE = 12;
-    
+
+    private LocalDatabaseInterface mDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,17 +59,11 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
 
         mListView = (ListView) findViewById(R.id.coursesListView);
 
-        // Check whether we're recreating a previously destroyed instance
-        if (savedInstanceState != null) {
-            // Restore value of members from saved state
-            // System.out.println("Loading courses in savedInstanceState");
-            mCourses = savedInstanceState.getParcelableArrayList("coursesList");
-            callbackAppEngine(mCourses);
-        } else {
-            // Retrieve course for first time
-            // System.out.println("Retrieving courses for first time");
-            retrieveCourse();
-        }
+        super.setUdpateData(this);
+
+        mDB = new DBQuester();
+
+        updateData();
 
     }
 
@@ -75,25 +71,15 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("My Courses");
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean retour = super.onCreateOptionsMenu(menu);
-        MenuItem addEventItem = (MenuItem) menu.findItem(R.id.action_courses_list);
+        MenuItem addEventItem = (MenuItem) menu
+                .findItem(R.id.action_courses_list);
         addEventItem.setVisible(false);
         this.invalidateOptionsMenu();
         return retour;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the activity state
-        savedInstanceState.putParcelableArrayList("coursesList",
-                new ArrayList<Course>(mCourses));
-        // System.out.println("Saving state");
-
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
     }
 
     /**
@@ -111,23 +97,13 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
         startActivity(courseDetailsActivityIntent);
     }
 
-    private void retrieveCourse() {
-        CalendarClientInterface calendarClient = new CalendarClient(this, this);
-        calendarClient.getISAInformations();
-    }
-
-    private void retrieveCourseInfo(List<Course> coursesList) {
-
-        ConstructListCourse constructCourse = ConstructListCourse
-                .getInstance(this);
-        constructCourse.completeCourse(coursesList, this);
-    }
-
-    public void callbackAppEngine(List<Course> coursesList) {
+    @Override
+    public void updateData() {
+        mCourses = mDB.getAllCourses();
 
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
 
-        for (Course cours : coursesList) {
+        for (Course cours : mCourses) {
             Map<String, String> courseMap = new HashMap<String, String>();
             int creditImage = getCreditImage(cours);
 
@@ -148,11 +124,16 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
                 R.layout.listview_images,
-                new String[] {"credit_image", "course", "info" },
-                new int[] {R.id.credit_image, R.id.course, R.id.info });
+                new String[] {
+                    "credit_image",
+                    "course", "info"
+                },
+                new int[] {
+                    R.id.credit_image,
+                    R.id.course, R.id.info
+                });
 
         mListView.setAdapter(simpleAdapter);
-        
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -165,25 +146,6 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
             }
 
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            this.mCourses = new ArrayList<Course>();
-            retrieveCourse();
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void callbackDownload(boolean success, List<Course> courses) {
-        if (success) {
-            this.mCourses = courses;
-            retrieveCourseInfo(mCourses);
-        } else {
-            switchToAuthenticationActivity();
-        }
     }
 
     private int getCreditImage(Course cours) {

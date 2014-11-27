@@ -3,9 +3,9 @@ package ch.epfl.calendar.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.epfl.calendar.data.Course;
 import android.app.Fragment;
 import android.os.Bundle;
+import ch.epfl.calendar.data.Course;
 
 /**
  * Class to holds the courses list to retain for recreation of activity handling (rotation etc.)

@@ -24,6 +24,8 @@ public final class ConstructListCourse {
     private ArrayList<AppEngineTask> mTasks;
     private AppEngineDownloadInterface mObjectActivity = null;
     private List<Course> mCourses;
+    private int countOfCallbackCalls = 0;
+    private int numberOfCourse = 0;
 
     private ConstructListCourse(AppEngineDownloadInterface objectActivity) {
         mObjectActivity = objectActivity;
@@ -40,7 +42,8 @@ public final class ConstructListCourse {
     }
 
     public void completeCourse(List<Course> courses, Context context) {
-        
+        mCourses = new ArrayList<Course>();
+        numberOfCourse = courses.size();
         for (Course course : courses) {
             mCourses.add(course);
             AppEngineTask task;
@@ -51,16 +54,23 @@ public final class ConstructListCourse {
     }
 
     private void callback() {
+        countOfCallbackCalls = countOfCallbackCalls + 1;
+        int countOfTask = 0;
         for (AppEngineTask task : mTasks) {
+            countOfTask = countOfTask + 1;
             Course cours = task.getCourse();
             if (cours != null) {
                 mCourses.get(mTasks.indexOf(task)).setCredits(cours.getCredits());
                 mCourses.get(mTasks.indexOf(task)).setTeacher(cours.getTeacher());
+                mCourses.get(mTasks.indexOf(task)).setDescription(cours.getDescription());
             } else {
                 mCourses.get(mTasks.indexOf(task)).setCredits(0);
                 mCourses.get(mTasks.indexOf(task)).setTeacher("Can't find a teacher");
+                mCourses.get(mTasks.indexOf(task)).setDescription("No description");
             }
-            mObjectActivity.callbackAppEngine(mCourses);
+            if (numberOfCourse == countOfCallbackCalls && countOfTask == mTasks.size()) {
+                mObjectActivity.callbackAppEngine(mCourses);
+            }
         }
     }
 
