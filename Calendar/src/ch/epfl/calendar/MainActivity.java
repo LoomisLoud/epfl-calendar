@@ -1,6 +1,7 @@
 package ch.epfl.calendar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -21,6 +22,7 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
+import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.EventDetailActivity;
 import ch.epfl.calendar.persistence.DBQuester;
@@ -257,8 +259,45 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
         return result + "\n" + p.getType();
     }
-
+    
+    public void switchToEditActivity(WeekViewEvent weekEvent) {
+        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
+        Event event = new DBQuester().getEvent(weekEvent.getId());
+        
+        editActivityIntent.putExtra("Id", event.getId());
+        
+        editActivityIntent.putExtra("Name", event.getName());
+        editActivityIntent.putExtra("Description", event.getmDescription());
+        editActivityIntent.putExtra("Linked Course", event.getLinkedCourse());
+        
+        editActivityIntent.putExtra("Start Year", event.getStartDate().get(Calendar.YEAR));
+        editActivityIntent.putExtra("Start Month", event.getStartDate().get(Calendar.MONTH));
+        editActivityIntent.putExtra("Start Day", event.getStartDate().get(Calendar.DAY_OF_MONTH));
+        editActivityIntent.putExtra("Start Hour", event.getStartDate().get(Calendar.HOUR_OF_DAY));
+        editActivityIntent.putExtra("Start Minute", event.getStartDate().get(Calendar.MINUTE));
+        
+        editActivityIntent.putExtra("End Year", event.getEndDate().get(Calendar.YEAR));
+        editActivityIntent.putExtra("End Month", event.getEndDate().get(Calendar.MONTH));
+        editActivityIntent.putExtra("End Day", event.getEndDate().get(Calendar.DAY_OF_MONTH));
+        editActivityIntent.putExtra("End Hour", event.getEndDate().get(Calendar.HOUR_OF_DAY));
+        editActivityIntent.putExtra("End Minute", event.getEndDate().get(Calendar.MINUTE));
+        
+        startActivity(editActivityIntent);
+    }
+    
     @Override
+    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
+        if (weekEvent.getmType().equals(PeriodType.LECTURE)
+                || weekEvent.getmType().equals(PeriodType.PROJECT)
+                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = weekEvent.getName().split("\n")[0];
+            switchToCourseDetails(cours);
+        } else {
+            switchToEditActivity(weekEvent);
+        }
+    }
+
+    /*@Override
     public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
         if (weekEvent.getmType().equals(PeriodType.LECTURE)
                 || weekEvent.getmType().equals(PeriodType.PROJECT)
@@ -276,7 +315,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             }
 
         }
-    }
+    }*/
 
     @Override
     public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
