@@ -4,8 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import ch.epfl.calendar.apiInterface.AppEngineClient;
+import ch.epfl.calendar.apiInterface.AppEngineDatabaseInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
-import ch.epfl.calendar.apiInterface.DatabaseInterface;
 import ch.epfl.calendar.data.Course;
 
 /**
@@ -51,7 +51,7 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     }
 
     private Course retrieveCourse(String courseName) {
-        DatabaseInterface appEngineClient;
+        AppEngineDatabaseInterface appEngineClient;
         Course result = null;
 
         try {

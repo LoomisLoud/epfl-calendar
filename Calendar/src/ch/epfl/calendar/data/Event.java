@@ -20,20 +20,22 @@ public class Event {
     private String mType;
     private String mLinkedCourse;
     private String mDescription;
+    private boolean mIsAutomaticAddedBlock;
 
     /**
      * Construct the event object. date format must be of format dd.mm.yyyy
      * startTime and endTime must be of format hh:mm
-     * 
      * @param date
      * @param name
      * @param startTime
      * @param endTime
      * @param type
      * @param linkedCourse
+     * @param description
+     * @param isBlock
      */
     public Event(String date, String name, String startTime, String endTime,
-            String type, String linkedCourse, String description) {
+            String type, String linkedCourse, String description, boolean isBlock) {
         this.mName = name;
         this.mStartDate = App.createCalendar(date, startTime);
         this.mEndDate = App.createCalendar(date, endTime);
@@ -49,25 +51,27 @@ public class Event {
         }
         this.mLinkedCourse = linkedCourse;
         this.mDescription = description;
+        this.mIsAutomaticAddedBlock = isBlock;
     }
 
     /**
      * Construct the event object. startTime and endTime must be of format
      * 'dd.mm.yyy hh:mm'
-     * 
      * @param name
      * @param startTime
      * @param endTime
      * @param type
-     * @param course
+     * @param linkedCourse
+     * @param description
+     * @param isBlock
+     * @param id
      */
-
     public Event(String name, String startTime, String endTime, String type,
-            String linkedCourse, String description, int id) {
+            String linkedCourse, String description, boolean isBlock, int id) {
         this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX), name,
                 startTime.substring(App.START_TIME_INDEX), endTime
                         .substring(App.START_TIME_INDEX), type, linkedCourse,
-                description);
+                description, isBlock);
         this.mId = id;
     }
 
@@ -172,5 +176,13 @@ public class Event {
 
     public void setId(int id) {
         this.mId = id;
+    }
+
+    public boolean isAutomaticAddedBlock() {
+        return mIsAutomaticAddedBlock;
+    }
+
+    public void setIsAutomaticAddedBlock(boolean isAutomaticAddedBlock) {
+        this.mIsAutomaticAddedBlock = isAutomaticAddedBlock;
     }
 }
