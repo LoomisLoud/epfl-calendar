@@ -3,10 +3,12 @@
  */
 package ch.epfl.calendar.persistence;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import ch.epfl.calendar.App;
+import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.utils.Logger;
 
@@ -56,15 +58,19 @@ public class PeriodDataSource implements DAO {
         values.put(PeriodTable.COLUMN_NAME_ROOMS, roomsCSV);
         values.put(PeriodTable.COLUMN_NAME_COURSE, key);
 
-        long rowId = db.insert(PeriodTable.TABLE_NAME_PERIOD, null, values);
-        if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_CREATE);
-            throw new SQLiteCalendarException(PeriodDataSource.ERROR_CREATE);
-        }
-
-        Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_CREATE);
-        
-        return rowId;
+//        long rowId = db.insert(PeriodTable.TABLE_NAME_PERIOD, null, values);
+//        if (rowId == -1) {
+//            Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_CREATE);
+//            throw new SQLiteCalendarException(PeriodDataSource.ERROR_CREATE);
+//        }
+//
+//        Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_CREATE);
+//        
+//        return rowId;
+        CreateRowDBTask task = new CreateRowDBTask(App.getAppContext(), null, null);
+        CreateObject object = new CreateObject(values, null, PeriodTable.TABLE_NAME_PERIOD);
+        task.execute(object);
+        return 0;
     }
 
     /**
@@ -88,17 +94,23 @@ public class PeriodDataSource implements DAO {
         values.put(PeriodTable.COLUMN_NAME_ROOMS, roomsCSV);
         values.put(PeriodTable.COLUMN_NAME_COURSE, key);
 
-        long rowId = db.update(PeriodTable.TABLE_NAME_PERIOD, values,
-                PeriodTable.COLUMN_NAME_ID + " = ?",
-                new String[] {String.valueOf(period.getId())});
-        if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_UPDATE);
-            throw new SQLiteCalendarException(PeriodDataSource.ERROR_UPDATE);
-        }
-
-        Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_UPDATE);
+//        long rowId = db.update(PeriodTable.TABLE_NAME_PERIOD, values,
+//                PeriodTable.COLUMN_NAME_ID + " = ?",
+//                new String[] {String.valueOf(period.getId())});
+//        if (rowId == -1) {
+//            Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_UPDATE);
+//            throw new SQLiteCalendarException(PeriodDataSource.ERROR_UPDATE);
+//        }
+//
+//        Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_UPDATE);
+//        
+//        return rowId;
         
-        return rowId;
+        UpdateRowDBTask task = new UpdateRowDBTask(App.getAppContext(), null, null);
+        UpdateObject object = new UpdateObject(values, PeriodTable.TABLE_NAME_PERIOD,
+                PeriodTable.COLUMN_NAME_ID + " = ?", new String[] {String.valueOf(period.getId())});
+        task.execute(object);
+        return 0;
     }
 
     /**

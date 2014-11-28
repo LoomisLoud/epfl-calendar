@@ -5,10 +5,12 @@ package ch.epfl.calendar.persistence;
 
 import java.util.List;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import ch.epfl.calendar.App;
+import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
@@ -16,24 +18,24 @@ import ch.epfl.calendar.utils.Logger;
 
 /**
  * DAO for {@link Course}.
- *
+ * 
  * @author lweingart
- *
+ * 
  */
 public class CourseDataSource implements DAO {
 
-    private static final String ERROR_CREATE = "Unable to create a new course!";
-    private static final String ERROR_DELETE = "Unable to delete a course!";
-    private static final String ERROR_UPDATE = "Unable to update a course!";
+    protected static final String ERROR_CREATE = "Unable to create a new course!";
+    protected static final String ERROR_DELETE = "Unable to delete a course!";
+    protected static final String ERROR_UPDATE = "Unable to update a course!";
 
-    private static final String SUCCESS_CREATE = "Course successfully created!";
-    private static final String SUCCESS_DELETE = "Course successfully deleted";
-    private static final String SUCCESS_UPDATE = "Course successfully updated";
+    protected static final String SUCCESS_CREATE = "Course successfully created!";
+    protected static final String SUCCESS_DELETE = "Course successfully deleted";
+    protected static final String SUCCESS_UPDATE = "Course successfully updated";
 
     private static CourseDataSource mCourseDataSource;
 
     /**
-     *
+     * 
      * @return
      */
     public static CourseDataSource getInstance() {
@@ -45,7 +47,7 @@ public class CourseDataSource implements DAO {
 
     /**
      * Create a course.
-     *
+     * 
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -65,29 +67,33 @@ public class CourseDataSource implements DAO {
         PeriodDataSource pds = PeriodDataSource.getInstance();
         List<Period> periods = course.getPeriods();
         for (Period period : periods) {
-			pds.create(period, course.getName());
-		}
+            pds.create(period, course.getName());
+        }
 
         EventDataSource eds = EventDataSource.getInstance();
         List<Event> events = course.getEvents();
         for (Event event : events) {
-			eds.create(event, course.getName());
-		}
-
-        long rowId = db.insert(CourseTable.TABLE_NAME_COURSE, null, values);
-        if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, CourseDataSource.ERROR_CREATE);
-            throw new SQLiteCalendarException(CourseDataSource.ERROR_CREATE);
+            eds.create(event, course.getName());
         }
 
-        Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_CREATE);
-        
-        return rowId;
+//        long rowId = db.insert(CourseTable.TABLE_NAME_COURSE, null, values);
+//        if (rowId == -1) {
+//            Log.e(Logger.CALENDAR_SQL_ERROR, CourseDataSource.ERROR_CREATE);
+//            throw new SQLiteCalendarException(CourseDataSource.ERROR_CREATE);
+//        }
+//
+//        Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_CREATE);
+//
+//        return rowId;
+        CreateRowDBTask task = new CreateRowDBTask(App.getAppContext(), null, null);
+        CreateObject object = new CreateObject(values, null, CourseTable.TABLE_NAME_COURSE);
+        task.execute(object);
+        return 0;
     }
 
     /**
      * Update a course.
-     *
+     * 
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -107,31 +113,37 @@ public class CourseDataSource implements DAO {
         PeriodDataSource pds = PeriodDataSource.getInstance();
         List<Period> periods = course.getPeriods();
         for (Period period : periods) {
-			pds.update(period, course.getName());
-		}
+            pds.update(period, course.getName());
+        }
 
         EventDataSource eds = EventDataSource.getInstance();
         List<Event> events = course.getEvents();
         for (Event event : events) {
-			eds.update(event, course.getName());
-		}
-
-        long rowId = db.update(CourseTable.TABLE_NAME_COURSE, values,
-                CourseTable.COLUMN_NAME_NAME + " = ?",
-                new String[] {course.getName()});
-        if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, CourseDataSource.ERROR_UPDATE);
-            throw new SQLiteCalendarException(CourseDataSource.ERROR_UPDATE);
+            eds.update(event, course.getName());
         }
 
-        Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_UPDATE);
+//        long rowId = db.update(CourseTable.TABLE_NAME_COURSE, values,
+//                CourseTable.COLUMN_NAME_NAME + " = ?",
+//                new String[] { course.getName() });
+//        if (rowId == -1) {
+//            Log.e(Logger.CALENDAR_SQL_ERROR, CourseDataSource.ERROR_UPDATE);
+//            throw new SQLiteCalendarException(CourseDataSource.ERROR_UPDATE);
+//        }
+//
+//        Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_UPDATE);
+//
+//        return rowId;
         
-        return rowId;
+        UpdateRowDBTask task = new UpdateRowDBTask(App.getAppContext(), null, null);
+        UpdateObject object = new UpdateObject(values, CourseTable.TABLE_NAME_COURSE,
+                CourseTable.COLUMN_NAME_NAME + " = ?", new String[] {String.valueOf(course.getName())});
+        task.execute(object);
+        return 0;
     }
 
     /**
      * Delete a course.
-     *
+     * 
      * @param obj
      * @throws SQLiteCalendarException
      */

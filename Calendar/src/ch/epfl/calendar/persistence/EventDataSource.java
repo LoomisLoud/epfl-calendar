@@ -59,14 +59,19 @@ public class EventDataSource implements DAO {
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
 
-        long rowId = db.insert(EventTable.TABLE_NAME_EVENT, null, values);
-        if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_CREATE);
-            throw new SQLiteCalendarException(EventDataSource.ERROR_CREATE);
-        }
-
-        Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_CREATE);
-        return rowId;
+//        long rowId = db.insert(EventTable.TABLE_NAME_EVENT, null, values);
+//        if (rowId == -1) {
+//            Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_CREATE);
+//            throw new SQLiteCalendarException(EventDataSource.ERROR_CREATE);
+//        }
+//
+//        Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_CREATE);
+//        return rowId;
+        
+        CreateRowDBTask task = new CreateRowDBTask(App.getAppContext(), null, null);
+        CreateObject object = new CreateObject(values, null, EventTable.TABLE_NAME_EVENT);
+        task.execute(object);
+        return 0;
     }
 
     /**
@@ -96,19 +101,25 @@ public class EventDataSource implements DAO {
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
 
-        long rowId = db.update(EventTable.TABLE_NAME_EVENT, values,
-                EventTable.COLUMN_NAME_ID + " = ?",
-                new String[] {
-                    Integer.toString(event.getId())
-                });
-        if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_UPDATE);
-            throw new SQLiteCalendarException(EventDataSource.ERROR_UPDATE);
-        }
-
-        Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_UPDATE);
-
-        return rowId;
+//        long rowId = db.update(EventTable.TABLE_NAME_EVENT, values,
+//                EventTable.COLUMN_NAME_ID + " = ?",
+//                new String[] {
+//                    Integer.toString(event.getId())
+//                });
+//        if (rowId == -1) {
+//            Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_UPDATE);
+//            throw new SQLiteCalendarException(EventDataSource.ERROR_UPDATE);
+//        }
+//
+//        Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_UPDATE);
+//
+//        return rowId;
+        
+        UpdateRowDBTask task = new UpdateRowDBTask(App.getAppContext(), null, null);
+        UpdateObject object = new UpdateObject(values, EventTable.TABLE_NAME_EVENT,
+                EventTable.COLUMN_NAME_ID + " = ?", new String[] {String.valueOf(event.getId())});
+        task.execute(object);
+        return 0;
     }
 
     /**

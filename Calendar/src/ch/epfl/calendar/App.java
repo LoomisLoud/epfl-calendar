@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import ch.epfl.calendar.persistence.DBHelper;
@@ -131,6 +133,11 @@ public class App extends Application {
      * Application context.
      */
     private static Context mContext;
+    
+    /**
+     * ActionBarActivity
+     */
+    private static DefaultActionBarActivity mActionBar;
 
     @Override
     public void onCreate() {
@@ -275,5 +282,13 @@ public class App extends Application {
     
     public static boolean stringToBool(String strBool) {
         return strBool.equals(App.TRUE);
+    }
+
+    public static DefaultActionBarActivity getActionBar() {
+        return mActionBar;
+    }
+
+    public static void setActionBar(DefaultActionBarActivity actionBar) {
+        App.mActionBar = actionBar;
     }
 }
