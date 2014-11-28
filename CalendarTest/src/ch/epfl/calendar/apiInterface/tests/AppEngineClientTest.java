@@ -129,6 +129,15 @@ public class AppEngineClientTest extends TestCase {
         assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
     }
     
+    public void testNotHTTPOKCode() {
+        Mockito.doReturn(HTTP_NOT_OK).when(mockStatusLine).getStatusCode();
+        try {
+            appEngineClient.getCourseByCode(COURSE_CODE);
+            fail("An exception should be raised.");
+        } catch (CalendarClientException e) {
+        }
+    }
+    
     public void testGetCourseWhenBadUrl() throws CalendarClientException, NoSuchMethodException, 
         IllegalAccessException, IllegalArgumentException {
         AppEngineClient client = new AppEngineClient(CORRECT_URL);
