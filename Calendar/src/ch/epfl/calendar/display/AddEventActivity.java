@@ -39,7 +39,7 @@ public class AddEventActivity extends DefaultActionBarActivity {
     private DatePicker mEndEventDate;
     private TimePicker mEndEventHour;
 
-    private int eventId;
+    private int eventId = DBQuester.NO_ID;
 
     private String mLinkedCourse = App.NO_COURSE;
     private Spinner mSpinnerCourses;
@@ -78,7 +78,7 @@ public class AddEventActivity extends DefaultActionBarActivity {
         initializeValue(startingIntent);
     }
 
-    private void initalizeSpinner(String linkCourses) {
+    private void initializeSpinner(String linkCourses) {
         if (linkCourses.equals(App.NO_COURSE)) {
             mSpinnerCourses.setSelection(0);
         } else {
@@ -86,50 +86,36 @@ public class AddEventActivity extends DefaultActionBarActivity {
             mSpinnerCourses.setSelection(position);
         }
     }
-
+    
     private void initializeValue(Intent intent) {
-        if (intent.hasExtra("Name")) {
-            mNameEvent.setText(intent.getStringExtra("Name"));
+        if (intent.hasExtra("Id")) {
+            eventId = intent.getIntExtra("Id", DBQuester.NO_ID);
+            Event event = new DBQuester().getEvent(eventId);
+            
+            mNameEvent.setText(event.getName());
+            mDescriptionEvent.setText(event.getmDescription());
+            initializeSpinner(event.getLinkedCourse());
+            
+            int startYear = event.getStartDate().get(Calendar.YEAR);
+            int startMonth = event.getStartDate().get(Calendar.MONTH);
+            int startDay = event.getStartDate().get(Calendar.DAY_OF_MONTH);
+            mStartEventDate.updateDate(startYear, startMonth, startDay);
+            
+            int startHour = event.getStartDate().get(Calendar.HOUR_OF_DAY);
+            mStartEventHour.setCurrentHour(startHour);
+            int startMinute = event.getStartDate().get(Calendar.MINUTE);
+            mStartEventHour.setCurrentMinute(startMinute);
+            
+            int endYear = event.getEndDate().get(Calendar.YEAR);
+            int endMonth = event.getEndDate().get(Calendar.MONTH);
+            int endDay = event.getEndDate().get(Calendar.DAY_OF_MONTH);
+            mEndEventDate.updateDate(endYear, endMonth, endDay);
+
+            int endHour = event.getEndDate().get(Calendar.HOUR_OF_DAY);
+            mEndEventHour.setCurrentHour(endHour);
+            int endMinute = event.getEndDate().get(Calendar.MINUTE);
+            mEndEventHour.setCurrentMinute(endMinute);
         }
-        
-        if (intent.hasExtra("Description")) {
-            mDescriptionEvent.setText(intent.getStringExtra("Description"));
-        }
-        
-        if (intent.hasExtra("Linked Course")) {
-            initalizeSpinner(intent.getStringExtra("Linked Course"));
-        }
-
-        eventId = intent.getIntExtra("Id", DBQuester.NO_ID);
-
-        int startYear = intent.getIntExtra("Start Year",
-                mStartEventDate.getYear());
-        int startMonth = intent.getIntExtra("Start Month",
-                mStartEventDate.getMonth());
-        int startDay = intent.getIntExtra("Start Day",
-                mStartEventDate.getDayOfMonth());
-        mStartEventDate.updateDate(startYear, startMonth, startDay);
-
-        int startHour = intent.getIntExtra("Start Hour",
-                mStartEventHour.getCurrentHour());
-        mStartEventHour.setCurrentHour(startHour);
-        int startMinute = intent.getIntExtra("Start Minute",
-                mStartEventHour.getCurrentMinute());
-        mStartEventHour.setCurrentMinute(startMinute);
-
-        int endYear = intent.getIntExtra("End Year", mEndEventDate.getYear());
-        int endMonth = intent
-                .getIntExtra("End Month", mEndEventDate.getMonth());
-        int endDay = intent.getIntExtra("End Day",
-                mEndEventDate.getDayOfMonth());
-        mEndEventDate.updateDate(endYear, endMonth, endDay);
-
-        int endHour = intent.getIntExtra("End Hour",
-                mEndEventHour.getCurrentHour());
-        mEndEventHour.setCurrentHour(endHour);
-        int endMinute = intent.getIntExtra("End Minute",
-                mEndEventHour.getCurrentMinute());
-        mEndEventHour.setCurrentMinute(endMinute);
     }
 
     private void addEventActionBar() {
