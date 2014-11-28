@@ -5,12 +5,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.view.View;
@@ -32,8 +32,7 @@ public class EventListActivity extends Activity {
     private ListView mListView;
     private DBQuester mDbQuester;
     private Context context = this;
-    
-    private  final int EVENT_LIST_CODE = 1;
+    private ArrayAdapter<EventForList> adapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,89 +47,76 @@ public class EventListActivity extends Activity {
         for (Course c : course) {
             for (Period p : c.getPeriods()) {
                 event.add(new EventForList(c.getName(), p.getStartDate(), p
-                        .getEndDate(), p.getType(),-1));
+                        .getEndDate(), p.getType(), -1));
             }
         }
 
         for (Event e : eventCreated) {
             event.add(new EventForList(e.getName(), e.getStartDate(), e
-                    .getEndDate(), stringToPeriodType(e.getType()),e.getId()));
+                    .getEndDate(), stringToPeriodType(e.getType()), e.getId()));
         }
         sort(event);
-       final List<EventForList> updatedEvent= removePastEvents(event);
+        final List<EventForList> updatedEvent = removePastEvents(event);
 
-        String eventTab[] = new String[updatedEvent.size()];
-
-        for (int i = 0; i < updatedEvent.size(); i++) {
-            eventTab[i] = createString(updatedEvent, i);
-
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, eventTab);
+        adapter = new ArrayAdapter<EventForList>(this,
+                android.R.layout.simple_list_item_1, updatedEvent);
 
         mListView.setAdapter(adapter);
         mListView.setDividerHeight(10);
-        
+
         mListView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int position,
-                    long arg3) {
-                
-                
+            public void onItemClick(AdapterView<?> arg0, View view,
+                    int position, long arg3) {
+
             }
         });
-        
+
         mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                  final  int arg2, long arg3) {
-                AlertDialog.Builder dialog= new AlertDialog.Builder(context);
+                    final int pos, long arg3) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 dialog.setMessage("What do you want to do ?");
                 dialog.setNegativeButton("Delete", new OnClickListener() {
-                    
+
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                     int id =updatedEvent.get(arg2).getmId();
-                     mDbQuester.deleteEvent(mDbQuester.getEvent(id));
-                     
-                     
-                     dialog.cancel();
-                        
+                        int id = updatedEvent.get(pos).getmId();
+                        mDbQuester.deleteEvent(mDbQuester.getEvent(id));
+                        List<EventForList> list = updatedEvent;
+                        list.remove(pos);
+                        adapter = new ArrayAdapter<EventForList>(context,
+                                android.R.layout.simple_list_item_1, list);
+                        mListView.setAdapter(adapter);
+
+                        dialog.cancel();
+
                     }
                 });
+
+                dialog.setNeutralButton("Description", new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (updatedEvent.get(pos).getmType() == PeriodType.LECTURE) {
+                            switchToCourseDetails(updatedEvent.get(pos)
+                                    .getmEventName());
+                        }
+                        
+                        dialog.cancel();
+
+                    }
+                });
+
                 dialog.create();
                 dialog.show();
                 return false;
             }
         });
 
-    }
-
-    private String calendarToString(Calendar date, boolean sameday) {
-        String minute = "";
-        if (date.get(Calendar.MINUTE) == 0) {
-            minute = "00";
-        } else {
-            minute = Integer.toString(date.get(Calendar.MINUTE));
-        }
-
-        String hour = Integer.toString(date.get(Calendar.HOUR_OF_DAY)) + ":"
-                + minute;
-        if (sameday) {
-            return hour;
-        } else {
-            String year = Integer.toString(date.get(Calendar.YEAR));
-            String month = date.getDisplayName(Calendar.MONTH, Calendar.SHORT,
-                    Locale.ENGLISH);
-            String day = date.getDisplayName(Calendar.DAY_OF_WEEK,
-                    Calendar.SHORT, Locale.ENGLISH);
-
-            return day + " " + date.get(Calendar.DAY_OF_MONTH) + " " + month
-                    + " " + year + "\n " + hour;
-        }
     }
 
     private void sort(List<EventForList> list) {
@@ -151,13 +137,6 @@ public class EventListActivity extends Activity {
         });
     }
 
-    private String createString(List<EventForList> event, int indexEvent) {
-        return calendarToString(event.get(indexEvent).getmStart(), false) + "-"
-                + calendarToString(event.get(indexEvent).getmEnd(), true)
-                + "   " + event.get(indexEvent).getmEventName() + ": "
-                + event.get(indexEvent).getmType();
-    }
-
     private PeriodType stringToPeriodType(String type) {
         if (type.equalsIgnoreCase("exercices")
                 || type.equalsIgnoreCase("exercises")) {
@@ -174,15 +153,22 @@ public class EventListActivity extends Activity {
     }
 
     private List<EventForList> removePastEvents(List<EventForList> list) {
-       List<EventForList> result = new ArrayList<EventForList>();
+        List<EventForList> result = new ArrayList<EventForList>();
         Calendar today = Calendar.getInstance();
-        for (int i=0; i<list.size();i++) {
-            if (list.get(i).getmStart().getTimeInMillis() > today.getTimeInMillis()) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getmStart().getTimeInMillis() > today
+                    .getTimeInMillis()) {
                 result.add(list.get(i));
-                
+
             }
         }
         return result;
     }
-    
+
+    private void switchToCourseDetails(String courseName) {
+        Intent courseDetailsActivityIntent = new Intent(context,
+                CourseDetailsActivity.class);
+        startActivity(courseDetailsActivityIntent);
+    }
+
 }

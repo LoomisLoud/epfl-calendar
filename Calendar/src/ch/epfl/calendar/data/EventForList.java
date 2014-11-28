@@ -1,6 +1,8 @@
 package ch.epfl.calendar.data;
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class EventForList {
 
@@ -57,5 +59,42 @@ public class EventForList {
 
     public void setmId(int mId) {
         this.mId = mId;
+    }
+
+    private String calendarToString(Calendar date, boolean sameday) {
+        String minute = "";
+        if (date.get(Calendar.MINUTE) == 0) {
+            minute = "00";
+        } else {
+            minute = Integer.toString(date.get(Calendar.MINUTE));
+        }
+
+        String hour = Integer.toString(date.get(Calendar.HOUR_OF_DAY)) + ":"
+                + minute;
+        if (sameday) {
+            return hour;
+        } else {
+            String year = Integer.toString(date.get(Calendar.YEAR));
+            String month = date.getDisplayName(Calendar.MONTH, Calendar.SHORT,
+                    Locale.ENGLISH);
+            String day = date.getDisplayName(Calendar.DAY_OF_WEEK,
+                    Calendar.SHORT, Locale.ENGLISH);
+
+            return day + " " + date.get(Calendar.DAY_OF_MONTH) + " " + month
+                    + " " + year + "\n " + hour;
+        }
+    }
+
+    public String toString() {
+
+        if (mType == PeriodType.DEFAULT) {
+            return calendarToString(mStart, false) + "-"
+                    + calendarToString(mEnd, true) + "   " + mEventName;
+        } else {
+
+            return calendarToString(mStart, false) + "-"
+                    + calendarToString(mEnd, true) + "   " + mEventName + ": "
+                    + mType;
+        }
     }
 }
