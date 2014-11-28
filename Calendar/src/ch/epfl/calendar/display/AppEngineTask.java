@@ -3,6 +3,7 @@ package ch.epfl.calendar.display;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.AppEngineClient;
 import ch.epfl.calendar.apiInterface.AppEngineDatabaseInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
@@ -41,7 +42,8 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     @Override
     protected void onPreExecute() {
         mDialog = new ProgressDialog(mContext);
-        mDialog.setMessage("Charging course information");
+        mDialog.setTitle(mContext.getString(R.string.be_patient));
+        mDialog.setMessage(mContext.getString(R.string.loading_app_engine));
         mDialog.show();
     }
 

@@ -42,6 +42,20 @@ public abstract class DefaultActionBarActivity extends Activity implements
     public static final int AUTH_ACTIVITY_CODE = 1;
     public static final int ADD_EVENT_ACTIVITY_CODE = 2;
 
+    private int calculateNbOfElemToStore(List<Course> courses) {
+        int count = 0;
+        for (Course course : courses) {
+            count++;
+            for (int i = 0; i < course.getPeriods().size(); i++) {
+                count++;
+            }
+            for (int i = 0; i < course.getEvents().size(); i++) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,20 +182,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
         this.mNbOfAsyncTaskDB = calculateNbOfElemToStore(mCourses);
         mDB.storeCourses(mCourses);
-    }
-
-    private int calculateNbOfElemToStore(List<Course> courses) {
-        int count = 0;
-        for (Course course : courses) {
-            count++;
-            for (int i = 0; i < course.getPeriods().size(); i++) {
-                count++;
-            }
-            for (int i = 0; i < course.getEvents().size(); i++) {
-                count++;
-            }
-        }
-        return count;
     }
 
     public UpdateDataFromDBInterface getUdpateData() {
