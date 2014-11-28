@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.AppEngineDownloadInterface;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.persistence.DatabaseUploadInterface;
 import ch.epfl.calendar.utils.AuthenticationUtils;
 import ch.epfl.calendar.utils.ConstructListCourse;
 
@@ -28,14 +30,31 @@ import ch.epfl.calendar.utils.ConstructListCourse;
  * @author fouchepi
  * 
  */
-public class DefaultActionBarActivity extends Activity implements
-        CalendarClientDownloadInterface, AppEngineDownloadInterface {
+public abstract class DefaultActionBarActivity extends Activity implements
+        CalendarClientDownloadInterface, AppEngineDownloadInterface,
+        DatabaseUploadInterface {
 
     private Activity mThisActivity;
     private DBQuester mDB;
     private UpdateDataFromDBInterface mUdpateData;
     private AuthenticationUtils mAuthUtils;
+    private int mNbOfAsyncTaskDB = 0;
+    private ProgressDialog mDialog;
     public static final int AUTH_ACTIVITY_CODE = 1;
+
+    private int calculateNbOfElemToStore(List<Course> courses) {
+        int count = 0;
+        for (Course course : courses) {
+            count++;
+            for (int i = 0; i < course.getPeriods().size(); i++) {
+                count++;
+            }
+            for (int i = 0; i < course.getEvents().size(); i++) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +63,10 @@ public class DefaultActionBarActivity extends Activity implements
         mThisActivity = this;
         mDB = new DBQuester();
         mAuthUtils = new AuthenticationUtils();
+        App.setActionBar(this);
         defaultActionBar();
     }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
@@ -61,7 +81,7 @@ public class DefaultActionBarActivity extends Activity implements
         getMenuInflater().inflate(R.menu.default_action_bar, menu);
         return super.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -69,8 +89,8 @@ public class DefaultActionBarActivity extends Activity implements
                 switchToCoursesList();
                 return true;
             case R.id.add_event_block:
-            	switchToAddBlockActivity();
-            	return true;
+                switchToAddBlockActivity();
+                return true;
             case R.id.action_settings:
                 switchToCreditsActivity();
                 return true;
@@ -98,10 +118,9 @@ public class DefaultActionBarActivity extends Activity implements
                 CoursesListActivity.class);
         startActivity(coursesListActivityIntent);
     }
-    
+
     private void switchToAddBlockActivity() {
-        Intent blockActivityIntent = new Intent(this,
-                AddBlocksActivity.class);
+        Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
         startActivity(blockActivityIntent);
     }
 
@@ -133,11 +152,12 @@ public class DefaultActionBarActivity extends Activity implements
         if (!mAuthUtils.isAuthenticated(mThisActivity)) {
             switchToAuthenticationActivity();
         } else {
-            CalendarClientInterface cal = new CalendarClient(mThisActivity, this);
+            CalendarClientInterface cal = new CalendarClient(mThisActivity,
+                    this);
             cal.getISAInformations();
         }
     }
-    
+
     public void completeCalendarFromAppEngine(List<Course> coursesList) {
         ConstructListCourse constructCourse = ConstructListCourse
                 .getInstance(this);
@@ -152,7 +172,6 @@ public class DefaultActionBarActivity extends Activity implements
     @Override
     public void callbackDownload(boolean success, List<Course> courses) {
         if (success) {
-//            mDB.storeCourses(courses);
             completeCalendarFromAppEngine(courses);
         } else {
             this.logout();
@@ -161,9 +180,14 @@ public class DefaultActionBarActivity extends Activity implements
 
     @Override
     public void callbackAppEngine(List<Course> mCourses) {
-//        System.out.println(mCourses.get(0).getDescription());
+        mDialog = new ProgressDialog(this);
+        mDialog.setTitle(this.getString(R.string.be_patient));
+        mDialog.setMessage(this.getString(R.string.saving_db));
+        mDialog.setCancelable(false);
+        mDialog.show();
+
+        this.mNbOfAsyncTaskDB = calculateNbOfElemToStore(mCourses);
         mDB.storeCourses(mCourses);
-        mUdpateData.updateData();
     }
 
     public UpdateDataFromDBInterface getUdpateData() {
@@ -172,6 +196,22 @@ public class DefaultActionBarActivity extends Activity implements
 
     public void setUdpateData(UpdateDataFromDBInterface udpateData) {
         this.mUdpateData = udpateData;
+    }
+
+    public synchronized void asyncTaskStoreFinished() {
+        mNbOfAsyncTaskDB--;
+        if (mNbOfAsyncTaskDB == 0) {
+            mUdpateData.updateData();
+            if (mDialog != null) {
+                mDialog.dismiss();
+            }
+        }
+
+    }
+
+    @Override
+    public void callbackDBUpload() {
+        mUdpateData.updateData();
     }
 
 }

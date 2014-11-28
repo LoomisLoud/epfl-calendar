@@ -37,6 +37,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_course_details);
 
         courseDetailsActionBar();

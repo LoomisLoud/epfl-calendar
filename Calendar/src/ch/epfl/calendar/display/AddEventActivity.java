@@ -20,6 +20,7 @@ import android.widget.TimePicker;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.persistence.DBQuester;
@@ -28,7 +29,8 @@ import ch.epfl.calendar.persistence.DBQuester;
  * @author LoomisLoud
  * 
  */
-public class AddEventActivity extends DefaultActionBarActivity {
+public class AddEventActivity extends DefaultActionBarActivity implements
+        UpdateDataFromDBInterface {
 
     private EditText mNameEvent;
     private EditText mDescriptionEvent;
@@ -53,6 +55,7 @@ public class AddEventActivity extends DefaultActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_add_event);
 
         Intent startingIntent = getIntent();
@@ -192,5 +195,10 @@ public class AddEventActivity extends DefaultActionBarActivity {
             }
 
         });
+    }
+
+    @Override
+    public void updateData() {
+        mCoursesNames = mDB.getAllCoursesNames();
     }
 }

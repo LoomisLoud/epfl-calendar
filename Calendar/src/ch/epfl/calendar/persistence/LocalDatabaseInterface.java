@@ -101,7 +101,7 @@ public interface LocalDatabaseInterface {
      * @param event
      * @return
      */
-    long storeEvent(Event event);
+    void storeEvent(Event event);
 
     /**
      * Delete an event
