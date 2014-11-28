@@ -131,6 +131,11 @@ public class App extends Application {
      * Application context.
      */
     private static Context mContext;
+    
+    /**
+     * DefaultActionBarActivity
+     */
+    private static DefaultActionBarActivity mActionBar;
 
     @Override
     public void onCreate() {
@@ -279,5 +284,13 @@ public class App extends Application {
     
     public static boolean stringToBool(String strBool) {
         return strBool.equals(App.TRUE);
+    }
+
+    public static DefaultActionBarActivity getActionBar() {
+        return mActionBar;
+    }
+
+    public static void setActionBar(DefaultActionBarActivity actionBar) {
+        App.mActionBar = actionBar;
     }
 }

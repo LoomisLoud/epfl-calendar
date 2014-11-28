@@ -58,29 +58,6 @@ public class AuthenticationActivityTest
         onView(withHint(mAuthActivity.getString(R.string.login_username_hint))).check(matches(isDisplayed()));
     }
     
-    public final void testProgressDialog() throws NoSuchMethodException {
-        Method onPreExecute;
-        TequilaAuthenticationListener listener = Mockito.mock(TequilaAuthenticationListener.class);
-        TequilaAuthenticationTask instance = 
-                new TequilaAuthenticationTask(mAuthActivity, listener, "test", "test");
-        
-        onPreExecute = (TequilaAuthenticationTask.class).getDeclaredMethod("onPreExecute", new Class[] {});
-        onPreExecute.setAccessible(true);
-        try {
-            onPreExecute.invoke(instance, new Object[] {});
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        //Test that we do not change activity
-    }
-    
     private static Matcher<View> withHint(final String expectedHint) {
         return new TypeSafeMatcher<View>() {
 

@@ -106,7 +106,6 @@ public class AppEngineClient implements AppEngineDatabaseInterface {
         Course course = null;
         InputStream inputStream;
         try {
-            //HttpClient httpClient = new DefaultHttpClient();
             HttpResponse httpResponse = getHttpClient().execute(new HttpGet(fullUrl));
             int responseCode = httpResponse.getStatusLine().getStatusCode();
             HttpUtils.handleResponse(responseCode);

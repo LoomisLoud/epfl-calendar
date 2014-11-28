@@ -208,11 +208,11 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.show();
     }
 
-    private void switchToEventDetail(String description) {
+    private void switchToEventDetail(String name, String description) {
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", description);
+        eventDetailActivityIntent.putExtra("description", new String[]{name, description});
         startActivity(eventDetailActivityIntent);
     }
 
@@ -267,16 +267,29 @@ public class MainActivity extends DefaultActionBarActivity implements
             switchToCourseDetails(cours);
         } else {
             Event event = new DBQuester().getEvent(weekEvent.getId());
+            switchToEditActivity(event);
+        }
+    }
+
+    /*@Override
+    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
+        if (weekEvent.getmType().equals(PeriodType.LECTURE)
+                || weekEvent.getmType().equals(PeriodType.PROJECT)
+                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = weekEvent.getName().split("\n")[0];
+            switchToCourseDetails(cours);
+        } else {
+            Event event = new DBQuester().getEvent(weekEvent.getId());
             if (event.getLinkedCourse().equals(App.NO_COURSE)) {
                 String description = weekEvent.getmDescription();
-                switchToEventDetail(event.getName() + " : " + description);
+                switchToEventDetail(event.getName(), description);
             } else {
                 String coursName = event.getLinkedCourse();
                 switchToCourseDetails(coursName);
             }
 
         }
-    }
+    }*/
 
     @Override
     public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
