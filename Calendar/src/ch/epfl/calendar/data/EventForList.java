@@ -1,7 +1,6 @@
 package ch.epfl.calendar.data;
 
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 public class EventForList {
@@ -11,14 +10,18 @@ public class EventForList {
     private Calendar mEnd;
     private PeriodType mType;
     private int mId;
+    private String mLinkedCourse;
+    private String mDescription;
 
     public EventForList(String name, Calendar start, Calendar end,
-            PeriodType type, int id) {
+            PeriodType type, int id, String linkedCourse, String description) {
         mEventName = name;
         mStart = start;
         mEnd = end;
         mType = type;
         mId = id;
+        mLinkedCourse=linkedCourse;
+        mDescription=description;
     }
 
     public String getmEventName() {
@@ -59,6 +62,22 @@ public class EventForList {
 
     public void setmId(int mId) {
         this.mId = mId;
+    }
+
+    public String getmLinkedCourse() {
+        return mLinkedCourse;
+    }
+
+    public void setmLinkedCourse(String mLinkedCourse) {
+        this.mLinkedCourse = mLinkedCourse;
+    }
+
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
     }
 
     private String calendarToString(Calendar date, boolean sameday) {

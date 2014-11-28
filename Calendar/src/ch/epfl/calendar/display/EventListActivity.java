@@ -19,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
@@ -47,13 +48,14 @@ public class EventListActivity extends Activity {
         for (Course c : course) {
             for (Period p : c.getPeriods()) {
                 event.add(new EventForList(c.getName(), p.getStartDate(), p
-                        .getEndDate(), p.getType(), -1));
+                        .getEndDate(), p.getType(), -1, "", c.getDescription()));
             }
         }
 
         for (Event e : eventCreated) {
             event.add(new EventForList(e.getName(), e.getStartDate(), e
-                    .getEndDate(), stringToPeriodType(e.getType()), e.getId()));
+                    .getEndDate(), stringToPeriodType(e.getType()), e.getId(),
+                    e.getLinkedCourse(), e.getmDescription()));
         }
         sort(event);
         final List<EventForList> updatedEvent = removePastEvents(event);
@@ -78,34 +80,47 @@ public class EventListActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                     final int pos, long arg3) {
+
+                final EventForList event = (EventForList) mListView
+                        .getItemAtPosition(pos);
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 dialog.setMessage("What do you want to do ?");
-                dialog.setNegativeButton("Delete", new OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int id = updatedEvent.get(pos).getmId();
-                        mDbQuester.deleteEvent(mDbQuester.getEvent(id));
-                        List<EventForList> list = updatedEvent;
-                        list.remove(pos);
-                        adapter = new ArrayAdapter<EventForList>(context,
-                                android.R.layout.simple_list_item_1, list);
-                        mListView.setAdapter(adapter);
+                if (event.getmId() != -1) {
+                    dialog.setNegativeButton("Delete", new OnClickListener() {
 
-                        dialog.cancel();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mDbQuester.deleteEvent(mDbQuester.getEvent(event.getmId()));
+                            List<EventForList> list = updatedEvent;
+                            list.remove(event);
+                            adapter = new ArrayAdapter<EventForList>(context,
+                                    android.R.layout.simple_list_item_1, list);
+                            mListView.setAdapter(adapter);
 
-                    }
-                });
+                            dialog.cancel();
 
+                        }
+                    });
+                }
                 dialog.setNeutralButton("Description", new OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (updatedEvent.get(pos).getmType() == PeriodType.LECTURE) {
-                            switchToCourseDetails(updatedEvent.get(pos)
-                                    .getmEventName());
+
+                        if (event.getmId() == -1) {
+                            switchToCourseDetails(event.getmEventName());
+                        } else {
+                            if (event.getmLinkedCourse().equals(App.NO_COURSE)) {
+                                String description = event.getmDescription();
+                                switchToEventDetail(event.getmEventName()
+                                        + " : " + description);
+                            } else {
+                                String coursName = event.getmLinkedCourse();
+                                switchToCourseDetails(coursName);
+                            }
                         }
-                        
+
                         dialog.cancel();
 
                     }
@@ -168,7 +183,16 @@ public class EventListActivity extends Activity {
     private void switchToCourseDetails(String courseName) {
         Intent courseDetailsActivityIntent = new Intent(context,
                 CourseDetailsActivity.class);
+        courseDetailsActivityIntent.putExtra("course", courseName);
         startActivity(courseDetailsActivityIntent);
+    }
+
+    private void switchToEventDetail(String description) {
+        Intent eventDetailActivityIntent = new Intent(this,
+                EventDetailActivity.class);
+
+        eventDetailActivityIntent.putExtra("description", description);
+        startActivity(eventDetailActivityIntent);
     }
 
 }
