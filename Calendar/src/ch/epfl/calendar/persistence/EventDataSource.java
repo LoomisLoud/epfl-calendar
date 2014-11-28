@@ -15,14 +15,8 @@ import ch.epfl.calendar.utils.Logger;
  */
 public class EventDataSource implements DAO {
 
-    private static final String ERROR_CREATE = "Unable to create a new event!";
     private static final String ERROR_DELETE = "Unable to delete a event!";
-    private static final String ERROR_UPDATE = "Unable to update a event!";
-
-    private static final String SUCCESS_CREATE = "Event successfully created!";
     private static final String SUCCESS_DELETE = "Event successfully deleted";
-    private static final String SUCCESS_UPDATE = "Event successfully updated";
-
     private static EventDataSource mEventDataSource;
 
     public static EventDataSource getInstance() {
@@ -39,13 +33,12 @@ public class EventDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public long create(Object obj, String key) {
+    public void create(Object obj, String key) {
         if (key == null) {
             key = App.NO_COURSE;
         }
         Event event = (Event) obj;
         assert event != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(EventTable.COLUMN_NAME_NAME, event.getName());
@@ -59,14 +52,10 @@ public class EventDataSource implements DAO {
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
 
-        long rowId = db.insert(EventTable.TABLE_NAME_EVENT, null, values);
-        if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_CREATE);
-            throw new SQLiteCalendarException(EventDataSource.ERROR_CREATE);
-        }
-
-        Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_CREATE);
-        return rowId;
+        CreateRowDBTask task = new CreateRowDBTask();
+        CreateObject object = new CreateObject(values, null,
+                EventTable.TABLE_NAME_EVENT);
+        task.execute(object);
     }
 
     /**
@@ -76,13 +65,12 @@ public class EventDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public long update(Object obj, String key) {
+    public void update(Object obj, String key) {
         if (key == null) {
             key = App.NO_COURSE;
         }
         Event event = (Event) obj;
         assert event != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(EventTable.COLUMN_NAME_NAME, event.getName());
@@ -96,19 +84,12 @@ public class EventDataSource implements DAO {
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
 
-        long rowId = db.update(EventTable.TABLE_NAME_EVENT, values,
+        UpdateRowDBTask task = new UpdateRowDBTask();
+        UpdateObject object = new UpdateObject(values,
+                EventTable.TABLE_NAME_EVENT,
                 EventTable.COLUMN_NAME_ID + " = ?",
-                new String[] {
-                    Integer.toString(event.getId())
-                });
-        if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_UPDATE);
-            throw new SQLiteCalendarException(EventDataSource.ERROR_UPDATE);
-        }
-
-        Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_UPDATE);
-
-        return rowId;
+                new String[] {String.valueOf(event.getId())});
+        task.execute(object);
     }
 
     /**

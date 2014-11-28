@@ -111,9 +111,7 @@ public class CalendarClient implements CalendarClientInterface {
             } catch (CalendarClientException e) {
                 errMessage = e.getMessage();
             }
-            if (!exceptionOccured) {
-                Toast.makeText(mParentActivity, R.string.updated, Toast.LENGTH_SHORT).show();
-            } else {
+            if (exceptionOccured) {
                 Toast.makeText(mParentActivity, errMessage, Toast.LENGTH_LONG).show();
             }
         }
