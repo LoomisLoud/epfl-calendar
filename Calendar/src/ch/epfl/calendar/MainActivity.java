@@ -267,6 +267,19 @@ public class MainActivity extends DefaultActionBarActivity implements
             switchToCourseDetails(cours);
         } else {
             Event event = new DBQuester().getEvent(weekEvent.getId());
+            switchToEditActivity(event);
+        }
+    }
+
+    /*@Override
+    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
+        if (weekEvent.getmType().equals(PeriodType.LECTURE)
+                || weekEvent.getmType().equals(PeriodType.PROJECT)
+                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = weekEvent.getName().split("\n")[0];
+            switchToCourseDetails(cours);
+        } else {
+            Event event = new DBQuester().getEvent(weekEvent.getId());
             if (event.getLinkedCourse().equals(App.NO_COURSE)) {
                 String description = weekEvent.getmDescription();
                 switchToEventDetail(event.getName(), description);
@@ -276,7 +289,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             }
 
         }
-    }
+    }*/
 
     @Override
     public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,19 +39,23 @@ public class AddEventActivity extends DefaultActionBarActivity {
     private DatePicker mEndEventDate;
     private TimePicker mEndEventHour;
 
+    private int eventId = DBQuester.NO_ID;
+
     private String mLinkedCourse = App.NO_COURSE;
     private Spinner mSpinnerCourses;
     private List<String> mCoursesNames = new ArrayList<String>();
     private DBQuester mDB;
-    
+
     private static final boolean IS_BLOCK = false;
-    
+
     public static final int AUTH_ACTIVITY_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
+
+        Intent startingIntent = getIntent();
 
         addEventActionBar();
 
@@ -70,6 +75,47 @@ public class AddEventActivity extends DefaultActionBarActivity {
         mCoursesNames = mDB.getAllCoursesNames();
 
         setView();
+        initializeValue(startingIntent);
+    }
+
+    private void initializeSpinner(String linkCourses) {
+        if (linkCourses.equals(App.NO_COURSE)) {
+            mSpinnerCourses.setSelection(0);
+        } else {
+            int position = mCoursesNames.indexOf(linkCourses);
+            mSpinnerCourses.setSelection(position);
+        }
+    }
+    
+    private void initializeValue(Intent intent) {
+        if (intent.hasExtra("Id")) {
+            eventId = intent.getIntExtra("Id", DBQuester.NO_ID);
+            Event event = new DBQuester().getEvent(eventId);
+            
+            mNameEvent.setText(event.getName());
+            mDescriptionEvent.setText(event.getmDescription());
+            initializeSpinner(event.getLinkedCourse());
+            
+            int startYear = event.getStartDate().get(Calendar.YEAR);
+            int startMonth = event.getStartDate().get(Calendar.MONTH);
+            int startDay = event.getStartDate().get(Calendar.DAY_OF_MONTH);
+            mStartEventDate.updateDate(startYear, startMonth, startDay);
+            
+            int startHour = event.getStartDate().get(Calendar.HOUR_OF_DAY);
+            mStartEventHour.setCurrentHour(startHour);
+            int startMinute = event.getStartDate().get(Calendar.MINUTE);
+            mStartEventHour.setCurrentMinute(startMinute);
+            
+            int endYear = event.getEndDate().get(Calendar.YEAR);
+            int endMonth = event.getEndDate().get(Calendar.MONTH);
+            int endDay = event.getEndDate().get(Calendar.DAY_OF_MONTH);
+            mEndEventDate.updateDate(endYear, endMonth, endDay);
+
+            int endHour = event.getEndDate().get(Calendar.HOUR_OF_DAY);
+            mEndEventHour.setCurrentHour(endHour);
+            int endMinute = event.getEndDate().get(Calendar.MINUTE);
+            mEndEventHour.setCurrentMinute(endMinute);
+        }
     }
 
     private void addEventActionBar() {
@@ -111,7 +157,7 @@ public class AddEventActivity extends DefaultActionBarActivity {
                 App.calendarToBasicFormatString(start),
                 App.calendarToBasicFormatString(end),
                 PeriodType.DEFAULT.toString(), mLinkedCourse, mDescriptionEvent
-                        .getText().toString(), IS_BLOCK, DBQuester.NO_ID);
+                        .getText().toString(), IS_BLOCK, eventId);
         DBQuester dbQuester = new DBQuester();
         dbQuester.storeEvent(e);
     }

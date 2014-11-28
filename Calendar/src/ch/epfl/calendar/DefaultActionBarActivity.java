@@ -15,6 +15,7 @@ import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.display.AddBlocksActivity;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.AppEngineDownloadInterface;
@@ -35,7 +36,6 @@ public class DefaultActionBarActivity extends Activity implements
     private UpdateDataFromDBInterface mUdpateData;
     private AuthenticationUtils mAuthUtils;
     public static final int AUTH_ACTIVITY_CODE = 1;
-    public static final int ADD_EVENT_ACTIVITY_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +108,13 @@ public class DefaultActionBarActivity extends Activity implements
     private void switchToAddEventsActivity() {
         Intent addEventsActivityIntent = new Intent(this,
                 AddEventActivity.class);
-        startActivityForResult(addEventsActivityIntent, ADD_EVENT_ACTIVITY_CODE);
+        startActivity(addEventsActivityIntent);
+    }
+
+    public void switchToEditActivity(Event event) {
+        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
+        editActivityIntent.putExtra("Id", event.getId());
+        startActivity(editActivityIntent);
     }
 
     private void switchToCreditsActivity() {
