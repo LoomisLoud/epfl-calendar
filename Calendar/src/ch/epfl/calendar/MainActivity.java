@@ -187,11 +187,11 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case R.id.action_today:
+            mWeekView.goToToday();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -211,7 +211,8 @@ public class MainActivity extends DefaultActionBarActivity implements
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", new String[]{name, description});
+        eventDetailActivityIntent.putExtra("description", new String[] { name,
+                description });
         startActivity(eventDetailActivityIntent);
     }
 
@@ -265,7 +266,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             String cours = weekEvent.getName().split("\n")[0];
             switchToCourseDetails(cours);
         } else {
-            Event event = mDB.getEvent(weekEvent.getId());
+            Event event = new DBQuester().getEvent(weekEvent.getId());
             if (event.getLinkedCourse().equals(App.NO_COURSE)) {
                 String description = weekEvent.getmDescription();
                 switchToEventDetail(event.getName(), description);
@@ -279,50 +280,67 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
-        AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
-        choiceDialog.setTitle("Action on Event");
-        long id = event.getId();
-        final Event eventFromDB = mDB.getEvent(id); 
-        choiceDialog.setItems(R.array.choice_on_event, new OnClickListener() {
-            
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        //edit
-                        break;
-                    case 1:
-                        mDB.deleteEvent(eventFromDB);
-                        updateListsFromDB();
-                        mWeekView.notifyDatasetChanged();
-                        dialog.cancel();
-                    case 2:
-                        if (event.getmType().equals(PeriodType.LECTURE)
-                                || event.getmType().equals(PeriodType.PROJECT)
-                                || event.getmType().equals(PeriodType.EXERCISES)) {
-                            String cours = event.getName().split("\n")[0];
-                            switchToCourseDetails(cours);
-                        } else {
-                            
-                            if (eventFromDB.getLinkedCourse().equals(App.NO_COURSE)) {
-                                String description = event.getmDescription();
-                                switchToEventDetail(event.getName(), description);
-                            } else {
-                                String coursName = eventFromDB.getLinkedCourse();
-                                switchToCourseDetails(coursName);
+        if (event.getmType() == PeriodType.EXERCISES
+                || event.getmType() == PeriodType.LECTURE
+                || event.getmType() == PeriodType.PROJECT) {
+            String cours = event.getName().split("\n")[0];
+            switchToCourseDetails(cours);
+
+        } else {
+
+            AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
+            choiceDialog.setTitle("Action on Event");
+            long id = event.getId();
+            final Event eventFromDB = mDB.getEvent(id);
+            choiceDialog.setItems(R.array.choice_on_event,
+                    new OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    // edit
+                                    dialog.cancel();
+                                    break;
+                                case 1:
+                                    mDB.deleteEvent(eventFromDB);
+                                    updateData();
+                                    dialog.cancel();
+                                case 2:
+                                    if (event.getmType().equals(PeriodType.LECTURE)
+                                        || event.getmType().equals(
+                                                PeriodType.PROJECT)
+                                        || event.getmType().equals(
+                                                PeriodType.EXERCISES)) {
+                                        String cours = event.getName().split("\n")[0];
+                                        switchToCourseDetails(cours);
+                                    } else {
+
+                                        if (eventFromDB.getLinkedCourse().equals(
+                                            App.NO_COURSE)) {
+                                            String description = event
+                                                .getmDescription();
+                                            switchToEventDetail(event.getName(),
+                                                description);
+                                        } else {
+                                            String coursName = eventFromDB
+                                                .getLinkedCourse();
+                                            switchToCourseDetails(coursName);
+                                        }
+
+                                    }
+                                    dialog.cancel();
+
+                                default:
+                                    break;
                             }
 
                         }
+                    });
 
-                    default:
-                        break;
-                }
-                
-            }
-        });
-        
-        choiceDialog.create();
-
+            choiceDialog.create();
+            choiceDialog.show();
+        }
     }
 
     @Override
