@@ -15,7 +15,6 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
@@ -266,7 +265,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             String cours = weekEvent.getName().split("\n")[0];
             switchToCourseDetails(cours);
         } else {
-            Event event = new DBQuester().getEvent(weekEvent.getId());
+            Event event = mDB.getEvent(weekEvent.getId());
             if (event.getLinkedCourse().equals(App.NO_COURSE)) {
                 String description = weekEvent.getmDescription();
                 switchToEventDetail(event.getName(), description);
@@ -280,42 +279,50 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
-        if (event.getmType() == PeriodType.EXERCISES
-                || event.getmType() == PeriodType.LECTURE
-                || event.getmType() == PeriodType.PROJECT) {
-            Toast.makeText(this, "You can not delete this event",
-                    Toast.LENGTH_LONG).show();
+        AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
+        choiceDialog.setTitle("Action on Event");
+        long id = event.getId();
+        final Event eventFromDB = mDB.getEvent(id); 
+        choiceDialog.setItems(R.array.choice_on_event, new OnClickListener() {
+            
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        //edit
+                        break;
+                    case 1:
+                        mDB.deleteEvent(eventFromDB);
+                        updateListsFromDB();
+                        mWeekView.notifyDatasetChanged();
+                        dialog.cancel();
+                    case 2:
+                        if (event.getmType().equals(PeriodType.LECTURE)
+                                || event.getmType().equals(PeriodType.PROJECT)
+                                || event.getmType().equals(PeriodType.EXERCISES)) {
+                            String cours = event.getName().split("\n")[0];
+                            switchToCourseDetails(cours);
+                        } else {
+                            
+                            if (eventFromDB.getLinkedCourse().equals(App.NO_COURSE)) {
+                                String description = event.getmDescription();
+                                switchToEventDetail(event.getName(), description);
+                            } else {
+                                String coursName = eventFromDB.getLinkedCourse();
+                                switchToCourseDetails(coursName);
+                            }
 
-        } else {
+                        }
 
-            AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
-            deleteDialog.setTitle("Delete Event");
-            deleteDialog.setCancelable(false);
-            deleteDialog.setMessage("Do you really want to delete this event");
-            deleteDialog.setPositiveButton("Yes", new OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    long id = event.getId();
-                    Event eventFromDB = mDB.getEvent(id);
-                    mDB.deleteEvent(eventFromDB);
-                    updateListsFromDB();
-                    mWeekView.notifyDatasetChanged();
-                    dialog.cancel();
-
+                    default:
+                        break;
                 }
-            });
-            deleteDialog.setNegativeButton("No", new OnClickListener() {
+                
+            }
+        });
+        
+        choiceDialog.create();
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-
-                }
-            });
-            deleteDialog.create();
-            deleteDialog.show();
-        }
     }
 
     @Override
