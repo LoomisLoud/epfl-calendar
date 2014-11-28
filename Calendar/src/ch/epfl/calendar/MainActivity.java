@@ -45,7 +45,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     private static final int SIZE_FRONT_EVENT_DAY = 12;
     private static final int SIZE_COLUMN_GAP_3DAYS = 8;
     private static final int SIZE_FRONT_3DAYS = 12;
-    private static final int SIZE_FRONT_EVENT_3DAYS = 12;
+    private static final int SIZE_FRONT_EVENT_3DAYS = 10;
     private static final int SIZE_COLUMN_GAP_WEEK = 2;
     private static final int SIZE_FRONT_WEEK = 7;
     private static final int SIZE_FRONT_EVENT_WEEK = 7;
