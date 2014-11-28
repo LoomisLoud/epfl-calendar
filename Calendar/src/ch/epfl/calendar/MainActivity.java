@@ -21,7 +21,6 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
-import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.display.EventDetailActivity;
 import ch.epfl.calendar.persistence.DBQuester;
