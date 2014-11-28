@@ -5,12 +5,10 @@ package ch.epfl.calendar.persistence;
 
 import java.util.List;
 
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
@@ -52,10 +50,9 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public long create(Object obj, String key) throws SQLiteCalendarException {
+    public void create(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
@@ -75,20 +72,10 @@ public class CourseDataSource implements DAO {
         for (Event event : events) {
             eds.create(event, course.getName());
         }
-
-//        long rowId = db.insert(CourseTable.TABLE_NAME_COURSE, null, values);
-//        if (rowId == -1) {
-//            Log.e(Logger.CALENDAR_SQL_ERROR, CourseDataSource.ERROR_CREATE);
-//            throw new SQLiteCalendarException(CourseDataSource.ERROR_CREATE);
-//        }
-//
-//        Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_CREATE);
-//
-//        return rowId;
-        CreateRowDBTask task = new CreateRowDBTask(App.getAppContext(), null, null);
+        
+        CreateRowDBTask task = new CreateRowDBTask();
         CreateObject object = new CreateObject(values, null, CourseTable.TABLE_NAME_COURSE);
         task.execute(object);
-        return 0;
     }
 
     /**
@@ -98,10 +85,9 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public long update(Object obj, String key) throws SQLiteCalendarException {
+    public void update(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(CourseTable.COLUMN_NAME_NAME, course.getName());
@@ -121,24 +107,11 @@ public class CourseDataSource implements DAO {
         for (Event event : events) {
             eds.update(event, course.getName());
         }
-
-//        long rowId = db.update(CourseTable.TABLE_NAME_COURSE, values,
-//                CourseTable.COLUMN_NAME_NAME + " = ?",
-//                new String[] { course.getName() });
-//        if (rowId == -1) {
-//            Log.e(Logger.CALENDAR_SQL_ERROR, CourseDataSource.ERROR_UPDATE);
-//            throw new SQLiteCalendarException(CourseDataSource.ERROR_UPDATE);
-//        }
-//
-//        Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_UPDATE);
-//
-//        return rowId;
         
-        UpdateRowDBTask task = new UpdateRowDBTask(App.getAppContext(), null, null);
+        UpdateRowDBTask task = new UpdateRowDBTask();
         UpdateObject object = new UpdateObject(values, CourseTable.TABLE_NAME_COURSE,
                 CourseTable.COLUMN_NAME_NAME + " = ?", new String[] {String.valueOf(course.getName())});
         task.execute(object);
-        return 0;
     }
 
     /**

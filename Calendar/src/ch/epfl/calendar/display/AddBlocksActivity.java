@@ -138,6 +138,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_add_blocks);
 
         mDB = new DBQuester();

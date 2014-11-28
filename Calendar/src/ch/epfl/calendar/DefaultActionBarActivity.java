@@ -16,8 +16,6 @@ import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
-import ch.epfl.calendar.data.Event;
-import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.AddBlocksActivity;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.AppEngineDownloadInterface;
@@ -31,7 +29,7 @@ import ch.epfl.calendar.utils.ConstructListCourse;
  * @author fouchepi
  * 
  */
-public class DefaultActionBarActivity extends Activity implements
+public abstract class DefaultActionBarActivity extends Activity implements
         CalendarClientDownloadInterface, AppEngineDownloadInterface,
         DatabaseUploadInterface {
 
@@ -164,21 +162,22 @@ public class DefaultActionBarActivity extends Activity implements
     public void callbackAppEngine(List<Course> mCourses) {
         mDialog = new ProgressDialog(this);
         mDialog.setTitle(this.getString(R.string.be_patient));
-        mDialog.setMessage("BLA");
+        mDialog.setMessage(this.getString(R.string.saving_db));
         mDialog.setCancelable(false);
         mDialog.show();
-        mDB.storeCourses(mCourses);
+
         this.mNbOfAsyncTaskDB = calculateNbOfElemToStore(mCourses);
+        mDB.storeCourses(mCourses);
     }
-    
+
     private int calculateNbOfElemToStore(List<Course> courses) {
         int count = 0;
         for (Course course : courses) {
             count++;
-            for (int i = 0; i<course.getPeriods().size(); i++) {
+            for (int i = 0; i < course.getPeriods().size(); i++) {
                 count++;
             }
-            for (int i = 0; i<course.getEvents().size(); i++) {
+            for (int i = 0; i < course.getEvents().size(); i++) {
                 count++;
             }
         }
@@ -195,16 +194,15 @@ public class DefaultActionBarActivity extends Activity implements
 
     public synchronized void asyncTaskStoreFinished() {
         mNbOfAsyncTaskDB--;
-        System.out.println(mNbOfAsyncTaskDB);
         if (mNbOfAsyncTaskDB == 0) {
             mUdpateData.updateData();
             if (mDialog != null) {
                 mDialog.dismiss();
             }
         }
-        
+
     }
-    
+
     @Override
     public void callbackDBUpload() {
         mUdpateData.updateData();
