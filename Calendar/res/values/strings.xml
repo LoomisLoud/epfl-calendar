@@ -59,6 +59,8 @@
     </string-array>
     <string name="from">From:</string>
     <string name="to">To:</string>
+    <string name="saving_db">Saving in local database&#8230;</string>
+    <string name="loading_app_engine">Loading data&#8230;</string>
 
     <!-- Toast messages -->
     <string name="authenticated">Authenticated</string>

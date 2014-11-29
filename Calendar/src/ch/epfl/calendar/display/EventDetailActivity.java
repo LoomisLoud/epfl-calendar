@@ -1,6 +1,5 @@
 package ch.epfl.calendar.display;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -10,37 +9,38 @@ import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
+import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
-
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 
 /**
  * @author Maxime
- *
+ * 
  */
-public class EventDetailActivity extends Activity {
-    
+public class EventDetailActivity extends DefaultActionBarActivity implements
+        UpdateDataFromDBInterface {
     private static final float SIZE_OF_TITLE = 1.5f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_event_detail);
-        
+
         Intent startIntent = getIntent();
-        
+
         String name = startIntent.getStringArrayExtra("description")[0];
         String description = startIntent.getStringArrayExtra("description")[1];
-        
+
         TextView textView = (TextView) findViewById(R.id.eventName);
         textView.setText(titleToSpannable(name));
-        
+
         TextView textView1 = (TextView) findViewById(R.id.eventDescription);
         textView1.setText(bodyToSpannableConcatAndBold("Description: ",
                 description));
-        
-        
+
     }
-    
+
     private SpannableString titleToSpannable(String title) {
         SpannableString spannable = new SpannableString(title);
         StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
@@ -63,5 +63,10 @@ public class EventDetailActivity extends Activity {
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE); // make first characters
                                                      // Bold
         return sb;
+    }
+
+    @Override
+    public void updateData() {
+        // Do nothing
     }
 }

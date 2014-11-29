@@ -387,14 +387,14 @@ public class DBQuester implements LocalDatabaseInterface {
      *      ch.epfl.calendar.data.Event)
      */
     @Override
-    public long storeEvent(Event event) {
+    public void storeEvent(Event event) {
         EventDataSource eds = EventDataSource.getInstance();
 
         if (event.getId() == NO_ID) {
 
-            return eds.create(event, event.getLinkedCourse());
+            eds.create(event, event.getLinkedCourse());
         } else {
-            return eds.update(event, event.getLinkedCourse());
+            eds.update(event, event.getLinkedCourse());
         }
 
     }
