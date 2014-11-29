@@ -26,7 +26,7 @@ public class UpdateRowDBTask extends AsyncTask<UpdateObject, Void, Long> {
         String[] whereArgs = object.getWhereArgs();
         ContentValues values = object.getContent();
 
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = DBQuester.openDatabase();
 
         long rowId = db.update(table, values, whereClause, whereArgs);
         if (rowId == -1) {

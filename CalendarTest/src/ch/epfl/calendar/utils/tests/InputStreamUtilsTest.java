@@ -26,7 +26,7 @@ public class InputStreamUtilsTest extends TestCase {
      * Tests {@link InputStreamUtils.readInputStream}
      */
     public void testReadInputStreamWorking()
-            throws UnsupportedEncodingException, IOException {
+        throws UnsupportedEncodingException, IOException {
         InputStream is1 = new ByteArrayInputStream(TEST_STRING.getBytes(UTF8_ENCODING));
         InputStream is2 = new ByteArrayInputStream(TEST_STRING.getBytes(ISO_8859_1_ENCODING));
 
