@@ -41,6 +41,31 @@ public class DBQuester implements LocalDatabaseInterface {
 
     public static final int NO_ID = -1;
 
+    private Event createEvent(Cursor cursor) {
+        String name = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_NAME));
+        String startDate = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
+        String endDate = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
+        String type = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
+        String courseName = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
+        String description = cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_DESCRIPTION));
+        int id = cursor
+                .getInt(cursor.getColumnIndex(EventTable.COLUMN_NAME_ID));
+        boolean isBlock = App.stringToBool(cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_IS_BLOCK)));
+        return new Event(name, startDate, endDate, type, courseName,
+                description, isBlock, id);
+    }
+
+    private void closeCursor(Cursor cursor) {
+        cursor.close();
+    }
+
     /**
      * @see ch.epfl.calendar.persistence.DBQuester#getAllCourses(ch.epfl.calendar.persistence.DBHelper)
      */
@@ -344,6 +369,18 @@ public class DBQuester implements LocalDatabaseInterface {
             }
         }
 
+        List<String> newCoursesNames = new ArrayList<String>();
+        for (Course course : courses) {
+            newCoursesNames.add(course.getName());
+        }
+        // Delete Courses you don't have anymore
+        for (String coursesStored : storedCourses) {
+            if (!newCoursesNames.contains(coursesStored)) {
+                deleteCourse(coursesStored);
+            }
+        }
+
+        // Create or Update new Courses
         for (Course course : courses) {
             if (storedCourses.contains(course.getName())) {
                 cds.update(course, null);
@@ -391,42 +428,40 @@ public class DBQuester implements LocalDatabaseInterface {
 
     }
 
+    @Override
     public void deleteEvent(Event event) {
         EventDataSource eds = EventDataSource.getInstance();
 
         eds.delete(event, null);
     }
+    
+    @Override
+    public void deletePeriod(Period period) {
+        PeriodDataSource pds = PeriodDataSource.getInstance();
+        
+        pds.delete(period, null);
+    }
 
-    public void deleteAllDB() {
+    @Override
+    public void deleteCourse(String courseName) {
+        Course course = getCourse(courseName);
+        for (Period period : course.getPeriods()) {
+            deletePeriod(period);
+        }
+        
+        for (Event event : course.getEvents()) {
+            deleteEvent(event);
+        }
+        
+        CourseDataSource cds = CourseDataSource.getInstance();
+        cds.delete(course, null);
+    }
+
+    public void deleteAllTables() {
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + PeriodTable.TABLE_NAME_PERIOD);
         db.execSQL("DROP TABLE IF EXISTS " + EventTable.TABLE_NAME_EVENT);
         db.execSQL("DROP TABLE IF EXISTS " + CourseTable.TABLE_NAME_COURSE);
-    }
-
-    private Event createEvent(Cursor cursor) {
-        String name = cursor.getString(cursor
-                .getColumnIndex(EventTable.COLUMN_NAME_NAME));
-        String startDate = cursor.getString(cursor
-                .getColumnIndex(EventTable.COLUMN_NAME_STARTDATE));
-        String endDate = cursor.getString(cursor
-                .getColumnIndex(EventTable.COLUMN_NAME_ENDDATE));
-        String type = cursor.getString(cursor
-                .getColumnIndex(EventTable.COLUMN_NAME_TYPE));
-        String courseName = cursor.getString(cursor
-                .getColumnIndex(EventTable.COLUMN_NAME_COURSE));
-        String description = cursor.getString(cursor
-                .getColumnIndex(EventTable.COLUMN_NAME_DESCRIPTION));
-        int id = cursor
-                .getInt(cursor.getColumnIndex(EventTable.COLUMN_NAME_ID));
-        boolean isBlock = App.stringToBool(cursor.getString(cursor
-                .getColumnIndex(EventTable.COLUMN_NAME_IS_BLOCK)));
-        return new Event(name, startDate, endDate, type, courseName,
-                description, isBlock, id);
-    }
-
-    private void closeCursor(Cursor cursor) {
-        cursor.close();
     }
 
     public static void close() {
