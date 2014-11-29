@@ -345,7 +345,6 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close();
     }
 
     /**
@@ -390,7 +389,6 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close();
     }
 
     /**
