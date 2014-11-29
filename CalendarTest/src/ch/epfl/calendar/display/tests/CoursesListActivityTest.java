@@ -55,7 +55,7 @@ public class CoursesListActivityTest extends
         activity.setUdpateData(activity);
 
         mDB = new DBQuester();
-        
+
         populateTestDB();
     }
 
