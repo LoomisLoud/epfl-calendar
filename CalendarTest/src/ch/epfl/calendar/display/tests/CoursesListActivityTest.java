@@ -18,6 +18,7 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.persistence.LocalDatabaseInterface;
 
 /**
  * @author gilbrechbuhler
@@ -29,6 +30,7 @@ public class CoursesListActivityTest extends
     private static final int N_LIST_VIEW_ELEMENTS = 2;
 
     private CoursesListActivity activity;
+    private LocalDatabaseInterface mDB;
     public static final String TEST = "test";
 
     public CoursesListActivityTest() {
@@ -52,6 +54,8 @@ public class CoursesListActivityTest extends
         App.setActionBar(activity);
         activity.setUdpateData(activity);
 
+        mDB = new DBQuester();
+        
         populateTestDB();
     }
 
@@ -122,11 +126,7 @@ public class CoursesListActivityTest extends
         Course course2 = new Course("TestCourse2", periodsCourse2,
                 "Pr. Testpr2", 5, "CS-000", "cool course", null);
 
-        // Courses can be stored only by fetchind data online
-        // So, we need to do like if it was the case !
-        List<Course> courses = new ArrayList<Course>();
-        courses.add(course1);
-        courses.add(course2);
-        App.getActionBar().callbackAppEngine(courses);
+        mDB.storeCourse(course1);
+        mDB.storeCourse(course2);
     }
 }
