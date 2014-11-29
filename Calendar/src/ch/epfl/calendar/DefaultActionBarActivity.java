@@ -196,11 +196,12 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     public void setUdpateData(UpdateDataFromDBInterface udpateData) {
         this.mUdpateData = udpateData;
+        App.setActionBar(this);
     }
 
     public synchronized void asyncTaskStoreFinished() {
         mNbOfAsyncTaskDB--;
-        if (mNbOfAsyncTaskDB == 0) {
+        if (mNbOfAsyncTaskDB <= 0) {
             DBQuester.close();
             mUdpateData.updateData();
             if (mDialog != null) {
