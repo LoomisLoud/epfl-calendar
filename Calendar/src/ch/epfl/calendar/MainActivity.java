@@ -266,30 +266,10 @@ public class MainActivity extends DefaultActionBarActivity implements
             String cours = weekEvent.getName().split("\n")[0];
             switchToCourseDetails(cours);
         } else {
-            Event event = new DBQuester().getEvent(weekEvent.getId());
+            Event event = mDB.getEvent(weekEvent.getId());
             switchToEditActivity(event);
         }
     }
-
-    /*@Override
-    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
-        if (weekEvent.getmType().equals(PeriodType.LECTURE)
-                || weekEvent.getmType().equals(PeriodType.PROJECT)
-                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = weekEvent.getName().split("\n")[0];
-            switchToCourseDetails(cours);
-        } else {
-            Event event = new DBQuester().getEvent(weekEvent.getId());
-            if (event.getLinkedCourse().equals(App.NO_COURSE)) {
-                String description = weekEvent.getmDescription();
-                switchToEventDetail(event.getName(), description);
-            } else {
-                String coursName = event.getLinkedCourse();
-                switchToCourseDetails(coursName);
-            }
-
-        }
-    }*/
 
     @Override
     public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
@@ -312,7 +292,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
-                                    // edit
+                                    switchToEditActivity(eventFromDB);
                                     dialog.cancel();
                                     break;
                                 case 1:
