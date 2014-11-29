@@ -51,7 +51,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
         updateData();
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
