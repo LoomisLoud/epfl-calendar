@@ -37,6 +37,8 @@ public class DBQuester implements LocalDatabaseInterface {
     private static final String UNDERSCORE_ID = "_id";
     private static final String NO_COURSE = "NoCourse";
 
+    private static SQLiteDatabase mDB = null;
+
     public static final int NO_ID = -1;
 
     /**
@@ -44,8 +46,8 @@ public class DBQuester implements LocalDatabaseInterface {
      */
     @Override
     public List<Course> getAllCourses() {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + CourseTable.TABLE_NAME_COURSE + ORDER_BY + CODE + ASC, null);
         ArrayList<Course> courses = new ArrayList<Course>();
 
@@ -71,16 +73,16 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return courses;
     }
 
     @Override
     public List<String> getAllCoursesNames() {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME + FROM
-                + CourseTable.TABLE_NAME_COURSE + ORDER_BY + CODE + ASC, null);
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME
+                + FROM + CourseTable.TABLE_NAME_COURSE + ORDER_BY + CODE + ASC,
+                null);
         ArrayList<String> coursesNames = new ArrayList<String>();
 
         if (cursor.moveToFirst()) {
@@ -94,7 +96,6 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return coursesNames;
     }
@@ -105,8 +106,8 @@ public class DBQuester implements LocalDatabaseInterface {
      */
     @Override
     public List<Period> getAllPeriodsFromCourse(String courseName) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + PeriodTable.TABLE_NAME_PERIOD + WHERE
                 + PeriodTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName
                 + "\"" + ORDER_BY + "\"" + ID + "\"" + ASC, null);
@@ -132,15 +133,14 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return periods;
     }
 
     @Override
     public Event getEvent(long id) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_ID + EQUAL + id + ORDER_BY + "\""
                 + UNDERSCORE_ID + "\"" + ASC, null);
@@ -152,15 +152,14 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return event;
     }
 
     @Override
     public List<Event> getAllEvents() {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + ORDER_BY + "\"" + UNDERSCORE_ID
                 + "\"" + ASC, null);
         ArrayList<Event> events = new ArrayList<Event>();
@@ -173,7 +172,6 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return events;
     }
@@ -184,8 +182,8 @@ public class DBQuester implements LocalDatabaseInterface {
      */
     @Override
     public List<Event> getAllEventsFromCourse(String courseName) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName
                 + "\"" + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
@@ -199,21 +197,19 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return events;
     }
-    
+
     @Override
     public List<Event> getAllEventsFromCourseBlock(String courseName) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName + "\""
-                + UNION
-                + SELECT_ALL_FROM + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_IS_BLOCK + EQUAL + "\"" + App.TRUE + "\""
-                 , null);
+                + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName
+                + "\"" + UNION + SELECT_ALL_FROM + EventTable.TABLE_NAME_EVENT
+                + WHERE + EventTable.COLUMN_NAME_IS_BLOCK + EQUAL + "\""
+                + App.TRUE + "\"", null);
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
@@ -224,15 +220,14 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return events;
     }
 
     @Override
     public List<Event> getAllEventsWithoutCourse() {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + NO_COURSE
                 + "\"" + ORDER_BY + "\"" + UNDERSCORE_ID + "\"" + ASC, null);
@@ -246,14 +241,13 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return events;
     }
 
     public Event getEventWithRowId(long id) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_ID + EQUAL + id, null);
 
@@ -262,15 +256,14 @@ public class DBQuester implements LocalDatabaseInterface {
         createEvent(cursor);
 
         closeCursor(cursor);
-        close(db);
 
         return event;
     }
 
     @Override
     public Course getCourse(String courseName) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
-        Cursor cursor = db.rawQuery(SELECT_ALL_FROM
+        openDatabase();
+        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + CourseTable.TABLE_NAME_COURSE + WHERE
                 + CourseTable.COLUMN_NAME_NAME + EQUAL + "\"" + courseName
                 + "\"" + ORDER_BY + "\"" + CODE + "\"" + ASC, null);
@@ -295,7 +288,6 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
 
         return course;
     }
@@ -306,11 +298,11 @@ public class DBQuester implements LocalDatabaseInterface {
      */
     @Override
     public void storeCourse(Course course) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        openDatabase();
         CourseDataSource cds = CourseDataSource.getInstance();
 
         List<String> storedCourses = new ArrayList<String>();
-        Cursor cursor = db.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME
+        Cursor cursor = mDB.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME
                 + FROM + CourseTable.TABLE_NAME_COURSE, null);
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
@@ -328,7 +320,7 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
+        close();
     }
 
     /**
@@ -337,11 +329,11 @@ public class DBQuester implements LocalDatabaseInterface {
      */
     @Override
     public void storeCourses(List<Course> courses) {
-        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
+        openDatabase();
         CourseDataSource cds = CourseDataSource.getInstance();
 
         List<String> storedCourses = new ArrayList<String>();
-        Cursor cursor = db.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME
+        Cursor cursor = mDB.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME
                 + FROM + CourseTable.TABLE_NAME_COURSE, null);
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
@@ -361,7 +353,7 @@ public class DBQuester implements LocalDatabaseInterface {
         }
 
         closeCursor(cursor);
-        close(db);
+        close();
     }
 
     /**
@@ -427,17 +419,25 @@ public class DBQuester implements LocalDatabaseInterface {
                 .getColumnIndex(EventTable.COLUMN_NAME_DESCRIPTION));
         int id = cursor
                 .getInt(cursor.getColumnIndex(EventTable.COLUMN_NAME_ID));
-        boolean isBlock = App.stringToBool(cursor
-                .getString(cursor.getColumnIndex(EventTable.COLUMN_NAME_IS_BLOCK)));
+        boolean isBlock = App.stringToBool(cursor.getString(cursor
+                .getColumnIndex(EventTable.COLUMN_NAME_IS_BLOCK)));
         return new Event(name, startDate, endDate, type, courseName,
                 description, isBlock, id);
     }
 
-    private void close(SQLiteDatabase db) {
-        db.close();
-    }
-
     private void closeCursor(Cursor cursor) {
         cursor.close();
+    }
+
+    public static void close() {
+        mDB.close();
+        mDB = null;
+    }
+
+    public static SQLiteDatabase openDatabase() {
+        if (mDB == null) {
+            mDB = App.getDBHelper().getReadableDatabase();
+        }
+        return mDB;
     }
 }
