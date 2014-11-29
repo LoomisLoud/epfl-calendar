@@ -51,6 +51,12 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
         updateData();
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateData();
+    }
 
     private void courseDetailsActionBar() {
         ActionBar actionBar = getActionBar();
