@@ -93,7 +93,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDB = new DBQuester();
 
         // Used for destroy the database
-         this.deleteDatabase(App.DATABASE_NAME);
+        // this.deleteDatabase(App.DATABASE_NAME);
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
@@ -145,7 +145,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                             SIZE_FRONT_WEEK, SIZE_FRONT_EVENT_WEEK);
 
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }
@@ -333,6 +333,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     protected void onResume() {
+      
         super.onResume();
         super.setUdpateData(this);
         mListCourses = mDB.getAllCourses();

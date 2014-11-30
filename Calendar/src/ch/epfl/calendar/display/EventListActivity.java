@@ -28,12 +28,18 @@ import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.persistence.DBQuester;
 
+/**
+ * @author MatthiasLeroyEPFL
+ * 
+ */
 public class EventListActivity extends Activity {
 
     private ListView mListView;
     private DBQuester mDbQuester;
     private Context context = this;
+    private static final int HEIGHT_DIVIDER = 10;
     private ArrayAdapter<EventForList> adapter = null;
+    private boolean editEvent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,33 +50,28 @@ public class EventListActivity extends Activity {
         mDbQuester = new DBQuester();
         List<Course> course = mDbQuester.getAllCourses();
         List<Event> eventCreated = mDbQuester.getAllEvents();
-        List<EventForList> event = new ArrayList<EventForList>();
-        for (Course c : course) {
-            for (Period p : c.getPeriods()) {
-                event.add(new EventForList(c.getName(), p.getStartDate(), p
-                        .getEndDate(), p.getType(), -1, "", c.getDescription()));
-            }
-        }
-
-        for (Event e : eventCreated) {
-            event.add(new EventForList(e.getName(), e.getStartDate(), e
-                    .getEndDate(), stringToPeriodType(e.getType()), e.getId(),
-                    e.getLinkedCourse(), e.getmDescription()));
-        }
-        sort(event);
-        final List<EventForList> updatedEvent = removePastEvents(event);
+        final List<EventForList> eventForList = eventToEventForList(course,
+                eventCreated);
 
         adapter = new ArrayAdapter<EventForList>(this,
-                android.R.layout.simple_list_item_1, updatedEvent);
+                android.R.layout.simple_list_item_1, eventForList);
 
         mListView.setAdapter(adapter);
-        mListView.setDividerHeight(10);
+        mListView.setDividerHeight(HEIGHT_DIVIDER);
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View view,
                     int position, long arg3) {
+                EventForList event = (EventForList) mListView
+                        .getItemAtPosition(position);
+                if (event.getmId() == DBQuester.NO_ID) {
+                    switchToCourseDetails(event.getmEventName());
+                } else {
+                    switchToEditActivity(mDbQuester.getEvent(event.getmId()));
+
+                }
 
             }
         });
@@ -86,13 +87,14 @@ public class EventListActivity extends Activity {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 dialog.setMessage("What do you want to do ?");
 
-                if (event.getmId() != -1) {
+                if (event.getmId() != DBQuester.NO_ID) {
                     dialog.setNegativeButton("Delete", new OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mDbQuester.deleteEvent(mDbQuester.getEvent(event.getmId()));
-                            List<EventForList> list = updatedEvent;
+                            mDbQuester.deleteEvent(mDbQuester.getEvent(event
+                                    .getmId()));
+                            List<EventForList> list = eventForList;
                             list.remove(event);
                             adapter = new ArrayAdapter<EventForList>(context,
                                     android.R.layout.simple_list_item_1, list);
@@ -105,10 +107,17 @@ public class EventListActivity extends Activity {
                 }
                 dialog.setNeutralButton("Description", new OnClickListener() {
 
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see
+                     * android.content.DialogInterface.OnClickListener#onClick
+                     * (android.content.DialogInterface, int)
+                     */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        if (event.getmId() == -1) {
+                        if (event.getmId() == DBQuester.NO_ID) {
                             switchToCourseDetails(event.getmEventName());
                         } else {
                             if (event.getmLinkedCourse().equals(App.NO_COURSE)) {
@@ -128,7 +137,7 @@ public class EventListActivity extends Activity {
 
                 dialog.create();
                 dialog.show();
-                return false;
+                return true;
             }
         });
 
@@ -195,4 +204,46 @@ public class EventListActivity extends Activity {
         startActivity(eventDetailActivityIntent);
     }
 
+    private void switchToEditActivity(Event event) {
+        editEvent = true;
+        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
+        editActivityIntent.putExtra("Id", event.getId());
+
+        startActivity(editActivityIntent);
+    }
+
+    private List<EventForList> eventToEventForList(List<Course> cours,
+            List<Event> event) {
+        List<EventForList> eventForList = new ArrayList<EventForList>();
+        for (Course c : cours) {
+            for (Period p : c.getPeriods()) {
+                eventForList.add(new EventForList(c.getName(),
+                        p.getStartDate(), p.getEndDate(), p.getType(),
+                        DBQuester.NO_ID, "", c.getDescription()));
+            }
+        }
+        for (Event e : event) {
+            eventForList.add(new EventForList(e.getName(), e.getStartDate(), e
+                    .getEndDate(), stringToPeriodType(e.getType()), e.getId(),
+                    e.getLinkedCourse(), e.getmDescription()));
+        }
+        sort(eventForList);
+        List<EventForList> result = removePastEvents(eventForList);
+        return result;
+    }
+
+    @Override
+    protected void onResume() {
+        if (editEvent) {
+            System.out.println("cccccccccccc");
+            List<EventForList> updatedEvent = eventToEventForList(
+                    mDbQuester.getAllCourses(), mDbQuester.getAllEvents());
+            adapter = new ArrayAdapter<EventForList>(context,
+                    android.R.layout.simple_list_item_1, updatedEvent);
+            mListView.setAdapter(adapter);
+            editEvent = false;
+        }
+        super.onResume();
+
+    }
 }

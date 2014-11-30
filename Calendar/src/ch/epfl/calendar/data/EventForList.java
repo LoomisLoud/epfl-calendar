@@ -3,6 +3,10 @@ package ch.epfl.calendar.data;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * @author MatthiasLeroyEPFL
+ *
+ */
 public class EventForList {
 
     private String mEventName;
@@ -28,56 +32,56 @@ public class EventForList {
         return mEventName;
     }
 
-    public void setmEventName(String mEventName) {
-        this.mEventName = mEventName;
+    public void setmEventName(String eventName) {
+        this.mEventName = eventName;
     }
 
     public Calendar getmStart() {
         return mStart;
     }
 
-    public void setmStart(Calendar mStart) {
-        this.mStart = mStart;
+    public void setmStart(Calendar start) {
+        this.mStart = start;
     }
 
     public Calendar getmEnd() {
         return mEnd;
     }
 
-    public void setmEnd(Calendar mEnd) {
-        this.mEnd = mEnd;
+    public void setmEnd(Calendar end) {
+        this.mEnd = end;
     }
 
     public PeriodType getmType() {
         return mType;
     }
 
-    public void setmType(PeriodType mType) {
-        this.mType = mType;
+    public void setmType(PeriodType type) {
+        this.mType = type;
     }
 
     public int getmId() {
         return mId;
     }
 
-    public void setmId(int mId) {
-        this.mId = mId;
+    public void setmId(int id) {
+        this.mId = id;
     }
 
     public String getmLinkedCourse() {
         return mLinkedCourse;
     }
 
-    public void setmLinkedCourse(String mLinkedCourse) {
-        this.mLinkedCourse = mLinkedCourse;
+    public void setmLinkedCourse(String linkedCourse) {
+        this.mLinkedCourse = linkedCourse;
     }
 
     public String getmDescription() {
         return mDescription;
     }
 
-    public void setmDescription(String mDescription) {
-        this.mDescription = mDescription;
+    public void setmDescription(String description) {
+        this.mDescription = description;
     }
 
     private String calendarToString(Calendar date, boolean sameday) {

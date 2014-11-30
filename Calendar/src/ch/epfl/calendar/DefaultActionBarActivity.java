@@ -102,7 +102,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 populateCalendarFromISA();
                 return true;
             case R.id.action_event_list:
-                Intent i = new Intent(this,EventListActivity.class);
+                Intent i = new Intent(this, EventListActivity.class);
                 startActivity(i);
                 return true;
             case R.id.action_logout:
