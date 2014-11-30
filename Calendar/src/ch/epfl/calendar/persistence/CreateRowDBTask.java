@@ -26,7 +26,7 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
         String nullCollumnHack = object.getNullColumnHack();
         ContentValues values = object.getContent();
 
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = DBQuester.openDatabase();
 
         long rowId = db.insert(table, nullCollumnHack, values);
         if (rowId == -1) {

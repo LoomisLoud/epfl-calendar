@@ -59,10 +59,11 @@ public interface LocalDatabaseInterface {
      * @return the list of all events in the course.
      */
     List<Event> getAllEventsFromCourse(String courseName);
-    
+
     /**
-     * A block event is an event added for working weekly
-     * corresponding to the credits
+     * A block event is an event added for working weekly corresponding to the
+     * credits
+     * 
      * @param courseName
      * @return the list of all blocks events of a Course
      */
@@ -109,5 +110,24 @@ public interface LocalDatabaseInterface {
      * @param event
      */
     void deleteEvent(Event event);
+
+    /**
+     * Delete a period
+     * 
+     * @param period
+     */
+    void deletePeriod(Period period);
+
+    /**
+     * Delete a Course with all periods and events related with it
+     * 
+     * @param course
+     */
+    void deleteCourse(String courseName);
+
+    /**
+     * Delete all tables in the database
+     */
+    void deleteAllTables();
 
 }

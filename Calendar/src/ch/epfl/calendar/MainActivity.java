@@ -97,13 +97,6 @@ public class MainActivity extends DefaultActionBarActivity implements
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
-            // FIXME : Test if it works without this code
-            // if (!mAuthUtils.isAuthenticated(mThisActivity)) {
-            // switchToAuthenticationActivity();
-            // } else {
-            // mListCourses = new ArrayList<Course>();
-            // populateCalendarFromISA(this);
-            // }
             populateCalendarFromISA();
         } else {
             mWeekView.notifyDatasetChanged();
@@ -210,11 +203,13 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.show();
     }
 
+    // FIXME : What do we have to do with this method ????
     private void switchToEventDetail(String name, String description) {
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", new String[]{name, description});
+        eventDetailActivityIntent.putExtra("description", new String[] { name,
+                description });
         startActivity(eventDetailActivityIntent);
     }
 
@@ -273,25 +268,18 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
     }
 
-    /*@Override
-    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
-        if (weekEvent.getmType().equals(PeriodType.LECTURE)
-                || weekEvent.getmType().equals(PeriodType.PROJECT)
-                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = weekEvent.getName().split("\n")[0];
-            switchToCourseDetails(cours);
-        } else {
-            Event event = new DBQuester().getEvent(weekEvent.getId());
-            if (event.getLinkedCourse().equals(App.NO_COURSE)) {
-                String description = weekEvent.getmDescription();
-                switchToEventDetail(event.getName(), description);
-            } else {
-                String coursName = event.getLinkedCourse();
-                switchToCourseDetails(coursName);
-            }
-
-        }
-    }*/
+    /*
+     * @Override public void onEventClick(WeekViewEvent weekEvent, RectF
+     * eventRect) { if (weekEvent.getmType().equals(PeriodType.LECTURE) ||
+     * weekEvent.getmType().equals(PeriodType.PROJECT) ||
+     * weekEvent.getmType().equals(PeriodType.EXERCISES)) { String cours =
+     * weekEvent.getName().split("\n")[0]; switchToCourseDetails(cours); } else
+     * { Event event = new DBQuester().getEvent(weekEvent.getId()); if
+     * (event.getLinkedCourse().equals(App.NO_COURSE)) { String description =
+     * weekEvent.getmDescription(); switchToEventDetail(event.getName(),
+     * description); } else { String coursName = event.getLinkedCourse();
+     * switchToCourseDetails(coursName); } } }
+     */
 
     @Override
     public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
