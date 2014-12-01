@@ -93,7 +93,7 @@ public class WeekView extends View {
     private int mDefaultEventColor;
     private boolean mIsFirstDraw = true;
     private int mDayNameLength = LENGTH_LONG;
-    private int mOverlappingEventGap = 0;
+    private int mOverlappingEventGap = 4;
     private int mEventMarginVertical = 0;
     private Calendar mFirstVisibleDay;
     private Calendar mLastVisibleDay;

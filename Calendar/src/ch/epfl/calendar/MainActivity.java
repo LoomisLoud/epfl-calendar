@@ -15,7 +15,6 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
@@ -45,7 +44,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     private static final int SIZE_FRONT_EVENT_DAY = 12;
     private static final int SIZE_COLUMN_GAP_3DAYS = 8;
     private static final int SIZE_FRONT_3DAYS = 12;
-    private static final int SIZE_FRONT_EVENT_3DAYS = 12;
+    private static final int SIZE_FRONT_EVENT_3DAYS = 10;
     private static final int SIZE_COLUMN_GAP_WEEK = 2;
     private static final int SIZE_FRONT_WEEK = 7;
     private static final int SIZE_FRONT_EVENT_WEEK = 7;
@@ -93,8 +92,8 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         mDB = new DBQuester();
 
-        // Used for destroy the database
         this.deleteDatabase(App.DATABASE_NAME);
+
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
@@ -268,61 +267,74 @@ public class MainActivity extends DefaultActionBarActivity implements
             String cours = weekEvent.getName().split("\n")[0];
             switchToCourseDetails(cours);
         } else {
-            Event event = new DBQuester().getEvent(weekEvent.getId());
+            Event event = mDB.getEvent(weekEvent.getId());
             switchToEditActivity(event);
         }
     }
-
-    /*
-     * @Override public void onEventClick(WeekViewEvent weekEvent, RectF
-     * eventRect) { if (weekEvent.getmType().equals(PeriodType.LECTURE) ||
-     * weekEvent.getmType().equals(PeriodType.PROJECT) ||
-     * weekEvent.getmType().equals(PeriodType.EXERCISES)) { String cours =
-     * weekEvent.getName().split("\n")[0]; switchToCourseDetails(cours); } else
-     * { Event event = new DBQuester().getEvent(weekEvent.getId()); if
-     * (event.getLinkedCourse().equals(App.NO_COURSE)) { String description =
-     * weekEvent.getmDescription(); switchToEventDetail(event.getName(),
-     * description); } else { String coursName = event.getLinkedCourse();
-     * switchToCourseDetails(coursName); } } }
-     */
 
     @Override
     public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
         if (event.getmType() == PeriodType.EXERCISES
                 || event.getmType() == PeriodType.LECTURE
                 || event.getmType() == PeriodType.PROJECT) {
-            Toast.makeText(this, "You can not delete this event",
-                    Toast.LENGTH_LONG).show();
+            String cours = event.getName().split("\n")[0];
+            switchToCourseDetails(cours);
 
         } else {
 
-            AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
-            deleteDialog.setTitle("Delete Event");
-            deleteDialog.setCancelable(false);
-            deleteDialog.setMessage("Do you really want to delete this event");
-            deleteDialog.setPositiveButton("Yes", new OnClickListener() {
+            AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
+            choiceDialog.setTitle("Action on Event");
+            long id = event.getId();
+            final Event eventFromDB = mDB.getEvent(id);
+            choiceDialog.setItems(R.array.choice_on_event,
+                    new OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    long id = event.getId();
-                    Event eventFromDB = mDB.getEvent(id);
-                    mDB.deleteEvent(eventFromDB);
-                    updateListsFromDB();
-                    mWeekView.notifyDatasetChanged();
-                    dialog.cancel();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    switchToEditActivity(eventFromDB);
+                                    dialog.cancel();
+                                    break;
+                                case 1:
+                                    mDB.deleteEvent(eventFromDB);
+                                    updateData();
+                                    dialog.cancel();
+                                    break;
+                                case 2:
+                                    if (event.getmType().equals(PeriodType.LECTURE)
+                                            || event.getmType().equals(
+                                                    PeriodType.PROJECT)
+                                                    || event.getmType().equals(
+                                                            PeriodType.EXERCISES)) {
+                                        String cours = event.getName().split("\n")[0];
+                                        switchToCourseDetails(cours);
+                                    } else {
 
-                }
-            });
-            deleteDialog.setNegativeButton("No", new OnClickListener() {
+                                        if (eventFromDB.getLinkedCourse().equals(
+                                                App.NO_COURSE)) {
+                                            String description = event
+                                                    .getmDescription();
+                                            switchToEventDetail(event.getName(),
+                                                    description);
+                                        } else {
+                                            String coursName = eventFromDB
+                                                    .getLinkedCourse();
+                                            switchToCourseDetails(coursName);
+                                        }
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
+                                    }
+                                    dialog.cancel();
+                                    break;
+                                default:
+                                    break;
+                            }
 
-                }
-            });
-            deleteDialog.create();
-            deleteDialog.show();
+                        }
+                    });
+
+            choiceDialog.create();
+            choiceDialog.show();
         }
     }
 

@@ -72,6 +72,12 @@
     <string name="title_activity_default_action_bar">DefaultActionBarActivity</string>
     <string name="title_activity_event_detail">EventDetailActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string-array name="choice_on_event">
+        <item>Edit</item>
+        <item>Delete</item>
+        <item>Visit course</item>
+    </string-array>
     <string name="title_activity_event_list">EventListActivity</string>
+
 
 </resources>

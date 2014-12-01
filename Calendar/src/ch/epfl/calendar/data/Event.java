@@ -82,7 +82,7 @@ public class Event {
         String description = this.mDescription;
 
         return name.concat(" from ").concat(startDate).concat(" to ").concat(endDate)
-                .concat(" : ").concat(description);
+                .concat(" : ").concat(description).concat("\n");
     }
 
     /**
