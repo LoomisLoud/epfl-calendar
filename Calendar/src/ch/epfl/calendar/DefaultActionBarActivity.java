@@ -21,6 +21,7 @@ import ch.epfl.calendar.display.AddBlocksActivity;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.AppEngineDownloadInterface;
 import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.DatabaseUploadInterface;
 import ch.epfl.calendar.utils.AuthenticationUtils;
@@ -85,6 +86,10 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 return true;
             case R.id.action_update_activity:
                 populateCalendarFromISA();
+                return true;
+            case R.id.action_event_list:
+                Intent i = new Intent(this, EventListActivity.class);
+                startActivity(i);
                 return true;
             case R.id.action_logout:
                 logout();

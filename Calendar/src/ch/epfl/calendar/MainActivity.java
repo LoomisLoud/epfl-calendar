@@ -63,6 +63,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     private ProgressDialog mDialog;
 
     private DBQuester mDB;
+    
 
     public static final String TAG = "MainActivity::";
 
@@ -112,6 +113,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         spinnerList.add("Day");
         spinnerList.add("3 Days");
         spinnerList.add("Week");
+        
         return spinnerList;
     }
 
@@ -331,6 +333,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     protected void onResume() {
+      
         super.onResume();
         super.setUdpateData(this);
         mListCourses = mDB.getAllCourses();
