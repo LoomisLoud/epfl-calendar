@@ -83,19 +83,22 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         textView.setText(bodyToSpannableConcatAndBold("Crédits: ",
                 courseCredits));
 
-        textView = (TextView) findViewById(R.id.courseDescription);
-        textView.setText(bodyToSpannableConcatAndBold("Description: ",
-                courseDescription));
-        textView.setMovementMethod(new ScrollingMovementMethod());
-
-        for (Event event : linkedEvents) {
-            linkedEventsToString += event.toString();
+        if (!courseDescription.equals("")) {
+            textView = (TextView) findViewById(R.id.courseDescription);
+            textView.setText(bodyToSpannableConcatAndBold("Description: ",
+                    courseDescription));
+            textView.setMovementMethod(new ScrollingMovementMethod());
         }
+        if (!linkedEvents.isEmpty()) {
 
-        TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
-        textView2.setText(bodyToSpannableConcatAndBold("Event related: ",
-                linkedEventsToString));
+            for (Event event : linkedEvents) {
+                linkedEventsToString += event.toString();
+            }
 
+            TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
+            textView2.setText(bodyToSpannableConcatAndBold("Event related: ",
+                    linkedEventsToString));
+        }
     }
 
     private SpannableString titleToSpannable(String title) {
