@@ -85,19 +85,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
         Calendar endDate = createEndDateBlock((Period) i
                 .getParcelableExtra("period"));
 
-        
-        Event event = new Event("Do " + mCourseName + " homework",
-                App.calendarToBasicFormatString(startEvent),
-                App.calendarToBasicFormatString(endEvent),
-                PeriodType.DEFAULT.toString(), mCourseName,
-                "You have to work on " + mCourseName + " now", IS_BLOCK,
-                DBQuester.NO_ID);
-        dbQuester.storeEvent(event);
-
-        while (endDate.getTimeInMillis() > endEvent.getTimeInMillis()) {
-            startEvent.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
-            endEvent.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
-
+        while (endDate.compareTo(endEvent) > 0) {
             Event e = new Event("Do " + mCourseName + " homework",
                     App.calendarToBasicFormatString(startEvent),
                     App.calendarToBasicFormatString(endEvent),
@@ -105,6 +93,9 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
                     "You have to work on " + mCourseName + " now", IS_BLOCK,
                     DBQuester.NO_ID);
             dbQuester.storeEvent(e);
+            
+            startEvent.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
+            endEvent.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
         }
     }
 
