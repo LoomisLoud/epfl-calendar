@@ -18,6 +18,11 @@ public class UpdateRowDBTask extends AsyncTask<UpdateObject, Void, Long> {
     private static final String SUCCESS_UPDATE = "Row Successfully update!";
 
     @Override
+    protected void onPreExecute() {
+        App.getActionBar().addTask();
+    }
+
+    @Override
     protected Long doInBackground(UpdateObject... params) {
         UpdateObject object = params[0];
 
