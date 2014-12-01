@@ -13,6 +13,13 @@ import ch.epfl.calendar.data.PeriodType;
  *
  */
 public class WeekViewEvent {
+    
+    private static final String COLOR_BLUE = "#33B5E5";
+    //private static final String COLOR_MAGENTA = "#AA66CC";
+    private static final String COLOR_GREEN = "#99CC00";
+    private static final String COLOR_RED = "#FF4444";
+    private static final String COLOR_ORANGE = "#FFBB33";
+    
     private long mId;
     private Calendar mStartTime;
     private Calendar mEndTime;
@@ -92,19 +99,18 @@ public class WeekViewEvent {
         this.mType = type;
         this.mDescription=description;
         setColorWithType(type);
-        this.mType = type;
 
     }
 
     private void setColorWithType(PeriodType type) {
         if (type == PeriodType.LECTURE) {
-            mColor = Color.BLUE;
+            mColor = Color.parseColor(COLOR_BLUE);
         } else if (type == PeriodType.EXERCISES) {
-            mColor = Color.GREEN;
-        } else if (type == PeriodType.PROJECT){
-            mColor = Color.RED;
+            mColor = Color.parseColor(COLOR_GREEN);
+        } else if (type == PeriodType.PROJECT) {
+            mColor = Color.parseColor(COLOR_RED);
         } else {
-            mColor = Color.MAGENTA;
+            mColor = Color.parseColor(COLOR_ORANGE);
         }
     }
 
