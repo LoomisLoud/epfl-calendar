@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
@@ -69,7 +70,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
         return ((day + 1) % NUMBER_OF_DAYS) + 1;
     }
 
-    private void storeWeeklyEvent(Intent i) {
+    private void storeWeeklyEvent(Intent i) throws ReversedDatesException {
         DBQuester dbQuester = new DBQuester();
 
         Calendar startEvent = createStartDateBlock(
@@ -84,6 +85,10 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
                         .getCurrentMinute());
         Calendar endDate = createEndDateBlock((Period) i
                 .getParcelableExtra("period"));
+        
+        if (endEvent.before(startEvent)) {
+            throw new ReversedDatesException();
+        }
 
         while (endDate.compareTo(endEvent) > 0) {
             Event e = new Event("Do " + mCourseName + " homework",
@@ -99,7 +104,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
         }
     }
 
-    private void transferAndStoreData() {
+    private void transferAndStoreData() throws ReversedDatesException {
         Intent i = getIntent();
 
         storeWeeklyEvent(i);
@@ -145,7 +150,14 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
      * @param v
      */
     public void finishActivity(View v) {
-        transferAndStoreData();
+        try {
+            transferAndStoreData();
+        } catch (ReversedDatesException e) {
+            Toast.makeText(AddEventBlockActivity.this.getBaseContext(),
+                    AddEventBlockActivity.this.getString(R.string.reversed_dates),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         finish();
     }
 
