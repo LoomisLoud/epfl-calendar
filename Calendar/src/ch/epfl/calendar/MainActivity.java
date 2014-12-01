@@ -93,7 +93,9 @@ public class MainActivity extends DefaultActionBarActivity implements
 
 
         // Used for destroy the database
+
         //this.deleteDatabase(App.DATABASE_NAME);
+
 
 
         updateListsFromDB();

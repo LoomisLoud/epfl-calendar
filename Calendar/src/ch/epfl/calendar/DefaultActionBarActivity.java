@@ -105,11 +105,12 @@ public abstract class DefaultActionBarActivity extends Activity implements
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
     }
-    
+
     private void switchToListEvent() {
         Intent i = new Intent(this, EventListActivity.class);
         startActivity(i);
     }
+
     private void switchToCalendar() {
         Intent goToCalendarIntent = new Intent(this, MainActivity.class);
         startActivity(goToCalendarIntent);
@@ -163,6 +164,11 @@ public abstract class DefaultActionBarActivity extends Activity implements
         if (!mAuthUtils.isAuthenticated(mThisActivity)) {
             switchToAuthenticationActivity();
         } else {
+            mDialog = new ProgressDialog(this);
+            mDialog.setTitle(this.getString(R.string.be_patient));
+            mDialog.setMessage(this.getString(R.string.uploading));
+            mDialog.setCancelable(false);
+            mDialog.show();
             CalendarClientInterface cal = new CalendarClient(mThisActivity,
                     this);
             cal.getISAInformations();
@@ -191,16 +197,17 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     @Override
     public void callbackAppEngine(List<Course> mCourses) {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
         mDialog = new ProgressDialog(this);
         mDialog.setTitle(this.getString(R.string.be_patient));
         mDialog.setMessage(this.getString(R.string.saving_db));
         mDialog.setCancelable(false);
         mDialog.show();
 
-        for (Course course : mCourses) {
-            System.out.println(course.getName() + " : "
-                    + course.getPeriods().size());
-        }
+
+     
 
         mDB.storeCourses(mCourses);
     }
