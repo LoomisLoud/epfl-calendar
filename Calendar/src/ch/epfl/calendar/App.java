@@ -141,11 +141,15 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         App.mContext = this.getApplicationContext();
-        App.mDBHelper = new DBHelper(App.mContext);
+        App.mDBHelper = new DBHelper(App.mContext, App.DATABASE_NAME);
     }
 
     public static DBHelper getDBHelper() {
         return App.mDBHelper;
+    }
+    
+    public static void setDBHelper(String databaseName) {
+        mDBHelper = new DBHelper(App.mContext, databaseName);
     }
 
     public static Context getAppContext() {
