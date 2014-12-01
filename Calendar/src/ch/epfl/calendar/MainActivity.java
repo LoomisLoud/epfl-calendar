@@ -175,9 +175,15 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        boolean retour = super.onCreateOptionsMenu(menu);
+     // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
+        
+        MenuItem goToCalendarItem = (MenuItem) menu.findItem(R.id.action_calendar);
+        goToCalendarItem.setVisible(false);
+        this.invalidateOptionsMenu();
+        
+        return retour;
     }
 
     @Override
