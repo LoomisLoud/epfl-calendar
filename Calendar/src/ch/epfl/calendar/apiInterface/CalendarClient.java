@@ -69,6 +69,7 @@ public class CalendarClient implements CalendarClientInterface {
                 //We don't want that the user sees this exception
             }
         }
+
         mDownloadInterface.callbackDownload(success, coursesList);
     }
     

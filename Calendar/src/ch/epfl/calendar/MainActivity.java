@@ -91,7 +91,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDB = new DBQuester();
 
         // Used for destroy the database
-        // this.deleteDatabase(App.DATABASE_NAME);
+        this.deleteDatabase(App.DATABASE_NAME);
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
@@ -206,8 +206,12 @@ public class MainActivity extends DefaultActionBarActivity implements
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", new String[] {name,
-            description });
+        eventDetailActivityIntent.putExtra(
+                "description",
+                new String[] {
+                    name,
+                    description
+                });
         startActivity(eventDetailActivityIntent);
     }
 
@@ -332,15 +336,15 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            mListCourses = new ArrayList<Course>();
-            populateCalendarFromISA();
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
+//            mListCourses = new ArrayList<Course>();
+//            populateCalendarFromISA();
+//        }
+//
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     @Override
     protected void onResume() {
