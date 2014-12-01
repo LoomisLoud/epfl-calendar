@@ -8,7 +8,8 @@
     <string name="login_submit_text">Login using Tequila</string>
     <string name="error_empty_credentials">Fill Username and Password in</string>
     <string name="be_patient">Please be patient</string>
-    <string name="authenticatinguploading">Authenticating / Uploading&#8230;</string>
+    <string name="authenticating">Authenticating&#8230;</string>
+    <string name="uploading">Uploading data&#8230;</string>
     <string name="loading">Loading;</string>
     <string name="error_http_protocol">HTTP Protocol error!</string>
     <string name="error_io">Unknown IO error</string>
@@ -60,7 +61,7 @@
     </string-array>
     <string name="from">From:</string>
     <string name="to">To:</string>
-    <string name="saving_db">Saving in local database&#8230;</string>
+    <string name="saving_db">Saving data on device&#8230;</string>
     <string name="loading_app_engine">Loading data&#8230;</string>
 
     <!-- Toast messages -->
@@ -78,6 +79,8 @@
         <item>Visit course</item>
     </string-array>
     <string name="title_activity_event_list">EventListActivity</string>
-
-
+    <string name="reversed_dates">
+        The end date cannot be before the start date. Please modify the dates and try again.
+    </string>
+    <string name="go_to_calendar">Calendar</string>
 </resources>

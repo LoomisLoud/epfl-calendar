@@ -101,12 +101,15 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        mDialog = new ProgressDialog(mContext);
-        mDialog.setTitle(mContext.getString(R.string.be_patient));
-        mDialog.setMessage(mContext.getString(R.string.authenticatinguploading));
-        // FIXME : useful ?
-        // mDialog.setCancelable(false);
-        mDialog.show();
+        // In case of mUsername is null, that means that
+        // there already is a Dialog for fetching Data from CalendarClient
+        if (mUsername != null) {
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setTitle(mContext.getString(R.string.be_patient));
+            mDialog.setMessage(mContext.getString(R.string.authenticating));
+            mDialog.setCancelable(false);
+            mDialog.show();
+        }
     }
 
     @Override

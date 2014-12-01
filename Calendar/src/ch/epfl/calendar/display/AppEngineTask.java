@@ -3,7 +3,6 @@ package ch.epfl.calendar.display;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.AppEngineClient;
 import ch.epfl.calendar.apiInterface.AppEngineDatabaseInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
@@ -40,14 +39,6 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     }
 
     @Override
-    protected void onPreExecute() {
-        mDialog = new ProgressDialog(mContext);
-        mDialog.setTitle(mContext.getString(R.string.be_patient));
-        mDialog.setMessage(mContext.getString(R.string.loading_app_engine));
-        mDialog.show();
-    }
-
-    @Override
     protected Course doInBackground(String... courseName) {
         return retrieveCourse(courseName[0]);
     }
@@ -63,7 +54,6 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
             result = appEngineClient.getCourseByName(courseName);
 
         } catch (CalendarClientException e) {
-            // TODO Auto-generated catch block
             mExceptionOccured = true;
             e.printStackTrace();
         }

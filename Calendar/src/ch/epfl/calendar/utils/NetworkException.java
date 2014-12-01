@@ -11,7 +11,7 @@ public class NetworkException extends Exception {
     private static final long serialVersionUID = 1L;
 
    /**
-    * Simply builds a {@link CalendarClientException} with a default error message (An error 
+    * Simply builds a {@link NetworkException} with a default error message (An error 
     * occured, please try again.)
     */
     public NetworkException() {
@@ -19,7 +19,7 @@ public class NetworkException extends Exception {
     }
 
        /**
-    * Builds a {@link CalendarClientException} and allows to set the message
+    * Builds a {@link NetworkException} and allows to set the message
     * @param message the message of the exception
     */
     public NetworkException(String message) {
@@ -27,7 +27,7 @@ public class NetworkException extends Exception {
     }
 
        /**
-    * Builds a {@link CalendarClientException}
+    * Builds a {@link NetworkException}
     * @param throwable a {@link Throwable} object to base this exception on.
     */
     public NetworkException(Throwable throwable) {

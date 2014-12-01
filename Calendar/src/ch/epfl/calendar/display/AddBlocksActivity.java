@@ -1,6 +1,7 @@
 package ch.epfl.calendar.display;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,9 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Block;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.persistence.DBQuester;
-import ch.epfl.calendar.persistence.LocalDatabaseInterface;
 
 /**
  * @author LoomisLoud
@@ -34,53 +35,24 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
 
     public static final int AUTH_ACTIVITY_CODE = 1;
     public static final int BLOCK_ACTIVITY_CODE = 2;
-    public static final int HUNDRED = 100;
+    private static final int NUMBER_OF_DAYS = 7;
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
-    private List<Block> blockList = new ArrayList<Block>();
+    private ArrayList<Block> blockList;
     private List<Period> periodList = new ArrayList<Period>();
     private TextView mGreeter;
     private Intent intentToEventCreation;
     private SimpleAdapter simpleAdapter;
-    private LocalDatabaseInterface mDB;
+    private final ArrayList<Map<String, String>> blockListAdapter = new ArrayList<Map<String, String>>();
+    private DBQuester mDB;
 
     private void addEventActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("List of Blocks");
     }
 
-    private ArrayList<Block> constructBlockList(List<Course> courseList) {
-        ArrayList<Block> list = new ArrayList<Block>();
-        for (Course c : courseList) {
-            list.add(new Block(c, c.getCredits()));
-        }
-        return list;
-    }
-
-    private void updateCredits(Intent data) {
-        if (data.hasExtra("courseName")) {
-            String course = data.getStringExtra("courseName");
-            int startHour = data.getIntExtra("startHour", -1);
-            int endHour = data.getIntExtra("endHour", -1);
-            int startMinutes = data.getIntExtra("startMinutes", -1);
-            int endMinutes = data.getIntExtra("endMinutes", -1);
-            int timeToRemove = (endHour + (endMinutes % HUNDRED))
-                    - (startHour + (startMinutes % HUNDRED));
-
-            for (int i = 0; i < blockList.size(); i++) {
-                if (blockList.get(i).isBlockOf(course)) {
-                    Block tempBlock = blockList.get(i);
-                    blockList.get(i).setRemainingCredits(
-                            tempBlock.getRemainingCredits() - timeToRemove);
-                }
-            }
-            createAdapterAndListView(createListForAdapter());
-        }
-    }
-
-    private ArrayList<Map<String, String>> createListForAdapter() {
-        ArrayList<Map<String, String>> blockListAdapter = new ArrayList<Map<String, String>>();
-
+    private void updateDataSet() {
+        blockListAdapter.clear();
         for (Block b : blockList) {
             if (b.getRemainingCredits() > 0.00) {
                 Map<String, String> blockMap = new HashMap<String, String>();
@@ -95,13 +67,14 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
                 blockListAdapter.add(blockMap);
             }
         }
-
-        return blockListAdapter;
     }
 
-    private void createAdapterAndListView(
-            final List<Map<String, String>> finalBlockList) {
-        simpleAdapter = new SimpleAdapter(this, finalBlockList,
+    private void createAdapterAndListView() {
+        updateDataSet();
+
+        simpleAdapter = new SimpleAdapter(
+                this,
+                blockListAdapter,
                 android.R.layout.simple_list_item_2,
                 new String[] {
                     "Block name",
@@ -119,11 +92,11 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
 
-                intentToEventCreation.putExtra("courseName", finalBlockList
+                intentToEventCreation.putExtra("position", position);
+                intentToEventCreation.putExtra("courseName", blockListAdapter
                         .get(position).get("Block name"));
                 intentToEventCreation.putExtra("period",
                         periodList.get(position));
-
                 startActivityForResult(intentToEventCreation,
                         BLOCK_ACTIVITY_CODE);
             }
@@ -135,20 +108,82 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         }
     }
 
+    private ArrayList<Block> constructBlockList(List<Course> courseList) {
+        ArrayList<Block> list = new ArrayList<Block>();
+        for (Course c : courseList) {
+            list.add(new Block(c, c.getCredits()));
+        }
+        return list;
+    }
+
+    private void updateCredits(Intent data) {
+        if (data.hasExtra("courseName")) {
+            final String course = data.getStringExtra("courseName");
+            final int position = data.getIntExtra("position", -1);
+            final ArrayList<Event> eventList = new ArrayList<Event>(
+                    mDB.getAllEventsFromCourseBlock(course));
+
+            if (!eventList.isEmpty()) {
+                double timeToRemove = 0;
+                Calendar today = Calendar.getInstance();
+                Calendar nextWeek = Calendar.getInstance();
+                nextWeek.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
+                for (Event e : eventList) {
+                    if (e.getEndDate().compareTo(today) > 0
+                            && e.getStartDate().compareTo(nextWeek) < 0) {
+                        timeToRemove += e.getHours();
+                    }
+                }
+                final Block currentBlock = blockList.get(position);
+                blockList.get(position).setRemainingCredits(
+                        currentBlock.getRemainingCredits() - timeToRemove);
+                updateDataSet();
+                simpleAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    private void updateCreditsOnMain() {
+        // TODO for each course, get its eventslist, pick only this week's
+        // eventlist,
+        final ArrayList<Event> eventList = new ArrayList<Event>();
+        final Calendar today = Calendar.getInstance();
+        final Calendar nextWeek = Calendar.getInstance();
+        nextWeek.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
+        for (int position = 0; position < blockList.size(); position++) {
+            eventList.clear();
+            eventList.addAll(mDB.getAllEventsFromCourseBlock(blockList
+                    .get(position).getCourse().getName()));
+            Block currentBlock = blockList.get(position);
+            double timeToRemove = 0;
+            if (!eventList.isEmpty()) {
+                for (Event e : eventList) {
+                    if (e.getEndDate().compareTo(today) > 0
+                            && e.getStartDate().compareTo(nextWeek) < 0) {
+                        timeToRemove += e.getHours();
+                    }
+                }
+                blockList.get(position).setRemainingCredits(
+                        currentBlock.getRemainingCredits() - timeToRemove);
+            }
+        }
+        updateDataSet();
+        simpleAdapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setUdpateData(this);
+
         setContentView(R.layout.activity_add_blocks);
+        addEventActionBar();
 
         mDB = new DBQuester();
-
         intentToEventCreation = new Intent(this, AddEventBlockActivity.class);
 
         mGreeter = (TextView) findViewById(R.id.greeter);
         mListView = (ListView) findViewById(R.id.credits_blocks_list);
-
-        addEventActionBar();
 
         updateData();
     }
@@ -163,6 +198,14 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
     }
 
     @Override
+    public void updateData() {
+        mCourses = mDB.getAllCourses();
+        blockList = constructBlockList(mCourses);
+        createAdapterAndListView();
+        updateCreditsOnMain();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean retour = super.onCreateOptionsMenu(menu);
         MenuItem addEventBlockItem = (MenuItem) menu
@@ -170,17 +213,5 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         addEventBlockItem.setVisible(false);
         this.invalidateOptionsMenu();
         return retour;
-    }
-
-    @Override
-    public void updateData() {
-        mCourses = mDB.getAllCourses();
-
-        blockList = constructBlockList(mCourses);
-
-        final List<Map<String, String>> finalBlockList = createListForAdapter();
-
-        createAdapterAndListView(finalBlockList);
-
     }
 }
