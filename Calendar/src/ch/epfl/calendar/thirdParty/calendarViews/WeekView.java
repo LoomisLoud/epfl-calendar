@@ -665,7 +665,7 @@ public class WeekView extends View {
                     mEventTextPaint,
                     (int) (rect.right - originalLeft - mEventPadding * 2),
                     Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-        } else if (lineHeight >= availableHeight) {
+        } else if (lineHeight >= availableHeight/textLayout.getLineCount()) {
             int width = (int) (rect.right - originalLeft - mEventPadding * 2);
             textLayout = new StaticLayout(TextUtils.ellipsize(text,
                     mEventTextPaint, width, TextUtils.TruncateAt.END),
