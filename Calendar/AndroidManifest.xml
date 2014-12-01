@@ -12,8 +12,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
-        android:name="ch.epfl.calendar.App"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -59,8 +59,12 @@
             android:label="@string/title_activity_default_action_bar" >
         </activity>
         <activity
-            android:name="ch.epfl.calendar.display.EventDetailActivity"
+            android:name=".display.EventDetailActivity"
             android:label="@string/title_activity_event_detail" >
+        </activity>
+        <activity
+            android:name="ch.epfl.calendar.display.EventListActivity"
+            android:label="@string/title_activity_event_list" >
         </activity>
     </application>
 

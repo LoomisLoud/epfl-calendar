@@ -1,6 +1,5 @@
 package ch.epfl.calendar.display;
 
-
 import java.util.List;
 
 import android.app.ActionBar;
@@ -21,7 +20,6 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.persistence.DBQuester;
 
-
 /**
  * @author LoomisLoud
  * 
@@ -39,6 +37,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_course_details);
 
         courseDetailsActionBar();
@@ -53,9 +52,15 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         updateData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateData();
+    }
+
     private void courseDetailsActionBar() {
         ActionBar actionBar = getActionBar();
-        //actionBar.setDisplayShowHomeEnabled(false);
+        // actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle("Course Details");
     }
 
@@ -65,8 +70,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         String courseDescription = mCourse.getDescription();
         String linkedEventsToString = "";
         List<Event> linkedEvents = mCourse.getEvents();
-        
-        
 
         // get the TextView and update it
         TextView textView = (TextView) findViewById(R.id.courseName);
@@ -84,16 +87,15 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         textView.setText(bodyToSpannableConcatAndBold("Description: ",
                 courseDescription));
         textView.setMovementMethod(new ScrollingMovementMethod());
-        
-        for (Event event: linkedEvents) {
+
+        for (Event event : linkedEvents) {
             linkedEventsToString += event.toString();
         }
-        
-        
-        
+
         TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
-        textView2.setText(linkedEventsToString);
-        
+        textView2.setText(bodyToSpannableConcatAndBold("Event related: ",
+                linkedEventsToString));
+
     }
 
     private SpannableString titleToSpannable(String title) {

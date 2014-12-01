@@ -15,10 +15,28 @@ import ch.epfl.calendar.data.Course;
  */
 public class BlockTest extends TestCase {
 	private static final int REMAINING_CREDITS = 7;
+	private static final String CREDITS_TO_STRING = "Remaining credits: 3.0";
+	private static final String BLOCK_TO_STRING = "test\nRemaining credits: 7.0";
 	private int mRemainingCredits = REMAINING_CREDITS;
 	private Course mCourse = new Course("test", "16.06.2014", "16:15", "17:15",
 			"Exercices", new ArrayList<String>(), "");
 	private Block mBlock = new Block(mCourse, mRemainingCredits);
+	
+	public void testConstructor() {
+	    Block testBlock = new Block(mCourse, REMAINING_CREDITS);
+	    assertEquals(mCourse, testBlock.getCourse());
+	    assertEquals((double) REMAINING_CREDITS, testBlock.getRemainingCredits());
+	}
+	
+	public void testCreditsToString() {
+	    mBlock.setRemainingCredits(3.756);
+	    assertEquals(CREDITS_TO_STRING, mBlock.creditsToString());
+	}
+	
+	public void testToString() {
+	    mBlock.setRemainingCredits(7);
+	    assertEquals(BLOCK_TO_STRING, mBlock.toString());
+	}
 
 	public void testSetters() {
 		assertEquals(mCourse, mBlock.getCourse());

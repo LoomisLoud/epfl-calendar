@@ -131,16 +131,25 @@ public class App extends Application {
      * Application context.
      */
     private static Context mContext;
+    
+    /**
+     * DefaultActionBarActivity
+     */
+    private static DefaultActionBarActivity mActionBar;
 
     @Override
     public void onCreate() {
         super.onCreate();
         App.mContext = this.getApplicationContext();
-        App.mDBHelper = new DBHelper(App.mContext);
+        App.mDBHelper = new DBHelper(App.mContext, App.DATABASE_NAME);
     }
 
     public static DBHelper getDBHelper() {
         return App.mDBHelper;
+    }
+    
+    public static void setDBHelper(String databaseName) {
+        mDBHelper = new DBHelper(App.mContext, databaseName);
     }
 
     public static Context getAppContext() {
@@ -275,5 +284,13 @@ public class App extends Application {
     
     public static boolean stringToBool(String strBool) {
         return strBool.equals(App.TRUE);
+    }
+
+    public static DefaultActionBarActivity getActionBar() {
+        return mActionBar;
+    }
+
+    public static void setActionBar(DefaultActionBarActivity actionBar) {
+        App.mActionBar = actionBar;
     }
 }

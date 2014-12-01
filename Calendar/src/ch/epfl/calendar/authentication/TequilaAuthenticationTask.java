@@ -1,6 +1,7 @@
 package ch.epfl.calendar.authentication;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         mDialog = new ProgressDialog(mContext);
         mDialog.setTitle(mContext.getString(R.string.be_patient));
         mDialog.setMessage(mContext.getString(R.string.authenticatinguploading));
-        //FIXME : useful ?
+        // FIXME : useful ?
         // mDialog.setCancelable(false);
         mDialog.show();
     }
@@ -200,8 +201,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 throw new ClientProtocolException("Authentication Timeout");
             }
 
-            result = InputStreamUtils.readInputStream(getRespGetTimetable()
-                    .getEntity().getContent(), TEQUILA_ENCODING);
+            InputStream in = getRespGetTimetable().getEntity().getContent();
+
+            result = InputStreamUtils.readInputStream(in, TEQUILA_ENCODING);
 
         } catch (ClientProtocolException e) {
             mExceptionOccured = true;
