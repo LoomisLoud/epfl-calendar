@@ -35,11 +35,12 @@
         <!-- android:maxLines="50" /> -->
         <!-- android:scrollbars="vertical" -->
         
-            <TextView
+     <TextView
         android:id="@+id/linkedEvents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/courseDescription" />
+        android:layout_below="@id/courseDescription"
+        android:layout_marginTop="@dimen/activity_top_margin_medium" />
 
 
 </RelativeLayout>
