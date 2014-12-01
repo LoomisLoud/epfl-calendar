@@ -89,12 +89,13 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 populateCalendarFromISA();
                 return true;
             case R.id.action_event_list:
-                Intent i = new Intent(this, EventListActivity.class);
-                startActivity(i);
+                switchToListEvent();
                 return true;
             case R.id.action_logout:
                 logout();
                 return true;
+            case R.id.action_calendar:
+                switchToCalendar();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -103,6 +104,15 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private void defaultActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
+    }
+    
+    private void switchToListEvent() {
+        Intent i = new Intent(this, EventListActivity.class);
+        startActivity(i);
+    }
+    private void switchToCalendar() {
+        Intent goToCalendarIntent = new Intent(this, MainActivity.class);
+        startActivity(goToCalendarIntent);
     }
 
     private void switchToCoursesList() {
@@ -116,7 +126,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(blockActivityIntent);
     }
 
-    private void switchToAddEventsActivity() {
+    public void switchToAddEventsActivity() {
         Intent addEventsActivityIntent = new Intent(this,
                 AddEventActivity.class);
         startActivity(addEventsActivityIntent);

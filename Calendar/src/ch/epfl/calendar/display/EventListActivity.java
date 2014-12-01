@@ -248,6 +248,14 @@ public class EventListActivity extends DefaultActionBarActivity {
     }
 
     @Override
+    public void switchToAddEventsActivity() {
+        editEvent = true;
+        Intent addEventsActivityIntent = new Intent(this,
+                AddEventActivity.class);
+        startActivity(addEventsActivityIntent);
+    }
+
+    @Override
     protected void onResume() {
         if (editEvent) {
             List<EventForList> updatedEvent = eventToEventForList(
