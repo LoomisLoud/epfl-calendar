@@ -42,7 +42,7 @@ public class EventListActivity extends DefaultActionBarActivity {
     private Context context = this;
     private static final int HEIGHT_DIVIDER = 10;
     private ArrayAdapter<EventForList> adapter = null;
-    private boolean descriptionEvent = false;
+    private boolean editEvent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +68,13 @@ public class EventListActivity extends DefaultActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view,
                     int position, long arg3) {
+
                 EventForList event = (EventForList) mListView
                         .getItemAtPosition(position);
                 if (event.getmId() == DBQuester.NO_ID) {
                     switchToCourseDetails(event.getmEventName());
                 } else {
-
+                    editEvent = true;
                     switchToEditActivity(mDbQuester.getEvent(event.getmId()));
 
                 }
@@ -97,6 +98,7 @@ public class EventListActivity extends DefaultActionBarActivity {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
                             mDbQuester.deleteEvent(mDbQuester.getEvent(event
                                     .getmId()));
                             List<EventForList> list = eventForList;
@@ -107,6 +109,15 @@ public class EventListActivity extends DefaultActionBarActivity {
 
                             dialog.cancel();
 
+                        }
+                    });
+                    dialog.setPositiveButton("Edit", new OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            editEvent = true;
+                            switchToEditActivity(mDbQuester.getEvent(event
+                                    .getmId()));
                         }
                     });
                 }
@@ -122,14 +133,13 @@ public class EventListActivity extends DefaultActionBarActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        descriptionEvent = true;
                         if (event.getmId() == DBQuester.NO_ID) {
                             switchToCourseDetails(event.getmEventName());
                         } else {
                             if (event.getmLinkedCourse().equals(App.NO_COURSE)) {
                                 String description = event.getmDescription();
-                                switchToEventDetail(event.getmEventName()
-                                        + " : " + description);
+                                switchToEventDetail(event.getmEventName(),
+                                        description);
                             } else {
                                 String coursName = event.getmLinkedCourse();
                                 switchToCourseDetails(coursName);
@@ -217,14 +227,6 @@ public class EventListActivity extends DefaultActionBarActivity {
         startActivity(courseDetailsActivityIntent);
     }
 
-    private void switchToEventDetail(String description) {
-        Intent eventDetailActivityIntent = new Intent(this,
-                EventDetailActivity.class);
-
-        eventDetailActivityIntent.putExtra("description", description);
-        startActivity(eventDetailActivityIntent);
-    }
-
     private List<EventForList> eventToEventForList(List<Course> cours,
             List<Event> event) {
         List<EventForList> eventForList = new ArrayList<EventForList>();
@@ -247,13 +249,14 @@ public class EventListActivity extends DefaultActionBarActivity {
 
     @Override
     protected void onResume() {
-        if (!descriptionEvent) {
+        if (editEvent) {
             List<EventForList> updatedEvent = eventToEventForList(
                     mDbQuester.getAllCourses(), mDbQuester.getAllEvents());
             adapter = new ArrayAdapter<EventForList>(context,
                     android.R.layout.simple_list_item_1, updatedEvent);
             mListView.setAdapter(adapter);
-            descriptionEvent = false;
+            editEvent = false;
+
         }
         super.onResume();
 

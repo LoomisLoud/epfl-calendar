@@ -21,7 +21,6 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
-import ch.epfl.calendar.display.EventDetailActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
@@ -92,7 +91,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         mDB = new DBQuester();
 
-        this.deleteDatabase(App.DATABASE_NAME);
+       // this.deleteDatabase(App.DATABASE_NAME);
 
         updateListsFromDB();
 
@@ -199,23 +198,9 @@ public class MainActivity extends DefaultActionBarActivity implements
         startActivity(courseDetailsActivityIntent);
 
         mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Charging course details");
+        mDialog.setMessage("Loading course details");
         mDialog.show();
-    }
-
-    // FIXME : What do we have to do with this method ????
-    private void switchToEventDetail(String name, String description) {
-        Intent eventDetailActivityIntent = new Intent(this,
-                EventDetailActivity.class);
-
-        eventDetailActivityIntent.putExtra(
-                "description",
-                new String[] {
-                    name,
-                    description
-                });
-        startActivity(eventDetailActivityIntent);
-    }
+    } 
 
     @Override
     public List<WeekViewEvent> onMonthChange() {

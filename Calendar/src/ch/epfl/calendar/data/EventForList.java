@@ -5,7 +5,7 @@ import java.util.Locale;
 
 /**
  * @author MatthiasLeroyEPFL
- *
+ * 
  */
 public class EventForList {
 
@@ -16,6 +16,9 @@ public class EventForList {
     private int mId;
     private String mLinkedCourse;
     private String mDescription;
+    
+    private static final int ZERO_MINUTE = 0;
+    private static final int TEN_MINUTE = 10;
 
     public EventForList(String name, Calendar start, Calendar end,
             PeriodType type, int id, String linkedCourse, String description) {
@@ -24,8 +27,8 @@ public class EventForList {
         mEnd = end;
         mType = type;
         mId = id;
-        mLinkedCourse=linkedCourse;
-        mDescription=description;
+        mLinkedCourse = linkedCourse;
+        mDescription = description;
     }
 
     public String getmEventName() {
@@ -86,8 +89,8 @@ public class EventForList {
 
     private String calendarToString(Calendar date, boolean sameday) {
         String minute = "";
-        if (date.get(Calendar.MINUTE) == 0) {
-            minute = "00";
+        if (date.get(Calendar.MINUTE) >= ZERO_MINUTE && date.get(Calendar.MINUTE) < TEN_MINUTE) {
+            minute = "0" + date.get(Calendar.MINUTE);
         } else {
             minute = Integer.toString(date.get(Calendar.MINUTE));
         }
