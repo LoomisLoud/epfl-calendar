@@ -129,5 +129,11 @@ public interface LocalDatabaseInterface {
      * Delete all tables in the database
      */
     void deleteAllTables();
+    
+    /**
+     * Create all tables of the application
+     * Used only for tests
+     */
+    void createTables();
 
 }

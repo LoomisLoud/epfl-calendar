@@ -4,6 +4,8 @@
 package ch.epfl.calendar.display.tests;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -12,13 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.dexmaker.dx.dex.code.PositionList;
-
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.ListView;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.CoursesListActivity;
@@ -44,6 +42,7 @@ public class CoursesListActivityTest extends
 
     public void setUp() throws Exception {
         super.setUp();
+
         /*
          * SUPER DUPER IMPORTANT : class this next line in setUp in every test
          * class that need access to the database !
@@ -61,18 +60,14 @@ public class CoursesListActivityTest extends
 
         mDB = new DBQuester();
 
+        mDB.deleteAllTables();
+        mDB.createTables();
+
         populateTestDB();
     }
 
     public void tearDown() throws Exception {
         super.tearDown();
-        /*
-         * SUPER DUPER IMPORTANT : call this next line in tearDown to delete
-         * test database. It needs to be done in each test class that needs test
-         * database.
-         */
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName()); // Delete database
     }
 
     public void testSizeListView() throws InterruptedException {
@@ -90,18 +85,25 @@ public class CoursesListActivityTest extends
                                                                  // 0)*/
     }
 
-    public void testClickOnListView() throws Throwable {
-        final ListView listView = (ListView) activity
-                .findViewById(R.id.coursesListView);
-        runTestOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                listView.performItemClick(listView, 0, listView.getAdapter()
-                        .getItemId(0));
-
-            }
-        });
+    public void testClickOnListView() {
+        onData(is(instanceOf(HashMap.class)))
+        // Every entry in the ListView is a HashMap
+            .inAdapterView(withId(getIdByName("coursesListView")))
+            .atPosition(0).perform(click())
+            //Check that activity has changed
+            .check(doesNotExist());
+        
+//        final ListView listView = (ListView) activity
+//                .findViewById(R.id.coursesListView);
+//        runTestOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                listView.performItemClick(listView, 0, listView.getAdapter()
+//                        .getItemId(0));
+//
+//            }
+//        });
     }
 
     private int getIdByName(String name) {

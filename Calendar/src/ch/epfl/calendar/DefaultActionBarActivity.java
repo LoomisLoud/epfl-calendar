@@ -224,6 +224,10 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     }
 
+    public synchronized int getNbOfAsyncTaskDB() {
+        return mNbOfAsyncTaskDB;
+    }
+
     @Override
     public void callbackDBUpload() {
         mUdpateData.updateData();
