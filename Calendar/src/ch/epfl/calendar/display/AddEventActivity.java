@@ -159,9 +159,11 @@ public class AddEventActivity extends DefaultActionBarActivity implements
                 mEndEventDate.getMonth(), mEndEventDate.getDayOfMonth(),
                 mEndEventHour.getCurrentHour(),
                 mEndEventHour.getCurrentMinute());
+
         if (end.before(start)) {
             throw new ReversedDatesException();
         }
+
         Event e = new Event(mNameEvent.getText().toString(),
                 App.calendarToBasicFormatString(start),
                 App.calendarToBasicFormatString(end),
@@ -199,6 +201,8 @@ public class AddEventActivity extends DefaultActionBarActivity implements
                     int position, long id) {
                 if (position != 0) {
                     mLinkedCourse = mCoursesNames.get(position);
+                } else {
+                    mLinkedCourse = App.NO_COURSE;
                 }
             }
 

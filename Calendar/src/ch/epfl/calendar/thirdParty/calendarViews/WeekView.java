@@ -42,7 +42,6 @@ public class WeekView extends View {
     public static final int LENGTH_LONG = 2;
     private final Context mContext;
     private Calendar mToday;
-    private Calendar mStartDate;
     private Paint mTimeTextPaint;
     private float mTimeTextWidth;
     private float mTimeTextHeight;
@@ -50,6 +49,7 @@ public class WeekView extends View {
     private float mHeaderTextHeight;
     private GestureDetectorCompat mGestureDetector;
     private OverScroller mScroller;
+    private Calendar mStartDate;
     private PointF mCurrentOrigin = new PointF(0f, 0f);
     private Direction mCurrentScrollDirection = Direction.NONE;
     private Paint mHeaderBackgroundPaint;
@@ -1337,7 +1337,15 @@ public class WeekView extends View {
      */
     public void goToToday() {
         Calendar today = Calendar.getInstance();
+        System.out.println(today.get(Calendar.DAY_OF_WEEK));
         goToDate(today);
+    }
+    
+    public void goTo(){
+        Calendar date = Calendar.getInstance();
+        date.set(2014, 9, 10);
+        
+        goToDate(date);
     }
 
     /**
@@ -1353,12 +1361,14 @@ public class WeekView extends View {
         date.set(Calendar.SECOND, 0);
 
         Calendar today = Calendar.getInstance();
+        System.out.println(today.get(Calendar.DAY_OF_WEEK));
         today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
 
         int dateDifference = (int) (date.getTimeInMillis() - today
                 .getTimeInMillis()) / (1000 * 60 * 60 * 24);
+        System.out.println(dateDifference);
         mCurrentOrigin.x = -dateDifference * (mWidthPerDay + mColumnGap);
 
         invalidate();
