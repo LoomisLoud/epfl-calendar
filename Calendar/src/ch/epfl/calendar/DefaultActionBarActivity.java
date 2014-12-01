@@ -21,6 +21,7 @@ import ch.epfl.calendar.display.AddBlocksActivity;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.AppEngineDownloadInterface;
 import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.display.EventDetailActivity;
 import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.DatabaseUploadInterface;
@@ -126,10 +127,19 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(blockActivityIntent);
     }
 
-    private void switchToAddEventsActivity() {
+    public void switchToAddEventsActivity() {
         Intent addEventsActivityIntent = new Intent(this,
                 AddEventActivity.class);
         startActivity(addEventsActivityIntent);
+    }
+
+    public void switchToEventDetail(String name, String description) {
+        Intent eventDetailActivityIntent = new Intent(this,
+                EventDetailActivity.class);
+
+        eventDetailActivityIntent.putExtra("description", new String[] {name,
+                                                                        description });
+        startActivity(eventDetailActivityIntent);
     }
 
     public void switchToEditActivity(Event event) {
@@ -195,6 +205,9 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDialog.setMessage(this.getString(R.string.saving_db));
         mDialog.setCancelable(false);
         mDialog.show();
+
+
+     
 
         mDB.storeCourses(mCourses);
     }
