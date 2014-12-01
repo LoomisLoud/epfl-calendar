@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
@@ -31,6 +32,8 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
     private Spinner mSpinnerDays;
     private TextView mAskDay;
     private String mCourseName;
+    private int mPosition;
+    private Intent mIntent;
     private static final boolean IS_BLOCK = true;
     public final static int NUMBER_OF_DAYS = 7;
 
@@ -63,38 +66,31 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
         return lastPeriod.getEndDate();
     }
 
-    private int calendarDayFromArrayAdapter(int day) {
+    private int calendarDayFromArrayAdapterDay(int day) {
         return ((day + 1) % NUMBER_OF_DAYS) + 1;
     }
 
-    private void storeWeeklyEvent(Intent i) {
+    private void storeWeeklyEvent(Intent i) throws ReversedDatesException {
         DBQuester dbQuester = new DBQuester();
 
         Calendar startEvent = createStartDateBlock(
-                calendarDayFromArrayAdapter(mSpinnerDays
+                calendarDayFromArrayAdapterDay(mSpinnerDays
                         .getSelectedItemPosition()),
                 mStartBlockEventHour.getCurrentHour(), mStartBlockEventHour
                         .getCurrentMinute());
         Calendar endEvent = createStartDateBlock(
-                calendarDayFromArrayAdapter(mSpinnerDays
+                calendarDayFromArrayAdapterDay(mSpinnerDays
                         .getSelectedItemPosition()),
                 mEndBlockEventHour.getCurrentHour(), mEndBlockEventHour
                         .getCurrentMinute());
         Calendar endDate = createEndDateBlock((Period) i
                 .getParcelableExtra("period"));
+        
+        if (endEvent.before(startEvent)) {
+            throw new ReversedDatesException();
+        }
 
-        Event event = new Event("Do " + mCourseName + " homework",
-                App.calendarToBasicFormatString(startEvent),
-                App.calendarToBasicFormatString(endEvent),
-                PeriodType.DEFAULT.toString(), mCourseName,
-                "You have to work on " + mCourseName + " now", IS_BLOCK,
-                DBQuester.NO_ID);
-        dbQuester.storeEvent(event);
-
-        while (endDate.getTimeInMillis() > endEvent.getTimeInMillis()) {
-            startEvent.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
-            endEvent.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
-
+        while (endDate.compareTo(endEvent) > 0) {
             Event e = new Event("Do " + mCourseName + " homework",
                     App.calendarToBasicFormatString(startEvent),
                     App.calendarToBasicFormatString(endEvent),
@@ -102,21 +98,19 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
                     "You have to work on " + mCourseName + " now", IS_BLOCK,
                     DBQuester.NO_ID);
             dbQuester.storeEvent(e);
+            
+            startEvent.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
+            endEvent.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
         }
     }
 
-    private void transferAndStoreData() {
+    private void transferAndStoreData() throws ReversedDatesException {
         Intent i = getIntent();
 
         storeWeeklyEvent(i);
 
         i.putExtra("courseName", mCourseName);
-
-        i.putExtra("startHour", mStartBlockEventHour.getCurrentHour());
-        i.putExtra("startMinute", mStartBlockEventHour.getCurrentMinute());
-
-        i.putExtra("endHour", mEndBlockEventHour.getCurrentHour());
-        i.putExtra("endMinute", mEndBlockEventHour.getCurrentMinute());
+        i.putExtra("position", mPosition);
 
         setResult(RESULT_OK, i);
     }
@@ -129,10 +123,14 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
 
         addEventActionBar();
 
-        Intent mIntent = getIntent();
+        mIntent = getIntent();
         mCourseName = "";
         if (mIntent.hasExtra("courseName")) {
             mCourseName = mIntent.getStringExtra("courseName");
+        }
+        mPosition = -1;
+        if (mIntent.hasExtra("position")) {
+        	mPosition = mIntent.getIntExtra("position", -1);
         }
 
         mAskDay = (TextView) findViewById(R.id.ask_block_day);
@@ -152,7 +150,14 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
      * @param v
      */
     public void finishActivity(View v) {
-        transferAndStoreData();
+        try {
+            transferAndStoreData();
+        } catch (ReversedDatesException e) {
+            Toast.makeText(AddEventBlockActivity.this.getBaseContext(),
+                    AddEventBlockActivity.this.getString(R.string.reversed_dates),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         finish();
     }
 

@@ -21,6 +21,8 @@ public class Event {
     private String mLinkedCourse;
     private String mDescription;
     private boolean mIsAutomaticAddedBlock;
+    private static final int MINUTE_CONVERTER = 60;
+    private static final int MILLISECOND_CONVERTER = 1000;
 
     /**
      * Construct the event object. date format must be of format dd.mm.yyyy
@@ -176,6 +178,10 @@ public class Event {
         this.mId = id;
     }
 
+    public double getHours() {
+    	return (double) ((this.mEndDate.getTimeInMillis() - this.mStartDate.getTimeInMillis()) 
+    			/ (MINUTE_CONVERTER * MINUTE_CONVERTER * MILLISECOND_CONVERTER));
+    }
     public boolean isAutomaticAddedBlock() {
         return mIsAutomaticAddedBlock;
     }
@@ -189,8 +195,8 @@ public class Event {
      */
     @Override
     public int hashCode() {
-        final int CONSTANT_VALUE_1 = 1231;
-        final int CONSTANT_VALUE_2 = 1237;
+        final int constantValue1 = 1231;
+        final int constantValue2 = 1237;
         final int prime = 31;
         int result = 1;
         result = prime * result
@@ -198,7 +204,7 @@ public class Event {
         result = prime * result
                 + ((mEndDate == null) ? 0 : mEndDate.hashCode());
         result = prime * result + mId;
-        result = prime * result + (mIsAutomaticAddedBlock ? CONSTANT_VALUE_1 : CONSTANT_VALUE_2);
+        result = prime * result + (mIsAutomaticAddedBlock ? constantValue1 : constantValue2);
         result = prime * result
                 + ((mLinkedCourse == null) ? 0 : mLinkedCourse.hashCode());
         result = prime * result + ((mName == null) ? 0 : mName.hashCode());
