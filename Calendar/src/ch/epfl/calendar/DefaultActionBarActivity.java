@@ -176,6 +176,10 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDialog.setMessage(this.getString(R.string.saving_db));
         mDialog.setCancelable(false);
         mDialog.show();
+        
+        for (Course course : mCourses) {
+            System.out.println(course.getName() + " : " + course.getPeriods().size());
+        }
 
         mDB.storeCourses(mCourses);
     }

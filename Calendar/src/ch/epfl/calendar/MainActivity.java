@@ -63,7 +63,6 @@ public class MainActivity extends DefaultActionBarActivity implements
     private ProgressDialog mDialog;
 
     private DBQuester mDB;
-    
 
     public static final String TAG = "MainActivity::";
 
@@ -92,8 +91,8 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         mDB = new DBQuester();
 
-        // Used for destroy the database
-        //this.deleteDatabase(App.DATABASE_NAME);
+        this.deleteDatabase(App.DATABASE_NAME);
+
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
@@ -113,7 +112,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         spinnerList.add("Day");
         spinnerList.add("3 Days");
         spinnerList.add("Week");
-        
+
         return spinnerList;
     }
 
@@ -208,8 +207,12 @@ public class MainActivity extends DefaultActionBarActivity implements
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", new String[] { name,
-                description });
+        eventDetailActivityIntent.putExtra(
+                "description",
+                new String[] {
+                    name,
+                    description
+                });
         startActivity(eventDetailActivityIntent);
     }
 
@@ -321,19 +324,19 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            mListCourses = new ArrayList<Course>();
-            populateCalendarFromISA();
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
+//            mListCourses = new ArrayList<Course>();
+//            populateCalendarFromISA();
+//        }
+//
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     @Override
     protected void onResume() {
-      
+
         super.onResume();
         super.setUdpateData(this);
         mListCourses = mDB.getAllCourses();
