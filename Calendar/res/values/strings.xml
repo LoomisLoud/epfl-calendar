@@ -73,5 +73,8 @@
     <string name="title_activity_event_detail">EventDetailActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_event_list">EventListActivity</string>
+    <string name="reversed_dates">
+        The end date cannot be before the start date. Please modify the dates and try again.
+    </string>
 
 </resources>

@@ -91,7 +91,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         mDB = new DBQuester();
 
-        this.deleteDatabase(App.DATABASE_NAME);
+        //this.deleteDatabase(App.DATABASE_NAME);
 
         updateListsFromDB();
 
