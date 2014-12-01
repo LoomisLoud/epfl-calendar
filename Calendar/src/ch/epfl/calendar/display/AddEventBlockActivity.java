@@ -29,6 +29,8 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
     private Spinner mSpinnerDays;
     private TextView mAskDay;
     private String mCourseName;
+    private int mPosition;
+    private Intent mIntent;
     private static final boolean IS_BLOCK = true;
     public final static int NUMBER_OF_DAYS = 7;
 
@@ -61,7 +63,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
         return lastPeriod.getEndDate();
     }
 
-    private int calendarDayFromArrayAdapter(int day) {
+    private int calendarDayFromArrayAdapterDay(int day) {
         return ((day + 1) % NUMBER_OF_DAYS) + 1;
     }
 
@@ -69,18 +71,19 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
         DBQuester dbQuester = new DBQuester();
 
         Calendar startEvent = createStartDateBlock(
-                calendarDayFromArrayAdapter(mSpinnerDays
+                calendarDayFromArrayAdapterDay(mSpinnerDays
                         .getSelectedItemPosition()),
                 mStartBlockEventHour.getCurrentHour(), mStartBlockEventHour
                         .getCurrentMinute());
         Calendar endEvent = createStartDateBlock(
-                calendarDayFromArrayAdapter(mSpinnerDays
+                calendarDayFromArrayAdapterDay(mSpinnerDays
                         .getSelectedItemPosition()),
                 mEndBlockEventHour.getCurrentHour(), mEndBlockEventHour
                         .getCurrentMinute());
         Calendar endDate = createEndDateBlock((Period) i
                 .getParcelableExtra("period"));
 
+        
         Event event = new Event("Do " + mCourseName + " homework",
                 App.calendarToBasicFormatString(startEvent),
                 App.calendarToBasicFormatString(endEvent),
@@ -108,12 +111,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
         storeWeeklyEvent(i);
 
         i.putExtra("courseName", mCourseName);
-
-        i.putExtra("startHour", mStartBlockEventHour.getCurrentHour());
-        i.putExtra("startMinute", mStartBlockEventHour.getCurrentMinute());
-
-        i.putExtra("endHour", mEndBlockEventHour.getCurrentHour());
-        i.putExtra("endMinute", mEndBlockEventHour.getCurrentMinute());
+        i.putExtra("position", mPosition);
 
         setResult(RESULT_OK, i);
     }
@@ -125,10 +123,14 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
 
         addEventActionBar();
 
-        Intent mIntent = getIntent();
+        mIntent = getIntent();
         mCourseName = "";
         if (mIntent.hasExtra("courseName")) {
             mCourseName = mIntent.getStringExtra("courseName");
+        }
+        mPosition = -1;
+        if (mIntent.hasExtra("position")) {
+        	mPosition = mIntent.getIntExtra("position", -1);
         }
 
         mAskDay = (TextView) findViewById(R.id.ask_block_day);
