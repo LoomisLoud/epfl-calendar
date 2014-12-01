@@ -21,6 +21,8 @@ public class Event {
     private String mLinkedCourse;
     private String mDescription;
     private boolean mIsAutomaticAddedBlock;
+    private static final int MINUTE_CONVERTER = 60;
+    private static final int MILLISECOND_CONVERTER = 1000;
 
     /**
      * Construct the event object. date format must be of format dd.mm.yyyy
@@ -176,6 +178,10 @@ public class Event {
         this.mId = id;
     }
 
+    public double getHours() {
+    	return (double) ((this.mEndDate.getTimeInMillis() - this.mStartDate.getTimeInMillis()) 
+    			/ (MINUTE_CONVERTER * MINUTE_CONVERTER * MILLISECOND_CONVERTER));
+    }
     public boolean isAutomaticAddedBlock() {
         return mIsAutomaticAddedBlock;
     }
