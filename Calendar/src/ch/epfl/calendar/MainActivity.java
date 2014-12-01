@@ -105,6 +105,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         } else {
             mWeekView.notifyDatasetChanged();
         }
+        
     }
 
     private void updateListsFromDB() {
@@ -133,17 +134,19 @@ public class MainActivity extends DefaultActionBarActivity implements
             @Override
             public boolean onNavigationItemSelected(int position, long itemId) {
                 if (position == 0) {
-
+                    mWeekView.setIsFirstDrawBis(true);
                     changeCalendarView(TYPE_DAY_VIEW, NUMBER_VISIBLE_DAYS_DAY,
                             SIZE_COLUMN_GAP_DAY, SIZE_FRONT_DAY,
                             SIZE_FRONT_EVENT_DAY);
                     return true;
                 } else if (position == 1) {
+                    mWeekView.setIsFirstDrawBis(true);
                     changeCalendarView(TYPE_THREE_DAY_VIEW,
                             NUMBER_VISIBLE_DAYS_3DAYS, SIZE_COLUMN_GAP_3DAYS,
                             SIZE_FRONT_3DAYS, SIZE_FRONT_EVENT_3DAYS);
                     return true;
                 } else if (position == 2) {
+                    mWeekView.setIsFirstDrawBis(true);
                     changeCalendarView(TYPE_WEEK_VIEW,
                             NUMBER_VISIBLE_DAYS_WEEK, SIZE_COLUMN_GAP_WEEK,
                             SIZE_FRONT_WEEK, SIZE_FRONT_EVENT_WEEK);
@@ -195,6 +198,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         switch (item.getItemId()) {
             case R.id.action_today:
                 mWeekView.goToToday();
+                mWeekView.goToEight();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
