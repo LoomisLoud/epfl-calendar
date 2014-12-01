@@ -1319,6 +1319,13 @@ public class WeekView extends View {
         System.out.println(today.get(Calendar.DAY_OF_WEEK));
         goToDate(today);
     }
+    
+    public void goTo(){
+        Calendar date = Calendar.getInstance();
+        date.set(2014, 9, 10);
+        
+        goToDate(date);
+    }
 
     /**
      * Show a specific day on the week view.

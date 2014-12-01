@@ -20,6 +20,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import ch.epfl.calendar.App;
+import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
@@ -32,7 +33,7 @@ import ch.epfl.calendar.persistence.DBQuester;
  * @author MatthiasLeroyEPFL
  * 
  */
-public class EventListActivity extends Activity {
+public class EventListActivity extends DefaultActionBarActivity{
 
     private ListView mListView;
     private DBQuester mDbQuester;
@@ -69,6 +70,7 @@ public class EventListActivity extends Activity {
                 if (event.getmId() == DBQuester.NO_ID) {
                     switchToCourseDetails(event.getmEventName());
                 } else {
+                    editEvent = true;
                     switchToEditActivity(mDbQuester.getEvent(event.getmId()));
 
                 }
@@ -204,14 +206,6 @@ public class EventListActivity extends Activity {
         startActivity(eventDetailActivityIntent);
     }
 
-    private void switchToEditActivity(Event event) {
-        editEvent = true;
-        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
-        editActivityIntent.putExtra("Id", event.getId());
-
-        startActivity(editActivityIntent);
-    }
-
     private List<EventForList> eventToEventForList(List<Course> cours,
             List<Event> event) {
         List<EventForList> eventForList = new ArrayList<EventForList>();
@@ -235,7 +229,6 @@ public class EventListActivity extends Activity {
     @Override
     protected void onResume() {
         if (editEvent) {
-            System.out.println("cccccccccccc");
             List<EventForList> updatedEvent = eventToEventForList(
                     mDbQuester.getAllCourses(), mDbQuester.getAllEvents());
             adapter = new ArrayAdapter<EventForList>(context,
