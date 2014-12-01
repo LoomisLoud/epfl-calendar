@@ -6,13 +6,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import android.app.Activity;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -33,19 +35,20 @@ import ch.epfl.calendar.persistence.DBQuester;
  * @author MatthiasLeroyEPFL
  * 
  */
-public class EventListActivity extends DefaultActionBarActivity{
+public class EventListActivity extends DefaultActionBarActivity {
 
     private ListView mListView;
     private DBQuester mDbQuester;
     private Context context = this;
     private static final int HEIGHT_DIVIDER = 10;
     private ArrayAdapter<EventForList> adapter = null;
-    private boolean editEvent = false;
+    private boolean descriptionEvent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
+        listEventActionBar();
         mListView = (ListView) findViewById(R.id.list_event_view);
 
         mDbQuester = new DBQuester();
@@ -70,7 +73,7 @@ public class EventListActivity extends DefaultActionBarActivity{
                 if (event.getmId() == DBQuester.NO_ID) {
                     switchToCourseDetails(event.getmEventName());
                 } else {
-                    editEvent = true;
+
                     switchToEditActivity(mDbQuester.getEvent(event.getmId()));
 
                 }
@@ -119,6 +122,7 @@ public class EventListActivity extends DefaultActionBarActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        descriptionEvent = true;
                         if (event.getmId() == DBQuester.NO_ID) {
                             switchToCourseDetails(event.getmEventName());
                         } else {
@@ -143,6 +147,21 @@ public class EventListActivity extends DefaultActionBarActivity{
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean retour = super.onCreateOptionsMenu(menu);
+        MenuItem eventListItem = (MenuItem) menu
+                .findItem(R.id.action_event_list);
+        eventListItem.setVisible(false);
+        this.invalidateOptionsMenu();
+        return retour;
+    }
+
+    private void listEventActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("Planning");
     }
 
     private void sort(List<EventForList> list) {
@@ -228,13 +247,13 @@ public class EventListActivity extends DefaultActionBarActivity{
 
     @Override
     protected void onResume() {
-        if (editEvent) {
+        if (!descriptionEvent) {
             List<EventForList> updatedEvent = eventToEventForList(
                     mDbQuester.getAllCourses(), mDbQuester.getAllEvents());
             adapter = new ArrayAdapter<EventForList>(context,
                     android.R.layout.simple_list_item_1, updatedEvent);
             mListView.setAdapter(adapter);
-            editEvent = false;
+            descriptionEvent = false;
         }
         super.onResume();
 
