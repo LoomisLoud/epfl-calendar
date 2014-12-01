@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
@@ -148,7 +149,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
         return calendar;
     }
 
-    private void transferData() {
+    private void transferData() throws ReversedDatesException {
 
         Calendar start = createCalendar(mStartEventDate.getYear(),
                 mStartEventDate.getMonth(), mStartEventDate.getDayOfMonth(),
@@ -158,6 +159,9 @@ public class AddEventActivity extends DefaultActionBarActivity implements
                 mEndEventDate.getMonth(), mEndEventDate.getDayOfMonth(),
                 mEndEventHour.getCurrentHour(),
                 mEndEventHour.getCurrentMinute());
+        if (end.before(start)) {
+            throw new ReversedDatesException();
+        }
         Event e = new Event(mNameEvent.getText().toString(),
                 App.calendarToBasicFormatString(start),
                 App.calendarToBasicFormatString(end),
@@ -168,7 +172,14 @@ public class AddEventActivity extends DefaultActionBarActivity implements
     }
 
     public void finishActivity(View v) {
-        transferData();
+        try { 
+            transferData();
+        } catch (ReversedDatesException e) {
+            Toast.makeText(AddEventActivity.this.getBaseContext(),
+                    AddEventActivity.this.getString(R.string.reversed_dates),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         finish();
     }
 
