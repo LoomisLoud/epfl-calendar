@@ -43,20 +43,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private ProgressDialog mDialog;
     public static final int AUTH_ACTIVITY_CODE = 1;
 
-    private int calculateNbOfElemToStore(List<Course> courses) {
-        int count = 0;
-        for (Course course : courses) {
-            count++;
-            for (int i = 0; i < course.getPeriods().size(); i++) {
-                count++;
-            }
-            for (int i = 0; i < course.getEvents().size(); i++) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +177,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDialog.setCancelable(false);
         mDialog.show();
 
-        this.mNbOfAsyncTaskDB = calculateNbOfElemToStore(mCourses);
         mDB.storeCourses(mCourses);
     }
 
@@ -201,11 +186,16 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     public void setUdpateData(UpdateDataFromDBInterface udpateData) {
         this.mUdpateData = udpateData;
+        App.setActionBar(this);
+    }
+    
+    public synchronized void addTask() {
+        mNbOfAsyncTaskDB = mNbOfAsyncTaskDB + 1;
     }
 
     public synchronized void asyncTaskStoreFinished() {
-        mNbOfAsyncTaskDB--;
-        if (mNbOfAsyncTaskDB == 0) {
+        mNbOfAsyncTaskDB = mNbOfAsyncTaskDB - 1;
+        if (mNbOfAsyncTaskDB <= 0) {
             DBQuester.close();
             mUdpateData.updateData();
             if (mDialog != null) {
