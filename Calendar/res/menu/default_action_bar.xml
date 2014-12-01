@@ -30,11 +30,17 @@
         android:id="@+id/action_settings"
         android:showAsAction="never"
         android:title="@string/action_settings"/>
+    
     <item
         android:id="@+id/add_event"
-        android:orderInCategory="100"
         android:title="@string/add_event"
         android:icon="@drawable/ic_action_new"
         android:showAsAction="ifRoom"/>
+    
+    <item
+        android:id="@+id/action_calendar"
+        android:showAsAction="ifRoom"
+        android:title="@string/go_to_calendar"
+        android:icon="@drawable/ic_action_go_to_today"/>
 
 </menu>

@@ -78,6 +78,7 @@
         <item>Visit course</item>
     </string-array>
     <string name="title_activity_event_list">EventListActivity</string>
+    <string name="go_to_calendar">Calendar</string>
 
 
 </resources>
