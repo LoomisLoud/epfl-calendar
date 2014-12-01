@@ -67,6 +67,11 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
 
     }
 
+    protected void onResume() {
+        super.onResume();
+        updateData();
+    }
+
     private void coursesListActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("My Courses");
@@ -122,15 +127,19 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
 
         final List<Map<String, String>> courseInfoList = coursesName;
 
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this, courseInfoList,
+        SimpleAdapter simpleAdapter = new SimpleAdapter(
+                this,
+                courseInfoList,
                 R.layout.listview_images,
                 new String[] {
                     "credit_image",
-                    "course", "info"
+                    "course",
+                    "info"
                 },
                 new int[] {
                     R.id.credit_image,
-                    R.id.course, R.id.info
+                    R.id.course, 
+                    R.id.info
                 });
 
         mListView.setAdapter(simpleAdapter);

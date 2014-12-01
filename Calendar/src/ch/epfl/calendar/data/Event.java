@@ -36,11 +36,11 @@ public class Event {
      * @param description
      * @param isBlock
      */
-    public Event(String date, String name, String startTime, String endTime,
+    public Event(String startDate, String endDate, String name, String startTime, String endTime,
             String type, String linkedCourse, String description, boolean isBlock) {
         this.mName = name;
-        this.mStartDate = App.createCalendar(date, startTime);
-        this.mEndDate = App.createCalendar(date, endTime);
+        this.mStartDate = App.createCalendar(startDate, startTime);
+        this.mEndDate = App.createCalendar(endDate, endTime);
         if (this.mStartDate != null && this.mEndDate != null) {
             if (mStartDate.after(mEndDate)) {
                 Calendar temp = mStartDate;
@@ -70,10 +70,9 @@ public class Event {
      */
     public Event(String name, String startTime, String endTime, String type,
             String linkedCourse, String description, boolean isBlock, int id) {
-        this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX), name,
-                startTime.substring(App.START_TIME_INDEX), endTime
-                        .substring(App.START_TIME_INDEX), type, linkedCourse,
-                description, isBlock);
+        this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX), 
+                endTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX), name, startTime.substring(App.START_TIME_INDEX), 
+                endTime.substring(App.START_TIME_INDEX), type, linkedCourse, description, isBlock);
         this.mId = id;
     }
 
@@ -82,11 +81,10 @@ public class Event {
         String name = this.mName;
         String startDate = App.calendarToBasicFormatString(this.mStartDate);
         String endDate = App.calendarToBasicFormatString(this.mEndDate);
-        String type = this.mType;
-        String linkedCourse = this.mLinkedCourse;
+        String description = this.mDescription;
 
-        return name.concat(" ").concat(startDate).concat(" ").concat(endDate)
-                .concat(" ").concat(type).concat(" ").concat(linkedCourse);
+        return name.concat(" from ").concat(startDate).concat(" to ").concat(endDate)
+                .concat(" : ").concat(description);
     }
 
     /**
@@ -191,4 +189,94 @@ public class Event {
     public void setIsAutomaticAddedBlock(boolean isAutomaticAddedBlock) {
         this.mIsAutomaticAddedBlock = isAutomaticAddedBlock;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int CONSTANT_VALUE_1 = 1231;
+        final int CONSTANT_VALUE_2 = 1237;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((mDescription == null) ? 0 : mDescription.hashCode());
+        result = prime * result
+                + ((mEndDate == null) ? 0 : mEndDate.hashCode());
+        result = prime * result + mId;
+        result = prime * result + (mIsAutomaticAddedBlock ? CONSTANT_VALUE_1 : CONSTANT_VALUE_2);
+        result = prime * result
+                + ((mLinkedCourse == null) ? 0 : mLinkedCourse.hashCode());
+        result = prime * result + ((mName == null) ? 0 : mName.hashCode());
+        result = prime * result
+                + ((mStartDate == null) ? 0 : mStartDate.hashCode());
+        result = prime * result + ((mType == null) ? 0 : mType.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Event other = (Event) obj;
+        if (mDescription == null) {
+            if (other.mDescription != null) {
+                return false;
+            }
+        } else if (!mDescription.equals(other.mDescription)) {
+            return false;
+        }
+        if (mEndDate == null) {
+            if (other.mEndDate != null) {
+                return false;
+            }
+        } else if (!mEndDate.equals(other.mEndDate)) {
+            return false;
+        }
+        if (mId != other.mId) {
+            return false;
+        }
+        if (mIsAutomaticAddedBlock != other.mIsAutomaticAddedBlock) {
+            return false;
+        }
+        if (mLinkedCourse == null) {
+            if (other.mLinkedCourse != null) {
+                return false;
+            }
+        } else if (!mLinkedCourse.equals(other.mLinkedCourse)) {
+            return false;
+        }
+        if (mName == null) {
+            if (other.mName != null) {
+                return false;
+            }
+        } else if (!mName.equals(other.mName)) {
+            return false;
+        }
+        if (mStartDate == null) {
+            if (other.mStartDate != null) {
+                return false;
+            }
+        } else if (!mStartDate.equals(other.mStartDate)) {
+            return false;
+        }
+        if (mType == null) {
+            if (other.mType != null) {
+                return false;
+            }
+        } else if (!mType.equals(other.mType)) {
+            return false;
+        }
+        return true;
+    }    
 }

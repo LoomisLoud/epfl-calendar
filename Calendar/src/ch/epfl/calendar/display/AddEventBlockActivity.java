@@ -13,6 +13,7 @@ import android.widget.TimePicker;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
@@ -22,7 +23,8 @@ import ch.epfl.calendar.persistence.DBQuester;
  * @author LoomisLoud
  * 
  */
-public class AddEventBlockActivity extends DefaultActionBarActivity {
+public class AddEventBlockActivity extends DefaultActionBarActivity implements
+        UpdateDataFromDBInterface {
 
     private TimePicker mStartBlockEventHour;
     private TimePicker mEndBlockEventHour;
@@ -88,7 +90,8 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
                 App.calendarToBasicFormatString(startEvent),
                 App.calendarToBasicFormatString(endEvent),
                 PeriodType.DEFAULT.toString(), mCourseName,
-                "You have to work on " + mCourseName + " now", IS_BLOCK, DBQuester.NO_ID);
+                "You have to work on " + mCourseName + " now", IS_BLOCK,
+                DBQuester.NO_ID);
         dbQuester.storeEvent(event);
 
         while (endDate.getTimeInMillis() > endEvent.getTimeInMillis()) {
@@ -99,8 +102,8 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
                     App.calendarToBasicFormatString(startEvent),
                     App.calendarToBasicFormatString(endEvent),
                     PeriodType.DEFAULT.toString(), mCourseName,
-                    "You have to work on " + mCourseName + " now",
-                    IS_BLOCK, DBQuester.NO_ID);
+                    "You have to work on " + mCourseName + " now", IS_BLOCK,
+                    DBQuester.NO_ID);
             dbQuester.storeEvent(e);
         }
     }
@@ -119,6 +122,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_add_event_block);
 
         addEventActionBar();
@@ -152,5 +156,10 @@ public class AddEventBlockActivity extends DefaultActionBarActivity {
     public void finishActivity(View v) {
         transferAndStoreData();
         finish();
+    }
+
+    @Override
+    public void updateData() {
+        
     }
 }

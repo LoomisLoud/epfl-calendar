@@ -16,14 +16,14 @@ public interface DAO {
      *
      * @param obj
      */
-    long create(Object obj, String key);
+    void create(Object obj, String key);
 
     /**
      * Update an existing object.
      *
      * @param obj
      */
-    long update(Object obj, String key);
+    void update(Object obj, String key);
 
     /**
      * Delete an existing object.
