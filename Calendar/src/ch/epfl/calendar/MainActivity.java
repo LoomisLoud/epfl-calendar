@@ -87,6 +87,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         // Set long press listener for events.
         mWeekView.setEventLongPressListener(this);
+       
 
         actionBarMainActivity();
 
