@@ -21,6 +21,7 @@ import ch.epfl.calendar.display.AddBlocksActivity;
 import ch.epfl.calendar.display.AddEventActivity;
 import ch.epfl.calendar.display.AppEngineDownloadInterface;
 import ch.epfl.calendar.display.CoursesListActivity;
+import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.DatabaseUploadInterface;
 import ch.epfl.calendar.utils.AuthenticationUtils;
@@ -41,20 +42,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private int mNbOfAsyncTaskDB = 0;
     private ProgressDialog mDialog;
     public static final int AUTH_ACTIVITY_CODE = 1;
-
-    private int calculateNbOfElemToStore(List<Course> courses) {
-        int count = 0;
-        for (Course course : courses) {
-            count++;
-            for (int i = 0; i < course.getPeriods().size(); i++) {
-                count++;
-            }
-            for (int i = 0; i < course.getEvents().size(); i++) {
-                count++;
-            }
-        }
-        return count;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +86,10 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 return true;
             case R.id.action_update_activity:
                 populateCalendarFromISA();
+                return true;
+            case R.id.action_event_list:
+                Intent i = new Intent(this, EventListActivity.class);
+                startActivity(i);
                 return true;
             case R.id.action_logout:
                 logout();
@@ -186,7 +177,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDialog.setCancelable(false);
         mDialog.show();
 
-        this.mNbOfAsyncTaskDB = calculateNbOfElemToStore(mCourses);
         mDB.storeCourses(mCourses);
     }
 
@@ -196,11 +186,17 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     public void setUdpateData(UpdateDataFromDBInterface udpateData) {
         this.mUdpateData = udpateData;
+        App.setActionBar(this);
+    }
+    
+    public synchronized void addTask() {
+        mNbOfAsyncTaskDB = mNbOfAsyncTaskDB + 1;
     }
 
     public synchronized void asyncTaskStoreFinished() {
-        mNbOfAsyncTaskDB--;
-        if (mNbOfAsyncTaskDB == 0) {
+        mNbOfAsyncTaskDB = mNbOfAsyncTaskDB - 1;
+        if (mNbOfAsyncTaskDB <= 0) {
+            DBQuester.close();
             mUdpateData.updateData();
             if (mDialog != null) {
                 mDialog.dismiss();

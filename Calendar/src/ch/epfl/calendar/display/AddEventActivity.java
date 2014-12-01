@@ -89,26 +89,27 @@ public class AddEventActivity extends DefaultActionBarActivity implements
             mSpinnerCourses.setSelection(position);
         }
     }
-    
+
     private void initializeValue(Intent intent) {
+
         if (intent.hasExtra("Id")) {
             eventId = intent.getIntExtra("Id", DBQuester.NO_ID);
             Event event = new DBQuester().getEvent(eventId);
-            
+
             mNameEvent.setText(event.getName());
             mDescriptionEvent.setText(event.getmDescription());
             initializeSpinner(event.getLinkedCourse());
-            
+
             int startYear = event.getStartDate().get(Calendar.YEAR);
             int startMonth = event.getStartDate().get(Calendar.MONTH);
             int startDay = event.getStartDate().get(Calendar.DAY_OF_MONTH);
             mStartEventDate.updateDate(startYear, startMonth, startDay);
-            
+
             int startHour = event.getStartDate().get(Calendar.HOUR_OF_DAY);
             mStartEventHour.setCurrentHour(startHour);
             int startMinute = event.getStartDate().get(Calendar.MINUTE);
             mStartEventHour.setCurrentMinute(startMinute);
-            
+
             int endYear = event.getEndDate().get(Calendar.YEAR);
             int endMonth = event.getEndDate().get(Calendar.MONTH);
             int endDay = event.getEndDate().get(Calendar.DAY_OF_MONTH);
@@ -148,6 +149,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
     }
 
     private void transferData() {
+
         Calendar start = createCalendar(mStartEventDate.getYear(),
                 mStartEventDate.getMonth(), mStartEventDate.getDayOfMonth(),
                 mStartEventHour.getCurrentHour(),

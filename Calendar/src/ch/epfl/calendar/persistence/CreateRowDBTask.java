@@ -19,6 +19,11 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
     private static final String SUCCESS_CREATE = "Row Successfully created!";
 
     @Override
+    protected void onPreExecute() {
+        App.getActionBar().addTask();
+    }
+
+    @Override
     protected Long doInBackground(CreateObject... params) {
         CreateObject object = params[0];
 
@@ -26,7 +31,7 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
         String nullCollumnHack = object.getNullColumnHack();
         ContentValues values = object.getContent();
 
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = DBQuester.openDatabase();
 
         long rowId = db.insert(table, nullCollumnHack, values);
         if (rowId == -1) {

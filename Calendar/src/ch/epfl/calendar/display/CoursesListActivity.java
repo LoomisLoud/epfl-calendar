@@ -67,6 +67,13 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        super.setUdpateData(this);
+        updateData();
+    }
+
     private void coursesListActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("My Courses");
@@ -126,11 +133,13 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
                 R.layout.listview_images,
                 new String[] {
                     "credit_image",
-                    "course", "info"
+                    "course",
+                    "info"
                 },
                 new int[] {
                     R.id.credit_image,
-                    R.id.course, R.id.info
+                    R.id.course,
+                    R.id.info
                 });
 
         mListView.setAdapter(simpleAdapter);

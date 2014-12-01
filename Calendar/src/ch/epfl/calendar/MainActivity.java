@@ -95,13 +95,6 @@ public class MainActivity extends DefaultActionBarActivity implements
         updateListsFromDB();
 
         if (mListCourses.isEmpty()) {
-            // FIXME : Test if it works without this code
-            // if (!mAuthUtils.isAuthenticated(mThisActivity)) {
-            // switchToAuthenticationActivity();
-            // } else {
-            // mListCourses = new ArrayList<Course>();
-            // populateCalendarFromISA(this);
-            // }
             populateCalendarFromISA();
         } else {
             mWeekView.notifyDatasetChanged();
@@ -118,6 +111,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         spinnerList.add("Day");
         spinnerList.add("3 Days");
         spinnerList.add("Week");
+
         return spinnerList;
     }
 
@@ -187,11 +181,11 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.action_today:
-            mWeekView.goToToday();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_today:
+                mWeekView.goToToday();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -207,12 +201,13 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.show();
     }
 
+    // FIXME : What do we have to do with this method ????
     private void switchToEventDetail(String name, String description) {
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", new String[] { name,
-                description });
+        eventDetailActivityIntent.putExtra("description", new String[] {name,
+            description });
         startActivity(eventDetailActivityIntent);
     }
 
@@ -299,31 +294,32 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     mDB.deleteEvent(eventFromDB);
                                     updateData();
                                     dialog.cancel();
+                                    break;
                                 case 2:
                                     if (event.getmType().equals(PeriodType.LECTURE)
-                                        || event.getmType().equals(
-                                                PeriodType.PROJECT)
-                                        || event.getmType().equals(
-                                                PeriodType.EXERCISES)) {
+                                            || event.getmType().equals(
+                                                    PeriodType.PROJECT)
+                                                    || event.getmType().equals(
+                                                            PeriodType.EXERCISES)) {
                                         String cours = event.getName().split("\n")[0];
                                         switchToCourseDetails(cours);
                                     } else {
 
                                         if (eventFromDB.getLinkedCourse().equals(
-                                            App.NO_COURSE)) {
+                                                App.NO_COURSE)) {
                                             String description = event
-                                                .getmDescription();
+                                                    .getmDescription();
                                             switchToEventDetail(event.getName(),
-                                                description);
+                                                    description);
                                         } else {
                                             String coursName = eventFromDB
-                                                .getLinkedCourse();
+                                                    .getLinkedCourse();
                                             switchToCourseDetails(coursName);
                                         }
 
                                     }
                                     dialog.cancel();
-
+                                    break;
                                 default:
                                     break;
                             }
@@ -348,6 +344,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     protected void onResume() {
+
         super.onResume();
         super.setUdpateData(this);
         mListCourses = mDB.getAllCourses();
