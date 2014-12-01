@@ -25,7 +25,6 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.persistence.DBQuester;
-import ch.epfl.calendar.persistence.LocalDatabaseInterface;
 
 /**
  * @author LoomisLoud
@@ -39,13 +38,13 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
 	private static final int NUMBER_OF_DAYS = 7;
 	private ListView mListView;
 	private List<Course> mCourses = new ArrayList<Course>();
-	private List<Block> blockList = new ArrayList<Block>();
+	private ArrayList<Block> blockList;
 	private List<Period> periodList = new ArrayList<Period>();
 	private TextView mGreeter;
 	private Intent intentToEventCreation;
 	private SimpleAdapter simpleAdapter;
 	private final ArrayList<Map<String, String>> blockListAdapter = new ArrayList<Map<String, String>>();
-	private LocalDatabaseInterface mDB;
+	private DBQuester mDB;
 
 	private void addEventActionBar() {
 		ActionBar actionBar = getActionBar();
@@ -69,6 +68,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
 			}
 		}
 	}
+	
 	private void createAdapterAndListView() {
 		updateDataSet();
 		
@@ -113,14 +113,11 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
 			
 			if (!eventList.isEmpty()) {
 				double timeToRemove = 0;
+				Calendar today = Calendar.getInstance();
+				Calendar nextWeek = Calendar.getInstance();
+				nextWeek.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
 				for (Event e : eventList) {
-					Calendar today = Calendar.getInstance();
-					Calendar nextWeek = today;
-					nextWeek.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
-					if (e.getEndDate().getTimeInMillis() < today.getTimeInMillis()
-							|| e.getStartDate().getTimeInMillis() > nextWeek.getTimeInMillis()) {
-						eventList.remove(e);
-					} else {
+					if (e.getEndDate().compareTo(today) > 0 && e.getStartDate().compareTo(nextWeek) < 0) {
 						timeToRemove += e.getHours();
 					}
 				}
@@ -129,31 +126,42 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
 				updateDataSet();
 				simpleAdapter.notifyDataSetChanged();
 			}
-			/*
-			 * String course = data.getStringExtra("courseName"); int startHour
-			 * = data.getIntExtra("startHour", -1); int endHour =
-			 * data.getIntExtra("endHour", -1); int startMinutes =
-			 * data.getIntExtra("startMinutes", -1); int endMinutes =
-			 * data.getIntExtra("endMinutes", -1); int timeToRemove = (endHour +
-			 * (endMinutes % HUNDRED)) - (startHour + (startMinutes % HUNDRED));
-			 * 
-			 * for (int i = 0; i < blockList.size(); i++) { if
-			 * (blockList.get(i).isBlockOf(course)) { Block tempBlock =
-			 * blockList.get(i); blockList.get(i).setRemainingCredits(
-			 * tempBlock.getRemainingCredits() - timeToRemove); } }
-			 * createAdapterAndListView(createListForAdapter());
-			 */
 		}
 	}
 
+	private void updateCreditsOnMain() {
+		//TODO for each course, get its eventslist, pick only this week's eventlist,
+		final ArrayList<Event> eventList = new ArrayList<Event>();
+		final Calendar today = Calendar.getInstance();
+		final Calendar nextWeek = Calendar.getInstance();
+		nextWeek.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
+		for (int position = 0; position < blockList.size(); position++) {
+			eventList.clear();
+			eventList.addAll(mDB.getAllEventsFromCourseBlock(blockList.get(position).getCourse().getName()));
+			Block currentBlock = blockList.get(position);
+			double timeToRemove = 0;
+			if (!eventList.isEmpty()) {
+				for (Event e : eventList) {
+					if (e.getEndDate().compareTo(today) > 0 && e.getStartDate().compareTo(nextWeek) < 0) {
+						timeToRemove += e.getHours();
+					}
+				}
+				blockList.get(position).setRemainingCredits(currentBlock.getRemainingCredits() - timeToRemove);
+			}
+		}
+		updateDataSet();
+		simpleAdapter.notifyDataSetChanged();
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		super.setUdpateData(this);
+		
 		setContentView(R.layout.activity_add_blocks);
 		addEventActionBar();
 
 		mDB = new DBQuester();
-
+		System.out.println(mDB.getAllEventsFromCourseBlock("Software engineering"));
 		intentToEventCreation = new Intent(this, AddEventBlockActivity.class);
 
 		mGreeter = (TextView) findViewById(R.id.greeter);
@@ -176,6 +184,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
 		mCourses = mDB.getAllCourses();
 		blockList = constructBlockList(mCourses);
 		createAdapterAndListView();
+		updateCreditsOnMain();
 	}
 
 	@Override
