@@ -1,5 +1,6 @@
 package ch.epfl.calendar.persistence.tests;
 
+import android.database.sqlite.SQLiteDatabase;
 import junit.framework.TestCase;
 import ch.epfl.calendar.App;
 
@@ -11,11 +12,10 @@ import ch.epfl.calendar.App;
 public class CourseTableTest extends TestCase {
 
 	@Override
-	public void setUp() {
+	public void setUp() throws Exception {
         super.setUp();
 
         App.setDBHelper("calendar_test.db");
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
 	}
 }
