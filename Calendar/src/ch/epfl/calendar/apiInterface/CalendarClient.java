@@ -29,10 +29,12 @@ import ch.epfl.calendar.utils.isaparser.ParsingException;
 public class CalendarClient implements CalendarClientInterface {
 
 	public static final String TAG = "CalendarClient Class::";
+	private static final String ENCODING = "UTF-8";
 
     private Activity mParentActivity = null;
     private CalendarClientDownloadInterface mDownloadInterface = null;
     private TequilaAuthenticationTask mTask = null;
+    private List<Course> mCourseListForTests = null;
 
     public CalendarClient(Activity activity, CalendarClientDownloadInterface downloadInterface) {
         this.mParentActivity = activity;
@@ -56,7 +58,8 @@ public class CalendarClient implements CalendarClientInterface {
         List<Course> coursesList = new ArrayList<Course>();
         if (success) {
             try {
-                byte[] timeTableBytes = mTask.getResult().getBytes("UTF-8");
+                byte[] timeTableBytes = getTask().getResult().getBytes(ENCODING);
+                System.out.println(getTask().getResult());
                 coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
             } catch (UnsupportedEncodingException e) {
                 Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
@@ -70,7 +73,16 @@ public class CalendarClient implements CalendarClientInterface {
             }
         }
 
+        mCourseListForTests = new ArrayList<Course>(coursesList);
         mDownloadInterface.callbackDownload(success, coursesList);
+    }
+    
+    public TequilaAuthenticationTask getTask() {
+        return mTask;
+    }
+    
+    public List<Course> getCourseListForTests() {
+        return mCourseListForTests;
     }
     
     /**
