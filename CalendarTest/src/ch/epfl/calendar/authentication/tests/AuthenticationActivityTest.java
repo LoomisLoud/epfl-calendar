@@ -5,23 +5,15 @@ import static com.google.android.apps.common.testing.ui.espresso.action.ViewActi
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.*;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.mockito.Mockito;
-
-import static org.hamcrest.Matchers.*;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.EditText;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
-import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 
 /**
  * This class tests the AuthenticationActivity
