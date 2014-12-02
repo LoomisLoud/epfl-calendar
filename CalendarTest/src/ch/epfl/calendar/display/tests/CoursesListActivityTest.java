@@ -87,23 +87,23 @@ public class CoursesListActivityTest extends
 
     public void testClickOnListView() {
         onData(is(instanceOf(HashMap.class)))
-        // Every entry in the ListView is a HashMap
-            .inAdapterView(withId(getIdByName("coursesListView")))
-            .atPosition(0).perform(click())
-            //Check that activity has changed
-            .check(doesNotExist());
-        
-//        final ListView listView = (ListView) activity
-//                .findViewById(R.id.coursesListView);
-//        runTestOnUiThread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                listView.performItemClick(listView, 0, listView.getAdapter()
-//                        .getItemId(0));
-//
-//            }
-//        });
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(getIdByName("coursesListView")))
+                .atPosition(0).perform(click())
+                // Check that activity has changed
+                .check(doesNotExist());
+
+        // final ListView listView = (ListView) activity
+        // .findViewById(R.id.coursesListView);
+        // runTestOnUiThread(new Runnable() {
+        //
+        // @Override
+        // public void run() {
+        // listView.performItemClick(listView, 0, listView.getAdapter()
+        // .getItemId(0));
+        //
+        // }
+        // });
     }
 
     private int getIdByName(String name) {
