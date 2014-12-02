@@ -16,6 +16,9 @@ import junit.framework.TestCase;
  */
 public class EventTest extends TestCase {
     
+	private static final double HOUR_AND_HALF = 1.0;
+	private static final double HALF_HOUR = 0.0;
+	
     public void testFirstConstructor() {
         Event event = new Event("27.11.2014", "27.11.2014", "Sweng project", "08:00", "10:00", 
             "Project", "Sweng", "description", true);
@@ -75,5 +78,18 @@ public class EventTest extends TestCase {
         Log.i("Event = ", event.toString());
         Log.i("Calendar toString = ",
                 App.calendarToBasicFormatString(startDate));
+    }
+    
+    public void testGetHours() {
+    	Event event = new Event("sweng", "12.10.2014 08:15",
+                "12.10.2014 09:15", "Default", "gym", "description", true, 0);
+    	Event otherEvent = new Event("else", "12.10.2014 08:15",
+                "12.10.2014 09:45", "Default", "notGym", "Description", true, 0);
+    	Event lastEvent = new Event("swag", "12.10.2014 08:15",
+                "12.10.2014 08:45", "Default", "Kids", "Not a Description", true, 0);
+    	
+    	assertEquals(1.0, event.getHours());
+    	assertEquals(HOUR_AND_HALF, otherEvent.getHours());
+    	assertEquals(HALF_HOUR, lastEvent.getHours());
     }
 }
