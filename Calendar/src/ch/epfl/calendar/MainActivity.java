@@ -73,6 +73,8 @@ public class MainActivity extends DefaultActionBarActivity implements
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
 
+        
+
         // Show a toast message about the touched event.
         mWeekView.setOnEventClickListener(this);
 
@@ -88,6 +90,7 @@ public class MainActivity extends DefaultActionBarActivity implements
        
 
         actionBarMainActivity();
+        
 
         mDB = new DBQuester();
 
@@ -105,6 +108,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         } else {
             mWeekView.notifyDatasetChanged();
         }
+        
     }
 
     private void updateListsFromDB() {
@@ -157,6 +161,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
+        
     }
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
