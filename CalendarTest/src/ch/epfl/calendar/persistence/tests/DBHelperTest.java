@@ -5,6 +5,11 @@ import android.test.RenamingDelegatingContext;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.persistence.DBHelper;
 
+/**
+ *
+ * @author lweingart
+ *
+ */
 public class DBHelperTest extends TestCase {
 
 	private DBHelper mDBHelper;
