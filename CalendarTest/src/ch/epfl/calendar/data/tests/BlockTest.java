@@ -17,6 +17,7 @@ public class BlockTest extends TestCase {
 	private static final int REMAINING_CREDITS = 7;
 	private static final String CREDITS_TO_STRING = "Remaining credits: 3.0";
 	private static final String BLOCK_TO_STRING = "test\nRemaining credits: 7.0";
+	private static final double DOUBLE_CREDITS = 3.756;
 	private int mRemainingCredits = REMAINING_CREDITS;
 	private Course mCourse = new Course("test", "16.06.2014", "16:15", "17:15",
 			"Exercices", new ArrayList<String>(), "");
@@ -29,12 +30,12 @@ public class BlockTest extends TestCase {
 	}
 	
 	public void testCreditsToString() {
-	    mBlock.setRemainingCredits(3.756);
+	    mBlock.setRemainingCredits(DOUBLE_CREDITS);
 	    assertEquals(CREDITS_TO_STRING, mBlock.creditsToString());
 	}
 	
 	public void testToString() {
-	    mBlock.setRemainingCredits(7);
+	    mBlock.setRemainingCredits(REMAINING_CREDITS);
 	    assertEquals(BLOCK_TO_STRING, mBlock.toString());
 	}
 
@@ -53,5 +54,10 @@ public class BlockTest extends TestCase {
 		assertTrue(mBlock.displayable());
 		mBlock.setRemainingCredits(0);
 		assertFalse(mBlock.displayable());
+	}
+	
+	public void testIsBlockOf() {
+		assertTrue(mBlock.isBlockOf("test"));
+		assertFalse(mBlock.isBlockOf("wrongTest"));
 	}
 }

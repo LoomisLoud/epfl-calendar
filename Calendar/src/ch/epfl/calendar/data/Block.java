@@ -51,14 +51,6 @@ public class Block {
 	}
 	
 	/**
-	 *	Placing a number of credits from this block
-	 *	@param credits the number of credits placed on the calendar
-	 */
-	public void placingCredits(int credits) {
-		setRemainingCredits(this.mRemainingCredits - credits);
-	}
-	
-	/**
 	 * Returns whether this is a block of said name
 	 * @param name 
 	 * @return true if this is a block with the parameter's name
