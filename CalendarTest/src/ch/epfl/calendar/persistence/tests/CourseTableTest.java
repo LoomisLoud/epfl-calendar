@@ -2,6 +2,8 @@ package ch.epfl.calendar.persistence.tests;
 
 import junit.framework.TestCase;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.persistence.CourseTable;
 
@@ -12,6 +14,7 @@ import ch.epfl.calendar.persistence.CourseTable;
 public class CourseTableTest extends TestCase {
 
 	private SQLiteDatabase mDb;
+//	private DBHelper mDBHelper;
 
 	@Override
 	public void setUp() {
@@ -26,7 +29,14 @@ public class CourseTableTest extends TestCase {
 	}
 
 	public void testOnCreate() {
-		CourseTable.onCreate(mDb);
+		try {
+			CourseTable.onCreate(mDb);
+			String tableName = SQLiteDatabase.findEditTable(CourseTable.TABLE_NAME_COURSE);
+			Log.i("Database contains table : ", tableName);
+			fail("Should throw an sqlException");
+		} catch (SQLiteException e) {
+			//success
+		}
 	}
 
 }
