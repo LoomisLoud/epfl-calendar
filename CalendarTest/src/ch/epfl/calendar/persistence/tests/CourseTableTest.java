@@ -33,7 +33,7 @@ public class CourseTableTest extends TestCase {
 			CourseTable.onCreate(mDb);
 			String tableName = SQLiteDatabase.findEditTable(CourseTable.TABLE_NAME_COURSE);
 			Log.i("Database contains table : ", tableName);
-			fail("Should throw an sqlException");
+			fail("Should throw an SQLiteException");
 		} catch (SQLiteException e) {
 			//success
 		}
