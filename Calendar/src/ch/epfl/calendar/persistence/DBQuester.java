@@ -232,9 +232,10 @@ public class DBQuester implements LocalDatabaseInterface {
         Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
                 + EventTable.TABLE_NAME_EVENT + WHERE
                 + EventTable.COLUMN_NAME_COURSE + EQUAL + "\"" + courseName
-                + "\"" + INTERSECT + SELECT_ALL_FROM + EventTable.TABLE_NAME_EVENT
-                + WHERE + EventTable.COLUMN_NAME_IS_BLOCK + EQUAL + "\""
-                + App.TRUE + "\"", null);
+                + "\"" + INTERSECT + SELECT_ALL_FROM
+                + EventTable.TABLE_NAME_EVENT + WHERE
+                + EventTable.COLUMN_NAME_IS_BLOCK + EQUAL + "\"" + App.TRUE
+                + "\"", null);
         ArrayList<Event> events = new ArrayList<Event>();
 
         if (cursor.moveToFirst()) {
@@ -432,11 +433,11 @@ public class DBQuester implements LocalDatabaseInterface {
 
         eds.delete(event, null);
     }
-    
+
     @Override
     public void deletePeriod(Period period) {
         PeriodDataSource pds = PeriodDataSource.getInstance();
-        
+
         pds.delete(period, null);
     }
 
@@ -446,24 +447,38 @@ public class DBQuester implements LocalDatabaseInterface {
         for (Period period : course.getPeriods()) {
             deletePeriod(period);
         }
-        
+
         for (Event event : course.getEvents()) {
             deleteEvent(event);
         }
-        
+
         CourseDataSource cds = CourseDataSource.getInstance();
         cds.delete(course, null);
     }
 
+    @Override
     public void deleteAllTables() {
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        close();
+        SQLiteDatabase db = openDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + PeriodTable.TABLE_NAME_PERIOD);
         db.execSQL("DROP TABLE IF EXISTS " + EventTable.TABLE_NAME_EVENT);
         db.execSQL("DROP TABLE IF EXISTS " + CourseTable.TABLE_NAME_COURSE);
+        close();
+    }
+
+    @Override
+    public void createTables() {
+        SQLiteDatabase db = openDatabase();
+        CourseTable.onCreate(db);
+        PeriodTable.onCreate(db);
+        EventTable.onCreate(db);
+        close();
     }
 
     public static void close() {
-        mDB.close();
+        if (mDB != null) {
+            mDB.close();
+        }
         mDB = null;
     }
 

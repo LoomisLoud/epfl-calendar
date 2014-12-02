@@ -92,6 +92,7 @@ public class WeekView extends View {
     private int mHeaderColumnBackgroundColor = Color.WHITE;
     private int mDefaultEventColor;
     private boolean mIsFirstDraw = true;
+    private boolean mIsFirstDrawBis = true;
     private int mDayNameLength = LENGTH_LONG;
     private int mOverlappingEventGap = 4;
     private int mEventMarginVertical = 0;
@@ -377,6 +378,11 @@ public class WeekView extends View {
                 - mHourSeparatorHeight / 2, mHeaderColumnBackgroundPaint);
         
     }
+    
+    public boolean setIsFirstDrawBis(boolean firstDraw) {
+        mIsFirstDrawBis = firstDraw;
+        return mIsFirstDraw;
+    }
 
     private void drawTimeColumnAndAxes(Canvas canvas) {
         // Do not let the view go above/below the limit due to scrolling. Set
@@ -409,6 +415,13 @@ public class WeekView extends View {
                         + mHeaderColumnPadding, top + mTimeTextHeight,
                         mTimeTextPaint);
             }
+        }
+        
+        // FIX / Maybe not the best way
+        if (mIsFirstDrawBis) {
+            mCurrentOrigin.y = - mHourHeight * 8;
+            invalidate();
+            mIsFirstDrawBis = false;
         }
     }
 
@@ -1313,6 +1326,14 @@ public class WeekView extends View {
     //
     // ///////////////////////////////////////////////////////////////
 
+    
+    public void goToEight() {
+        mScroller.forceFinished(true);
+        mStickyScroller.forceFinished(true);
+        mCurrentOrigin.y = - mHourHeight * 8;
+        invalidate();
+    }
+    
     /**
      * Show today on the week view.
      */
