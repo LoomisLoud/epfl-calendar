@@ -59,7 +59,6 @@ public class CalendarClient implements CalendarClientInterface {
         if (success) {
             try {
                 byte[] timeTableBytes = getTask().getResult().getBytes(ENCODING);
-                System.out.println(getTask().getResult());
                 coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
             } catch (UnsupportedEncodingException e) {
                 Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
