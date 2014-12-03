@@ -101,9 +101,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        // In case of mUsername is null, that means that
+        // In case of mUsername and mPassword are null, that means that
         // there already is a Dialog for fetching Data from CalendarClient
-        if (mUsername != null) {
+        if (mUsername != null && mPassword != null) {
             mDialog = new ProgressDialog(mContext);
             mDialog.setTitle(mContext.getString(R.string.be_patient));
             mDialog.setMessage(mContext.getString(R.string.authenticating));
@@ -156,7 +156,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 firstTry = false;
             } else {
                 httpCode = getAccessToIsa(null, null);
-                if (mRespGetTimetable != null) {
+                if (mRespGetTimetable != null && httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
                     mRespGetTimetable.getEntity().getContent().close();
                 }
             }

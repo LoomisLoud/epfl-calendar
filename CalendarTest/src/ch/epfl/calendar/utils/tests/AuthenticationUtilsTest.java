@@ -52,4 +52,9 @@ public class AuthenticationUtilsTest extends MockTestCase {
         boolean isAuth = authUtils.isAuthenticated(context);
         assertEquals(false, isAuth);
     }
+    
+    public void testGetTequilaAPI() {
+        Mockito.doReturn(tequilaApi).when(authUtils).getTequilaAPI();
+        assertEquals(tequilaApi, authUtils.getTequilaAPI());
+    }
 }
