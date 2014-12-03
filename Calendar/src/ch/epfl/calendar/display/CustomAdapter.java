@@ -20,6 +20,7 @@ import ch.epfl.calendar.data.ListViewItem;
 public class CustomAdapter extends BaseAdapter {
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
+    private static final int HEIGHT_VIEW = 100;
     private static final int SEPARATOR_ID = -2;
     private static final String COLOR_BLUE = "#33B5E5";
     // private static final String COLOR_MAGENTA = "#AA66CC";
@@ -84,6 +85,7 @@ public class CustomAdapter extends BaseAdapter {
                     convertView = mInflater.inflate(R.layout.snippet_item1, null);
                     holder.textView = (TextView) convertView
                             .findViewById(R.id.text);
+                    holder.textView.setHeight(HEIGHT_VIEW);
                     break;
                 case TYPE_SEPARATOR:
                     convertView = mInflater.inflate(R.layout.snippet_item2, null);

@@ -297,6 +297,7 @@ public class EventListActivity extends DefaultActionBarActivity {
             CustomAdapter editAdapter = new CustomAdapter(context);
             createAdapter(updatedEvent, editAdapter);
             mListView.setAdapter(editAdapter);
+            
 
             editEvent = false;
 
