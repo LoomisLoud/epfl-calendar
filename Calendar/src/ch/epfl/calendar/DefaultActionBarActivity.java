@@ -191,6 +191,9 @@ public abstract class DefaultActionBarActivity extends Activity implements
         if (success) {
             completeCalendarFromAppEngine(courses);
         } else {
+            if (mDialog != null) {
+                mDialog.dismiss();
+            }
             this.logout();
         }
     }
@@ -205,10 +208,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDialog.setMessage(this.getString(R.string.saving_db));
         mDialog.setCancelable(false);
         mDialog.show();
-
-
-     
-
+        
         mDB.storeCourses(mCourses);
     }
 
