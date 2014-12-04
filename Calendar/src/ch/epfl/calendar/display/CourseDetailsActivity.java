@@ -1,5 +1,6 @@
 package ch.epfl.calendar.display;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -12,6 +13,7 @@ import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
@@ -90,14 +92,46 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
             textView.setMovementMethod(new ScrollingMovementMethod());
         }
         if (!linkedEvents.isEmpty()) {
+            TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
+            textView2.setText(bodyToSpannableConcatAndBold("Event related:", ""));
+            
+            ArrayList<TextView> myTextViews = new ArrayList<TextView>();
+            for (int i=0; i<linkedEvents.size(); i++) {
+                
+                Event event = linkedEvents.get(i);
+                TextView eventTextView = new TextView(this);
 
-            for (Event event : linkedEvents) {
-                linkedEventsToString += event.toString();
+                // set some properties
+                eventTextView.setText(event.toDisplay());
+                eventTextView.setId(i);
+
+                // find the layout of activity to add view at the end
+                RelativeLayout relativeLayout = (RelativeLayout) this.findViewById(R.id.courseDetailsLayout);
+
+
+                if (i==0) {
+                  // create layout rule to set textview below event title
+                    RelativeLayout.LayoutParams lparams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lparams.addRule(RelativeLayout.BELOW, R.id.linkedEvents);
+                    eventTextView.setLayoutParams(lparams);
+                } else {
+                    RelativeLayout.LayoutParams newParams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    //below precedent event view
+                    newParams.addRule(RelativeLayout.BELOW, myTextViews.get(i-1).getId());
+                    eventTextView.setLayoutParams(newParams);
+                }
+
+                // add to layout
+                relativeLayout.addView(eventTextView);
+                // save view in array
+                myTextViews.add(eventTextView);
             }
 
-            TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
-            textView2.setText(bodyToSpannableConcatAndBold("Event related: ",
-                    linkedEventsToString));
+            
         }
     }
 

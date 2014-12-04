@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/courseDetailsLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/activity_margin"
@@ -40,6 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/courseDescription"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
         android:layout_marginTop="@dimen/activity_top_margin_medium" />
 
 
