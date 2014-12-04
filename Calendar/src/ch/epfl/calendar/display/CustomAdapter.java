@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,11 @@ public class CustomAdapter extends BaseAdapter {
     private static final int TYPE_SEPARATOR = 1;
     private static final int HEIGHT_VIEW = 100;
     private static final int SEPARATOR_ID = -2;
-    private static final String COLOR_BLUE = "#33B5E5";
+    private static int colorBlue;
     // private static final String COLOR_MAGENTA = "#AA66CC";
-    private static final String COLOR_GREEN = "#99CC00";
-    private static final String COLOR_RED = "#FF4444";
-    private static final String COLOR_ORANGE = "#FFBB33";
+    private int colorGreen;
+    private int colorRed;
+    private int colorOrange;
 
     private ArrayList<ListViewItem> mData = new ArrayList<ListViewItem>();
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
@@ -36,6 +35,10 @@ public class CustomAdapter extends BaseAdapter {
     public CustomAdapter(Context context) {
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        colorBlue = context.getResources().getColor(R.color.blue10);
+        colorGreen = context.getResources().getColor(R.color.green10);
+        colorRed = context.getResources().getColor(R.color.red10);
+        colorOrange = context.getResources().getColor(R.color.orange10);
     }
 
     public void addItem(final ListViewItem item) {
@@ -103,19 +106,17 @@ public class CustomAdapter extends BaseAdapter {
         if (mData.get(position).getmId() != SEPARATOR_ID) {
             switch (mData.get(position).getmType()) {
                 case DEFAULT:
-                    holder.textView.setBackgroundColor(Color
-                            .parseColor(COLOR_ORANGE));
+                    holder.textView.setBackgroundColor(colorOrange);
                     break;
                 case EXERCISES:
-                    holder.textView.setBackgroundColor(Color
-                            .parseColor(COLOR_GREEN));
+                    holder.textView.setBackgroundColor(colorGreen);
                     break;
                 case LECTURE:
                     holder.textView
-                            .setBackgroundColor(Color.parseColor(COLOR_BLUE));
+                            .setBackgroundColor(colorBlue);
                     break;
                 case PROJECT:
-                    holder.textView.setBackgroundColor(Color.parseColor(COLOR_RED));
+                    holder.textView.setBackgroundColor(colorRed);
                     break;
                 default:
                     break;
