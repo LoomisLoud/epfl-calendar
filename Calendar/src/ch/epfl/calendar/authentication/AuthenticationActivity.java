@@ -12,8 +12,9 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenti
 
 /**
  * Authentication activity
+ * 
  * @author lweingart
- *
+ * 
  */
 public class AuthenticationActivity extends Activity {
 
@@ -35,50 +36,59 @@ public class AuthenticationActivity extends Activity {
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = AuthenticationActivity.this.mTxtUsername.getText().toString();
-                String password = AuthenticationActivity.this.mTxtPassword.getText().toString();
+                String username = AuthenticationActivity.this.mTxtUsername
+                        .getText().toString();
+                String password = AuthenticationActivity.this.mTxtPassword
+                        .getText().toString();
                 if ((username == null) || username.trim().isEmpty()
                         || (password == null) || password.trim().isEmpty()) {
-                    Toast.makeText(AuthenticationActivity.this.getBaseContext(),
-                            AuthenticationActivity.this.getString(R.string.error_empty_credentials),
+                    Toast.makeText(
+                            AuthenticationActivity.this.getBaseContext(),
+                            AuthenticationActivity.this
+                                    .getString(R.string.error_empty_credentials),
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // start the authorization process
                 new TequilaAuthenticationTask(
                         AuthenticationActivity.this.mThisActivity,
-                        new TequilaAuthenticationHandler(),
-                        username,
-                        password)
-                    .execute(null, null);
+                        new TequilaAuthenticationHandler(), username, password)
+                        .execute(null, null);
                 setResult(RESULT_OK, getIntent());
             }
         });
-	}
+    }
 
-	/**
-	 * Handler for the TequilaAuthentication
-	 * @author lweingart
-	 *
-	 */
-    private class TequilaAuthenticationHandler implements TequilaAuthenticationListener {
+    @Override
+    public void onBackPressed() {
+        // Do nothing
+    }
+
+    /**
+     * Handler for the TequilaAuthentication
+     * 
+     * @author lweingart
+     * 
+     */
+    private class TequilaAuthenticationHandler implements
+            TequilaAuthenticationListener {
         @Override
         public void onError(String msg) {
             AuthenticationActivity.this.mTxtPassword.setText("");
             AuthenticationActivity.this.mTxtUsername.setText("");
-            Toast.makeText(AuthenticationActivity.this.getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(AuthenticationActivity.this.getBaseContext(), msg,
+                    Toast.LENGTH_SHORT).show();
         }
+
         @Override
         public void onSuccess(String sessionID) {
-            App.setCurrentUsername(AuthenticationActivity.this.mTxtUsername.getText().toString());
+            App.setCurrentUsername(AuthenticationActivity.this.mTxtUsername
+                    .getText().toString());
             // store the sessionID in the preferences
-            TequilaAuthenticationAPI
-                .getInstance()
-                .setSessionID(AuthenticationActivity.this.mThisActivity, sessionID);
+            TequilaAuthenticationAPI.getInstance().setSessionID(
+                    AuthenticationActivity.this.mThisActivity, sessionID);
             Toast.makeText(AuthenticationActivity.this.mThisActivity,
-                        R.string.authenticated,
-                        Toast.LENGTH_SHORT)
-                    .show();
+                    R.string.authenticated, Toast.LENGTH_SHORT).show();
             AuthenticationActivity.this.mThisActivity.finish();
         }
     }
