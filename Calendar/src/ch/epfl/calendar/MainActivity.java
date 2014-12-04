@@ -88,7 +88,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         // Used for destroy the database
         // this.deleteDatabase(App.DATABASE_NAME);
 
-        if (getAuthUtils().isAuthenticated(getThisActivity())) {
+        if (getAuthUtils().isAuthenticated(this)) {
             App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
                     .getUsername(this));
             System.err.println("CURRENT USER : " + App.getCurrentUsername());
@@ -340,17 +340,6 @@ public class MainActivity extends DefaultActionBarActivity implements
             choiceDialog.show();
         }
     }
-
-    // @Override
-    // protected void onActivityResult(int requestCode, int resultCode, Intent
-    // data) {
-    // if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-    // mListCourses = new ArrayList<Course>();
-    // populateCalendarFromISA();
-    // }
-    //
-    // super.onActivityResult(requestCode, resultCode, data);
-    // }
 
     @Override
     protected void onResume() {

@@ -52,7 +52,9 @@ public abstract class DefaultActionBarActivity extends Activity implements
         if (mDB == null) {
             mDB = new DBQuester();
         } else if (!App.getDBHelper().getDatabaseName().equals(mCurrentDBName)) {
+            DBQuester.close();
             mDB = new DBQuester();
+            mCurrentDBName = App.getDBHelper().getDatabaseName(); 
         }
         return mDB;
     }
@@ -217,17 +219,19 @@ public abstract class DefaultActionBarActivity extends Activity implements
                                 // Yes
                                 getDBQuester().deleteAllTables();
                                 mThisActivity.deleteDatabase(App.getDBHelper().getDatabaseName());
+                                App.setDBHelper(App.DATABASE_NAME);
                                 dialog.cancel();
                                 TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-                                switchToAuthenticationActivity();
+                                populateCalendarFromISA();
                                 break;
                             case 1:
                                 // No
                                 dialog.cancel();
                                 TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-                                switchToAuthenticationActivity();
+                                populateCalendarFromISA();
                                 break;
                             default:
+                                // Cancel
                                 dialog.cancel();
                                 break;
                         }
