@@ -197,10 +197,18 @@ public abstract class DefaultActionBarActivity extends Activity implements
         constructCourse.completeCourse(coursesList, this);
     }
 
+    @Override
     public void logout(boolean isLogoutDoneByUser) {
         if (isLogoutDoneByUser) {
             // Menu to delete DB
             createMenuDeleteDB();
+        } else {
+            App.setDBHelper(App.DATABASE_NAME);
+            mCurrentDBName = App.DATABASE_NAME;
+            DBQuester.close();
+            TequilaAuthenticationAPI.getInstance().clearStoredData(
+                    getApplicationContext());
+            populateCalendarFromISA();
         }
     }
 
