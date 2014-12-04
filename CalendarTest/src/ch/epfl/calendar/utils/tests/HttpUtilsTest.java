@@ -25,7 +25,7 @@ import ch.epfl.calendar.utils.HttpUtils;
  *
  */
 public class HttpUtilsTest extends MockTestCase {
-    private Context mContext;
+    //private Context mContext;
     private HttpUtils mHttpUtils;
     
     private static final String COOKIE_TO_FIND_NAME = "cookie_to_find";
@@ -37,7 +37,7 @@ public class HttpUtilsTest extends MockTestCase {
     
     public void setUp() throws Exception {
         super.setUp();
-        mContext = getInstrumentation().getTargetContext();
+        //mContext = getInstrumentation().getTargetContext();
         mHttpUtils = new HttpUtils();
     }
     

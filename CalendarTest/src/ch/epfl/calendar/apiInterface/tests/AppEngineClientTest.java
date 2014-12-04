@@ -77,7 +77,7 @@ public class AppEngineClientTest extends TestCase {
     
     public void testConstructor() {
         try {
-            AppEngineClient testClient = new AppEngineClient(CORRECT_URL);
+            new AppEngineClient(CORRECT_URL);
         } catch (CalendarClientException e) {
             fail("This exception should not be raised.");
         }
@@ -85,7 +85,7 @@ public class AppEngineClientTest extends TestCase {
     
     public void testConstructorWhenBadUrl() {
         try {
-            AppEngineClient testClient = new AppEngineClient(INCORRECT_URL);
+            new AppEngineClient(INCORRECT_URL);
             fail("This exception should not be raised.");
         } catch (CalendarClientException e) {
         }
