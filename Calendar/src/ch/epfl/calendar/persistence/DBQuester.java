@@ -485,6 +485,7 @@ public class DBQuester implements LocalDatabaseInterface {
     public static SQLiteDatabase openDatabase() {
         if (mDB == null) {
             mDB = App.getDBHelper().getReadableDatabase();
+            System.err.println("NAME DB : " + App.getDBHelper().getDatabaseName());
         }
         return mDB;
     }

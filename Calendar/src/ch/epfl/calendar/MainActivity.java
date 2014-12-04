@@ -22,10 +22,8 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
-import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
-import ch.epfl.calendar.utils.AuthenticationUtils;
 
 /**
  * 
@@ -62,8 +60,6 @@ public class MainActivity extends DefaultActionBarActivity implements
     private List<Event> mListEventWithoutCourse = new ArrayList<Event>();
     private ProgressDialog mDialog;
 
-    private DBQuester mDB;
-
     public static final String TAG = "MainActivity::";
 
     @Override
@@ -92,10 +88,12 @@ public class MainActivity extends DefaultActionBarActivity implements
         // Used for destroy the database
         // this.deleteDatabase(App.DATABASE_NAME);
 
-        if (new AuthenticationUtils().isAuthenticated(this)) {
-            String username = TequilaAuthenticationAPI.getInstance()
-                    .getUsername(this);
-            App.setDBHelper("calendar_db_" + username);
+        if (getAuthUtils().isAuthenticated(getThisActivity())) {
+            App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
+                    .getUsername(this));
+            System.err.println("CURRENT USER : " + App.getCurrentUsername());
+            App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
+            // this.deleteDatabase(App.getDBHelper().getDatabaseName());
             updateListsFromDB();
         } else {
             mListCourses = new ArrayList<Course>();
@@ -107,13 +105,6 @@ public class MainActivity extends DefaultActionBarActivity implements
             mWeekView.notifyDatasetChanged();
         }
 
-    }
-    
-    private DBQuester getDBQuester() {
-        if (mDB == null) {
-            mDB = new DBQuester();
-        }
-        return mDB;
     }
 
     private void updateListsFromDB() {

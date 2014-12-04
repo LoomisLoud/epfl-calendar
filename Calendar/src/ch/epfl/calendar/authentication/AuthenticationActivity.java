@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 
@@ -69,6 +70,7 @@ public class AuthenticationActivity extends Activity {
         }
         @Override
         public void onSuccess(String sessionID) {
+            App.setCurrentUsername(AuthenticationActivity.this.mTxtUsername.getText().toString());
             // store the sessionID in the preferences
             TequilaAuthenticationAPI
                 .getInstance()

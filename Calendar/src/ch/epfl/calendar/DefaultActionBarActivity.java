@@ -4,8 +4,11 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,17 +45,27 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private AuthenticationUtils mAuthUtils;
     private int mNbOfAsyncTaskDB = 0;
     private ProgressDialog mDialog;
+    private String mCurrentDBName;
     public static final int AUTH_ACTIVITY_CODE = 1;
 
+    protected DBQuester getDBQuester() {
+        if (mDB == null) {
+            mDB = new DBQuester();
+        } else if (!App.getDBHelper().getDatabaseName().equals(mCurrentDBName)) {
+            mDB = new DBQuester();
+        }
+        return mDB;
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_action_bar);
         mThisActivity = this;
-        mDB = new DBQuester();
         mAuthUtils = new AuthenticationUtils();
         App.setActionBar(this);
         defaultActionBar();
+        mCurrentDBName = App.getDBHelper().getDatabaseName();
     }
 
     @Override
@@ -92,7 +105,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 switchToListEvent();
                 return true;
             case R.id.action_logout:
-                logout();
+                logout(true);
                 return true;
             case R.id.action_calendar:
                 switchToCalendar();
@@ -169,6 +182,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
             mDialog.setMessage(this.getString(R.string.uploading));
             mDialog.setCancelable(false);
             mDialog.show();
+            App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
+            System.err.println("IN DEFAULTACTIONBAR, DB NAME : " + App.getDBHelper().getDatabaseName());
             CalendarClientInterface cal = new CalendarClient(mThisActivity,
                     this);
             cal.getISAInformations();
@@ -181,9 +196,45 @@ public abstract class DefaultActionBarActivity extends Activity implements
         constructCourse.completeCourse(coursesList, this);
     }
 
-    public void logout() {
-        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-        switchToAuthenticationActivity();
+    public void logout(boolean isLogoutDoneByUser) {
+        if (isLogoutDoneByUser) {
+            //Activity to delete DB
+            createMenuDeleteDB();
+        }
+    }
+    
+    private void createMenuDeleteDB() {
+        AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
+        choiceDialog.setTitle("Do you want do delete the database for the user "
+                + TequilaAuthenticationAPI.getInstance()
+                .getUsername(mThisActivity) + " ?");
+        choiceDialog.setItems(R.array.yes_or_no,
+                new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                // Yes
+                                getDBQuester().deleteAllTables();
+                                mThisActivity.deleteDatabase(App.getDBHelper().getDatabaseName());
+                                dialog.cancel();
+                                TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+                                switchToAuthenticationActivity();
+                                break;
+                            case 1:
+                                // No
+                                dialog.cancel();
+                                TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
+                                switchToAuthenticationActivity();
+                                break;
+                            default:
+                                dialog.cancel();
+                                break;
+                        }
+                    }
+                });
+        choiceDialog.create();
+        choiceDialog.show();
     }
 
     @Override
@@ -194,7 +245,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             if (mDialog != null) {
                 mDialog.dismiss();
             }
-            this.logout();
+            this.logout(false);
         }
     }
 
@@ -209,7 +260,12 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDialog.setCancelable(false);
         mDialog.show();
         
-        mDB.storeCourses(mCourses);
+        for (Course course : mCourses) {
+            //FIXME : TO DELETE
+            System.err.println("NOMBRE DE PERIODES: " + course.getPeriods().size());
+        }
+        
+        getDBQuester().storeCourses(mCourses);
     }
 
     public UpdateDataFromDBInterface getUdpateData() {
@@ -244,6 +300,18 @@ public abstract class DefaultActionBarActivity extends Activity implements
     @Override
     public void callbackDBUpload() {
         mUdpateData.updateData();
+    }
+
+    public AuthenticationUtils getAuthUtils() {
+        return mAuthUtils;
+    }
+
+    public void setAuthUtils(AuthenticationUtils authUtils) {
+        this.mAuthUtils = authUtils;
+    }
+
+    public Activity getThisActivity() {
+        return mThisActivity;
     }
 
 }
