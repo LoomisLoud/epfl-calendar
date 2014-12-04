@@ -157,7 +157,8 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 firstTry = false;
             } else {
                 httpCode = getAccessToIsa(null, null);
-                if (mRespGetTimetable != null && httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                if (mRespGetTimetable != null
+                        && httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
                     mRespGetTimetable.getEntity().getContent().close();
                 }
             }

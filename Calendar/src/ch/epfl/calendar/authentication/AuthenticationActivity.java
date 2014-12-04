@@ -86,7 +86,7 @@ public class AuthenticationActivity extends Activity {
                     .getText().toString());
             // store the sessionID in the preferences
             TequilaAuthenticationAPI.getInstance().setSessionID(
-                    AuthenticationActivity.this.mThisActivity, sessionID);
+                    getApplicationContext(), sessionID);
             Toast.makeText(AuthenticationActivity.this.mThisActivity,
                     R.string.authenticated, Toast.LENGTH_SHORT).show();
             AuthenticationActivity.this.mThisActivity.finish();

@@ -88,10 +88,9 @@ public class MainActivity extends DefaultActionBarActivity implements
         // Used for destroy the database
         // this.deleteDatabase(App.DATABASE_NAME);
 
-        if (getAuthUtils().isAuthenticated(this)) {
+        if (getAuthUtils().isAuthenticated(getApplicationContext())) {
             App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
                     .getUsername(this));
-            System.err.println("CURRENT USER : " + App.getCurrentUsername());
             App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
             // this.deleteDatabase(App.getDBHelper().getDatabaseName());
             updateListsFromDB();

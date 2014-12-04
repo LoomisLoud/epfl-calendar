@@ -7,8 +7,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,11 +54,11 @@ public abstract class DefaultActionBarActivity extends Activity implements
         } else if (!App.getDBHelper().getDatabaseName().equals(mCurrentDBName)) {
             DBQuester.close();
             mDB = new DBQuester();
-            mCurrentDBName = App.getDBHelper().getDatabaseName(); 
+            mCurrentDBName = App.getDBHelper().getDatabaseName();
         }
         return mDB;
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,10 +72,10 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             populateCalendarFromISA();
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -153,7 +153,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 EventDetailActivity.class);
 
         eventDetailActivityIntent.putExtra("description", new String[] {name,
-                                                                        description });
+            description});
         startActivity(eventDetailActivityIntent);
     }
 
@@ -176,7 +176,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     public void populateCalendarFromISA() {
-        if (!mAuthUtils.isAuthenticated(mThisActivity)) {
+        if (!mAuthUtils.isAuthenticated(getApplicationContext())) {
             switchToAuthenticationActivity();
         } else {
             mDialog = new ProgressDialog(this);
@@ -185,7 +185,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
             mDialog.setCancelable(false);
             mDialog.show();
             App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
-            System.err.println("IN DEFAULTACTIONBAR, DB NAME : " + App.getDBHelper().getDatabaseName());
             CalendarClientInterface cal = new CalendarClient(mThisActivity,
                     this);
             cal.getISAInformations();
@@ -200,43 +199,51 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     public void logout(boolean isLogoutDoneByUser) {
         if (isLogoutDoneByUser) {
-            //Activity to delete DB
+            // Menu to delete DB
             createMenuDeleteDB();
         }
     }
-    
+
     private void createMenuDeleteDB() {
         AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
-        choiceDialog.setTitle("Do you want do delete the database for the user "
-                + TequilaAuthenticationAPI.getInstance()
-                .getUsername(mThisActivity) + " ?");
-        choiceDialog.setItems(R.array.yes_or_no,
-                new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                // Yes
-                                getDBQuester().deleteAllTables();
-                                mThisActivity.deleteDatabase(App.getDBHelper().getDatabaseName());
-                                App.setDBHelper(App.DATABASE_NAME);
-                                dialog.cancel();
-                                TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-                                populateCalendarFromISA();
-                                break;
-                            case 1:
-                                // No
-                                dialog.cancel();
-                                TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-                                populateCalendarFromISA();
-                                break;
-                            default:
-                                // Cancel
-                                dialog.cancel();
-                                break;
-                        }
-                    }
-                });
+        choiceDialog
+                .setTitle("Do you want do delete the database for the user "
+                        + TequilaAuthenticationAPI.getInstance().getUsername(
+                                mThisActivity) + " ?");
+        choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        // Yes
+                        getDBQuester().deleteAllTables();
+                        getApplicationContext().deleteDatabase(
+                                App.getDBHelper().getDatabaseName());
+                        App.setDBHelper(App.DATABASE_NAME);
+                        mCurrentDBName = App.DATABASE_NAME;
+                        DBQuester.close();
+                        dialog.cancel();
+                        TequilaAuthenticationAPI.getInstance().clearStoredData(
+                                getApplicationContext());
+                        populateCalendarFromISA();
+                        break;
+                    case 1:
+                        // No
+                        App.setDBHelper(App.DATABASE_NAME);
+                        mCurrentDBName = App.DATABASE_NAME;
+                        DBQuester.close();
+                        dialog.cancel();
+                        TequilaAuthenticationAPI.getInstance().clearStoredData(
+                                getApplicationContext());
+                        populateCalendarFromISA();
+                        break;
+                    default:
+                        // Cancel
+                        dialog.cancel();
+                        break;
+                }
+            }
+        });
         choiceDialog.create();
         choiceDialog.show();
     }
@@ -263,12 +270,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDialog.setMessage(this.getString(R.string.saving_db));
         mDialog.setCancelable(false);
         mDialog.show();
-        
-        for (Course course : mCourses) {
-            //FIXME : TO DELETE
-            System.err.println("NOMBRE DE PERIODES: " + course.getPeriods().size());
-        }
-        
+
         getDBQuester().storeCourses(mCourses);
     }
 
