@@ -40,15 +40,4 @@ public class CalendarClientException extends Exception {
     public CalendarClientException(Throwable throwable) {
         super(throwable);
     }
-
-    /**
-     * Combinations of the 2 previous constructors.
-     * @param message the message of the exception
-     * @param throwable a {@link Throwable} object to base this exception on.
-     */
-    public CalendarClientException(String message, Throwable throwable) {
-    	super(message, throwable);
-    }
-
-
 }
