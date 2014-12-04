@@ -31,7 +31,8 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
     private static final float SIZE_OF_TITLE = 1.5f;
-
+    private static final int TEXT_VIEW_ID_EVENT_START = 1000;
+    
     private String mCourseName;
     private Course mCourse;
     private DBQuester mDB;
@@ -94,7 +95,8 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         if (!linkedEvents.isEmpty()) {
             TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
             textView2.setText(bodyToSpannableConcatAndBold("Event related:", ""));
-            
+            // find the layout of activity to add view at the end
+            RelativeLayout relativeLayout = (RelativeLayout) this.findViewById(R.id.courseDetailsLayout);
             ArrayList<TextView> myTextViews = new ArrayList<TextView>();
             for (int i=0; i<linkedEvents.size(); i++) {
                 
@@ -103,11 +105,9 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
                 // set some properties
                 eventTextView.setText(event.toDisplay());
-                eventTextView.setId(i);
+                eventTextView.setId(TEXT_VIEW_ID_EVENT_START + i);
 
-                // find the layout of activity to add view at the end
-                RelativeLayout relativeLayout = (RelativeLayout) this.findViewById(R.id.courseDetailsLayout);
-
+                
 
                 if (i==0) {
                   // create layout rule to set textview below event title
