@@ -291,8 +291,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
         App.setActionBar(this);
     }
 
-    public synchronized void addTask() {
-        mNbOfAsyncTaskDB = mNbOfAsyncTaskDB + 1;
+    public synchronized void addTask(int value) {
+        mNbOfAsyncTaskDB = mNbOfAsyncTaskDB + value;
     }
 
     public synchronized void asyncTaskStoreFinished() {

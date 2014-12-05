@@ -157,9 +157,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 firstTry = false;
             } else {
                 httpCode = getAccessToIsa(null, null);
-                if (mRespGetTimetable != null
-                        && httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                    mRespGetTimetable.getEntity().getContent().close();
+                if (//mRespGetTimetable != null &&
+                        httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
+//                    mRespGetTimetable.getEntity().getContent().close();
+                    mSessionID = "fake";
                 }
             }
 
@@ -270,6 +271,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         } else {
             mResult = result;
             // notify error listener
+            System.out.println("SESSIONID " + mSessionID);
             mListener.onSuccess(mSessionID);
         }
     }
