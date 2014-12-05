@@ -28,12 +28,20 @@ import ch.epfl.calendar.utils.isaparser.ParsingException;
  */
 public class CalendarClient implements CalendarClientInterface {
 
+    /**
+     * The name of the class for the LOGs.
+     */
 	public static final String TAG = "CalendarClient Class::";
 
     private Activity mParentActivity = null;
     private CalendarClientDownloadInterface mDownloadInterface = null;
     private TequilaAuthenticationTask mTask = null;
 
+    /**
+     * The constructor of {@link CalendarClient}
+     * @param activity the 
+     * @param downloadInterface
+     */
     public CalendarClient(Activity activity, CalendarClientDownloadInterface downloadInterface) {
         this.mParentActivity = activity;
         this.mDownloadInterface = downloadInterface;
@@ -98,6 +106,7 @@ public class CalendarClient implements CalendarClientInterface {
                 Log.i("Unexpected error : ", errMessage);
             }
         }
+        
         @Override
         public void onSuccess(String sessionID) {
             // store the sessionID in the preferences

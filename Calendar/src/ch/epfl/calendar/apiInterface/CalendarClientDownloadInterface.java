@@ -11,8 +11,9 @@ import ch.epfl.calendar.data.Course;
  *
  */
 public interface CalendarClientDownloadInterface {
+    
     /**
-     * 
+     * This method is called by the class implementing it when the download from ISA is finished.
      */
     void callbackDownload(boolean success, List<Course> courses);
 }

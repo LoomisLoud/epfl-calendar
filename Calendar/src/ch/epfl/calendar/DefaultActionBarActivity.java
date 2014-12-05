@@ -42,6 +42,10 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private AuthenticationUtils mAuthUtils;
     private int mNbOfAsyncTaskDB = 0;
     private ProgressDialog mDialog;
+    
+    /**
+     * The code representing the {@link AuthenticationActivity}.
+     */
     public static final int AUTH_ACTIVITY_CODE = 1;
 
     @Override
@@ -127,12 +131,20 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(blockActivityIntent);
     }
 
+    /**
+     * Switches to {@link AddEventActivity}
+     */
     public void switchToAddEventsActivity() {
         Intent addEventsActivityIntent = new Intent(this,
                 AddEventActivity.class);
         startActivity(addEventsActivityIntent);
     }
 
+    /**
+     * Switch to {@link EventDetailActivity}
+     * @param name name of the event
+     * @param description description of the event
+     */
     public void switchToEventDetail(String name, String description) {
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
@@ -142,6 +154,9 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(eventDetailActivityIntent);
     }
 
+    /**
+     * Switches to {@link AddEventActivity} (will be an activity to edit event if an ID is passed in intent).
+     */
     public void switchToEditActivity(Event event) {
         Intent editActivityIntent = new Intent(this, AddEventActivity.class);
         editActivityIntent.putExtra("Id", event.getId());
@@ -153,6 +168,9 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(i);
     }
 
+    /**
+     * Switches to {@link AuthenticationActivity}
+     */
     public void switchToAuthenticationActivity() {
         Intent displayAuthenticationActivtyIntent = new Intent(mThisActivity,
                 AuthenticationActivity.class);
@@ -160,6 +178,9 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
     }
 
+    /**
+     * Gets the courses from ISA and populates the database.
+     */
     public void populateCalendarFromISA() {
         if (!mAuthUtils.isAuthenticated(mThisActivity)) {
             switchToAuthenticationActivity();
@@ -175,12 +196,19 @@ public abstract class DefaultActionBarActivity extends Activity implements
         }
     }
 
+    /**
+     * Completes the informations of the courses in coursesList with informations from the AppEngine.
+     * @param coursesList a List of courses get from ISA.
+     */
     public void completeCalendarFromAppEngine(List<Course> coursesList) {
         ConstructListCourse constructCourse = ConstructListCourse
                 .getInstance(this);
         constructCourse.completeCourse(coursesList, this);
     }
 
+    /**
+     * Logs the user out.
+     */
     public void logout() {
         TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
         switchToAuthenticationActivity();
@@ -212,19 +240,33 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDB.storeCourses(mCourses);
     }
 
+    /**
+     * 
+     * @return the {@link UpdateDataFromDBInterface} of the application.
+     */
     public UpdateDataFromDBInterface getUdpateData() {
         return mUdpateData;
     }
 
+    /**
+     * 
+     * @param udpateData sets the {@link UpdateDataFromDBInterface} of this class.
+     */
     public void setUdpateData(UpdateDataFromDBInterface udpateData) {
         this.mUdpateData = udpateData;
         App.setActionBar(this);
     }
 
+    /**
+     * Adds an AsyncTask
+     */
     public synchronized void addTask() {
         mNbOfAsyncTaskDB = mNbOfAsyncTaskDB + 1;
     }
 
+    /**
+     * Called when an AsyncTask is finished.
+     */
     public synchronized void asyncTaskStoreFinished() {
         mNbOfAsyncTaskDB = mNbOfAsyncTaskDB - 1;
         if (mNbOfAsyncTaskDB <= 0) {

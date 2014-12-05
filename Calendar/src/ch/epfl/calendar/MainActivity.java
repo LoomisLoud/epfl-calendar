@@ -62,6 +62,9 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     private DBQuester mDB;
 
+    /**
+     * The name of activity for the LOGs.
+     */
     public static final String TAG = "MainActivity::";
 
     @Override
