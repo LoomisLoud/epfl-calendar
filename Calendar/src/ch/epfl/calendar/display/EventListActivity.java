@@ -24,6 +24,7 @@ import android.widget.ListView;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.EventForList;
@@ -35,10 +36,10 @@ import ch.epfl.calendar.persistence.DBQuester;
  * @author MatthiasLeroyEPFL
  * 
  */
-public class EventListActivity extends DefaultActionBarActivity {
+public class EventListActivity extends DefaultActionBarActivity 
+    implements UpdateDataFromDBInterface {
 
     private ListView mListView;
-    private DBQuester mDbQuester;
     private Context context = this;
     private static final int HEIGHT_DIVIDER = 10;
     private ArrayAdapter<EventForList> adapter = null;
@@ -47,13 +48,13 @@ public class EventListActivity extends DefaultActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_event_list);
         listEventActionBar();
         mListView = (ListView) findViewById(R.id.list_event_view);
 
-        mDbQuester = new DBQuester();
-        List<Course> course = mDbQuester.getAllCourses();
-        List<Event> eventCreated = mDbQuester.getAllEvents();
+        List<Course> course = getDBQuester().getAllCourses();
+        List<Event> eventCreated = getDBQuester().getAllEvents();
         final List<EventForList> eventForList = eventToEventForList(course,
                 eventCreated);
 
@@ -75,7 +76,7 @@ public class EventListActivity extends DefaultActionBarActivity {
                     switchToCourseDetails(event.getmEventName());
                 } else {
                     editEvent = true;
-                    switchToEditActivity(mDbQuester.getEvent(event.getmId()));
+                    switchToEditActivity(getDBQuester().getEvent(event.getmId()));
 
                 }
 
@@ -99,7 +100,7 @@ public class EventListActivity extends DefaultActionBarActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            mDbQuester.deleteEvent(mDbQuester.getEvent(event
+                            getDBQuester().deleteEvent(getDBQuester().getEvent(event
                                     .getmId()));
                             List<EventForList> list = eventForList;
                             list.remove(event);
@@ -116,7 +117,7 @@ public class EventListActivity extends DefaultActionBarActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             editEvent = true;
-                            switchToEditActivity(mDbQuester.getEvent(event
+                            switchToEditActivity(getDBQuester().getEvent(event
                                     .getmId()));
                         }
                     });
@@ -259,7 +260,7 @@ public class EventListActivity extends DefaultActionBarActivity {
     protected void onResume() {
         if (editEvent) {
             List<EventForList> updatedEvent = eventToEventForList(
-                    mDbQuester.getAllCourses(), mDbQuester.getAllEvents());
+                    getDBQuester().getAllCourses(), getDBQuester().getAllEvents());
             adapter = new ArrayAdapter<EventForList>(context,
                     android.R.layout.simple_list_item_1, updatedEvent);
             mListView.setAdapter(adapter);
@@ -268,5 +269,11 @@ public class EventListActivity extends DefaultActionBarActivity {
         }
         super.onResume();
 
+    }
+
+    @Override
+    public void updateData() {
+        onResume();
+        
     }
 }

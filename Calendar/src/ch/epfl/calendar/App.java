@@ -136,6 +136,11 @@ public class App extends Application {
      * DefaultActionBarActivity
      */
     private static DefaultActionBarActivity mActionBar;
+    
+    /**
+     * The username of the current user.
+     */
+    private static String mCurrentUsername;
 
     @Override
     public void onCreate() {
@@ -292,5 +297,13 @@ public class App extends Application {
 
     public static void setActionBar(DefaultActionBarActivity actionBar) {
         App.mActionBar = actionBar;
+    }
+
+    public static String getCurrentUsername() {
+        return mCurrentUsername;
+    }
+
+    public static void setCurrentUsername(String currentUsername) {
+        App.mCurrentUsername = currentUsername;
     }
 }
