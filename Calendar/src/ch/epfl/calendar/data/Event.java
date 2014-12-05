@@ -189,6 +189,7 @@ public class Event {
     	
     	return (hourEnd + minuteEnd) - (hourStart + minuteStart);
     }
+
     public boolean isAutomaticAddedBlock() {
         return mIsAutomaticAddedBlock;
     }

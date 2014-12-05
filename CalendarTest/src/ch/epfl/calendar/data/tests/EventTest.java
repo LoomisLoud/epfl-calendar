@@ -5,10 +5,10 @@ package ch.epfl.calendar.data.tests;
 
 import java.util.Calendar;
 
+import junit.framework.TestCase;
 import android.util.Log;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Event;
-import junit.framework.TestCase;
 
 /**
  * @author lweingart
@@ -18,6 +18,8 @@ public class EventTest extends TestCase {
     
 	private static final double HOUR_AND_HALF = 1.5;
 	private static final double HALF_HOUR = 0.5;
+	private Event mEvent = new Event("28.11.2014", "28.11.2014", "Algorithms", "10:30", "11:00", 
+            "Homework", "Algorithms", "description", true);
 	
     public void testFirstConstructor() {
         Event event = new Event("27.11.2014", "27.11.2014", "Sweng project", "08:00", "10:00", 
@@ -91,5 +93,31 @@ public class EventTest extends TestCase {
     	assertEquals(1.0, event.getHours());
     	assertEquals(HOUR_AND_HALF, otherEvent.getHours());
     	assertEquals(HALF_HOUR, lastEvent.getHours());
+    }
+    
+    public void testHashSameObject() {
+    	assertEquals(mEvent.hashCode(), mEvent.hashCode());
+    }
+    
+    public void testHashDifferentReferrence() {
+    	Event event = new Event("28.11.2014", "28.11.2014", "Sweng", "10:30", "11:00", 
+                "Homework", "Sweng", "WrongDescription", true);
+    	event.setLinkedCourse("Algorithms");
+    	event.setmDescription("description");
+    	event.setName("Algorithms");
+    	assertEquals(mEvent.hashCode(), event.hashCode());
+    }
+    
+    public void testSameObject() {
+    	assertEquals(mEvent, mEvent);
+    }
+    
+    public void testDifferentReferrence() {
+    	Event event = new Event("28.11.2014", "28.11.2014", "Sweng", "10:30", "11:00", 
+                "Homework", "Sweng", "WrongDescription", true);
+    	event.setLinkedCourse("Algorithms");
+    	event.setmDescription("description");
+    	event.setName("Algorithms");
+    	assertEquals(mEvent, event);
     }
 }
