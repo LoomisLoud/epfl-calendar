@@ -54,14 +54,11 @@ public class EventDetailActivity extends DefaultActionBarActivity implements
     private SpannableStringBuilder bodyToSpannableConcatAndBold(
             String bodyBold, String body) {
         SpannableStringBuilder sb = new SpannableStringBuilder(bodyBold + body);
-        StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD); // Span
-                                                                       // to
-                                                                       // make
-                                                                       // text
-                                                                       // bold
+        // span to make text bold
+        StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
+        // make first characters bold
         sb.setSpan(bss, 0, bodyBold.length(),
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE); // make first characters
-                                                     // Bold
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return sb;
     }
 

@@ -13,6 +13,8 @@ import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import ch.epfl.calendar.DefaultActionBarActivity;
@@ -31,7 +33,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
     private static final float SIZE_OF_TITLE = 1.5f;
-    private static final int TEXT_VIEW_ID_EVENT_START = 1000;
     
     private String mCourseName;
     private Course mCourse;
@@ -66,12 +67,17 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         // actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle("Course Details");
     }
+    
+    public void switchToEditActivity(Event event) {
+        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
+        editActivityIntent.putExtra("Id", event.getId());
+        startActivity(editActivityIntent);
+    }
 
     private void setTextViewsFromCourse() {
         String courseProfessor = mCourse.getTeacher();
         String courseCredits = Integer.toString(mCourse.getCredits());
         String courseDescription = mCourse.getDescription();
-        String linkedEventsToString = "";
         List<Event> linkedEvents = mCourse.getEvents();
 
         // get the TextView and update it
@@ -98,14 +104,27 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
             // find the layout of activity to add view at the end
             RelativeLayout relativeLayout = (RelativeLayout) this.findViewById(R.id.courseDetailsLayout);
             ArrayList<TextView> myTextViews = new ArrayList<TextView>();
+            //ArrayList mIDEvents = new ArrayList<Integer>();
+            int precedantEvents = 0;
             for (int i=0; i<linkedEvents.size(); i++) {
                 
                 Event event = linkedEvents.get(i);
+                
                 TextView eventTextView = new TextView(this);
 
                 // set some properties
                 eventTextView.setText(event.toDisplay());
-                eventTextView.setId(TEXT_VIEW_ID_EVENT_START + i);
+                eventTextView.setId(event.getId());
+                OnClickListener onClickListenerEvent = new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Event event = mDB.getEvent(v.getId());
+                        switchToEditActivity(event);
+                    }
+                    
+                };
+                eventTextView.setOnClickListener(onClickListenerEvent);
 
                 
 
@@ -121,7 +140,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
                             RelativeLayout.LayoutParams.WRAP_CONTENT,
                             RelativeLayout.LayoutParams.WRAP_CONTENT);
                     //below precedent event view
-                    newParams.addRule(RelativeLayout.BELOW, myTextViews.get(i-1).getId());
+                    newParams.addRule(RelativeLayout.BELOW, precedantEvents);
                     newParams.setMargins(0, (int) this.getResources().getDimension(R.dimen.activity_top_margin_small),
                             0, 0);
                     eventTextView.setLayoutParams(newParams);
@@ -129,6 +148,8 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
                 // add to layout
                 relativeLayout.addView(eventTextView);
+                //record id of precedant event for relative layout
+                precedantEvents = event.getId();
                 // save view in array
                 myTextViews.add(eventTextView);
             }
