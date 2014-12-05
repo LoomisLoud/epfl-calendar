@@ -122,8 +122,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(coursesListActivityIntent);
     }
 
-    private void switchToAddBlockActivity() {
-        EventListActivity.setEditEvent(true);
+    public void switchToAddBlockActivity() {
         Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
         startActivity(blockActivityIntent);
     }

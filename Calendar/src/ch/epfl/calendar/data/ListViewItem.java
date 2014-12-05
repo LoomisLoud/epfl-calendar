@@ -7,8 +7,9 @@ import java.util.Calendar;
  *
  */
 public class ListViewItem {
-    private Calendar mDate;
+   
     private final static int ID_SEPARATOR = -2;
+    private Calendar mDate;
     
     public ListViewItem(Calendar date) {
         mDate = date;

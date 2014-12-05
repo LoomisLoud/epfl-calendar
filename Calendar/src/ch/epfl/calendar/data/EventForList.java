@@ -8,16 +8,16 @@ import java.util.Calendar;
  */
 public class EventForList extends ListViewItem {
 
+    private static final int ZERO_MINUTE = 0;
+    private static final int TEN_MINUTE = 10;
+    
     private String mName;
     private Calendar mEnd;
     private PeriodType mType;
     private int mId;
     private String mLinkedCourse;
     private String mDescription;
-
-    private static final int ZERO_MINUTE = 0;
-    private static final int TEN_MINUTE = 10;
-
+    
     public EventForList(String name, Calendar start, Calendar end,
             PeriodType type, int id, String linkedCourse, String description) {
         super(start);

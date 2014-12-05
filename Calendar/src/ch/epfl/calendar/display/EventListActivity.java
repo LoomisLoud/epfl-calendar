@@ -37,13 +37,13 @@ import ch.epfl.calendar.persistence.DBQuester;
  */
 public class EventListActivity extends DefaultActionBarActivity {
 
-    private ListView mListView;
-    private DBQuester mDbQuester;
-    private Context context = this;
     private static final int HEIGHT_DIVIDER = 10;
     private static final int SEPARATOR_ID = -2;
 
-    private static boolean editEvent = false;
+    private ListView mListView;
+    private DBQuester mDbQuester;
+    private Context context = this;
+    private boolean editEvent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,6 +289,12 @@ public class EventListActivity extends DefaultActionBarActivity {
         startActivity(addEventsActivityIntent);
     }
 
+    public void switchToAddBlockActivity() {
+        editEvent = true;
+        Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
+        startActivity(blockActivityIntent);
+    }
+
     @Override
     protected void onResume() {
         if (editEvent) {
@@ -297,16 +303,11 @@ public class EventListActivity extends DefaultActionBarActivity {
             CustomAdapter editAdapter = new CustomAdapter(context);
             createAdapter(updatedEvent, editAdapter);
             mListView.setAdapter(editAdapter);
-            
 
             editEvent = false;
 
         }
         super.onResume();
 
-    }
-
-    public static void setEditEvent(boolean newEditEvent) {
-        editEvent = newEditEvent;
     }
 }
