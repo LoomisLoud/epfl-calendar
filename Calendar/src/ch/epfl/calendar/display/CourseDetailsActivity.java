@@ -122,6 +122,8 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
                             RelativeLayout.LayoutParams.WRAP_CONTENT);
                     //below precedent event view
                     newParams.addRule(RelativeLayout.BELOW, myTextViews.get(i-1).getId());
+                    newParams.setMargins(0, (int) this.getResources().getDimension(R.dimen.activity_top_margin_small),
+                            0, 0);
                     eventTextView.setLayoutParams(newParams);
                 }
 
