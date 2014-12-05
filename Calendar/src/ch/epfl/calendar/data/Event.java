@@ -92,10 +92,10 @@ public class Event {
      */
     public String toDisplay() {
         String name = this.mName;
-        String date = App.calendarToBasicFormatStringSameDaySpecialFormat(this.mStartDate, mEndDate);
+        String[] date = App.calendarToBasicFormatStringSameDaySpecialFormat(this.mStartDate, mEndDate);
         String description = this.mDescription;
         
-        return date + " : " + name + "\n" + description;
+        return date[0] + " : " + name + "\n" + date[1] + "  " + description;
     }
     
     

@@ -113,7 +113,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
                 TextView eventTextView = new TextView(this);
 
                 // set some properties
-                eventTextView.setText(event.toDisplay());
+                eventTextView.setText(titleBoldEventToDisplay(event.toDisplay()));
                 eventTextView.setId(event.getId());
                 OnClickListener onClickListenerEvent = new OnClickListener() {
 
@@ -171,14 +171,21 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
     private SpannableStringBuilder bodyToSpannableConcatAndBold(
             String bodyBold, String body) {
         SpannableStringBuilder sb = new SpannableStringBuilder(bodyBold + body);
-        StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD); // Span
-                                                                       // to
-                                                                       // make
-                                                                       // text
-                                                                       // bold
+        //span to make string bold
+        StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
+        // make first characters bold
         sb.setSpan(bss, 0, bodyBold.length(),
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE); // make first characters
-                                                     // Bold
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return sb;
+    }
+    
+    private Spannable titleBoldEventToDisplay(String displayString) {
+        String[] splitNameDescrpt = displayString.split(": ");
+        String[] splittedName = splitNameDescrpt[1].split("\n");
+        StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
+        SpannableStringBuilder sb = new SpannableStringBuilder(displayString);
+        sb.setSpan(bss, splitNameDescrpt[0].length() + 1, splitNameDescrpt[0].length() + 2 + splittedName[0].length(),
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return sb;
     }
 

@@ -280,7 +280,7 @@ public class App extends Application {
      * @param date
      * @return
      */
-    public static String calendarToBasicFormatStringSameDaySpecialFormat(Calendar date, Calendar date2) {
+    public static String[] calendarToBasicFormatStringSameDaySpecialFormat(Calendar date, Calendar date2) {
         String dd;
         String mm;
         String yyyy;
@@ -357,7 +357,7 @@ public class App extends Application {
         
         hhminhhmin = hh + ":" + min + "-" + hh2 + ":" + min2;
         
-        return ddmmyyyy + " " + hhminhhmin;
+        return new String[] {ddmmyyyy, hhminhhmin};
     }
 
     public static String boolToString(boolean bool) {
