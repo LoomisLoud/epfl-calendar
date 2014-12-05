@@ -204,7 +204,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
             createMenuDeleteDB();
         } else {
             App.setDBHelper(App.DATABASE_NAME);
-            mCurrentDBName = App.DATABASE_NAME;
             DBQuester.close();
             TequilaAuthenticationAPI.getInstance().clearStoredData(
                     getApplicationContext());
@@ -217,7 +216,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         choiceDialog
                 .setTitle("Do you want do delete the database for the user "
                         + TequilaAuthenticationAPI.getInstance().getUsername(
-                                mThisActivity) + " ?");
+                                mThisActivity.getApplicationContext()) + " ?");
         choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -228,7 +227,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
                         getApplicationContext().deleteDatabase(
                                 App.getDBHelper().getDatabaseName());
                         App.setDBHelper(App.DATABASE_NAME);
-                        mCurrentDBName = App.DATABASE_NAME;
+                        mCurrentDBName = "none";
+                        App.setCurrentUsername("noUser");
                         DBQuester.close();
                         dialog.cancel();
                         TequilaAuthenticationAPI.getInstance().clearStoredData(
@@ -238,7 +238,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
                     case 1:
                         // No
                         App.setDBHelper(App.DATABASE_NAME);
-                        mCurrentDBName = App.DATABASE_NAME;
+                        App.setCurrentUsername("noUser");
+                        mCurrentDBName = "none";
                         DBQuester.close();
                         dialog.cancel();
                         TequilaAuthenticationAPI.getInstance().clearStoredData(

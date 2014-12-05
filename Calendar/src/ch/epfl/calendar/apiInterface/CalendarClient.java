@@ -70,10 +70,6 @@ public class CalendarClient implements CalendarClientInterface {
                 //We don't want that the user sees this exception
             }
         }
-        
-        for (Course course : coursesList) {
-            System.out.println(course.getName());
-        }
         mCourseListForTests = new ArrayList<Course>(coursesList);
         mDownloadInterface.callbackDownload(success, coursesList);
     }
