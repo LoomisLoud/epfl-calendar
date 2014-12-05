@@ -16,12 +16,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CourseDetailsActivity;
-import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 
@@ -60,8 +60,6 @@ public class MainActivity extends DefaultActionBarActivity implements
     private List<Event> mListEventWithoutCourse = new ArrayList<Event>();
     private ProgressDialog mDialog;
 
-    private DBQuester mDB;
-
     public static final String TAG = "MainActivity::";
 
     @Override
@@ -86,34 +84,34 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         // Set long press listener for events.
         mWeekView.setEventLongPressListener(this);
-        
-       
 
         actionBarMainActivity();
         
 
-        mDB = new DBQuester();
-
-
         // Used for destroy the database
+         //this.deleteDatabase(App.DATABASE_NAME);
 
-        //this.deleteDatabase(App.DATABASE_NAME);
-
-
-
-        updateListsFromDB();
+        if (getAuthUtils().isAuthenticated(getApplicationContext())) {
+            App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
+                    .getUsername(this));
+            App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
+            // this.deleteDatabase(App.getDBHelper().getDatabaseName());
+            updateListsFromDB();
+        } else {
+            mListCourses = new ArrayList<Course>();
+        }
 
         if (mListCourses.isEmpty()) {
             populateCalendarFromISA();
         } else {
             mWeekView.notifyDatasetChanged();
         }
-        
+
     }
 
     private void updateListsFromDB() {
-        mListCourses = mDB.getAllCourses();
-        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+        mListCourses = getDBQuester().getAllCourses();
+        mListEventWithoutCourse = getDBQuester().getAllEventsWithoutCourse();
     }
 
     private ArrayList<String> spinnerList() {
@@ -187,13 +185,14 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean retour = super.onCreateOptionsMenu(menu);
-     // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        
-        MenuItem goToCalendarItem = (MenuItem) menu.findItem(R.id.action_calendar);
+
+        MenuItem goToCalendarItem = (MenuItem) menu
+                .findItem(R.id.action_calendar);
         goToCalendarItem.setVisible(false);
         this.invalidateOptionsMenu();
-        
+
         return retour;
     }
 
@@ -219,7 +218,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog = new ProgressDialog(this);
         mDialog.setMessage("Loading course details");
         mDialog.show();
-    } 
+    }
 
     @Override
     public List<WeekViewEvent> onMonthChange() {
@@ -271,7 +270,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             String cours = weekEvent.getName().split("\n")[0];
             switchToCourseDetails(cours);
         } else {
-            Event event = mDB.getEvent(weekEvent.getId());
+            Event event = getDBQuester().getEvent(weekEvent.getId());
             switchToEditActivity(event);
         }
     }
@@ -289,7 +288,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
             choiceDialog.setTitle("Action on Event");
             long id = event.getId();
-            final Event eventFromDB = mDB.getEvent(id);
+            final Event eventFromDB = getDBQuester().getEvent(id);
             choiceDialog.setItems(R.array.choice_on_event,
                     new OnClickListener() {
 
@@ -301,25 +300,28 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     dialog.cancel();
                                     break;
                                 case 1:
-                                    mDB.deleteEvent(eventFromDB);
+                                    getDBQuester().deleteEvent(eventFromDB);
                                     updateData();
                                     dialog.cancel();
                                     break;
                                 case 2:
-                                    if (event.getmType().equals(PeriodType.LECTURE)
+                                    if (event.getmType().equals(
+                                            PeriodType.LECTURE)
                                             || event.getmType().equals(
                                                     PeriodType.PROJECT)
-                                                    || event.getmType().equals(
-                                                            PeriodType.EXERCISES)) {
-                                        String cours = event.getName().split("\n")[0];
+                                            || event.getmType().equals(
+                                                    PeriodType.EXERCISES)) {
+                                        String cours = event.getName().split(
+                                                "\n")[0];
                                         switchToCourseDetails(cours);
                                     } else {
 
-                                        if (eventFromDB.getLinkedCourse().equals(
-                                                App.NO_COURSE)) {
+                                        if (eventFromDB.getLinkedCourse()
+                                                .equals(App.NO_COURSE)) {
                                             String description = event
                                                     .getmDescription();
-                                            switchToEventDetail(event.getName(),
+                                            switchToEventDetail(
+                                                    event.getName(),
                                                     description);
                                         } else {
                                             String coursName = eventFromDB
@@ -342,23 +344,13 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
-//            mListCourses = new ArrayList<Course>();
-//            populateCalendarFromISA();
-//        }
-//
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
-
     @Override
     protected void onResume() {
 
         super.onResume();
         super.setUdpateData(this);
-        mListCourses = mDB.getAllCourses();
-        mListEventWithoutCourse = mDB.getAllEventsWithoutCourse();
+        mListCourses = getDBQuester().getAllCourses();
+        mListEventWithoutCourse = getDBQuester().getAllEventsWithoutCourse();
         mWeekView.notifyDatasetChanged();
         if (mDialog != null) {
             mDialog.dismiss();

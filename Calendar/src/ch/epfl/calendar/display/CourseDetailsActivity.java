@@ -18,7 +18,6 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
-import ch.epfl.calendar.persistence.DBQuester;
 
 /**
  * @author LoomisLoud
@@ -32,7 +31,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
     private String mCourseName;
     private Course mCourse;
-    private DBQuester mDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +42,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
         // get the intent that started the Activity
         Intent startingIntent = getIntent();
-
-        mDB = new DBQuester();
 
         mCourseName = startingIntent.getStringExtra("course");
 
@@ -135,7 +131,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
     @Override
     public void updateData() {
-        mCourse = mDB.getCourse(mCourseName);
+        mCourse = getDBQuester().getCourse(mCourseName);
         if (mCourse == null) {
             TextView textView = (TextView) findViewById(R.id.courseName);
             textView.setText(mCourseName + " not found in data base.");

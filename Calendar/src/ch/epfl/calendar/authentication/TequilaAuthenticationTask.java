@@ -22,6 +22,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.utils.AuthenticationUtils;
 import ch.epfl.calendar.utils.GlobalPreferences;
@@ -156,8 +157,10 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 firstTry = false;
             } else {
                 httpCode = getAccessToIsa(null, null);
-                if (mRespGetTimetable != null && httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                    mRespGetTimetable.getEntity().getContent().close();
+                if (//mRespGetTimetable != null &&
+                        httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
+//                    mRespGetTimetable.getEntity().getContent().close();
+                    mSessionID = "fake";
                 }
             }
 
@@ -181,6 +184,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     // username+pwd)
                     authenticateOnTequila(mCurrentToken, firstTry);
                     if (firstTry) {
+                        App.setDBHelper("calendar_db_" + mUsername);
                         firstTry = false;
                         tokenList = mCurrentToken;
                     } else {
@@ -267,6 +271,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         } else {
             mResult = result;
             // notify error listener
+            System.out.println("SESSIONID " + mSessionID);
             mListener.onSuccess(mSessionID);
         }
     }

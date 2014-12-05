@@ -22,6 +22,7 @@ import android.widget.ListView;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.EventForList;
@@ -35,27 +36,27 @@ import ch.epfl.calendar.persistence.DBQuester;
  * @author MatthiasLeroyEPFL
  * 
  */
-public class EventListActivity extends DefaultActionBarActivity {
+public class EventListActivity extends DefaultActionBarActivity implements
+        UpdateDataFromDBInterface {
 
     private static final int HEIGHT_DIVIDER = 10;
     private static final int SEPARATOR_ID = -2;
 
     private ListView mListView;
-    private DBQuester mDbQuester;
     private Context context = this;
     private boolean editEvent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_event_list);
         listEventActionBar();
         CustomAdapter customAdapter = new CustomAdapter(context);
         mListView = (ListView) findViewById(R.id.list_event_view);
 
-        mDbQuester = new DBQuester();
-        List<Course> course = mDbQuester.getAllCourses();
-        List<Event> eventCreated = mDbQuester.getAllEvents();
+        List<Course> course = getDBQuester().getAllCourses();
+        List<Event> eventCreated = getDBQuester().getAllEvents();
         final List<ListViewItem> eventForList = eventToEventForList(course,
                 eventCreated);
 
@@ -71,12 +72,14 @@ public class EventListActivity extends DefaultActionBarActivity {
 
                 ListViewItem item = (ListViewItem) mListView
                         .getItemAtPosition(position);
+
                 if (item.getmId() != SEPARATOR_ID) {
                     if (item.getmId() == DBQuester.NO_ID) {
                         switchToCourseDetails(item.getmName());
                     } else {
                         editEvent = true;
-                        switchToEditActivity(mDbQuester.getEvent(item.getmId()));
+                        switchToEditActivity(getDBQuester().getEvent(
+                                item.getmId()));
 
                     }
                 }
@@ -94,6 +97,7 @@ public class EventListActivity extends DefaultActionBarActivity {
                         .getItemAtPosition(pos);
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 dialog.setMessage("What do you want to do ?");
+
                 if (item.getmId() != SEPARATOR_ID) {
                     if (item.getmId() != DBQuester.NO_ID) {
                         dialog.setNegativeButton("Delete",
@@ -103,8 +107,9 @@ public class EventListActivity extends DefaultActionBarActivity {
                                     public void onClick(DialogInterface dialog,
                                             int which) {
 
-                                        mDbQuester.deleteEvent(mDbQuester
-                                                .getEvent(item.getmId()));
+                                        getDBQuester().deleteEvent(
+                                                getDBQuester().getEvent(
+                                                        item.getmId()));
                                         List<ListViewItem> list = eventForList;
                                         list.remove(item);
                                         CustomAdapter adap = new CustomAdapter(
@@ -122,11 +127,13 @@ public class EventListActivity extends DefaultActionBarActivity {
                             public void onClick(DialogInterface dialog,
                                     int which) {
                                 editEvent = true;
-                                switchToEditActivity(mDbQuester.getEvent(item
-                                        .getmId()));
+                                switchToEditActivity(getDBQuester().getEvent(
+                                        item.getmId()));
+
                             }
                         });
                     }
+
                     dialog.setNeutralButton("Description",
                             new OnClickListener() {
 
@@ -298,8 +305,10 @@ public class EventListActivity extends DefaultActionBarActivity {
     @Override
     protected void onResume() {
         if (editEvent) {
+
             List<ListViewItem> updatedEvent = eventToEventForList(
-                    mDbQuester.getAllCourses(), mDbQuester.getAllEvents());
+                    getDBQuester().getAllCourses(), getDBQuester()
+                            .getAllEvents());
             CustomAdapter editAdapter = new CustomAdapter(context);
             createAdapter(updatedEvent, editAdapter);
             mListView.setAdapter(editAdapter);
@@ -308,6 +317,12 @@ public class EventListActivity extends DefaultActionBarActivity {
 
         }
         super.onResume();
+
+    }
+
+    @Override
+    public void updateData() {
+        onResume();
 
     }
 }
