@@ -15,7 +15,7 @@ import ch.epfl.calendar.data.Course;
  */
 public class BlockTest extends TestCase {
 	private static final int REMAINING_CREDITS = 7;
-	private static final String CREDITS_TO_STRING = "Remaining credits: 3.0";
+	private static final String CREDITS_TO_STRING = "Remaining credits: 3.76";
 	private static final String BLOCK_TO_STRING = "test\nRemaining credits: 7.0";
 	private static final double DOUBLE_CREDITS = 3.756;
 	private int mRemainingCredits = REMAINING_CREDITS;
