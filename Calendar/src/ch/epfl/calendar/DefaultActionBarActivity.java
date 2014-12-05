@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -274,6 +275,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         if (mDialog != null) {
             mDialog.dismiss();
         }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mDialog = new ProgressDialog(this);
         mDialog.setTitle(this.getString(R.string.be_patient));
         mDialog.setMessage(this.getString(R.string.saving_db));
@@ -304,6 +306,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             if (mDialog != null) {
                 mDialog.dismiss();
             }
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
 
     }
