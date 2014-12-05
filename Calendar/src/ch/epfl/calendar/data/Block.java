@@ -3,6 +3,8 @@
  */
 package ch.epfl.calendar.data;
 
+import java.text.DecimalFormat;
+
 /**
  * @author LoomisLoud
  *
@@ -65,6 +67,6 @@ public class Block {
 	}
 	
 	public String creditsToString() {
-		return "Remaining credits: " + Math.floor(this.mRemainingCredits);
+		return "Remaining credits: " + new DecimalFormat("#.##").format(this.mRemainingCredits);
 	}
 }

@@ -16,8 +16,8 @@ import junit.framework.TestCase;
  */
 public class EventTest extends TestCase {
     
-	private static final double HOUR_AND_HALF = 1.0;
-	private static final double HALF_HOUR = 0.0;
+	private static final double HOUR_AND_HALF = 1.5;
+	private static final double HALF_HOUR = 0.5;
 	
     public void testFirstConstructor() {
         Event event = new Event("27.11.2014", "27.11.2014", "Sweng project", "08:00", "10:00", 
