@@ -8,6 +8,9 @@ import java.util.Locale;
  * 
  */
 public class EventSeparator extends ListViewItem {
+    
+    private static final int NUMBER_OF_DAY_IN_WEEK = 7;
+    private static final int NUMBER_ONE = 1;
 
     public EventSeparator(Calendar date) {
         super(date);
@@ -27,7 +30,7 @@ public class EventSeparator extends ListViewItem {
                 return "Today";
             } else if (difDay == 1) {
                 return "Tomorrow";
-            } else if (difDay > 1 && difDay < 7) {
+            } else if (difDay > NUMBER_ONE && difDay < NUMBER_OF_DAY_IN_WEEK) {
                 today.add(Calendar.DAY_OF_MONTH, difDay);
                 return today.getDisplayName(Calendar.DAY_OF_WEEK,
                         Calendar.LONG, Locale.ENGLISH);

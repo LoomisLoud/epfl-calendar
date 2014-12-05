@@ -43,7 +43,7 @@ public class EventListActivity extends DefaultActionBarActivity {
     private static final int HEIGHT_DIVIDER = 10;
     private static final int SEPARATOR_ID = -2;
 
-    private boolean editEvent = false;
+    private static boolean editEvent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -304,5 +304,9 @@ public class EventListActivity extends DefaultActionBarActivity {
         }
         super.onResume();
 
+    }
+
+    public static void setEditEvent(boolean newEditEvent) {
+        editEvent = newEditEvent;
     }
 }
