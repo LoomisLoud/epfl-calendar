@@ -22,7 +22,6 @@ public class Event {
     private String mDescription;
     private boolean mIsAutomaticAddedBlock;
     private static final int MINUTE_CONVERTER = 60;
-    private static final int MILLISECOND_CONVERTER = 1000;
 
     /**
      * Construct the event object. date format must be of format dd.mm.yyyy
@@ -178,10 +177,19 @@ public class Event {
         this.mId = id;
     }
 
+    /**
+     * Method to retrieve the hours of the event in form of a double
+     * @return hours of the event in double
+     */
     public double getHours() {
-    	return (double) ((this.mEndDate.getTimeInMillis() - this.mStartDate.getTimeInMillis()) 
-    			/ (MINUTE_CONVERTER * MINUTE_CONVERTER * MILLISECOND_CONVERTER));
+    	double hourStart = this.mStartDate.get(Calendar.HOUR_OF_DAY);
+    	double hourEnd = this.mEndDate.get(Calendar.HOUR_OF_DAY);
+    	double minuteStart = ((double) this.mStartDate.get(Calendar.MINUTE)) / MINUTE_CONVERTER;
+    	double minuteEnd = ((double) this.mEndDate.get(Calendar.MINUTE)) / MINUTE_CONVERTER;
+    	
+    	return (hourEnd + minuteEnd) - (hourStart + minuteStart);
     }
+
     public boolean isAutomaticAddedBlock() {
         return mIsAutomaticAddedBlock;
     }

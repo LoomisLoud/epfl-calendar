@@ -71,6 +71,8 @@ public class MainActivity extends DefaultActionBarActivity implements
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
 
+        
+
         // Show a toast message about the touched event.
         mWeekView.setOnEventClickListener(this);
 
@@ -84,15 +86,13 @@ public class MainActivity extends DefaultActionBarActivity implements
         mWeekView.setEventLongPressListener(this);
 
         actionBarMainActivity();
-
-        // Used for destroy the database
-        // this.deleteDatabase(App.DATABASE_NAME);
+        
 
         if (getAuthUtils().isAuthenticated(getApplicationContext())) {
             App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
                     .getUsername(this));
             App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
-            // this.deleteDatabase(App.getDBHelper().getDatabaseName());
+           // this.deleteDatabase(App.getDBHelper().getDatabaseName());
             updateListsFromDB();
         } else {
             mListCourses = new ArrayList<Course>();
@@ -158,6 +158,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
+        
     }
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
