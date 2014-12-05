@@ -46,7 +46,7 @@ public class CalendarClient implements CalendarClientInterface {
      */
     @Override
     public void getISAInformations() {
-        mTask = new TequilaAuthenticationTask(mParentActivity,
+        mTask = new TequilaAuthenticationTask(mParentActivity.getApplicationContext(),
                 new TequilaAuthenticationHandler(),
                 null,
                 null);
