@@ -271,21 +271,6 @@ public class DBQuester implements LocalDatabaseInterface {
         return events;
     }
 
-    public Event getEventWithRowId(long id) {
-        openDatabase();
-        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
-                + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_ID + EQUAL + id, null);
-
-        Event event = null;
-        cursor.moveToFirst();
-        createEvent(cursor);
-
-        closeCursor(cursor);
-
-        return event;
-    }
-
     @Override
     public Course getCourse(String courseName) {
         openDatabase();
