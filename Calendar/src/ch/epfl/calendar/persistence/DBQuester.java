@@ -327,6 +327,9 @@ public class DBQuester implements LocalDatabaseInterface {
         openDatabase();
         CourseDataSource cds = CourseDataSource.getInstance();
 
+        App.getActionBar().addTask(
+                1 + course.getPeriods().size() + course.getEvents().size());
+
         List<String> storedCourses = new ArrayList<String>();
         Cursor cursor = mDB.rawQuery(SELECT + CourseTable.COLUMN_NAME_NAME
                 + FROM + CourseTable.TABLE_NAME_COURSE, null);
@@ -382,6 +385,9 @@ public class DBQuester implements LocalDatabaseInterface {
 
         // Create or Update new Courses
         for (Course course : courses) {
+            App.getActionBar().addTask(
+                    1 + course.getPeriods().size() + course.getEvents().size());
+
             if (storedCourses.contains(course.getName())) {
                 cds.update(course, null);
             } else {
@@ -401,6 +407,7 @@ public class DBQuester implements LocalDatabaseInterface {
         EventDataSource eds = EventDataSource.getInstance();
 
         List<Event> events = course.getEvents();
+        App.getActionBar().addTask(events.size());
         for (Event event : events) {
             if (event.getId() == NO_ID) {
                 eds.create(event, course.getName());
@@ -418,8 +425,9 @@ public class DBQuester implements LocalDatabaseInterface {
     public void storeEvent(Event event) {
         EventDataSource eds = EventDataSource.getInstance();
 
-        if (event.getId() == NO_ID) {
+        App.getActionBar().addTask(1);
 
+        if (event.getId() == NO_ID) {
             eds.create(event, event.getLinkedCourse());
         } else {
             eds.update(event, event.getLinkedCourse());

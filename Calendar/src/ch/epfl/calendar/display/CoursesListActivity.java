@@ -22,8 +22,6 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.persistence.DBQuester;
-import ch.epfl.calendar.persistence.LocalDatabaseInterface;
 
 /**
  * @author Maxime
@@ -48,7 +46,6 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
     private static final int ELEVEN = 11;
     private static final int TWELVE = 12;
 
-    private LocalDatabaseInterface mDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +57,6 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
         mListView = (ListView) findViewById(R.id.coursesListView);
 
         super.setUdpateData(this);
-
-        mDB = new DBQuester();
 
         updateData();
 
@@ -106,7 +101,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
 
     @Override
     public void updateData() {
-        mCourses = mDB.getAllCourses();
+        mCourses = getDBQuester().getAllCourses();
 
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
 

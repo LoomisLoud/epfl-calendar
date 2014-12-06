@@ -24,7 +24,6 @@ import ch.epfl.calendar.data.Block;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.persistence.DBQuester;
 
 /**
  * @author LoomisLoud
@@ -44,7 +43,6 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
     private Intent intentToEventCreation;
     private SimpleAdapter simpleAdapter;
     private final ArrayList<Map<String, String>> blockListAdapter = new ArrayList<Map<String, String>>();
-    private DBQuester mDB;
 
     private void addEventActionBar() {
         ActionBar actionBar = getActionBar();
@@ -121,7 +119,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
             final String course = data.getStringExtra("courseName");
             final int position = data.getIntExtra("position", -1);
             final ArrayList<Event> eventList = new ArrayList<Event>(
-                    mDB.getAllEventsFromCourseBlock(course));
+                    getDBQuester().getAllEventsFromCourseBlock(course));
 
             if (!eventList.isEmpty()) {
                 double timeToRemove = 0;
@@ -152,7 +150,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         nextWeek.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
         for (int position = 0; position < blockList.size(); position++) {
             eventList.clear();
-            eventList.addAll(mDB.getAllEventsFromCourseBlock(blockList
+            eventList.addAll(getDBQuester().getAllEventsFromCourseBlock(blockList
                     .get(position).getCourse().getName()));
             Block currentBlock = blockList.get(position);
             double timeToRemove = 0;
@@ -179,7 +177,6 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         setContentView(R.layout.activity_add_blocks);
         addEventActionBar();
 
-        mDB = new DBQuester();
         intentToEventCreation = new Intent(this, AddEventBlockActivity.class);
 
         mGreeter = (TextView) findViewById(R.id.greeter);
@@ -199,7 +196,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
 
     @Override
     public void updateData() {
-        mCourses = mDB.getAllCourses();
+        mCourses = getDBQuester().getAllCourses();
         blockList = constructBlockList(mCourses);
         createAdapterAndListView();
         updateCreditsOnMain();

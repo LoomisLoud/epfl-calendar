@@ -47,7 +47,6 @@ public class AddEventActivity extends DefaultActionBarActivity implements
     private String mLinkedCourse = App.NO_COURSE;
     private Spinner mSpinnerCourses;
     private List<String> mCoursesNames = new ArrayList<String>();
-    private DBQuester mDB;
 
     private static final boolean IS_BLOCK = false;
 
@@ -74,9 +73,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
 
         mSpinnerCourses = (Spinner) findViewById(R.id.spinner_courses);
 
-        mDB = new DBQuester();
-
-        mCoursesNames = mDB.getAllCoursesNames();
+        mCoursesNames = getDBQuester().getAllCoursesNames();
 
         setView();
         initializeValue(startingIntent);
@@ -169,7 +166,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
                 App.calendarToBasicFormatString(end),
                 PeriodType.DEFAULT.toString(), mLinkedCourse, mDescriptionEvent
                         .getText().toString(), IS_BLOCK, eventId);
-        DBQuester dbQuester = new DBQuester();
+        DBQuester dbQuester = getDBQuester();
         dbQuester.storeEvent(e);
     }
 
@@ -216,6 +213,6 @@ public class AddEventActivity extends DefaultActionBarActivity implements
 
     @Override
     public void updateData() {
-        mCoursesNames = mDB.getAllCoursesNames();
+        mCoursesNames = getDBQuester().getAllCoursesNames();
     }
 }
