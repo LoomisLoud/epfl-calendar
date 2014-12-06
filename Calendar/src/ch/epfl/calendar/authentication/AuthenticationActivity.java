@@ -1,6 +1,7 @@
 package ch.epfl.calendar.authentication;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,7 @@ public class AuthenticationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         setContentView(R.layout.activity_authentication);
 
         mTxtUsername = (EditText) this.findViewById(R.id.txtUsername);
@@ -63,6 +65,14 @@ public class AuthenticationActivity extends Activity {
     public void onBackPressed() {
         // Do nothing
     }
+    
+
+    //FIXME POUR ORIENTATION : onPause, onResume, on Stop ?
+    @Override
+    public void onResume() {
+        super.onResume();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+    }
 
     /**
      * Handler for the TequilaAuthentication
@@ -87,6 +97,10 @@ public class AuthenticationActivity extends Activity {
             // store the sessionID in the preferences
             TequilaAuthenticationAPI.getInstance().setSessionID(
                     getApplicationContext(), sessionID);
+            TequilaAuthenticationAPI.getInstance().setUsername(
+                    getApplicationContext(),
+                    AuthenticationActivity.this.mTxtUsername.getText()
+                            .toString());
             Toast.makeText(AuthenticationActivity.this.mThisActivity,
                     R.string.authenticated, Toast.LENGTH_SHORT).show();
             AuthenticationActivity.this.mThisActivity.finish();

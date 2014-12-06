@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,10 +73,15 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             populateCalendarFromISA();
         }
+    }
+    
+    protected void activateRotation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
     @Override
@@ -137,7 +143,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(coursesListActivityIntent);
     }
 
-    private void switchToAddBlockActivity() {
+    public void switchToAddBlockActivity() {
         Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
         startActivity(blockActivityIntent);
     }
@@ -169,6 +175,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     public void switchToAuthenticationActivity() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         Intent displayAuthenticationActivtyIntent = new Intent(mThisActivity,
                 AuthenticationActivity.class);
         mThisActivity.startActivityForResult(
@@ -176,6 +183,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     public void populateCalendarFromISA() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         if (!mAuthUtils.isAuthenticated(getApplicationContext())) {
             switchToAuthenticationActivity();
         } else {
@@ -204,7 +212,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
             createMenuDeleteDB();
         } else {
             App.setDBHelper(App.DATABASE_NAME);
-            mCurrentDBName = App.DATABASE_NAME;
             DBQuester.close();
             TequilaAuthenticationAPI.getInstance().clearStoredData(
                     getApplicationContext());
@@ -217,7 +224,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         choiceDialog
                 .setTitle("Do you want do delete the database for the user "
                         + TequilaAuthenticationAPI.getInstance().getUsername(
-                                mThisActivity) + " ?");
+                                mThisActivity.getApplicationContext()) + " ?");
         choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -228,7 +235,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
                         getApplicationContext().deleteDatabase(
                                 App.getDBHelper().getDatabaseName());
                         App.setDBHelper(App.DATABASE_NAME);
-                        mCurrentDBName = App.DATABASE_NAME;
+                        mCurrentDBName = "none";
+                        App.setCurrentUsername("noUser");
                         DBQuester.close();
                         dialog.cancel();
                         TequilaAuthenticationAPI.getInstance().clearStoredData(
@@ -238,7 +246,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
                     case 1:
                         // No
                         App.setDBHelper(App.DATABASE_NAME);
-                        mCurrentDBName = App.DATABASE_NAME;
+                        App.setCurrentUsername("noUser");
+                        mCurrentDBName = "none";
                         DBQuester.close();
                         dialog.cancel();
                         TequilaAuthenticationAPI.getInstance().clearStoredData(
@@ -303,6 +312,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             if (mDialog != null) {
                 mDialog.dismiss();
             }
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
 
     }

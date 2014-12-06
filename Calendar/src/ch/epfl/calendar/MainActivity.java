@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.pm.ActivityInfo;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -65,11 +66,14 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         setContentView(R.layout.activity_main);
         super.setUdpateData(this);
 
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
+
+        
 
         // Show a toast message about the touched event.
         mWeekView.setOnEventClickListener(this);
@@ -85,24 +89,18 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         actionBarMainActivity();
 
-        // Used for destroy the database
-        // this.deleteDatabase(App.DATABASE_NAME);
-
         if (getAuthUtils().isAuthenticated(getApplicationContext())) {
             App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
                     .getUsername(this));
             App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
-            // this.deleteDatabase(App.getDBHelper().getDatabaseName());
+           // this.deleteDatabase(App.getDBHelper().getDatabaseName());
             updateListsFromDB();
         } else {
             mListCourses = new ArrayList<Course>();
         }
 
-        if (mListCourses.isEmpty()) {
-            populateCalendarFromISA();
-        } else {
-            mWeekView.notifyDatasetChanged();
-        }
+        mWeekView.notifyDatasetChanged();
+        activateRotation();
 
     }
 
@@ -158,6 +156,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
+        
     }
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
@@ -346,8 +345,8 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     protected void onResume() {
-
         super.onResume();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         super.setUdpateData(this);
         mListCourses = getDBQuester().getAllCourses();
         mListEventWithoutCourse = getDBQuester().getAllEventsWithoutCourse();

@@ -353,6 +353,7 @@ public class WeekView extends View {
 
         // Set default event color.
         mDefaultEventColor = Color.parseColor("#9fc6e7");
+        
     }
 
     @Override
@@ -375,6 +376,7 @@ public class WeekView extends View {
                 + mHeaderRowPadding * 2, getWidth(), mHeaderRowPadding * 2
                 + mHeaderTextHeight + mHeaderMarginBottom + mTimeTextHeight / 2
                 - mHourSeparatorHeight / 2, mHeaderColumnBackgroundPaint);
+        
     }
     
     public boolean setIsFirstDrawBis(boolean firstDraw) {
@@ -1338,13 +1340,6 @@ public class WeekView extends View {
     public void goToToday() {
         Calendar today = Calendar.getInstance();
         goToDate(today);
-    }
-    
-    public void goTo(){
-        Calendar date = Calendar.getInstance();
-        date.set(2014, 9, 10);
-        
-        goToDate(date);
     }
 
     /**
