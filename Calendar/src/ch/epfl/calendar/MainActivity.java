@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.pm.ActivityInfo;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -65,6 +66,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         setContentView(R.layout.activity_main);
         super.setUdpateData(this);
 
@@ -86,7 +88,6 @@ public class MainActivity extends DefaultActionBarActivity implements
         mWeekView.setEventLongPressListener(this);
 
         actionBarMainActivity();
-        
 
         if (getAuthUtils().isAuthenticated(getApplicationContext())) {
             App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
@@ -98,11 +99,8 @@ public class MainActivity extends DefaultActionBarActivity implements
             mListCourses = new ArrayList<Course>();
         }
 
-        if (mListCourses.isEmpty()) {
-            populateCalendarFromISA();
-        } else {
-            mWeekView.notifyDatasetChanged();
-        }
+        mWeekView.notifyDatasetChanged();
+        activateRotation();
 
     }
 
@@ -343,8 +341,8 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     protected void onResume() {
-
         super.onResume();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         super.setUdpateData(this);
         mListCourses = getDBQuester().getAllCourses();
         mListEventWithoutCourse = getDBQuester().getAllEventsWithoutCourse();

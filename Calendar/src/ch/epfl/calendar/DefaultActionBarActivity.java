@@ -73,10 +73,15 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             populateCalendarFromISA();
         }
+    }
+    
+    protected void activateRotation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
     @Override
@@ -170,6 +175,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     public void switchToAuthenticationActivity() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         Intent displayAuthenticationActivtyIntent = new Intent(mThisActivity,
                 AuthenticationActivity.class);
         mThisActivity.startActivityForResult(
@@ -177,6 +183,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     public void populateCalendarFromISA() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         if (!mAuthUtils.isAuthenticated(getApplicationContext())) {
             switchToAuthenticationActivity();
         } else {
@@ -275,7 +282,6 @@ public abstract class DefaultActionBarActivity extends Activity implements
         if (mDialog != null) {
             mDialog.dismiss();
         }
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mDialog = new ProgressDialog(this);
         mDialog.setTitle(this.getString(R.string.be_patient));
         mDialog.setMessage(this.getString(R.string.saving_db));

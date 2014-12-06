@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.widget.Toast;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
@@ -46,10 +47,11 @@ public class CalendarClient implements CalendarClientInterface {
      */
     @Override
     public void getISAInformations() {
-        mTask = new TequilaAuthenticationTask(mParentActivity.getApplicationContext(),
+        mTask = new TequilaAuthenticationTask(mParentActivity,
                 new TequilaAuthenticationHandler(),
                 null,
                 null);
+        mParentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mTask.execute(null, null);
     }
 
