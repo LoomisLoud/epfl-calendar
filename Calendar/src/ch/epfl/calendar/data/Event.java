@@ -93,6 +93,15 @@ public class Event {
     public String getName() {
         return mName;
     }
+    
+    public String getTitle() {
+        String startHour = App.calendarHourToBasicFormatString(mStartDate);
+        String endHour = App.calendarHourToBasicFormatString(mEndDate);
+        
+        String hour = startHour + " - " + endHour;
+        
+        return hour + "\n" + getName();
+    }
 
     /**
      * @param name

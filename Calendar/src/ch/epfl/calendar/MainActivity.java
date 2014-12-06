@@ -230,13 +230,13 @@ public class MainActivity extends DefaultActionBarActivity implements
             }
             for (Event event : c.getEvents()) {
                 mMListEvents.add(new WeekViewEvent(event.getId(), event
-                        .getName(), event.getStartDate(), event.getEndDate(),
+                        .getTitle(), event.getStartDate(), event.getEndDate(),
                         PeriodType.DEFAULT, event.getmDescription()));
             }
 
         }
         for (Event event : mListEventWithoutCourse) {
-            mMListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
+            mMListEvents.add(new WeekViewEvent(event.getId(), event.getTitle(),
                     event.getStartDate(), event.getEndDate(),
                     PeriodType.DEFAULT, event.getmDescription()));
         }
@@ -245,6 +245,10 @@ public class MainActivity extends DefaultActionBarActivity implements
     }
 
     private String getEventTitle(Course c, Period p) {
+        String startHour = App.calendarHourToBasicFormatString(p.getStartDate());
+        String endHour = App.calendarHourToBasicFormatString(p.getEndDate());
+        
+        String hour = startHour + " - " + endHour;
         String result = c.getName() + "\n";
         int i = p.getRooms().size();
         for (String r : p.getRooms()) {
@@ -255,7 +259,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             }
             i--;
         }
-        return result + "\n" + p.getType();
+        return hour + "\n" + result + "\n" + p.getType();
     }
 
     @Override
@@ -263,7 +267,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (weekEvent.getmType().equals(PeriodType.LECTURE)
                 || weekEvent.getmType().equals(PeriodType.PROJECT)
                 || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = weekEvent.getName().split("\n")[0];
+            String cours = weekEvent.getName().split("\n")[1];
             switchToCourseDetails(cours);
         } else {
             Event event = getDBQuester().getEvent(weekEvent.getId());
