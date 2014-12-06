@@ -6,10 +6,12 @@ package ch.epfl.calendar.persistence.tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.database.sqlite.SQLiteException;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.MainActivity;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.persistence.DBQuester;
 
@@ -27,7 +29,7 @@ public class DBQuesterTest extends
     private List<Course> mListCourses = null;
     private DBQuester mDBQuester;
     private MainActivity mActivity;
-    
+
     private static final int SLEEP_TIME = 250;
 
     public DBQuesterTest() {
@@ -53,7 +55,7 @@ public class DBQuesterTest extends
         mActivity.setUdpateData(mActivity);
 
         mDBQuester = new DBQuester();
-        
+
         mDBQuester.deleteAllTables();
         mDBQuester.createTables();
 
@@ -73,193 +75,295 @@ public class DBQuesterTest extends
         mListCourses = null;
     }
 
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getAllCourses()}.
-//     */
-//    public final void testGetAllCourses() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getAllCoursesNames()}.
-//     */
-//    public final void testGetAllCoursesNames() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getAllPeriodsFromCourse(java.lang.String)}
-//     * .
-//     */
-//    public final void testGetAllPeriodsFromCourse() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getEvent(long)}.
-//     */
-//    public final void testGetEvent() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getAllEvents()}.
-//     */
-//    public final void testGetAllEvents() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getAllEventsFromCourse(java.lang.String)}
-//     * .
-//     */
-//    public final void testGetAllEventsFromCourse() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getAllEventsFromCourseBlock(java.lang.String)}
-//     * .
-//     */
-//    public final void testGetAllEventsFromCourseBlock() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getAllEventsWithoutCourse()}
-//     * .
-//     */
-//    public final void testGetAllEventsWithoutCourse() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#getEventWithRowId(long)}.
-//     */
-//    public final void testGetEventWithRowId() {
-//        fail("Not yet implemented"); // TODO
-//    }
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#getAllCourses()}
+     * {@link ch.epfl.calendar.persistence.DBQuester#storeCourses(java.util.List)}
+     * .
+     */
+    public final void testStoreAndGetAllCourses() {
+        mDBQuester.storeCourses(mListCourses);
+
+        waitOnInsertionInDB();
+
+        List<Course> coursesInDB = new ArrayList<Course>();
+        coursesInDB = mDBQuester.getAllCourses();
+
+        for (Course course : mListCourses) {
+            assertTrue(coursesInDB.contains(course));
+        }
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#getAllCoursesNames()}.
+     */
+    public final void testGetAllCoursesNames() {
+        mDBQuester.storeCourses(mListCourses);
+
+        waitOnInsertionInDB();
+
+        List<String> coursesInDB = new ArrayList<String>();
+        coursesInDB = mDBQuester.getAllCoursesNames();
+
+        for (Course course : mListCourses) {
+            assertTrue(coursesInDB.contains(course.getName()));
+        }
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#getAllPeriodsFromCourse(java.lang.String)}
+     * .
+     */
+    public final void testGetAllPeriodsFromCourse() {
+        mDBQuester.storeCourse(mListCourses.get(0));
+
+        waitOnInsertionInDB();
+
+        List<Period> periodsInDB = new ArrayList<Period>();
+        periodsInDB = mDBQuester.getAllPeriodsFromCourse(mListCourses.get(0)
+                .getName());
+
+        List<Period> periods = mListCourses.get(0).getPeriods();
+
+        for (Period p : periodsInDB) {
+            assertTrue(periods.contains(p));
+        }
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#getEvent(long)}.
+     */
+    public final void testStoreAndGetAndDeleteEvent() {
+        Event event1 = new Event("event1", "27.11.2014 08:00",
+                "27.11.2014 18:00", null, App.NO_COURSE, "Event 1", false,
+                DBQuester.NO_ID);
+
+        mDBQuester.storeEvent(event1);
+
+        waitOnInsertionInDB();
+
+        List<Event> eventsInDB = mDBQuester.getAllEvents();
+        Event eventInDB = mDBQuester.getEvent(eventsInDB.get(0).getId());
+
+        assertEquals(event1.toString(), eventInDB.toString());
+
+        mDBQuester.deleteEvent(eventInDB);
+
+        assertNull(mDBQuester.getEvent(eventInDB.getId()));
+
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#getAllEvents()}.
+     */
+    public final void testGetAllEvents() {
+        Event event1 = new Event("event1", "27.11.2014 08:00",
+                "27.11.2014 18:00", null, App.NO_COURSE, "Event 1", false,
+                DBQuester.NO_ID);
+        Event event2 = new Event("event2", "28.11.2014 08:00",
+                "28.11.2014 18:00", null, mListCourses.get(0).getName(),
+                "Event 2", true, DBQuester.NO_ID);
+        mDBQuester.storeEvent(event1);
+        mDBQuester.storeEvent(event2);
+
+        waitOnInsertionInDB();
+
+        List<Event> events = mDBQuester.getAllEvents();
+
+        assertEquals(2, events.size());
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#getAllEventsFromCourse(java.lang.String)}
+     * .
+     */
+    public final void testGetAllEventsFromCourse() {
+        Event event1 = new Event("event1", "27.11.2014 08:00",
+                "27.11.2014 18:00", null, App.NO_COURSE, "Event 1", false,
+                DBQuester.NO_ID);
+        Event event2 = new Event("event2", "28.11.2014 08:00",
+                "28.11.2014 18:00", null, mListCourses.get(0).getName(),
+                "Event 2", true, DBQuester.NO_ID);
+
+        mDBQuester.storeEvent(event1);
+        mDBQuester.storeEvent(event2);
+
+        waitOnInsertionInDB();
+
+        List<Event> events = mDBQuester.getAllEventsFromCourse(mListCourses
+                .get(0).getName());
+
+        assertEquals(1, events.size());
+        assertEquals(event2.getName(), events.get(0).getName());
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#getAllEventsFromCourseBlock(java.lang.String)}
+     * .
+     */
+    public final void testGetAllEventsFromCourseBlock() {
+        Event event1 = new Event("event1", "27.11.2014 08:00",
+                "27.11.2014 18:00", null, mListCourses.get(0).getName(),
+                "Event 1", false, DBQuester.NO_ID);
+        Event event2 = new Event("event2", "28.11.2014 08:00",
+                "28.11.2014 18:00", null, mListCourses.get(0).getName(),
+                "Event 2", true, DBQuester.NO_ID);
+
+        mDBQuester.storeEvent(event1);
+        mDBQuester.storeEvent(event2);
+
+        waitOnInsertionInDB();
+
+        List<Event> events = mDBQuester
+                .getAllEventsFromCourseBlock(mListCourses.get(0).getName());
+
+        assertEquals(1, events.size());
+        assertEquals(event2.getName(), events.get(0).getName());
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#getAllEventsWithoutCourse()}
+     * .
+     */
+    public final void testGetAllEventsWithoutCourse() {
+        Event event1 = new Event("event1", "27.11.2014 08:00",
+                "27.11.2014 18:00", null, App.NO_COURSE, "Event 1", false,
+                DBQuester.NO_ID);
+        Event event2 = new Event("event2", "28.11.2014 08:00",
+                "28.11.2014 18:00", null, mListCourses.get(0).getName(),
+                "Event 2", true, DBQuester.NO_ID);
+
+        mDBQuester.storeEvent(event1);
+        mDBQuester.storeEvent(event2);
+
+        waitOnInsertionInDB();
+
+        List<Event> events = mDBQuester.getAllEventsWithoutCourse();
+
+        assertEquals(1, events.size());
+        assertEquals(event1.getName(), events.get(0).getName());
+    }
 
     /**
      * Test method for
      * {@link ch.epfl.calendar.persistence.DBQuester#getCourse(java.lang.String)}
      * and
-     * {@link ch.epfl.calendar.persistence.DBQuester#storeCourses(java.util.List)}
+     * {@link ch.epfl.calendar.persistence.DBQuester#storeCourse(ch.epfl.calendar.data.Course)}
      * .
      */
     public final void testStoreAndGetCourse() {
         mDBQuester.storeCourse(mListCourses.get(0));
 
         waitOnInsertionInDB();
-        
+
         Course courseInDB = mDBQuester.getCourse(mListCourses.get(0).getName());
 
         assertEquals(mListCourses.get(0).toString(), courseInDB.toString());
     }
 
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#storeCourse(ch.epfl.calendar.data.Course)}
-//     * .
-//     */
-//    public final void testStoreCourse() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//     /**
-//     * Test method for
-//     * {@link
-//     ch.epfl.calendar.persistence.DBQuester#storeCourses(java.util.List)}
-//     * .
-//     */
-//     public final void testStoreCourses() {
-//     fail("Not yet implemented"); // TODO
-//     }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#storeEventsFromCourse(ch.epfl.calendar.data.Course)}
-//     * .
-//     */
-//    public final void testStoreEventsFromCourse() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#storeEvent(ch.epfl.calendar.data.Event)}
-//     * .
-//     */
-//    public final void testStoreEvent() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#deleteEvent(ch.epfl.calendar.data.Event)}
-//     * .
-//     */
-//    public final void testDeleteEvent() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#deletePeriod(ch.epfl.calendar.data.Period)}
-//     * .
-//     */
-//    public final void testDeletePeriod() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#deleteCourse(java.lang.String)}
-//     * .
-//     */
-//    public final void testDeleteCourse() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#deleteAllTables()}.
-//     */
-//    public final void testDeleteAllTables() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#createTables()}.
-//     */
-//    public final void testCreateTables() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for {@link ch.epfl.calendar.persistence.DBQuester#close()}.
-//     */
-//    public final void testClose() {
-//        fail("Not yet implemented"); // TODO
-//    }
-//
-//    /**
-//     * Test method for
-//     * {@link ch.epfl.calendar.persistence.DBQuester#openDatabase()}.
-//     */
-//    public final void testOpenDatabase() {
-//        fail("Not yet implemented"); // TODO
-//    }
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#storeEventsFromCourse(ch.epfl.calendar.data.Course)}
+     * .
+     */
+    public final void testStoreEventsFromCourse() {
+        Course course = mListCourses.get(0);
+
+        mDBQuester.storeEventsFromCourse(course);
+
+        waitOnInsertionInDB();
+
+        List<Event> events = mDBQuester
+                .getAllEventsFromCourse(course.getName());
+
+        assertEquals(2, events.size());
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#deletePeriod(ch.epfl.calendar.data.Period)}
+     * .
+     */
+    public final void testDeletePeriod() {
+        Course course = mListCourses.get(0);
+
+        mDBQuester.storeCourse(course);
+
+        waitOnInsertionInDB();
+
+        List<Period> periods = mDBQuester.getAllPeriodsFromCourse(course
+                .getName());
+
+        mDBQuester.deletePeriod(periods.get(0));
+
+        List<Period> periodsAfterDelete = mDBQuester
+                .getAllPeriodsFromCourse(course.getName());
+        assertEquals(1, periodsAfterDelete.size());
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#deleteCourse(java.lang.String)}
+     * .
+     */
+    public final void testDeleteCourse() {
+        Course course = mListCourses.get(0);
+
+        mDBQuester.storeCourse(course);
+
+        waitOnInsertionInDB();
+
+        mDBQuester.deleteCourse(course.getName());
+
+        List<Course> courses = mDBQuester.getAllCourses();
+        List<Period> periods = mDBQuester.getAllPeriodsFromCourse(course
+                .getName());
+        List<Event> events = mDBQuester.getAllEvents();
+
+        assertEquals(new ArrayList<Course>(), courses);
+        assertEquals(new ArrayList<Period>(), periods);
+        assertEquals(new ArrayList<Event>(), events);
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#deleteAllTables()}.
+     */
+    public final void testDeleteAllTables() {
+        mDBQuester.deleteAllTables();
+        try {
+            mDBQuester.getAllCourses();
+        } catch (SQLiteException e) {
+            // Expected
+        }
+
+        // Create Tables for next tests
+        mDBQuester.createTables();
+    }
+
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#createTables()}.
+     */
+    public final void testCreateTables() {
+        mDBQuester.deleteAllTables();
+
+        try {
+            mDBQuester.getAllCourses();
+        } catch (SQLiteException e) {
+            // Expected
+        }
+
+        mDBQuester.createTables();
+        assertEquals(new ArrayList<Course>(), mDBQuester.getAllCourses());
+    }
 
     private void populateTestDB() throws Exception {
         List<String> period1Course1Rooms = new ArrayList<String>();
@@ -275,8 +379,17 @@ public class DBQuesterTest extends
         ArrayList<Period> periodsCourse1 = new ArrayList<Period>();
         periodsCourse1.add(period1Course1);
         periodsCourse1.add(period2Course1);
+        Event event1Course1 = new Event("event1", "27.11.2014 08:00",
+                "27.11.2014 18:00", null, "TestCourse1", "Event 1", false,
+                DBQuester.NO_ID);
+        Event event2Course1 = new Event("event2", "28.11.2014 08:00",
+                "28.11.2014 18:00", null, "TestCourse1", "Event 2", true,
+                DBQuester.NO_ID);
+        List<Event> eventsCourse1 = new ArrayList<Event>();
+        eventsCourse1.add(event1Course1);
+        eventsCourse1.add(event2Course1);
         Course course1 = new Course("TestCourse1", periodsCourse1,
-                "Pr. Testpr1", 200, "CS-321", "awesome course", null);
+                "Pr. Testpr1", 200, "CS-321", "awesome course", eventsCourse1);
 
         List<String> period1Course2Rooms = new ArrayList<String>();
         List<String> period2Course2Rooms = new ArrayList<String>();
@@ -298,7 +411,7 @@ public class DBQuesterTest extends
         mListCourses.add(course1);
         mListCourses.add(course2);
     }
-    
+
     private void waitOnInsertionInDB() {
         while (mActivity.getNbOfAsyncTaskDB() > 0) {
             try {
