@@ -9,7 +9,7 @@ import ch.epfl.calendar.persistence.CourseTable;
 
 /**
  * @author lweingart
- * 
+ *
  */
 public class CourseTableTest extends TestCase {
 
@@ -18,12 +18,8 @@ public class CourseTableTest extends TestCase {
     // private DBHelper mDBHelper;
 
     @Override
-    public void setUp() {
-        try {
-            super.setUp();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void setUp() throws Exception {
+    	super.setUp();
 
         App.setDBHelper("calendar_test.db");
         mDb = App.getDBHelper().getReadableDatabase();
