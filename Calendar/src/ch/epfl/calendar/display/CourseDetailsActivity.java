@@ -56,7 +56,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
     private void courseDetailsActionBar() {
         ActionBar actionBar = getActionBar();
-        // actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle("Course Details");
     }
 
