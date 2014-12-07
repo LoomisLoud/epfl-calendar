@@ -262,7 +262,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
         for (Event e : event) {
             eventForList.add(new EventForList(e.getName(), e.getStartDate(), e
                     .getEndDate(), stringToPeriodType(e.getType()), e.getId(),
-                    e.getLinkedCourse(), e.getmDescription()));
+                    e.getLinkedCourse(), e.getDescription()));
         }
         sort(eventForList);
 

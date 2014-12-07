@@ -176,11 +176,11 @@ public class Event {
         this.mLinkedCourse = linkedCourse;
     }
 
-    public String getmDescription() {
+    public String getDescription() {
         return mDescription;
     }
 
-    public void setmDescription(String description) {
+    public void setDescription(String description) {
         this.mDescription = description;
     }
 

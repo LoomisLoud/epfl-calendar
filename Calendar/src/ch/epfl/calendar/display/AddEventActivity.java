@@ -95,7 +95,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
             Event event = new DBQuester().getEvent(eventId);
 
             mNameEvent.setText(event.getName());
-            mDescriptionEvent.setText(event.getmDescription());
+            mDescriptionEvent.setText(event.getDescription());
             initializeSpinner(event.getLinkedCourse());
 
             int startYear = event.getStartDate().get(Calendar.YEAR);

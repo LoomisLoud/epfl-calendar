@@ -92,6 +92,22 @@ public class DBQuesterTest extends
         for (Course course : mListCourses) {
             assertTrue(coursesInDB.contains(course));
         }
+        
+        //delete a course and modify the other !
+        Course course = coursesInDB.get(0);
+        course.setTeacher("new Teacher");
+        List<Course> newListCourses = new ArrayList<Course>();
+        newListCourses.add(course);
+        
+        mDBQuester.storeCourses(newListCourses);
+        
+        waitOnInsertionInDB();
+        
+        coursesInDB = new ArrayList<Course>();
+        coursesInDB = mDBQuester.getAllCourses();
+        
+        assertEquals(1, coursesInDB.size());
+        assertTrue(coursesInDB.contains(course));
     }
 
     /**
@@ -147,6 +163,18 @@ public class DBQuesterTest extends
 
         List<Event> eventsInDB = mDBQuester.getAllEvents();
         Event eventInDB = mDBQuester.getEvent(eventsInDB.get(0).getId());
+
+        assertEquals(event1.toString(), eventInDB.toString());
+        
+        //Modify the event
+        eventInDB.setDescription("new description");
+        event1 = eventInDB;
+        
+        mDBQuester.storeEvent(eventInDB);
+        
+        waitOnInsertionInDB();
+        
+        eventInDB = mDBQuester.getEvent(eventsInDB.get(0).getId());
 
         assertEquals(event1.toString(), eventInDB.toString());
 
@@ -266,6 +294,17 @@ public class DBQuesterTest extends
         Course courseInDB = mDBQuester.getCourse(mListCourses.get(0).getName());
 
         assertEquals(mListCourses.get(0).toString(), courseInDB.toString());
+        
+      //Change a course and update it
+        Course course = mListCourses.get(0);
+        course.setDescription("new description");
+        mDBQuester.storeCourse(course);
+        
+        waitOnInsertionInDB();
+        
+        courseInDB = mDBQuester.getCourse(course.getName());
+        
+        assertEquals(course.toString(), courseInDB.toString());
     }
 
     /**
@@ -284,6 +323,28 @@ public class DBQuesterTest extends
                 .getAllEventsFromCourse(course.getName());
 
         assertEquals(2, events.size());
+        
+        //Update both with same description
+        List<Event> newEvents = new ArrayList<Event>();
+        
+        for (Event event : events) {
+            event.setDescription("new description");
+            newEvents.add(event);
+            System.out.println("EVENT :::::::::::::::: " + event.getId());
+        }
+        course.setEvents(newEvents);
+        mDBQuester.storeEventsFromCourse(course);
+
+        waitOnInsertionInDB();
+
+        events = mDBQuester
+                .getAllEventsFromCourse(course.getName());
+
+        assertEquals(2, events.size());
+        
+        for (Event event : events) {
+            assertEquals("new description", event.getDescription());
+        }
     }
 
     /**

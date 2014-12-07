@@ -48,7 +48,7 @@ public class EventDataSource implements DAO {
                 App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
-        values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getmDescription());
+        values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getDescription());
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
 
@@ -80,7 +80,7 @@ public class EventDataSource implements DAO {
                 App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
-        values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getmDescription());
+        values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getDescription());
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
 
