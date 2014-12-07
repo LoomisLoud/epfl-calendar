@@ -1,6 +1,7 @@
 package ch.epfl.calendar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -10,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.RectF;
+import android.graphics.YuvImage;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -71,8 +73,6 @@ public class MainActivity extends DefaultActionBarActivity implements
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
 
-        
-
         // Show a toast message about the touched event.
         mWeekView.setOnEventClickListener(this);
 
@@ -86,13 +86,12 @@ public class MainActivity extends DefaultActionBarActivity implements
         mWeekView.setEventLongPressListener(this);
 
         actionBarMainActivity();
-        
 
         if (getAuthUtils().isAuthenticated(getApplicationContext())) {
             App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
                     .getUsername(this));
             App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
-           // this.deleteDatabase(App.getDBHelper().getDatabaseName());
+            // this.deleteDatabase(App.getDBHelper().getDatabaseName());
             updateListsFromDB();
         } else {
             mListCourses = new ArrayList<Course>();
@@ -158,7 +157,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
-        
+
     }
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
@@ -196,12 +195,12 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_today:
-                mWeekView.goToToday();
-                mWeekView.goToEight();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case R.id.action_today:
+            mWeekView.goToToday();
+            mWeekView.goToEight();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -237,9 +236,37 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         }
         for (Event event : mListEventWithoutCourse) {
-            mMListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
-                    event.getStartDate(), event.getEndDate(),
-                    PeriodType.DEFAULT, event.getmDescription()));
+            int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
+                    - event.getStartDate().get(Calendar.DAY_OF_MONTH);
+            int monthDuaration = event.getEndDate().get(Calendar.MONTH)
+                    - event.getStartDate().get(Calendar.MONTH);
+            int yearDuration = event.getEndDate().get(Calendar.YEAR)
+                    - event.getStartDate().get(Calendar.YEAR);
+
+            if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
+                Calendar start = (Calendar) event.getStartDate().clone();
+                for (int i = 0; i <= dayDuration; i++) {
+                    Calendar end = event.getEndDate();
+                    if (i != dayDuration) {
+                        end = (Calendar) start.clone();
+                        end.set(Calendar.HOUR_OF_DAY, 23);
+                    }
+                    System.out.println(end.get(Calendar.DAY_OF_MONTH));
+                    mMListEvents.add(new WeekViewEvent(event.getId(), event
+                            .getName(), start, end, PeriodType.DEFAULT, event
+                            .getmDescription()));
+                    System.out.println(start.getTime().toString());
+                    System.out.println(end.getTime().toString());
+                    start.add(Calendar.DAY_OF_MONTH, 1);
+                    start.set(Calendar.HOUR_OF_DAY, 1);
+                    start.set(Calendar.MINUTE, 0);
+                }
+            } else {
+                mMListEvents.add(new WeekViewEvent(event.getId(), event
+                        .getName(), event.getStartDate(), event.getEndDate(),
+                        PeriodType.DEFAULT, event.getmDescription()));
+                System.out.println("eeeeeeeeeeeeeee");
+            }
         }
 
         return mMListEvents;
@@ -292,45 +319,42 @@ public class MainActivity extends DefaultActionBarActivity implements
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
-                                case 0:
-                                    switchToEditActivity(eventFromDB);
-                                    dialog.cancel();
-                                    break;
-                                case 1:
-                                    getDBQuester().deleteEvent(eventFromDB);
-                                    updateData();
-                                    dialog.cancel();
-                                    break;
-                                case 2:
-                                    if (event.getmType().equals(
-                                            PeriodType.LECTURE)
-                                            || event.getmType().equals(
-                                                    PeriodType.PROJECT)
-                                            || event.getmType().equals(
-                                                    PeriodType.EXERCISES)) {
-                                        String cours = event.getName().split(
-                                                "\n")[0];
-                                        switchToCourseDetails(cours);
+                            case 0:
+                                switchToEditActivity(eventFromDB);
+                                dialog.cancel();
+                                break;
+                            case 1:
+                                getDBQuester().deleteEvent(eventFromDB);
+                                updateData();
+                                dialog.cancel();
+                                break;
+                            case 2:
+                                if (event.getmType().equals(PeriodType.LECTURE)
+                                        || event.getmType().equals(
+                                                PeriodType.PROJECT)
+                                        || event.getmType().equals(
+                                                PeriodType.EXERCISES)) {
+                                    String cours = event.getName().split("\n")[0];
+                                    switchToCourseDetails(cours);
+                                } else {
+
+                                    if (eventFromDB.getLinkedCourse().equals(
+                                            App.NO_COURSE)) {
+                                        String description = event
+                                                .getmDescription();
+                                        switchToEventDetail(event.getName(),
+                                                description);
                                     } else {
-
-                                        if (eventFromDB.getLinkedCourse()
-                                                .equals(App.NO_COURSE)) {
-                                            String description = event
-                                                    .getmDescription();
-                                            switchToEventDetail(
-                                                    event.getName(),
-                                                    description);
-                                        } else {
-                                            String coursName = eventFromDB
-                                                    .getLinkedCourse();
-                                            switchToCourseDetails(coursName);
-                                        }
-
+                                        String coursName = eventFromDB
+                                                .getLinkedCourse();
+                                        switchToCourseDetails(coursName);
                                     }
-                                    dialog.cancel();
-                                    break;
-                                default:
-                                    break;
+
+                                }
+                                dialog.cancel();
+                                break;
+                            default:
+                                break;
                             }
 
                         }

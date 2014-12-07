@@ -19,7 +19,7 @@ import ch.epfl.calendar.data.ListViewItem;
 public class CustomAdapter extends BaseAdapter {
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
-    private static final int HEIGHT_VIEW = 100;
+    private static final int HEIGHT_VIEW = 150;
     private static final int SEPARATOR_ID = -2;
     private static int colorBlue;
     // private static final String COLOR_MAGENTA = "#AA66CC";
@@ -112,8 +112,7 @@ public class CustomAdapter extends BaseAdapter {
                     holder.textView.setBackgroundColor(colorGreen);
                     break;
                 case LECTURE:
-                    holder.textView
-                            .setBackgroundColor(colorBlue);
+                    holder.textView.setBackgroundColor(colorBlue);
                     break;
                 case PROJECT:
                     holder.textView.setBackgroundColor(colorRed);
