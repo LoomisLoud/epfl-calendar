@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.widget.Toast;
-import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
@@ -51,6 +51,7 @@ public class CalendarClient implements CalendarClientInterface {
                 new TequilaAuthenticationHandler(),
                 null,
                 null);
+        mParentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mTask.execute(null, null);
     }
 
@@ -71,7 +72,6 @@ public class CalendarClient implements CalendarClientInterface {
                 //We don't want that the user sees this exception
             }
         }
-
         mCourseListForTests = new ArrayList<Course>(coursesList);
         mDownloadInterface.callbackDownload(success, coursesList);
     }
@@ -94,9 +94,6 @@ public class CalendarClient implements CalendarClientInterface {
         public void onError(String msg) {
             boolean exceptionOccured = false;
             String errMessage = "";
-            if (msg.equals(mParentActivity.getString(R.string.error_disconnected))) {
-                TequilaAuthenticationAPI.getInstance().clearStoredData(mParentActivity);
-            }
             Toast.makeText(mParentActivity, msg, Toast.LENGTH_LONG).show();
             try {
                 callback(false);

@@ -46,7 +46,6 @@ public class AddEventActivity extends DefaultActionBarActivity implements
     private EditText mDescriptionEvent;
     private Spinner mSpinnerCourses;
 
-    private DBQuester mDB;
     private int eventId = DBQuester.NO_ID;
 
     private String mLinkedCourse = App.NO_COURSE;
@@ -92,9 +91,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
         initializePickerDialog();
         initializeButton();
 
-        mDB = new DBQuester();
-
-        mCoursesNames = mDB.getAllCoursesNames();
+        mCoursesNames = getDBQuester().getAllCoursesNames();
 
         setView();
         initializeValue(startingIntent);
@@ -278,6 +275,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
         actionBar.setTitle("New Event");
     }
 
+
     private void setView() {
         mCoursesNames.add(0, "No connection with courses");
 
@@ -345,6 +343,6 @@ public class AddEventActivity extends DefaultActionBarActivity implements
 
     @Override
     public void updateData() {
-        mCoursesNames = mDB.getAllCoursesNames();
+        mCoursesNames = getDBQuester().getAllCoursesNames();
     }
 }

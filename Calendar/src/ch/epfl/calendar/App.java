@@ -136,6 +136,11 @@ public class App extends Application {
      * DefaultActionBarActivity
      */
     private static DefaultActionBarActivity mActionBar;
+    
+    /**
+     * The username of the current user.
+     */
+    private static String mCurrentUsername;
 
     @Override
     public void onCreate() {
@@ -274,6 +279,25 @@ public class App extends Application {
         return dd + "." + mm + "." + yyyy + " " + hh + ":" + min;
     }
     
+    public static String calendarHourToBasicFormatString(Calendar date) {
+        String hh;
+        String min;
+        
+        int hour = date.get(Calendar.HOUR_OF_DAY);
+        hh = Integer.toString(hour);
+        if (hour < NUMERIC_TEN) {
+            hh = "0".concat(hh);
+        }
+        
+        int minutes = date.get(Calendar.MINUTE);
+        min = Integer.toString(minutes);
+        if (minutes < NUMERIC_TEN) {
+            min = "0".concat(min);
+        }
+        
+        return hh + ":" + min;
+        
+    }
     public static String boolToString(boolean bool) {
         if (bool) {
             return App.TRUE;
@@ -292,5 +316,13 @@ public class App extends Application {
 
     public static void setActionBar(DefaultActionBarActivity actionBar) {
         App.mActionBar = actionBar;
+    }
+
+    public static String getCurrentUsername() {
+        return mCurrentUsername;
+    }
+
+    public static void setCurrentUsername(String currentUsername) {
+        App.mCurrentUsername = currentUsername;
     }
 }

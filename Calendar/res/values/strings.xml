@@ -71,6 +71,11 @@
     <string name="title_activity_default_action_bar">DefaultActionBarActivity</string>
     <string name="title_activity_event_detail">EventDetailActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string-array name="yes_or_no">
+        <item>Yes</item>
+        <item>No</item>
+        <item>Cancel</item>
+    </string-array>
     <string-array name="choice_on_event">
         <item>Edit</item>
         <item>Delete</item>
