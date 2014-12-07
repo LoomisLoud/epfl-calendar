@@ -739,7 +739,7 @@ public class WeekView extends View {
         }
 
         List<WeekViewEvent> events = mMonthChangeListener.onMonthChange();
-        removeDuplicate(events);
+        //removeDuplicate(events);
         sortEvents(events);
         for (WeekViewEvent event : events) {
             mEventRects.add(new EventRect(event, null));

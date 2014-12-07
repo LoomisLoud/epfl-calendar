@@ -10,8 +10,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.RectF;
-import android.graphics.YuvImage;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -39,6 +39,8 @@ public class MainActivity extends DefaultActionBarActivity implements
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
+    private static final int HOUR_23 = 23;
+    private static final int MINUTE_59 = 59;
 
     private static final int SIZE_COLUMN_GAP_DAY = 8;
     private static final int SIZE_FRONT_DAY = 12;
@@ -67,6 +69,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         setContentView(R.layout.activity_main);
         super.setUdpateData(this);
 
@@ -97,11 +100,8 @@ public class MainActivity extends DefaultActionBarActivity implements
             mListCourses = new ArrayList<Course>();
         }
 
-        if (mListCourses.isEmpty()) {
-            populateCalendarFromISA();
-        } else {
-            mWeekView.notifyDatasetChanged();
-        }
+        mWeekView.notifyDatasetChanged();
+        activateRotation();
 
     }
 
@@ -195,12 +195,12 @@ public class MainActivity extends DefaultActionBarActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.action_today:
-            mWeekView.goToToday();
-            mWeekView.goToEight();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_today:
+                mWeekView.goToToday();
+                mWeekView.goToEight();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -230,12 +230,13 @@ public class MainActivity extends DefaultActionBarActivity implements
             }
             for (Event event : c.getEvents()) {
                 mMListEvents.add(new WeekViewEvent(event.getId(), event
-                        .getName(), event.getStartDate(), event.getEndDate(),
+                        .getTitle(), event.getStartDate(), event.getEndDate(),
                         PeriodType.DEFAULT, event.getmDescription()));
             }
 
         }
         for (Event event : mListEventWithoutCourse) {
+
             int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
                     - event.getStartDate().get(Calendar.DAY_OF_MONTH);
             int monthDuaration = event.getEndDate().get(Calendar.MONTH)
@@ -244,35 +245,43 @@ public class MainActivity extends DefaultActionBarActivity implements
                     - event.getStartDate().get(Calendar.YEAR);
 
             if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
+                List<Calendar> startList = new ArrayList<Calendar>();
                 Calendar start = (Calendar) event.getStartDate().clone();
+                startList.add(start);
                 for (int i = 0; i <= dayDuration; i++) {
                     Calendar end = event.getEndDate();
                     if (i != dayDuration) {
                         end = (Calendar) start.clone();
-                        end.set(Calendar.HOUR_OF_DAY, 23);
+                        end.set(Calendar.HOUR_OF_DAY, HOUR_23);
+                        end.set(Calendar.MINUTE, MINUTE_59);
                     }
-                    System.out.println(end.get(Calendar.DAY_OF_MONTH));
                     mMListEvents.add(new WeekViewEvent(event.getId(), event
-                            .getName(), start, end, PeriodType.DEFAULT, event
-                            .getmDescription()));
-                    System.out.println(start.getTime().toString());
-                    System.out.println(end.getTime().toString());
-                    start.add(Calendar.DAY_OF_MONTH, 1);
-                    start.set(Calendar.HOUR_OF_DAY, 1);
-                    start.set(Calendar.MINUTE, 0);
+                            .getName(), startList.get(i), end,
+                            PeriodType.DEFAULT, event.getmDescription()));
+
+                    Calendar newStart = (Calendar) startList.get(i).clone();
+                    newStart.add(Calendar.DAY_OF_MONTH, 1);
+                    newStart.set(Calendar.HOUR_OF_DAY, 0);
+                    newStart.set(Calendar.MINUTE, 0);
+                    startList.add(newStart);
                 }
             } else {
                 mMListEvents.add(new WeekViewEvent(event.getId(), event
                         .getName(), event.getStartDate(), event.getEndDate(),
                         PeriodType.DEFAULT, event.getmDescription()));
-                System.out.println("eeeeeeeeeeeeeee");
             }
+
         }
 
         return mMListEvents;
     }
 
     private String getEventTitle(Course c, Period p) {
+        String startHour = App
+                .calendarHourToBasicFormatString(p.getStartDate());
+        String endHour = App.calendarHourToBasicFormatString(p.getEndDate());
+
+        String hour = startHour + " - " + endHour;
         String result = c.getName() + "\n";
         int i = p.getRooms().size();
         for (String r : p.getRooms()) {
@@ -283,7 +292,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             }
             i--;
         }
-        return result + "\n" + p.getType();
+        return hour + "\n" + result + "\n" + p.getType();
     }
 
     @Override
@@ -291,7 +300,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (weekEvent.getmType().equals(PeriodType.LECTURE)
                 || weekEvent.getmType().equals(PeriodType.PROJECT)
                 || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = weekEvent.getName().split("\n")[0];
+            String cours = weekEvent.getName().split("\n")[1];
             switchToCourseDetails(cours);
         } else {
             Event event = getDBQuester().getEvent(weekEvent.getId());
@@ -319,42 +328,42 @@ public class MainActivity extends DefaultActionBarActivity implements
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
-                            case 0:
-                                switchToEditActivity(eventFromDB);
-                                dialog.cancel();
-                                break;
-                            case 1:
-                                getDBQuester().deleteEvent(eventFromDB);
-                                updateData();
-                                dialog.cancel();
-                                break;
-                            case 2:
-                                if (event.getmType().equals(PeriodType.LECTURE)
-                                        || event.getmType().equals(
-                                                PeriodType.PROJECT)
-                                        || event.getmType().equals(
-                                                PeriodType.EXERCISES)) {
-                                    String cours = event.getName().split("\n")[0];
-                                    switchToCourseDetails(cours);
-                                } else {
-
-                                    if (eventFromDB.getLinkedCourse().equals(
-                                            App.NO_COURSE)) {
-                                        String description = event
-                                                .getmDescription();
-                                        switchToEventDetail(event.getName(),
-                                                description);
+                                case 0:
+                                    switchToEditActivity(eventFromDB);
+                                    dialog.cancel();
+                                    break;
+                                case 1:
+                                    getDBQuester().deleteEvent(eventFromDB);
+                                    updateData();
+                                    dialog.cancel();
+                                    break;
+                                case 2:
+                                    if (event.getmType().equals(PeriodType.LECTURE)
+                                            || event.getmType().equals(
+                                                    PeriodType.PROJECT)
+                                            || event.getmType().equals(
+                                                    PeriodType.EXERCISES)) {
+                                        String cours = event.getName().split("\n")[0];
+                                        switchToCourseDetails(cours);
                                     } else {
-                                        String coursName = eventFromDB
-                                                .getLinkedCourse();
-                                        switchToCourseDetails(coursName);
+    
+                                        if (eventFromDB.getLinkedCourse().equals(
+                                                App.NO_COURSE)) {
+                                            String description = event
+                                                    .getmDescription();
+                                            switchToEventDetail(event.getName(),
+                                                    description);
+                                        } else {
+                                            String coursName = eventFromDB
+                                                    .getLinkedCourse();
+                                            switchToCourseDetails(coursName);
+                                        }
+    
                                     }
-
-                                }
-                                dialog.cancel();
-                                break;
-                            default:
-                                break;
+                                    dialog.cancel();
+                                    break;
+                                default:
+                                    break;
                             }
 
                         }
@@ -367,8 +376,8 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     @Override
     protected void onResume() {
-
         super.onResume();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         super.setUdpateData(this);
         mListCourses = getDBQuester().getAllCourses();
         mListEventWithoutCourse = getDBQuester().getAllEventsWithoutCourse();
