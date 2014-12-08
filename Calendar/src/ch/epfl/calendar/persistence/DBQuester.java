@@ -424,7 +424,7 @@ public class DBQuester implements LocalDatabaseInterface {
     @Override
     public void deleteEvent(Event event) {
         EventDataSource eds = EventDataSource.getInstance();
-        
+
         eds.delete(event, null);
     }
 
@@ -449,19 +449,25 @@ public class DBQuester implements LocalDatabaseInterface {
         CourseDataSource cds = CourseDataSource.getInstance();
         cds.delete(course, null);
     }
-    
+
     @Override
     public void deleteBlock(Event event) {
-    	List<Event> events = getAllEventsFromCourseBlock(event.getLinkedCourse());
-    	for (Event e : events) {
-    		if ((e.getStartDate().get(Calendar.HOUR_OF_DAY) == event.getStartDate().get(Calendar.HOUR_OF_DAY)) 
-    				&& (e.getEndDate().get(Calendar.HOUR_OF_DAY) == event.getEndDate().get(Calendar.HOUR_OF_DAY)) 
-    				&& (e.getStartDate().get(Calendar.MINUTE) == event.getStartDate().get(Calendar.MINUTE)) 
-    				&& (e.getEndDate().get(Calendar.MINUTE) == event.getEndDate().get(Calendar.MINUTE))
-    				&& (e.getStartDate().get(Calendar.DAY_OF_WEEK) == event.getEndDate().get(Calendar.DAY_OF_WEEK))) {
-    			deleteEvent(e);
-    		}
-    	}
+        List<Event> events = getAllEventsFromCourseBlock(event
+                .getLinkedCourse());
+        for (Event e : events) {
+            if ((e.getStartDate().get(Calendar.HOUR_OF_DAY) == event
+                    .getStartDate().get(Calendar.HOUR_OF_DAY))
+                    && (e.getEndDate().get(Calendar.HOUR_OF_DAY) == event
+                            .getEndDate().get(Calendar.HOUR_OF_DAY))
+                    && (e.getStartDate().get(Calendar.MINUTE) == event
+                            .getStartDate().get(Calendar.MINUTE))
+                    && (e.getEndDate().get(Calendar.MINUTE) == event
+                            .getEndDate().get(Calendar.MINUTE))
+                    && (e.getStartDate().get(Calendar.DAY_OF_WEEK) == event
+                            .getEndDate().get(Calendar.DAY_OF_WEEK))) {
+                deleteEvent(e);
+            }
+        }
     }
 
     @Override
