@@ -17,7 +17,6 @@ import ch.epfl.calendar.persistence.CreateObject;
 import ch.epfl.calendar.persistence.CreateRowDBTask;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.EventTable;
-import ch.epfl.calendar.persistence.SQLiteCalendarException;
 import ch.epfl.calendar.persistence.UpdateObject;
 import ch.epfl.calendar.persistence.UpdateRowDBTask;
 
@@ -32,8 +31,6 @@ public class UpdateRowDBTaskTest extends
     private Event mEvent = null;
     private DBQuester mDBQuester;
     private UpdateRowDBTask instance;
-
-    private static final String ERROR_UPDATE = "Unable to update a new row!";
 
     public UpdateRowDBTaskTest() {
         super(MainActivity.class);
@@ -115,30 +112,11 @@ public class UpdateRowDBTaskTest extends
         App.getActionBar().addTask(3);
         doInBackground
                 .invoke(instance,
-                        new Object[] { new UpdateObject[] { createObjectToUpdate(mEvent) } });
+                        new Object[] {new UpdateObject[] {createObjectToUpdate(mEvent)}});
 
         List<Event> events = mDBQuester.getAllEventsWithoutCourse();
         assertEquals(events.get(0).getName(), mEvent.getName());
         // Update an object that doesn't exist in DB
-        try {
-            doInBackground = (UpdateRowDBTask.class).getDeclaredMethod(
-                    "doInBackground", UpdateObject[].class);
-            doInBackground.setAccessible(true);
-            instance = new UpdateRowDBTask();
-            doInBackground
-                    .invoke(instance,
-                            new Object[] { new UpdateObject[] { createObjectToUpdate(mEvent) } });
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof SQLiteCalendarException) {
-                if (e.getTargetException().getMessage().equals(ERROR_UPDATE)) {
-                    // Waited
-                } else {
-                    fail();
-                }
-            } else {
-                fail();
-            }
-        }
     }
 
     private UpdateObject createObjectToUpdate(Event event) {
@@ -156,7 +134,7 @@ public class UpdateRowDBTaskTest extends
 
         return new UpdateObject(values, EventTable.TABLE_NAME_EVENT,
                 EventTable.COLUMN_NAME_ID + " = ?",
-                new String[] { String.valueOf(event.getId()) });
+                new String[] {String.valueOf(event.getId())});
     }
 
     private CreateObject createObjectToStore(Event event) {
@@ -191,7 +169,7 @@ public class UpdateRowDBTaskTest extends
         App.getActionBar().addTask(6);
         doInBackground
                 .invoke(createTask,
-                        new Object[] { new CreateObject[] { createObjectToStore(event) } });
+                        new Object[] {new CreateObject[] {createObjectToStore(event)}});
     }
 
 }

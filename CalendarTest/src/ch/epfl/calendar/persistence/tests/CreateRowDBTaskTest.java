@@ -17,7 +17,6 @@ import ch.epfl.calendar.persistence.CreateObject;
 import ch.epfl.calendar.persistence.CreateRowDBTask;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.EventTable;
-import ch.epfl.calendar.persistence.SQLiteCalendarException;
 
 /**
  * @author AblionGE
@@ -30,8 +29,6 @@ public class CreateRowDBTaskTest extends
     private Event mEvent = null;
     private DBQuester mDBQuester;
     private CreateRowDBTask instance;
-
-    private static final String ERROR_CREATE = "Unable to create a new row!";
 
     public CreateRowDBTaskTest() {
         super(MainActivity.class);
@@ -116,26 +113,6 @@ public class CreateRowDBTaskTest extends
 
         List<Event> events = mDBQuester.getAllEventsWithoutCourse();
         assertEquals(mEvent.getName(), events.get(0).getName());
-        // Add a second time the same course - should be an exception
-        try {
-            doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
-                    "doInBackground", CreateObject[].class);
-            doInBackground.setAccessible(true);
-            instance = new CreateRowDBTask();
-            doInBackground.invoke(instance,
-                    new Object[] {new CreateObject[] {createObjectToStore(mEvent)}});
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof SQLiteCalendarException) {
-                if (e.getTargetException().getMessage().equals(ERROR_CREATE)) {
-                    // Waited
-                } else {
-                    fail();
-                }
-            } else {
-                fail();
-            }
-        }
-        System.out.println(mActivity.getNbOfAsyncTaskDB());
     }
 
     private CreateObject createObjectToStore(Event event) {
