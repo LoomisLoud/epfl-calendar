@@ -50,7 +50,7 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void create(Object obj, String key) throws SQLiteCalendarException {
+    public void create(Object obj, String key) {
         Course course = (Course) obj;
         assert course != null;
 
@@ -85,7 +85,7 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void update(Object obj, String key) throws SQLiteCalendarException {
+    public void update(Object obj, String key) {
         Course course = (Course) obj;
         assert course != null;
 
@@ -111,11 +111,7 @@ public class CourseDataSource implements DAO {
         UpdateRowDBTask task = new UpdateRowDBTask();
         UpdateObject object = new UpdateObject(values, CourseTable.TABLE_NAME_COURSE,
                 CourseTable.COLUMN_NAME_NAME + " = ?", new String[] {String.valueOf(course.getName())});
-        try {
-            task.execute(object);
-        } catch (SQLiteCalendarException e) {
-            Log.e("SQLiteCalendarException : ", "An error occured when trying to update " + object.toString());
-        }
+        task.execute(object);
     }
 
     /**
@@ -125,7 +121,7 @@ public class CourseDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void delete(Object obj, String key) throws SQLiteCalendarException {
+    public void delete(Object obj, String key) {
         Course course = (Course) obj;
         assert course != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
@@ -135,7 +131,6 @@ public class CourseDataSource implements DAO {
                 null);
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, CourseDataSource.ERROR_DELETE);
-            throw new SQLiteCalendarException(CourseDataSource.ERROR_DELETE);
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, CourseDataSource.SUCCESS_DELETE);
