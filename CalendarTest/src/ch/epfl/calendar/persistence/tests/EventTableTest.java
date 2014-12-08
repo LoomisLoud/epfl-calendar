@@ -8,9 +8,9 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.persistence.EventTable;
 
 /**
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class EventTableTest extends TestCase {
 
@@ -34,6 +34,7 @@ public class EventTableTest extends TestCase {
     // For deeper tests,
     // @see ch.epfl.calendar.persistence.tests.DBHelperTest#testTableCreation()
     public void testOnCreate() {
+    	SQLiteException ex = null;
         try {
             EventTable.onCreate(mDb);
             String tableName = SQLiteDatabase
@@ -42,6 +43,8 @@ public class EventTableTest extends TestCase {
             fail("Should throw an SQLiteException");
         } catch (SQLiteException e) {
             // success
+        	ex = e;
+        	assertNotNull(ex);
         }
     }
 }
