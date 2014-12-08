@@ -55,7 +55,11 @@ public class EventDataSource implements DAO {
         CreateRowDBTask task = new CreateRowDBTask();
         CreateObject object = new CreateObject(values, null,
                 EventTable.TABLE_NAME_EVENT);
-        task.execute(object);
+        try {
+            task.execute(object);
+        } catch (SQLiteCalendarException e) {
+            Log.e("SQLiteCalendarException : ", "An error occured when trying to create " + object.toString());
+        }
     }
 
     /**
@@ -89,7 +93,11 @@ public class EventDataSource implements DAO {
                 EventTable.TABLE_NAME_EVENT,
                 EventTable.COLUMN_NAME_ID + " = ?",
                 new String[] {String.valueOf(event.getId())});
-        task.execute(object);
+        try {
+            task.execute(object);
+        } catch (SQLiteCalendarException e) {
+            Log.e("SQLiteCalendarException : ", "An error occured when trying to update " + object.toString());
+        }
     }
 
     /**

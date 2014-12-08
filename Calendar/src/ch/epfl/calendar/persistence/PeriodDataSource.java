@@ -55,7 +55,11 @@ public class PeriodDataSource implements DAO {
         CreateRowDBTask task = new CreateRowDBTask();
         CreateObject object = new CreateObject(values, null,
                 PeriodTable.TABLE_NAME_PERIOD);
-        task.execute(object);
+        try {
+            task.execute(object);
+        } catch (SQLiteCalendarException e) {
+            Log.e("SQLiteCalendarException : ", "An error occured when trying to create " + object.toString());
+        }
     }
 
     /**
@@ -85,7 +89,11 @@ public class PeriodDataSource implements DAO {
                 PeriodTable.TABLE_NAME_PERIOD, PeriodTable.COLUMN_NAME_ID
                         + " = ?",
                 new String[] {String.valueOf(period.getId())});
-        task.execute(object);
+        try {
+            task.execute(object);
+        } catch (SQLiteCalendarException e) {
+            Log.e("SQLiteCalendarException : ", "An error occured when trying to update " + object.toString());
+        }
     }
 
     /**
