@@ -222,7 +222,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private void createMenuDeleteDB() {
         AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
         choiceDialog
-                .setTitle("Do you want do delete the database for the user "
+                .setTitle("Do you want do delete the data for the user "
                         + TequilaAuthenticationAPI.getInstance().getUsername(
                                 mThisActivity.getApplicationContext()) + " ?");
         choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
