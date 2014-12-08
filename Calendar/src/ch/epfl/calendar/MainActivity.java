@@ -282,7 +282,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (event.getmType() == PeriodType.EXERCISES
                 || event.getmType() == PeriodType.LECTURE
                 || event.getmType() == PeriodType.PROJECT) {
-            String cours = event.getName().split("\n")[0];
+            String cours = event.getName().split("\n")[1];
             switchToCourseDetails(cours);
 
         } else {
