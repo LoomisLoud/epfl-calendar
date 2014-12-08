@@ -60,8 +60,8 @@ public class CreateRowDBTaskTest extends
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
-//        App.setActionBar(mActivity);
-//        mActivity.setUdpateData(mActivity);
+        App.setActionBar(mActivity);
+        mActivity.setUdpateData(mActivity);
 
         mDBQuester = new DBQuester();
 
@@ -83,9 +83,9 @@ public class CreateRowDBTaskTest extends
         mActivity = getActivity();
         App.setDBHelper("calendar_test.db");
 
-//        while (mActivity.getNbOfAsyncTaskDB() > 0) {
-//            mActivity.asyncTaskStoreFinished();
-//        }
+        while (mActivity.getNbOfAsyncTaskDB() > 0) {
+            mActivity.asyncTaskStoreFinished();
+        }
 
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
