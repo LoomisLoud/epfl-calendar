@@ -93,7 +93,7 @@ public class CreateRowDBTaskTest extends
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public final void testDoInBackgroundCreateObjectArray()
+    public final void testDoInBackgroundCreateObject()
         throws NoSuchMethodException, IllegalAccessException,
         IllegalArgumentException, InvocationTargetException {
 
@@ -101,7 +101,7 @@ public class CreateRowDBTaskTest extends
         doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
                 "doInBackground", CreateObject[].class);
         doInBackground.setAccessible(true);
-        App.getActionBar().addTask(3);
+        App.getActionBar().addTask(6);
         doInBackground
                 .invoke(instance,
                         new Object[] {new CreateObject[] {createObjectToStore(mListCourses

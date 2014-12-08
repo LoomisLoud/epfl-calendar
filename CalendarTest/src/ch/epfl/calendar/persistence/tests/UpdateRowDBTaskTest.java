@@ -227,13 +227,14 @@ public class UpdateRowDBTaskTest extends
         mListCourses.add(course2);
     }
     
-    private void storeCourse(Course course) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    private void storeCourse(Course course)
+        throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Method doInBackground;
         CreateRowDBTask createTask= new CreateRowDBTask();
         doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
                 "doInBackground", CreateObject[].class);
         doInBackground.setAccessible(true);
-        App.getActionBar().addTask(3);
+        App.getActionBar().addTask(6);
         doInBackground
                 .invoke(createTask,
                         new Object[] {new CreateObject[] {createObjectToStore(course) } });
