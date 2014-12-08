@@ -1,14 +1,18 @@
 package ch.epfl.calendar.display;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import android.app.ActionBar;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import ch.epfl.calendar.App;
@@ -26,18 +30,94 @@ import ch.epfl.calendar.persistence.DBQuester;
  */
 public class AddEventBlockActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
-
-    private TimePicker mStartBlockEventHour;
-    private TimePicker mEndBlockEventHour;
+	
+    private Button mButtonEndHour;
+    private Button mButtonStartHour;
+    private TimePickerDialog mStartTimePickerDialog;
+    private TimePickerDialog mEndTimePickerDialog;
+    private TimePickerDialog.OnTimeSetListener mStartTimePickerListener;
+    private TimePickerDialog.OnTimeSetListener mEndTimePickerListener;
+    private Calendar mStartCalendar = Calendar.getInstance();
+    private Calendar mEndCalendar = Calendar.getInstance();
     private Spinner mSpinnerDays;
-    private TextView mAskDay;
     private String mCourseName;
     private int mPosition;
     private Intent mIntent;
     private static final boolean IS_BLOCK = true;
     public final static int NUMBER_OF_DAYS = 7;
+    public static final int ELEVEN_O_CLOCK = 23;
+    public static final int LAST_MINUTE = 59;
+    public static final String TIME_FORMAT = "hh:mm aa";
 
+    private void initializePickerDialog() {
+        createPickerListener();
+
+        mStartTimePickerDialog = new TimePickerDialog(AddEventBlockActivity.this,
+                mStartTimePickerListener,
+                mStartCalendar.get(Calendar.HOUR_OF_DAY),
+                mStartCalendar.get(Calendar.MINUTE), false);
+
+        mEndTimePickerDialog = new TimePickerDialog(AddEventBlockActivity.this,
+                mEndTimePickerListener, mEndCalendar.get(Calendar.HOUR_OF_DAY),
+                mEndCalendar.get(Calendar.MINUTE), false);
+    }
+    
+    private void initializeButton() {
+        mButtonStartHour.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStartTimePickerDialog.show();
+            }
+        });
+
+        mButtonEndHour.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEndTimePickerDialog.show();
+            }
+        });
+    }
+    
+    private void createPickerListener() {
+        mStartTimePickerListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                updateCalendarTimeAndButtons(mStartCalendar, mButtonStartHour,
+                        TIME_FORMAT, hourOfDay, minute);
+            }
+        };
+
+        mEndTimePickerListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                updateCalendarTimeAndButtons(mEndCalendar, mButtonEndHour,
+                        TIME_FORMAT, hourOfDay, minute);
+            }
+        };
+    }
+    
+    private void updateTimeButton(Calendar calendar, Button button,
+            String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        button.setText(sdf.format(calendar.getTime()));
+    }
+    
+    private void updateCalendarTimeAndButtons(Calendar calendar, Button button,
+            String format, int hour, int minute) {
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        updateTimeButton(calendar, button, format);
+    }
+    
     private void setView() {
+    	mEndCalendar.set(Calendar.HOUR_OF_DAY,
+                mEndCalendar.get(Calendar.HOUR_OF_DAY) + 1);
+        mEndTimePickerDialog.updateTime(
+                mEndCalendar.get(Calendar.HOUR_OF_DAY),
+                mEndCalendar.get(Calendar.MINUTE));
+        updateTimeButton(mStartCalendar, mButtonStartHour, TIME_FORMAT);
+        updateTimeButton(mEndCalendar, mButtonEndHour, TIME_FORMAT);
+        
         ArrayAdapter<CharSequence> mSpinnerDaysAdapter = ArrayAdapter
                 .createFromResource(this, R.array.week_days,
                         android.R.layout.simple_spinner_item);
@@ -76,15 +156,19 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
         Calendar startEvent = createStartDateBlock(
                 calendarDayFromArrayAdapterDay(mSpinnerDays
                         .getSelectedItemPosition()),
-                mStartBlockEventHour.getCurrentHour(), mStartBlockEventHour
-                        .getCurrentMinute());
+                mStartCalendar.get(Calendar.HOUR_OF_DAY), mStartCalendar
+                        .get(Calendar.MINUTE));
         Calendar endEvent = createStartDateBlock(
                 calendarDayFromArrayAdapterDay(mSpinnerDays
                         .getSelectedItemPosition()),
-                mEndBlockEventHour.getCurrentHour(), mEndBlockEventHour
-                        .getCurrentMinute());
-        Calendar endDate = createEndDateBlock((Period) i
-                .getParcelableExtra("period"));
+                mEndCalendar.get(Calendar.HOUR_OF_DAY), mEndCalendar
+                        .get(Calendar.MINUTE));
+        Calendar lastPeriod = createEndDateBlock((Period) i.getParcelableExtra("period"));
+        Calendar endDate = lastPeriod;
+        endDate.set(Calendar.WEEK_OF_YEAR, lastPeriod.get(Calendar.WEEK_OF_YEAR));
+        endDate.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        endDate.set(Calendar.HOUR_OF_DAY, ELEVEN_O_CLOCK);
+        endDate.set(Calendar.MINUTE, LAST_MINUTE);
         
         if (endEvent.before(startEvent)) {
             throw new ReversedDatesException();
@@ -133,13 +217,12 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
         	mPosition = mIntent.getIntExtra("position", -1);
         }
 
-        mAskDay = (TextView) findViewById(R.id.ask_block_day);
         mSpinnerDays = (Spinner) findViewById(R.id.spinner_week_days);
-        mStartBlockEventHour = (TimePicker) findViewById(R.id.from_picker_hour);
-        mEndBlockEventHour = (TimePicker) findViewById(R.id.to_picker_hour);
+        mButtonStartHour = (Button) findViewById(R.id.start_event_dialog_hour);
+        mButtonEndHour = (Button) findViewById(R.id.end_event_dialog_hour);
 
-        mAskDay.setText(getString(R.string.choose_day_block) + " "
-                + mCourseName + ": ");
+        initializePickerDialog();
+        initializeButton();
 
         setView();
     }
