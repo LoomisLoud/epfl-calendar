@@ -5,13 +5,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.persistence.CourseTable;
+import ch.epfl.calendar.persistence.PeriodTable;
 
 /**
+ *
  * @author lweingart
  *
  */
-public class CourseTableTest extends TestCase {
+public class PeriodTableTest extends TestCase {
 
     private SQLiteDatabase mDb;
 
@@ -27,9 +28,9 @@ public class CourseTableTest extends TestCase {
     // @see ch.epfl.calendar.persistence.tests.DBHelperTest#testTableCreation()
     public void testOnCreate() {
         try {
-            CourseTable.onCreate(mDb);
+            PeriodTable.onCreate(mDb);
             String tableName = SQLiteDatabase
-                    .findEditTable(CourseTable.TABLE_NAME_COURSE);
+                    .findEditTable(PeriodTable.TABLE_NAME_PERIOD);
             Log.i("Database contains table : ", tableName);
             fail("Should throw an SQLiteException");
         } catch (SQLiteException e) {
