@@ -16,7 +16,7 @@ import ch.epfl.calendar.persistence.CourseTable;
 import ch.epfl.calendar.persistence.DBQuester;
 
 /**
- * Test of CourseDataSource class
+ * CourseDataSource test class.
  *
  * @author lweingart
  *
@@ -50,8 +50,8 @@ public class CourseDataSourceTest extends
 
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
-        DBQuester mDBQuester = new DBQuester();
 
+        DBQuester mDBQuester = new DBQuester();
         mDBQuester.deleteAllTables();
         mDBQuester.createTables();
 
@@ -62,13 +62,11 @@ public class CourseDataSourceTest extends
         mCds.create(mCoursesList.get(1), null);
         waitOnInsertionInDB();
         mDb = App.getDBHelper().getReadableDatabase();
-
     }
 
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
-//        mDb.close();
     }
 
     public void testDeleteAll() {
