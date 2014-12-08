@@ -37,7 +37,6 @@ public class UpdateRowDBTaskTest extends
     private DBQuester mDBQuester;
     private UpdateRowDBTask instance;
 
-    private static final int SLEEP_TIME = 250;
     private static final String ERROR_UPDATE = "Unable to update a new row!";
 
     public UpdateRowDBTaskTest() {

@@ -8,9 +8,9 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.persistence.EventTable;
 
 /**
- *
+ * 
  * @author lweingart
- *
+ * 
  */
 public class EventTableTest extends TestCase {
 
@@ -18,10 +18,17 @@ public class EventTableTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-    	super.setUp();
+        super.setUp();
 
         App.setDBHelper("calendar_test.db");
         mDb = App.getDBHelper().getReadableDatabase();
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        super.tearDown();
+
+        mDb.close();
     }
 
     // For deeper tests,

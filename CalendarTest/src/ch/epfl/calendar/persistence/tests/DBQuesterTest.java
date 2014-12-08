@@ -18,7 +18,7 @@ import ch.epfl.calendar.persistence.DBQuester;
 /**
  * Test of the DBQuester This test class extends
  * ActivityInstrumentationTestCase2 because an activity is needed to delete the
- * tests database
+ * tests database and we have to use methods from DefaultActionBarActivity
  * 
  * @author AblionGE
  * 
@@ -43,16 +43,11 @@ public class DBQuesterTest extends
     protected void setUp() throws Exception {
         super.setUp();
 
-        // When the activity is MainActivity, it is important
-        // to get the activity before call "setDBHelper"
-        // because in MainActivity, the name of database
-        // is changed in "onCreate()"
-        mActivity = getActivity();
-
         App.setDBHelper("calendar_test.db");
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
 
+        mActivity = getActivity();
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions

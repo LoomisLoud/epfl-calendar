@@ -35,7 +35,6 @@ public class CreateRowDBTaskTest extends
     private DBQuester mDBQuester;
     private CreateRowDBTask instance;
 
-    private static final int SLEEP_TIME = 250;
     private static final String ERROR_CREATE = "Unable to create a new row!";
 
     public CreateRowDBTaskTest() {
