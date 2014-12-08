@@ -12,6 +12,7 @@ import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.MainActivity;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
@@ -85,12 +86,15 @@ public class UpdateRowDBTaskTest extends
     protected void tearDown() throws Exception {
         super.tearDown();
 
-        mActivity = getActivity();
-        App.setDBHelper("calendar_test.db");
-
-        while (mActivity.getNbOfAsyncTaskDB() > 0) {
-            mActivity.asyncTaskStoreFinished();
-        }
+//        mActivity = getActivity();
+//        App.setDBHelper("calendar_test.db");
+//
+//        while (mActivity.getNbOfAsyncTaskDB() > 0) {
+//            mActivity.asyncTaskStoreFinished();
+//        }
+//
+//        TequilaAuthenticationAPI.getInstance().clearStoredData(
+//                mActivity.getApplicationContext());
 
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
