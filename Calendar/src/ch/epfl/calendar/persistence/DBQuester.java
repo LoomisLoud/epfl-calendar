@@ -4,6 +4,7 @@
 package ch.epfl.calendar.persistence;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.database.Cursor;
@@ -438,7 +439,7 @@ public class DBQuester implements LocalDatabaseInterface {
     @Override
     public void deleteEvent(Event event) {
         EventDataSource eds = EventDataSource.getInstance();
-
+        
         eds.delete(event, null);
     }
 
@@ -462,6 +463,20 @@ public class DBQuester implements LocalDatabaseInterface {
 
         CourseDataSource cds = CourseDataSource.getInstance();
         cds.delete(course, null);
+    }
+    
+    @Override
+    public void deleteBlocks(Event event) {
+    	List<Event> events = getAllEventsFromCourseBlock(event.getLinkedCourse());
+    	for (Event e : events) {
+    		if ((e.getStartDate().get(Calendar.HOUR_OF_DAY) == event.getStartDate().get(Calendar.HOUR_OF_DAY)) 
+    				&& (e.getEndDate().get(Calendar.HOUR_OF_DAY) == event.getEndDate().get(Calendar.HOUR_OF_DAY)) 
+    				&& (e.getStartDate().get(Calendar.HOUR_OF_DAY) == event.getStartDate().get(Calendar.HOUR_OF_DAY)) 
+    				&& (e.getEndDate().get(Calendar.HOUR_OF_DAY) == event.getEndDate().get(Calendar.HOUR_OF_DAY))
+    				&& (e.getStartDate().get(Calendar.DAY_OF_WEEK) == event.getEndDate().get(Calendar.DAY_OF_WEEK))) {
+    			deleteEvent(e);
+    		}
+    	}
     }
 
     @Override
