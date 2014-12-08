@@ -16,9 +16,9 @@ import ch.epfl.calendar.utils.Logger;
 
 /**
  * DAO for {@link Course}.
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class CourseDataSource implements DAO {
 
@@ -33,7 +33,7 @@ public class CourseDataSource implements DAO {
     private static CourseDataSource mCourseDataSource;
 
     /**
-     * 
+     *
      * @return
      */
     public static CourseDataSource getInstance() {
@@ -45,7 +45,7 @@ public class CourseDataSource implements DAO {
 
     /**
      * Create a course.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -72,7 +72,7 @@ public class CourseDataSource implements DAO {
         for (Event event : events) {
             eds.create(event, course.getName());
         }
-        
+
         CreateRowDBTask task = new CreateRowDBTask();
         CreateObject object = new CreateObject(values, null, CourseTable.TABLE_NAME_COURSE);
         try {
@@ -84,7 +84,7 @@ public class CourseDataSource implements DAO {
 
     /**
      * Update a course.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -111,7 +111,7 @@ public class CourseDataSource implements DAO {
         for (Event event : events) {
             eds.update(event, course.getName());
         }
-        
+
         UpdateRowDBTask task = new UpdateRowDBTask();
         UpdateObject object = new UpdateObject(values, CourseTable.TABLE_NAME_COURSE,
                 CourseTable.COLUMN_NAME_NAME + " = ?", new String[] {String.valueOf(course.getName())});
@@ -124,7 +124,7 @@ public class CourseDataSource implements DAO {
 
     /**
      * Delete a course.
-     * 
+     *
      * @param obj
      * @throws SQLiteCalendarException
      */
@@ -132,7 +132,7 @@ public class CourseDataSource implements DAO {
     public void delete(Object obj, String key) throws SQLiteCalendarException {
         Course course = (Course) obj;
         assert course != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
 
         long rowId = db.delete(CourseTable.TABLE_NAME_COURSE,
                 CourseTable.COLUMN_NAME_NAME + " = '" + course.getName() + "'",
@@ -150,7 +150,7 @@ public class CourseDataSource implements DAO {
      */
     @Override
     public void deleteAll() {
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         db.delete(CourseTable.TABLE_NAME_COURSE, null, null);
     }
 }
