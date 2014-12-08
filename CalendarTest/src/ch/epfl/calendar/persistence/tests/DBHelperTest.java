@@ -31,6 +31,12 @@ public class DBHelperTest extends TestCase {
         App.setDBHelper("calendar_test.db");
         mDb = App.getDBHelper().getReadableDatabase();
     }
+    
+    @Override
+    public void tearDown() throws Exception {
+        super.tearDown();
+        mDb.close();
+    }
 
     public void testTablesCreation() {
         String tableName = SQLiteDatabase
