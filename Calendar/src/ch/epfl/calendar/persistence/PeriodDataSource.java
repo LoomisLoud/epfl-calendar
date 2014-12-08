@@ -37,7 +37,7 @@ public class PeriodDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void create(Object obj, String key) throws SQLiteCalendarException {
+    public void create(Object obj, String key) {
         Period period = (Period) obj;
         assert period != null;
 
@@ -65,7 +65,7 @@ public class PeriodDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void update(Object obj, String key) throws SQLiteCalendarException {
+    public void update(Object obj, String key) {
         Period period = (Period) obj;
         assert period != null;
 
@@ -95,7 +95,7 @@ public class PeriodDataSource implements DAO {
      * @throws SQLiteCalendarException
      */
     @Override
-    public void delete(Object obj, String key) throws SQLiteCalendarException {
+    public void delete(Object obj, String key) {
         Period period = (Period) obj;
         assert period != null;
         SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
@@ -104,7 +104,6 @@ public class PeriodDataSource implements DAO {
                 PeriodTable.COLUMN_NAME_ID + " = " + period.getId(), null);
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, PeriodDataSource.ERROR_DELETE);
-            throw new SQLiteCalendarException(PeriodDataSource.ERROR_DELETE);
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, PeriodDataSource.SUCCESS_DELETE);

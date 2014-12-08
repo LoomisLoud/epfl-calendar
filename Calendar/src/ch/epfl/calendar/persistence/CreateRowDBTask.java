@@ -28,10 +28,11 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
 
         SQLiteDatabase db = DBQuester.openDatabase();
 
-        long rowId = db.insert(table, nullCollumnHack, values);
+        long rowId = -1;
+        rowId = db.insert(table, nullCollumnHack, values);
+
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_CREATE);
-            throw new SQLiteCalendarException(ERROR_CREATE);
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, SUCCESS_CREATE);
