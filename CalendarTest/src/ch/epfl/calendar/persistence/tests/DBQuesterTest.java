@@ -395,6 +395,13 @@ public class DBQuesterTest extends
         Event event2Course2 = new Event("event2", "08.11.2014 08:00",
                 "08.11.2014 18:00", null, "TestCourse2", "Event 2", true,
                 DBQuester.NO_ID);
+        Event event3Course2 = new Event("event2", "09.11.2014 08:00",
+                "09.11.2014 18:00", null, "TestCourse2", "Event 2", true,
+                DBQuester.NO_ID);
+        //Not a block
+        Event event4Course2 = new Event("event2", "08.11.2014 08:00",
+                "08.11.2014 18:00", null, "TestCourse2", "Event 2", false,
+                DBQuester.NO_ID);
         List<Event> events = new ArrayList<Event>();
         events.add(event1Course2);
         events.add(event2Course2);
@@ -412,6 +419,27 @@ public class DBQuesterTest extends
         mDBQuester.deleteBlock(events.get(0));
         
         assertEquals(new ArrayList<Event>(), mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName()));
+        
+        //Test with more events
+        events = new ArrayList<Event>();
+        events.add(event1Course2);
+        events.add(event2Course2);
+        events.add(event3Course2);
+        events.add(event4Course2);
+        
+        mListCourses.get(1).setEvents(events);
+        
+        mDBQuester.storeEventsFromCourse(mListCourses.get(1));
+
+        waitOnInsertionInDB();
+
+        events = mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName());
+        
+        assertEquals(4, events.size());
+        
+        mDBQuester.deleteBlock(events.get(0));
+        
+        assertEquals(2, mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName()).size());
     }
 
     /**
