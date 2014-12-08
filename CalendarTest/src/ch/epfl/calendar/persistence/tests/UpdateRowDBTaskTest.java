@@ -111,40 +111,40 @@ public class UpdateRowDBTaskTest extends
      * @throws NoSuchMethodException 
      * @throws InvocationTargetException 
      */
-    public final void testDoInBackgroundUpdateObjectArray()
-        throws IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InvocationTargetException {
-        Method doInBackground;
-        doInBackground = (UpdateRowDBTask.class).getDeclaredMethod(
-                "doInBackground", UpdateObject[].class);
-        doInBackground.setAccessible(true);
-        App.getActionBar().addTask(3);
-        doInBackground
-                .invoke(instance,
-                        new Object[] {new UpdateObject[] {createObjectToUpdate(mListCourses
-                                .get(1)) } });
-
-        List<Course> courses = mDBQuester.getAllCourses();
-        assertEquals(courses.get(0).getName(), mListCourses.get(1).getName());
-        // Update an object that doesn't exist in DB
-        try {
-            doInBackground = (UpdateRowDBTask.class).getDeclaredMethod(
-                    "doInBackground", UpdateObject[].class);
-            doInBackground.setAccessible(true);
-            instance = new UpdateRowDBTask();
-            doInBackground.invoke(instance,
-                    new Object[] {new UpdateObject[] {createObjectToUpdate(mListCourses.get(0))}});
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof SQLiteCalendarException) {
-                if (e.getTargetException().getMessage().equals(ERROR_UPDATE)) {
-                    // Waited
-                } else {
-                    fail();
-                }
-            } else {
-                fail();
-            }
-        }
-    }
+//    public final void testDoInBackgroundUpdateObjectArray()
+//        throws IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InvocationTargetException {
+//        Method doInBackground;
+//        doInBackground = (UpdateRowDBTask.class).getDeclaredMethod(
+//                "doInBackground", UpdateObject[].class);
+//        doInBackground.setAccessible(true);
+//        App.getActionBar().addTask(3);
+//        doInBackground
+//                .invoke(instance,
+//                        new Object[] {new UpdateObject[] {createObjectToUpdate(mListCourses
+//                                .get(1)) } });
+//
+//        List<Course> courses = mDBQuester.getAllCourses();
+//        assertEquals(courses.get(0).getName(), mListCourses.get(1).getName());
+//        // Update an object that doesn't exist in DB
+//        try {
+//            doInBackground = (UpdateRowDBTask.class).getDeclaredMethod(
+//                    "doInBackground", UpdateObject[].class);
+//            doInBackground.setAccessible(true);
+//            instance = new UpdateRowDBTask();
+//            doInBackground.invoke(instance,
+//                    new Object[] {new UpdateObject[] {createObjectToUpdate(mListCourses.get(0))}});
+//        } catch (InvocationTargetException e) {
+//            if (e.getTargetException() instanceof SQLiteCalendarException) {
+//                if (e.getTargetException().getMessage().equals(ERROR_UPDATE)) {
+//                    // Waited
+//                } else {
+//                    fail();
+//                }
+//            } else {
+//                fail();
+//            }
+//        }
+//    }
 
     private UpdateObject createObjectToUpdate(Course course) {
         ContentValues values = new ContentValues();

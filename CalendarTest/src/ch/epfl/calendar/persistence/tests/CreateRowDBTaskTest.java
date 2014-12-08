@@ -116,42 +116,42 @@ public class CreateRowDBTaskTest extends
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public final void testDoInBackgroundCreateObject()
-        throws NoSuchMethodException, IllegalAccessException,
-        IllegalArgumentException, InvocationTargetException {
-
-        Method doInBackground;
-        doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
-                "doInBackground", CreateObject[].class);
-        doInBackground.setAccessible(true);
-        App.getActionBar().addTask(6);
-        doInBackground
-                .invoke(instance,
-                        new Object[] {new CreateObject[] {createObjectToStore(mListCourses
-                                .get(1)) } });
-
-        List<Course> courses = mDBQuester.getAllCourses();
-        assertEquals(courses.get(0).getName(), mListCourses.get(1).getName());
-        // Add a second time the same course - should be an exception
-        try {
-            doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
-                    "doInBackground", CreateObject[].class);
-            doInBackground.setAccessible(true);
-            instance = new CreateRowDBTask();
-            doInBackground.invoke(instance,
-                    new Object[] {new CreateObject[] {createObjectToStore(mListCourses.get(1))}});
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof SQLiteCalendarException) {
-                if (e.getTargetException().getMessage().equals(ERROR_CREATE)) {
-                    // Waited
-                } else {
-                    fail();
-                }
-            } else {
-                fail();
-            }
-        }
-    }
+//    public final void testDoInBackgroundCreateObject()
+//        throws NoSuchMethodException, IllegalAccessException,
+//        IllegalArgumentException, InvocationTargetException {
+//
+//        Method doInBackground;
+//        doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
+//                "doInBackground", CreateObject[].class);
+//        doInBackground.setAccessible(true);
+//        App.getActionBar().addTask(6);
+//        doInBackground
+//                .invoke(instance,
+//                        new Object[] {new CreateObject[] {createObjectToStore(mListCourses
+//                                .get(1)) } });
+//
+//        List<Course> courses = mDBQuester.getAllCourses();
+//        assertEquals(courses.get(0).getName(), mListCourses.get(1).getName());
+//        // Add a second time the same course - should be an exception
+//        try {
+//            doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
+//                    "doInBackground", CreateObject[].class);
+//            doInBackground.setAccessible(true);
+//            instance = new CreateRowDBTask();
+//            doInBackground.invoke(instance,
+//                    new Object[] {new CreateObject[] {createObjectToStore(mListCourses.get(1))}});
+//        } catch (InvocationTargetException e) {
+//            if (e.getTargetException() instanceof SQLiteCalendarException) {
+//                if (e.getTargetException().getMessage().equals(ERROR_CREATE)) {
+//                    // Waited
+//                } else {
+//                    fail();
+//                }
+//            } else {
+//                fail();
+//            }
+//        }
+//    }
 
     private CreateObject createObjectToStore(Course course) {
         ContentValues values = new ContentValues();
