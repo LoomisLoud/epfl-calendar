@@ -12,7 +12,6 @@ import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.MainActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
@@ -54,8 +53,6 @@ public class CreateRowDBTaskTest extends
         // because in MainActivity, the name of database
         // is changed in "onCreate()"
         mActivity = getActivity();
-        TequilaAuthenticationAPI.getInstance().clearStoredData(
-                mActivity.getApplicationContext());
 
         App.setDBHelper("calendar_test.db");
         getInstrumentation().getTargetContext().deleteDatabase(
@@ -63,8 +60,8 @@ public class CreateRowDBTaskTest extends
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
-        App.setActionBar(mActivity);
-        mActivity.setUdpateData(mActivity);
+//        App.setActionBar(mActivity);
+//        mActivity.setUdpateData(mActivity);
 
         mDBQuester = new DBQuester();
 
@@ -84,13 +81,11 @@ public class CreateRowDBTaskTest extends
         super.tearDown();
 
         mActivity = getActivity();
-        TequilaAuthenticationAPI.getInstance().clearStoredData(
-                mActivity.getApplicationContext());
         App.setDBHelper("calendar_test.db");
 
-        while (mActivity.getNbOfAsyncTaskDB() > 0) {
-            mActivity.asyncTaskStoreFinished();
-        }
+//        while (mActivity.getNbOfAsyncTaskDB() > 0) {
+//            mActivity.asyncTaskStoreFinished();
+//        }
 
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());

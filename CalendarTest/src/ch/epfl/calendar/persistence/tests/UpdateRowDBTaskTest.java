@@ -12,7 +12,6 @@ import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.MainActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
@@ -56,8 +55,6 @@ public class UpdateRowDBTaskTest extends
         // because in MainActivity, the name of database
         // is changed in "onCreate()"
         mActivity = getActivity();
-        TequilaAuthenticationAPI.getInstance().clearStoredData(
-                mActivity.getApplicationContext());
 
         App.setDBHelper("calendar_test.db");
         getInstrumentation().getTargetContext().deleteDatabase(
@@ -89,8 +86,6 @@ public class UpdateRowDBTaskTest extends
         super.tearDown();
 
         mActivity = getActivity();
-        TequilaAuthenticationAPI.getInstance().clearStoredData(
-                mActivity.getApplicationContext());
         App.setDBHelper("calendar_test.db");
 
         while (mActivity.getNbOfAsyncTaskDB() > 0) {
