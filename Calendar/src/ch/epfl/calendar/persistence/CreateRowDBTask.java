@@ -52,7 +52,6 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
 
     @Override
     protected void onPostExecute(Long id) {
-        System.out.println("BIIIIIIIIIIIIIIM");
         App.getActionBar().asyncTaskStoreFinished();
     }
 }

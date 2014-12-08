@@ -20,26 +20,34 @@ public class UpdateRowDBTask extends AsyncTask<UpdateObject, Void, Long> {
 
     @Override
     protected Long doInBackground(UpdateObject... params) {
-        UpdateObject object = params[0];
-
-        String table = object.getTable();
-        String whereClause = object.getWhereClause();
-        String[] whereArgs = object.getWhereArgs();
-        ContentValues values = object.getContent();
-
-        SQLiteDatabase db = DBQuester.openDatabase();
-
-        long rowId = -1;
         try {
-            rowId = db.update(table, values, whereClause, whereArgs);
-        } catch (SQLiteConstraintException e) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_UPDATE);
-            throw new SQLiteCalendarException(ERROR_UPDATE);
+            UpdateObject object = params[0];
+
+            String table = object.getTable();
+            String whereClause = object.getWhereClause();
+            String[] whereArgs = object.getWhereArgs();
+            ContentValues values = object.getContent();
+    
+            SQLiteDatabase db = DBQuester.openDatabase();
+    
+            long rowId = -1;
+            try {
+                rowId = db.update(table, values, whereClause, whereArgs);
+            } catch (SQLiteConstraintException e) {
+                Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_UPDATE);
+                throw new SQLiteCalendarException(ERROR_UPDATE);
+            }
+            if (rowId == -1) {
+                Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_UPDATE);
+                throw new SQLiteCalendarException(ERROR_UPDATE);
+            }
+    
+            Log.i(Logger.CALENDAR_SQL_SUCCES, SUCCESS_UPDATE);
+    
+            return rowId;
+        } catch (SQLiteCalendarException e) {
+            return (long) -1;
         }
-
-        Log.i(Logger.CALENDAR_SQL_SUCCES, SUCCESS_UPDATE);
-
-        return rowId;
     }
 
     @Override

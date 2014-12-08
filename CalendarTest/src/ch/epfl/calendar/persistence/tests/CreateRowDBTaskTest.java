@@ -115,7 +115,7 @@ public class CreateRowDBTaskTest extends
                         new Object[] {new CreateObject[] {createObjectToStore(mEvent) } });
 
         List<Event> events = mDBQuester.getAllEventsWithoutCourse();
-        assertEquals(mEvent.getName(), mEvent.getName());
+        assertEquals(mEvent.getName(), events.get(0).getName());
         // Add a second time the same course - should be an exception
         try {
             doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
