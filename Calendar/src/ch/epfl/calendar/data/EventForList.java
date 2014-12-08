@@ -2,14 +2,16 @@ package ch.epfl.calendar.data;
 
 import java.util.Calendar;
 
+import ch.epfl.calendar.App;
+
 /**
  * @author MatthiasLeroyEPFL
  * 
  */
 public class EventForList extends ListViewItem {
 
-    private static final int ZERO_MINUTE = 0;
-    private static final int TEN_MINUTE = 10;
+    //private static final int ZERO_MINUTE = 0;
+    //private static final int TEN_MINUTE = 10;
     
     private String mName;
     private Calendar mEnd;
@@ -77,7 +79,7 @@ public class EventForList extends ListViewItem {
         this.mDescription = description;
     }
 
-    private String calendarToString(Calendar date) {
+    /*private String calendarToString(Calendar date) {
         String minute = "";
         if (date.get(Calendar.MINUTE) >= ZERO_MINUTE
                 && date.get(Calendar.MINUTE) < TEN_MINUTE) {
@@ -91,17 +93,17 @@ public class EventForList extends ListViewItem {
 
         return hour;
 
-    }
+    }*/
 
     public String toString() {
 
         if (mType == PeriodType.DEFAULT) {
-            return calendarToString(super.getmStart()) + "-"
-                    + calendarToString(mEnd) + "   " + mName;
+            return App.calendarTo12HoursString(super.getmStart()) + "-"
+                    + App.calendarTo12HoursString(mEnd) + "   " + mName;
         } else {
 
-            return calendarToString(super.getmStart()) + "-"
-                    + calendarToString(mEnd) + "   " + mName + ": " + mType;
+            return App.calendarTo12HoursString(super.getmStart()) + "-"
+                    + App.calendarTo12HoursString(mEnd) + "   " + mName + ": " + mType;
         }
     }
 }

@@ -84,13 +84,26 @@ public class Event {
     @Override
     public String toString() {
         String name = this.mName;
-        String startDate = App.calendarToBasicFormatString(this.mStartDate);
-        String endDate = App.calendarToBasicFormatString(this.mEndDate);
+        String startDate = App.calendarTo12HoursString(this.mStartDate);
+        String endDate = App.calendarTo12HoursString(this.mEndDate);
         String description = this.mDescription;
 
         return name.concat(" from ").concat(startDate).concat(" to ")
                 .concat(endDate).concat(" : ").concat(description).concat("\n");
     }
+    /**
+     * Same as toString but formatted to nice display of contents from human point of view
+     * @return the content of Object in a format to be displayed on screen.
+     */
+    public String toDisplay() {
+        String name = this.mName;
+        String[] date = App.calendarToBasicFormatStringSameDaySpecialFormat(this.mStartDate, mEndDate);
+        String description = this.mDescription;
+        
+        return date[0] + " : " + name + "\n" + date[1] + "  " + description;
+    }
+    
+    
 
     /**
      * @return the mName
@@ -100,8 +113,8 @@ public class Event {
     }
     
     public String getTitle() {
-        String startHour = App.calendarHourToBasicFormatString(mStartDate);
-        String endHour = App.calendarHourToBasicFormatString(mEndDate);
+        String startHour = App.calendarTo12HoursString(mStartDate);
+        String endHour = App.calendarTo12HoursString(mEndDate);
         
         String hour = startHour + " - " + endHour;
         

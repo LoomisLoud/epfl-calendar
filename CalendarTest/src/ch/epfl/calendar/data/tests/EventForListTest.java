@@ -47,7 +47,7 @@ public class EventForListTest extends TestCase {
     }
 
     public void testToString() {
-        assertEquals(event.toString(), "11:00-12:15   Football");
+        assertEquals(event.toString(), "11:00 AM-12:15 PM   Football");
     }
 
 }
