@@ -81,6 +81,10 @@ public class CreateRowDBTaskTest extends
                 App.getDBHelper().getDatabaseName());
         mDBQuester = null;
         mListCourses = null;
+
+        while (getActivity().getNbOfAsyncTaskDB() > 0) {
+            getActivity().asyncTaskStoreFinished();
+        }
     }
 
     /**
