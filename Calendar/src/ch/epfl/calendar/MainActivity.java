@@ -150,7 +150,6 @@ public class MainActivity extends DefaultActionBarActivity implements
                     changeCalendarView(TYPE_WEEK_VIEW,
                             NUMBER_VISIBLE_DAYS_WEEK, SIZE_COLUMN_GAP_WEEK,
                             SIZE_FRONT_WEEK, SIZE_FRONT_EVENT_WEEK);
-
                     return true;
                 } else {
                     return false;
@@ -259,7 +258,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                         end.set(Calendar.MINUTE, MINUTE_59);
                     }
                     mMListEvents.add(new WeekViewEvent(event.getId(), event
-                            .getName(), startList.get(i), end,
+                            .getTitle(), startList.get(i), end,
                             PeriodType.DEFAULT, event.getmDescription()));
 
                     Calendar newStart = (Calendar) startList.get(i).clone();
@@ -286,15 +285,17 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         String hour = startHour + " - " + endHour;
         String result = c.getName() + "\n";
-        int i = p.getRooms().size();
-        for (String r : p.getRooms()) {
-            if (i > 1) {
-                result += r + ",";
-            } else {
-                result += r;
-            }
-            i--;
-        }
+       // int i = p.getRooms().size();
+        
+          /*  for (String r : p.getRooms()) {
+                if (i > 1) {
+                    result += r + ",";
+                } else {
+                    result += r;
+                }
+                i--;
+            }*/
+        
         return hour + "\n" + result + "\n" + p.getType();
     }
 

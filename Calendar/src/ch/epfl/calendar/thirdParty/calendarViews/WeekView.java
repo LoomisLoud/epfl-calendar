@@ -867,12 +867,10 @@ public class WeekView extends View {
      */
     private void expandEventsToMaxWidth(List<EventRect> collisionGroup) {
         // Expand the events to maximum possible width.
-        
         List<List<EventRect>> columns = new ArrayList<List<EventRect>>();
         columns.add(new ArrayList<EventRect>());
         for (EventRect eventRect : collisionGroup) {
             boolean isPlaced = false;
-           
             for (List<EventRect> column : columns) {
                 if (column.size() == 0) {
                     column.add(eventRect);
@@ -885,7 +883,6 @@ public class WeekView extends View {
                 }
             }
             if (!isPlaced) {
-                System.out.println(eventRect.event.getName()+" "+eventRect.event);
                 List<EventRect> newColumn = new ArrayList<EventRect>();
                 newColumn.add(eventRect);
                 columns.add(newColumn);
@@ -902,7 +899,6 @@ public class WeekView extends View {
                     EventRect eventRect = column.get(i);
                     eventRect.width = 1f / columns.size();
                     eventRect.left = j / columns.size();
-                    //System.out.println(j+" "+eventRect.event.getName()+"  "+eventRect.event.getmType());
                     eventRect.top = eventRect.event.getStartTime().get(
                             Calendar.HOUR_OF_DAY)
                             * 60
