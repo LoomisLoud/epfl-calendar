@@ -15,7 +15,7 @@ import ch.epfl.calendar.persistence.PeriodTable;
 
 
 /**
- * PeriodDataSource class test
+ * PeriodDataSource test class.
  *
  * @author lweingart
  *
