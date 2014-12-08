@@ -36,6 +36,8 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
     private Intent mIntent;
     private static final boolean IS_BLOCK = true;
     public final static int NUMBER_OF_DAYS = 7;
+    public static final int ELEVEN_O_CLOCK = 23;
+    public static final int LAST_MINUTE = 59;
 
     private void setView() {
         ArrayAdapter<CharSequence> mSpinnerDaysAdapter = ArrayAdapter
@@ -83,8 +85,12 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
                         .getSelectedItemPosition()),
                 mEndBlockEventHour.getCurrentHour(), mEndBlockEventHour
                         .getCurrentMinute());
-        Calendar endDate = createEndDateBlock((Period) i
-                .getParcelableExtra("period"));
+        Calendar lastPeriod = createEndDateBlock((Period) i.getParcelableExtra("period"));
+        Calendar endDate = lastPeriod;
+        endDate.set(Calendar.WEEK_OF_YEAR, lastPeriod.get(Calendar.WEEK_OF_YEAR));
+        endDate.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        endDate.set(Calendar.HOUR_OF_DAY, ELEVEN_O_CLOCK);
+        endDate.set(Calendar.MINUTE, LAST_MINUTE);
         
         if (endEvent.before(startEvent)) {
             throw new ReversedDatesException();
