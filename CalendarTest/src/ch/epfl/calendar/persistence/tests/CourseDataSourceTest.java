@@ -50,8 +50,8 @@ public class CourseDataSourceTest extends
 
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
-        DBQuester mDBQuester = new DBQuester();
 
+        DBQuester mDBQuester = new DBQuester();
         mDBQuester.deleteAllTables();
         mDBQuester.createTables();
 
