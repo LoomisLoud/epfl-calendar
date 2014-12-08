@@ -31,7 +31,7 @@ public class DBHelperTest extends TestCase {
         App.setDBHelper("calendar_test.db");
         mDb = App.getDBHelper().getReadableDatabase();
     }
-    
+
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
@@ -42,8 +42,7 @@ public class DBHelperTest extends TestCase {
      * Test that the creation of the database results in the expected tables
      */
     public void testTablesCreation() {
-        String tableName = SQLiteDatabase
-                .findEditTable(CourseTable.TABLE_NAME_COURSE);
+        String tableName = SQLiteDatabase.findEditTable(CourseTable.TABLE_NAME_COURSE);
 
         Log.i("DB contains table : ", tableName);
         assertEquals(tableName, CourseTable.TABLE_NAME_COURSE);
