@@ -51,10 +51,20 @@ public class UpdateRowDBTaskTest extends
     protected void setUp() throws Exception {
         super.setUp();
 
-        // When the activity is MainActivity, it is important
+     // When the activity is MainActivity, it is important
         // to get the activity before call "setDBHelper"
         // because in MainActivity, the name of database
         // is changed in "onCreate()"
+        mActivity = getActivity();
+
+        App.setCurrentUsername("testUsername");
+        // store the sessionID in the preferences
+        TequilaAuthenticationAPI.getInstance().setSessionID(
+                mActivity.getApplicationContext(), "sessionID");
+        TequilaAuthenticationAPI.getInstance().setUsername(
+                mActivity.getApplicationContext(),
+                "testUsername");
+
         mActivity = getActivity();
 
         App.setDBHelper("calendar_test.db");
@@ -72,10 +82,9 @@ public class UpdateRowDBTaskTest extends
         mDBQuester.createTables();
 
         instance = new UpdateRowDBTask();
-        
 
         populateTestDB();
-        
+
         storeCourse(mListCourses.get(1));
     }
 
@@ -85,16 +94,6 @@ public class UpdateRowDBTaskTest extends
      */
     protected void tearDown() throws Exception {
         super.tearDown();
-
-//        mActivity = getActivity();
-//        App.setDBHelper("calendar_test.db");
-//
-//        while (mActivity.getNbOfAsyncTaskDB() > 0) {
-//            mActivity.asyncTaskStoreFinished();
-//        }
-//
-//        TequilaAuthenticationAPI.getInstance().clearStoredData(
-//                mActivity.getApplicationContext());
 
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());

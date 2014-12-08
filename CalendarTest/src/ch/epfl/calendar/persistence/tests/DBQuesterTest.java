@@ -44,6 +44,10 @@ public class DBQuesterTest extends
     protected void setUp() throws Exception {
         super.setUp();
 
+        // When the activity is MainActivity, it is important
+        // to get the activity before call "setDBHelper"
+        // because in MainActivity, the name of database
+        // is changed in "onCreate()"
         mActivity = getActivity();
 
         App.setCurrentUsername("testUsername");

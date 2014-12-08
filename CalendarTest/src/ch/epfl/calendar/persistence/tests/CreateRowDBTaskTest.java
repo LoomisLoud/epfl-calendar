@@ -54,6 +54,7 @@ public class CreateRowDBTaskTest extends
         // because in MainActivity, the name of database
         // is changed in "onCreate()"
         mActivity = getActivity();
+
         App.setCurrentUsername("testUsername");
         // store the sessionID in the preferences
         TequilaAuthenticationAPI.getInstance().setSessionID(
@@ -61,7 +62,7 @@ public class CreateRowDBTaskTest extends
         TequilaAuthenticationAPI.getInstance().setUsername(
                 mActivity.getApplicationContext(),
                 "testUsername");
-        
+
         mActivity = getActivity();
 
         App.setDBHelper("calendar_test.db");
@@ -90,16 +91,6 @@ public class CreateRowDBTaskTest extends
     protected void tearDown() throws Exception {
         super.tearDown();
 
-//        mActivity = getActivity();
-//        App.setDBHelper("calendar_test.db");
-
-//        while (mActivity.getNbOfAsyncTaskDB() > 0) {
-//            mActivity.asyncTaskStoreFinished();
-//        }
-
-//        TequilaAuthenticationAPI.getInstance().clearStoredData(
-//                mActivity.getApplicationContext());
-
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
         mDBQuester = null;
@@ -116,22 +107,22 @@ public class CreateRowDBTaskTest extends
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-//    public final void testDoInBackgroundCreateObject()
-//        throws NoSuchMethodException, IllegalAccessException,
-//        IllegalArgumentException, InvocationTargetException {
-//
-//        Method doInBackground;
-//        doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
-//                "doInBackground", CreateObject[].class);
-//        doInBackground.setAccessible(true);
-//        App.getActionBar().addTask(6);
-//        doInBackground
-//                .invoke(instance,
-//                        new Object[] {new CreateObject[] {createObjectToStore(mListCourses
-//                                .get(1)) } });
-//
-//        List<Course> courses = mDBQuester.getAllCourses();
-//        assertEquals(courses.get(0).getName(), mListCourses.get(1).getName());
+    public final void testDoInBackgroundCreateObject()
+        throws NoSuchMethodException, IllegalAccessException,
+        IllegalArgumentException, InvocationTargetException {
+
+        Method doInBackground;
+        doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
+                "doInBackground", CreateObject[].class);
+        doInBackground.setAccessible(true);
+        App.getActionBar().addTask(6);
+        doInBackground
+                .invoke(instance,
+                        new Object[] {new CreateObject[] {createObjectToStore(mListCourses
+                                .get(1)) } });
+
+        List<Course> courses = mDBQuester.getAllCourses();
+        assertEquals(courses.get(0).getName(), mListCourses.get(1).getName());
 //        // Add a second time the same course - should be an exception
 //        try {
 //            doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
@@ -151,7 +142,7 @@ public class CreateRowDBTaskTest extends
 //                fail();
 //            }
 //        }
-//    }
+    }
 
     private CreateObject createObjectToStore(Course course) {
         ContentValues values = new ContentValues();
