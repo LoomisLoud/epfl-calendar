@@ -226,7 +226,7 @@ public class Period implements Parcelable {
         String startHour = App.calendarHourToBasicFormatString(mStartDate);  
         String endHour = App.calendarHourToBasicFormatString(mEndDate);
         
-        return periodType + " : " + day + " " + startHour + "-" + endHour;
+        return periodType + " : " + day + " " + startHour + "-" + endHour + "\n";
     }
 
     /**
