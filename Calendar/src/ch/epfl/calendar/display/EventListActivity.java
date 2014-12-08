@@ -326,6 +326,5 @@ public class EventListActivity extends DefaultActionBarActivity implements
     @Override
     public void updateData() {
         onResume();
-
     }
 }
