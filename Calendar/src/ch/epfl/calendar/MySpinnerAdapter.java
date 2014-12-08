@@ -18,7 +18,7 @@ import android.widget.TextView;
 public class MySpinnerAdapter<T> extends ArrayAdapter<T> {
     
     private static final int HEIGHTSPINNER = 150;
-    private static final int WIDTHSPINNER = 200;
+    private static final int WIDTHSPINNER = 200000;
 
     /**
      * @param context
@@ -38,7 +38,7 @@ public class MySpinnerAdapter<T> extends ArrayAdapter<T> {
         text.setTextColor(Color.WHITE);
         
         ViewGroup.LayoutParams parameters = view.getLayoutParams();
-        parameters.width = WIDTHSPINNER;
+        parameters.width = ViewGroup.LayoutParams.WRAP_CONTENT + WIDTHSPINNER;
         view.setLayoutParams(parameters);
         
         return view;
@@ -55,7 +55,7 @@ public class MySpinnerAdapter<T> extends ArrayAdapter<T> {
         text.setGravity(Gravity.CENTER_VERTICAL);
         
         ViewGroup.LayoutParams parameters = view.getLayoutParams();
-        parameters.height = HEIGHTSPINNER;
+        parameters.height = ViewGroup.LayoutParams.WRAP_CONTENT + HEIGHTSPINNER;
         view.setLayoutParams(parameters);
         
         return view;

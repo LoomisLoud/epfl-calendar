@@ -114,6 +114,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         return list;
     }
 
+    //This first one updates the credits from the addBlock
     private void updateCredits(Intent data) {
         if (data.hasExtra("courseName")) {
             final String course = data.getStringExtra("courseName");
@@ -141,9 +142,8 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         }
     }
 
-    private void updateCreditsOnMain() {
-        // TODO for each course, get its eventslist, pick only this week's
-        // eventlist,
+    //The second one updates the credits from the Main Activity
+    private void updateCredits() {
         final ArrayList<Event> eventList = new ArrayList<Event>();
         final Calendar today = Calendar.getInstance();
         final Calendar nextWeek = Calendar.getInstance();
@@ -199,7 +199,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         mCourses = getDBQuester().getAllCourses();
         blockList = constructBlockList(mCourses);
         createAdapterAndListView();
-        updateCreditsOnMain();
+        updateCredits();
     }
 
     @Override
