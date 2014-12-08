@@ -79,7 +79,7 @@
     <string-array name="choice_on_event">
         <item>Edit</item>
         <item>Delete</item>
-        <item>Visit course</item>
+        <item>View Details</item>
     </string-array>
     <string name="title_activity_event_list">EventListActivity</string>
     <string name="reversed_dates">

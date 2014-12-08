@@ -85,6 +85,19 @@ public class Event {
         return name.concat(" from ").concat(startDate).concat(" to ").concat(endDate)
                 .concat(" : ").concat(description).concat("\n");
     }
+    /**
+     * Same as toString but formatted to nice display of contents from human point of view
+     * @return the content of Object in a format to be displayed on screen.
+     */
+    public String toDisplay() {
+        String name = this.mName;
+        String[] date = App.calendarToBasicFormatStringSameDaySpecialFormat(this.mStartDate, mEndDate);
+        String description = this.mDescription;
+        
+        return date[0] + " : " + name + "\n" + date[1] + "  " + description;
+    }
+    
+    
 
     /**
      * @return the mName
