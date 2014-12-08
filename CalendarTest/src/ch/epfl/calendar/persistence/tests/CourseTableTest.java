@@ -9,7 +9,7 @@ import ch.epfl.calendar.persistence.CourseTable;
 
 /**
  * @author lweingart
- * 
+ *
  */
 public class CourseTableTest extends TestCase {
 
@@ -34,13 +34,27 @@ public class CourseTableTest extends TestCase {
     // @see ch.epfl.calendar.persistence.tests.DBHelperTest#testTableCreation()
     public void testOnCreate() {
         try {
-            CourseTable.onCreate(mDb);
+        	CourseTable.onCreate(mDb);
             String tableName = SQLiteDatabase
                     .findEditTable(CourseTable.TABLE_NAME_COURSE);
             Log.i("Database contains table : ", tableName);
             fail("Should throw an SQLiteException");
         } catch (SQLiteException e) {
             // success
+        	assertNotNull(e);
         }
+    }
+
+    public void testOnUpgrade() {
+    	try {
+    		CourseTable.onUpgrade(mDb, 1, 2);
+    		String tableName = SQLiteDatabase
+                    .findEditTable(CourseTable.TABLE_NAME_COURSE);
+            Log.i("Database contains table : ", tableName);
+            assertTrue(tableName.equals(CourseTable.TABLE_NAME_COURSE));
+        } catch (SQLiteException e) {
+            // fail
+        	fail("Shouldn't have thrown an SQLiteException");
+    	}
     }
 }
