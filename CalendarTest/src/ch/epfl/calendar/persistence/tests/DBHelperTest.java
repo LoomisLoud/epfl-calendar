@@ -32,6 +32,9 @@ public class DBHelperTest extends TestCase {
         mDb = App.getDBHelper().getReadableDatabase();
     }
 
+    /**
+     * Test that the creation of the database results in the expected tables
+     */
     public void testTablesCreation() {
         String tableName = SQLiteDatabase
                 .findEditTable(CourseTable.TABLE_NAME_COURSE);
