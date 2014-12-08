@@ -51,7 +51,4 @@ public class CreditsActivityTest extends
     	Button btn = (Button) mActivity.findViewById(R.id.ok_btn);
     	assertTrue(btn.getText().equals("OK"));
     }
-//    public void testOutActivity() {
-//    	onView(withId(R.id.ok_btn)).perform(click()).perform(ViewActions.);
-//    }
 }
