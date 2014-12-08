@@ -302,7 +302,11 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     dialog.cancel();
                                     break;
                                 case 1:
-                                    getDBQuester().deleteEvent(eventFromDB);
+                                	if (eventFromDB.isAutomaticAddedBlock()) {
+                                		getDBQuester().deleteBlocks(eventFromDB);
+                                	} else {
+                                		getDBQuester().deleteEvent(eventFromDB);
+                                	}
                                     updateData();
                                     dialog.cancel();
                                     break;
