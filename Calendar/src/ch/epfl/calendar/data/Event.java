@@ -78,8 +78,8 @@ public class Event {
     @Override
     public String toString() {
         String name = this.mName;
-        String startDate = App.calendarToBasicFormatString(this.mStartDate);
-        String endDate = App.calendarToBasicFormatString(this.mEndDate);
+        String startDate = App.calendarTo12HoursString(this.mStartDate);
+        String endDate = App.calendarTo12HoursString(this.mEndDate);
         String description = this.mDescription;
 
         return name.concat(" from ").concat(startDate).concat(" to ").concat(endDate)
@@ -94,8 +94,8 @@ public class Event {
     }
     
     public String getTitle() {
-        String startHour = App.calendarHourToBasicFormatString(mStartDate);
-        String endHour = App.calendarHourToBasicFormatString(mEndDate);
+        String startHour = App.calendarTo12HoursString(mStartDate);
+        String endHour = App.calendarTo12HoursString(mEndDate);
         
         String hour = startHour + " - " + endHour;
         

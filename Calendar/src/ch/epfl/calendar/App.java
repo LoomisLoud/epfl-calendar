@@ -3,10 +3,12 @@
  */
 package ch.epfl.calendar;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Application;
 import android.content.Context;
@@ -298,6 +300,13 @@ public class App extends Application {
         return hh + ":" + min;
         
     }
+    
+    public static String calendarTo12HoursString(Calendar date) {
+        String format = "hh:mm aa";
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        return sdf.format(date.getTime());
+    }
+    
     public static String boolToString(boolean bool) {
         if (bool) {
             return App.TRUE;
