@@ -98,6 +98,9 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
                     courseDescription));
             textView.setMovementMethod(new ScrollingMovementMethod());
         }
+        
+        textView = (TextView) findViewById(R.id.coursePeriod);
+        textView.setText(mCourse.toDisplayPeriod());
         if (!linkedEvents.isEmpty()) {
             TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
             textView2.setText(bodyToSpannableConcatAndBold("Event related:", ""));
