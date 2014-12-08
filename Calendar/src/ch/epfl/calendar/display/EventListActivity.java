@@ -52,16 +52,18 @@ public class EventListActivity extends DefaultActionBarActivity implements
         super.setUdpateData(this);
         setContentView(R.layout.activity_event_list);
         listEventActionBar();
-        CustomAdapter customAdapter = new CustomAdapter(context);
+//        CustomAdapter customAdapter = new CustomAdapter(context);
         mListView = (ListView) findViewById(R.id.list_event_view);
 
-        List<Course> course = getDBQuester().getAllCourses();
-        List<Event> eventCreated = getDBQuester().getAllEvents();
-        final List<ListViewItem> eventForList = eventToEventForList(course,
-                eventCreated);
-
-        createAdapter(eventForList, customAdapter);
-        mListView.setAdapter(customAdapter);
+        editEvent = true;
+        // List<Course> course = getDBQuester().getAllCourses();
+        // List<Event> eventCreated = getDBQuester().getAllEvents();
+        // final List<ListViewItem> eventForList = eventToEventForList(course,
+        // eventCreated);
+        final List<ListViewItem> eventForList = new ArrayList<ListViewItem>();
+        //
+        // createAdapter(eventForList, customAdapter);
+        // mListView.setAdapter(customAdapter);
         mListView.setDividerHeight(HEIGHT_DIVIDER);
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -106,13 +108,16 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                             int which) {
-                                    	Event eventToDelete = getDBQuester().getEvent(
-                                                item.getmId());
-                                    	if (eventToDelete.isAutomaticAddedBlock()) {
-                                    		getDBQuester().deleteBlock(eventToDelete);
-                                    	} else {
-                                            getDBQuester().deleteEvent(eventToDelete);
-                                    	}
+                                        Event eventToDelete = getDBQuester()
+                                                .getEvent(item.getmId());
+                                        if (eventToDelete
+                                                .isAutomaticAddedBlock()) {
+                                            getDBQuester().deleteBlock(
+                                                    eventToDelete);
+                                        } else {
+                                            getDBQuester().deleteEvent(
+                                                    eventToDelete);
+                                        }
                                         List<ListViewItem> list = eventForList;
                                         list.remove(item);
                                         CustomAdapter adap = new CustomAdapter(
@@ -142,7 +147,6 @@ public class EventListActivity extends DefaultActionBarActivity implements
 
                                 /*
                                  * (non-Javadoc)
-                                 * 
                                  * @see
                                  * android.content.DialogInterface.OnClickListener
                                  * #onClick (android.content.DialogInterface,
@@ -195,8 +199,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
     }
 
     private void listEventActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setTitle("Planning");
+        getActionBar().setTitle("Planning");
     }
 
     private void sort(List<EventForList> list) {
@@ -307,8 +310,10 @@ public class EventListActivity extends DefaultActionBarActivity implements
 
     @Override
     protected void onResume() {
+        super.onResume();
         if (editEvent) {
 
+            System.out.println(getDBQuester().getAllCourses().toString());
             List<ListViewItem> updatedEvent = eventToEventForList(
                     getDBQuester().getAllCourses(), getDBQuester()
                             .getAllEvents());
@@ -319,12 +324,12 @@ public class EventListActivity extends DefaultActionBarActivity implements
             editEvent = false;
 
         }
-        super.onResume();
-
     }
 
     @Override
     public void updateData() {
+        System.out.println("BRRRRRRRAAAAAAAAAAAAAAAAAAAAAAAAa");
+        editEvent = true;
         onResume();
     }
 }

@@ -12,6 +12,7 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.testing.utils.MockActivity;
 
 /**
  * @author AblionGE
@@ -22,6 +23,10 @@ public class EventListActivityTest extends
 
     private DBQuester mDB;
     private EventListActivity mActivity;
+    private MockActivity mMockActivity;
+    private List<Course> mCourses;
+
+    private static final int SLEEP_TIME = 250;
 
     public EventListActivityTest() {
         super(EventListActivity.class);
@@ -42,19 +47,26 @@ public class EventListActivityTest extends
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
 
+        mDB = new DBQuester();
+
+        mDB.deleteAllTables();
+        mDB.createTables();
+
+        createCourses();
+        mMockActivity = new MockActivity();
+        App.setActionBar(mMockActivity);
+        mMockActivity.setUdpateData(mMockActivity);
+        mDB.storeCourses(mCourses);
+        waitOnInsertionInDB();
+
         mActivity = getActivity();
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
-
-        mDB = new DBQuester();
-
-        mDB.deleteAllTables();
-        mDB.createTables();
-
-        populateTestDB();
+//        mDB.storeCourses(mCourses);
+//        waitOnInsertionInDB();
     }
 
     /*
@@ -71,7 +83,7 @@ public class EventListActivityTest extends
      * .
      */
     public final void testSwitchToAddBlockActivity() {
-//        fail("Not yet implemented"); // TODO
+        // fail("Not yet implemented"); // TODO
     }
 
     /**
@@ -80,49 +92,49 @@ public class EventListActivityTest extends
      * .
      */
     public final void testSwitchToAddEventsActivity() {
-//        fail("Not yet implemented"); // TODO
+        // fail("Not yet implemented"); // TODO
     }
 
     /**
      * Test method for
-     * {@link ch.epfl.calendar.display.EventListActivity#updateData()}.
-     * (Test onResume())
+     * {@link ch.epfl.calendar.display.EventListActivity#updateData()}. (Test
+     * onResume())
      */
     public final void testUpdateData() {
-//        fail("Not yet implemented"); // TODO
-    }
-    
-    public final void testSort() {
-        
-    }
-    
-    public final void testStringToPeriodType() {
-        
-    }
-    
-    public final void testRemovePastEvents() {
-        
-    }
-    
-    public final void testEventToEventForList() {
-        
-    }
-    
-    public final void testCreateAdapter() {
-        
+        // fail("Not yet implemented"); // TODO
     }
 
-    private void populateTestDB() throws Exception {
+    public final void testSort() {
+
+    }
+
+    public final void testStringToPeriodType() {
+
+    }
+
+    public final void testRemovePastEvents() {
+
+    }
+
+    public final void testEventToEventForList() {
+
+    }
+
+    public final void testCreateAdapter() {
+
+    }
+
+    private void createCourses() throws Exception {
         List<String> period1Course1Rooms = new ArrayList<String>();
         List<String> period2Course1Rooms = new ArrayList<String>();
         period1Course1Rooms.add("GCA 331");
         period1Course1Rooms.add("CO2");
         period2Course1Rooms.add("INF1");
         period2Course1Rooms.add("INF2");
-        Period period1Course1 = new Period("Lecture", "27.11.2014 08:00",
-                "27.11.2014 10:00", period1Course1Rooms, "1");
-        Period period2Course1 = new Period("Exercise", "28.11.2014 08:00",
-                "28.11.2014 10:00", period2Course1Rooms, "2");
+        Period period1Course1 = new Period("Lecture", "27.11.2034 08:00",
+                "27.11.2034 10:00", period1Course1Rooms, "1");
+        Period period2Course1 = new Period("Exercise", "28.11.2034 08:00",
+                "28.11.2034 10:00", period2Course1Rooms, "2");
         ArrayList<Period> periodsCourse1 = new ArrayList<Period>();
         periodsCourse1.add(period1Course1);
         periodsCourse1.add(period2Course1);
@@ -135,18 +147,30 @@ public class EventListActivityTest extends
         period1Course2Rooms.add("INF119");
         period2Course2Rooms.add("INM202");
         period2Course2Rooms.add("INM203");
-        Period period1Course2 = new Period("Lecture", "30.11.2014 08:00",
-                "30.11.2014 10:00", period1Course2Rooms, "3");
-        Period period2Course2 = new Period("Exercise", "02.11.2014 08:00",
-                "02.11.2014 10:00", period2Course2Rooms, "4");
+        Period period1Course2 = new Period("Lecture", "30.11.2034 08:00",
+                "30.11.2034 10:00", period1Course2Rooms, "3");
+        Period period2Course2 = new Period("Exercise", "02.11.2034 08:00",
+                "02.11.2034 10:00", period2Course2Rooms, "4");
         ArrayList<Period> periodsCourse2 = new ArrayList<Period>();
         periodsCourse2.add(period1Course2);
         periodsCourse2.add(period2Course2);
         Course course2 = new Course("TestCourse2", periodsCourse2,
                 "Pr. Testpr2", 5, "CS-000", "cool course", null);
 
-        mDB.storeCourse(course1);
-        mDB.storeCourse(course2);
+        mCourses = new ArrayList<Course>();
+        mCourses.add(course1);
+        mCourses.add(course2);
+    }
+
+    private void waitOnInsertionInDB() {
+        while (mMockActivity.getNbOfAsyncTaskDB() > 0) {
+            try {
+                Thread.sleep(SLEEP_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
     }
 
 }
