@@ -98,6 +98,9 @@ public class MainActivity extends DefaultActionBarActivity implements
             updateListsFromDB();
         } else {
             mListCourses = new ArrayList<Course>();
+            if (getNbOfAsyncTaskDB() <= 0) {
+                populateCalendarFromISA();
+            }
         }
 
         mWeekView.notifyDatasetChanged();
