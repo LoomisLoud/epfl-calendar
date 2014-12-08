@@ -21,25 +21,33 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
 
     @Override
     protected Long doInBackground(CreateObject... params) {
-        CreateObject object = params[0];
-
-        String table = object.getTable();
-        String nullCollumnHack = object.getNullColumnHack();
-        ContentValues values = object.getContent();
-
-        SQLiteDatabase db = DBQuester.openDatabase();
-
-        long rowId = -1;
         try {
-            rowId = db.insert(table, nullCollumnHack, values);
-        } catch (SQLiteException e) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_CREATE);
-            throw new SQLiteCalendarException(ERROR_CREATE);
+            CreateObject object = params[0];
+    
+            String table = object.getTable();
+            String nullCollumnHack = object.getNullColumnHack();
+            ContentValues values = object.getContent();
+    
+            SQLiteDatabase db = DBQuester.openDatabase();
+    
+            long rowId = -1;
+            try {
+                rowId = db.insert(table, nullCollumnHack, values);
+            } catch (SQLiteException e) {
+                Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_CREATE);
+                throw new SQLiteCalendarException(ERROR_CREATE);
+            }
+            if (rowId == -1) {
+                Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_CREATE);
+                throw new SQLiteCalendarException(ERROR_CREATE);
+            }
+    
+            Log.i(Logger.CALENDAR_SQL_SUCCES, SUCCESS_CREATE);
+    
+            return rowId;
+        } catch (SQLiteCalendarException e) {
+            return (long) -1;
         }
-
-        Log.i(Logger.CALENDAR_SQL_SUCCES, SUCCESS_CREATE);
-
-        return rowId;
     }
 
     @Override

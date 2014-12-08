@@ -75,11 +75,7 @@ public class CourseDataSource implements DAO {
         
         CreateRowDBTask task = new CreateRowDBTask();
         CreateObject object = new CreateObject(values, null, CourseTable.TABLE_NAME_COURSE);
-        try {
-            task.execute(object);
-        } catch (SQLiteCalendarException e) {
-            Log.e("SQLiteCalendarException : ", "An error occured when trying to create " + object.toString());
-        }
+        task.execute(object);
     }
 
     /**
