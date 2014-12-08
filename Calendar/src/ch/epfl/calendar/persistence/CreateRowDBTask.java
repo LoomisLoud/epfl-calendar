@@ -1,8 +1,8 @@
 package ch.epfl.calendar.persistence;
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.util.Log;
 import ch.epfl.calendar.App;
@@ -32,7 +32,7 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
         long rowId = -1;
         try {
             rowId = db.insert(table, nullCollumnHack, values);
-        } catch (SQLiteConstraintException e) {
+        } catch (SQLiteException e) {
             Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_CREATE);
             throw new SQLiteCalendarException(ERROR_CREATE);
         }
