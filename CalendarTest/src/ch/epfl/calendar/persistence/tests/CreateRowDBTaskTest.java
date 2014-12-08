@@ -77,14 +77,14 @@ public class CreateRowDBTaskTest extends
     protected void tearDown() throws Exception {
         super.tearDown();
 
+        while (getActivity().getNbOfAsyncTaskDB() > 0) {
+            getActivity().asyncTaskStoreFinished();
+        }
+
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
         mDBQuester = null;
         mListCourses = null;
-
-        while (getActivity().getNbOfAsyncTaskDB() > 0) {
-            getActivity().asyncTaskStoreFinished();
-        }
     }
 
     /**
