@@ -22,6 +22,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.utils.AuthenticationUtils;
 import ch.epfl.calendar.utils.GlobalPreferences;
@@ -124,6 +125,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             int httpCode = 0;
             boolean firstTry = true;
             String tokenList = "";
+            setNewCookieStore();
 
             Log.d(TAG,
                     "AUTHENTICATED : "
@@ -156,8 +158,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 firstTry = false;
             } else {
                 httpCode = getAccessToIsa(null, null);
-                if (mRespGetTimetable != null && httpCode != TequilaAuthenticationAPI.STATUS_CODE_OK) {
-                    mRespGetTimetable.getEntity().getContent().close();
+                // FIXME : Should Never happen !
+                if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
+                    mSessionID = "fake";
                 }
             }
 
@@ -181,6 +184,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                     // username+pwd)
                     authenticateOnTequila(mCurrentToken, firstTry);
                     if (firstTry) {
+                        App.setDBHelper("calendar_db_" + mUsername);
                         firstTry = false;
                         tokenList = mCurrentToken;
                     } else {
@@ -197,6 +201,9 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                             .getValue();
                 }
             } else {
+                if (mRespGetTimetable != null) {
+                    mRespGetTimetable.getEntity().getContent().close();
+                }
                 throw new ClientProtocolException("Wrong Http Code");
             }
 
@@ -217,6 +224,15 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
             Log.e(TAG + "IOException", e.getMessage());
             return mContext.getString(R.string.error_io);
         } catch (TequilaAuthenticationException e) {
+            if (mRespGetTimetable != null) {
+                try {
+                    mRespGetTimetable.getEntity().getContent().close();
+                } catch (IllegalStateException e1) {
+                    Log.e("ERROR : ", "IllegalStateException");
+                } catch (IOException e1) {
+                    Log.e("ERROR : ", "IOException");
+                }
+            }
             mExceptionOccured = true;
             Log.e(TAG + "TequilaAuthenticationException", e.getMessage());
             if (mSessionID == null) {
@@ -344,13 +360,17 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         throws IllegalStateException, IOException {
 
         getTimetable.addHeader("Set-Cookie", SESSIONID + "=" + sessionID);
-        getClient().setCookieStore(new BasicCookieStore());
+        setNewCookieStore();
         getClient().getCookieStore().addCookie(
                 getGlobalPrefs().getSessionIDCookie());
         if (getRespGetTimetable() != null) {
             getRespGetTimetable().getEntity().getContent().close();
         }
         return getTimetable;
+    }
+
+    private void setNewCookieStore() {
+        getClient().setCookieStore(new BasicCookieStore());
     }
 
     private HttpGet getIsaCompleteURL(String tokenList) {

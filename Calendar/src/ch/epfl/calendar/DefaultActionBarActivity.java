@@ -4,8 +4,12 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,25 +46,42 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private AuthenticationUtils mAuthUtils;
     private int mNbOfAsyncTaskDB = 0;
     private ProgressDialog mDialog;
+    private String mCurrentDBName;
     public static final int AUTH_ACTIVITY_CODE = 1;
+
+    protected DBQuester getDBQuester() {
+        if (mDB == null) {
+            mDB = new DBQuester();
+        } else if (!App.getDBHelper().getDatabaseName().equals(mCurrentDBName)) {
+            DBQuester.close();
+            mDB = new DBQuester();
+            mCurrentDBName = App.getDBHelper().getDatabaseName();
+        }
+        return mDB;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_action_bar);
         mThisActivity = this;
-        mDB = new DBQuester();
         mAuthUtils = new AuthenticationUtils();
         App.setActionBar(this);
         defaultActionBar();
+        mCurrentDBName = App.getDBHelper().getDatabaseName();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTH_ACTIVITY_CODE && resultCode == RESULT_OK) {
             populateCalendarFromISA();
         }
-        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    protected void activateRotation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
     @Override
@@ -92,7 +113,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 switchToListEvent();
                 return true;
             case R.id.action_logout:
-                logout();
+                logout(true);
                 return true;
             case R.id.action_calendar:
                 switchToCalendar();
@@ -122,7 +143,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(coursesListActivityIntent);
     }
 
-    private void switchToAddBlockActivity() {
+    public void switchToAddBlockActivity() {
         Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
         startActivity(blockActivityIntent);
     }
@@ -138,7 +159,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 EventDetailActivity.class);
 
         eventDetailActivityIntent.putExtra("description", new String[] {name,
-                                                                        description });
+            description});
         startActivity(eventDetailActivityIntent);
     }
 
@@ -154,6 +175,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     public void switchToAuthenticationActivity() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         Intent displayAuthenticationActivtyIntent = new Intent(mThisActivity,
                 AuthenticationActivity.class);
         mThisActivity.startActivityForResult(
@@ -161,7 +183,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     public void populateCalendarFromISA() {
-        if (!mAuthUtils.isAuthenticated(mThisActivity)) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        if (!mAuthUtils.isAuthenticated(getApplicationContext())) {
             switchToAuthenticationActivity();
         } else {
             mDialog = new ProgressDialog(this);
@@ -169,6 +192,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             mDialog.setMessage(this.getString(R.string.uploading));
             mDialog.setCancelable(false);
             mDialog.show();
+            App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
             CalendarClientInterface cal = new CalendarClient(mThisActivity,
                     this);
             cal.getISAInformations();
@@ -181,9 +205,64 @@ public abstract class DefaultActionBarActivity extends Activity implements
         constructCourse.completeCourse(coursesList, this);
     }
 
-    public void logout() {
-        TequilaAuthenticationAPI.getInstance().clearStoredData(mThisActivity);
-        switchToAuthenticationActivity();
+    @Override
+    public void logout(boolean isLogoutDoneByUser) {
+        if (isLogoutDoneByUser) {
+            // Menu to delete DB
+            createMenuDeleteDB();
+        } else {
+            App.setDBHelper(App.DATABASE_NAME);
+            DBQuester.close();
+            TequilaAuthenticationAPI.getInstance().clearStoredData(
+                    getApplicationContext());
+            populateCalendarFromISA();
+        }
+    }
+
+    private void createMenuDeleteDB() {
+        AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
+        choiceDialog
+                .setTitle("Do you want do delete the data for the user "
+                        + TequilaAuthenticationAPI.getInstance().getUsername(
+                                mThisActivity.getApplicationContext()) + " ?");
+        choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        // Yes
+                        getDBQuester().deleteAllTables();
+                        getApplicationContext().deleteDatabase(
+                                App.getDBHelper().getDatabaseName());
+                        App.setDBHelper(App.DATABASE_NAME);
+                        mCurrentDBName = "none";
+                        App.setCurrentUsername("noUser");
+                        DBQuester.close();
+                        dialog.cancel();
+                        TequilaAuthenticationAPI.getInstance().clearStoredData(
+                                getApplicationContext());
+                        populateCalendarFromISA();
+                        break;
+                    case 1:
+                        // No
+                        App.setDBHelper(App.DATABASE_NAME);
+                        App.setCurrentUsername("noUser");
+                        mCurrentDBName = "none";
+                        DBQuester.close();
+                        dialog.cancel();
+                        TequilaAuthenticationAPI.getInstance().clearStoredData(
+                                getApplicationContext());
+                        populateCalendarFromISA();
+                        break;
+                    default:
+                        // Cancel
+                        dialog.cancel();
+                        break;
+                }
+            }
+        });
+        choiceDialog.create();
+        choiceDialog.show();
     }
 
     @Override
@@ -191,7 +270,10 @@ public abstract class DefaultActionBarActivity extends Activity implements
         if (success) {
             completeCalendarFromAppEngine(courses);
         } else {
-            this.logout();
+            if (mDialog != null) {
+                mDialog.dismiss();
+            }
+            this.logout(false);
         }
     }
 
@@ -206,10 +288,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mDialog.setCancelable(false);
         mDialog.show();
 
-
-     
-
-        mDB.storeCourses(mCourses);
+        getDBQuester().storeCourses(mCourses);
     }
 
     public UpdateDataFromDBInterface getUdpateData() {
@@ -221,8 +300,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
         App.setActionBar(this);
     }
 
-    public synchronized void addTask() {
-        mNbOfAsyncTaskDB = mNbOfAsyncTaskDB + 1;
+    public synchronized void addTask(int value) {
+        mNbOfAsyncTaskDB = mNbOfAsyncTaskDB + value;
     }
 
     public synchronized void asyncTaskStoreFinished() {
@@ -233,6 +312,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             if (mDialog != null) {
                 mDialog.dismiss();
             }
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
 
     }
@@ -244,6 +324,18 @@ public abstract class DefaultActionBarActivity extends Activity implements
     @Override
     public void callbackDBUpload() {
         mUdpateData.updateData();
+    }
+
+    public AuthenticationUtils getAuthUtils() {
+        return mAuthUtils;
+    }
+
+    public void setAuthUtils(AuthenticationUtils authUtils) {
+        this.mAuthUtils = authUtils;
+    }
+
+    public Activity getThisActivity() {
+        return mThisActivity;
     }
 
 }

@@ -19,11 +19,6 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
     private static final String SUCCESS_CREATE = "Row Successfully created!";
 
     @Override
-    protected void onPreExecute() {
-        App.getActionBar().addTask();
-    }
-
-    @Override
     protected Long doInBackground(CreateObject... params) {
         CreateObject object = params[0];
 

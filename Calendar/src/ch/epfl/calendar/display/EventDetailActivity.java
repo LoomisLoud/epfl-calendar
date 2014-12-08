@@ -1,5 +1,6 @@
 package ch.epfl.calendar.display;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ public class EventDetailActivity extends DefaultActionBarActivity implements
         super.setUdpateData(this);
         setContentView(R.layout.activity_event_detail);
 
+        eventDetailsActionBar();
+
         Intent startIntent = getIntent();
 
         String name = startIntent.getStringArrayExtra("description")[0];
@@ -39,6 +42,11 @@ public class EventDetailActivity extends DefaultActionBarActivity implements
         textView1.setText(bodyToSpannableConcatAndBold("Description: ",
                 description));
 
+    }
+    
+    private void eventDetailsActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("Event Details");
     }
 
     private SpannableString titleToSpannable(String title) {

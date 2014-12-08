@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,14 +18,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.EventForList;
+import ch.epfl.calendar.data.EventSeparator;
+import ch.epfl.calendar.data.ListViewItem;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.persistence.DBQuester;
@@ -35,32 +36,32 @@ import ch.epfl.calendar.persistence.DBQuester;
  * @author MatthiasLeroyEPFL
  * 
  */
-public class EventListActivity extends DefaultActionBarActivity {
+public class EventListActivity extends DefaultActionBarActivity implements
+        UpdateDataFromDBInterface {
+
+    private static final int HEIGHT_DIVIDER = 10;
+    private static final int SEPARATOR_ID = -2;
 
     private ListView mListView;
-    private DBQuester mDbQuester;
     private Context context = this;
-    private static final int HEIGHT_DIVIDER = 10;
-    private ArrayAdapter<EventForList> adapter = null;
     private boolean editEvent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
         setContentView(R.layout.activity_event_list);
         listEventActionBar();
+        CustomAdapter customAdapter = new CustomAdapter(context);
         mListView = (ListView) findViewById(R.id.list_event_view);
 
-        mDbQuester = new DBQuester();
-        List<Course> course = mDbQuester.getAllCourses();
-        List<Event> eventCreated = mDbQuester.getAllEvents();
-        final List<EventForList> eventForList = eventToEventForList(course,
+        List<Course> course = getDBQuester().getAllCourses();
+        List<Event> eventCreated = getDBQuester().getAllEvents();
+        final List<ListViewItem> eventForList = eventToEventForList(course,
                 eventCreated);
 
-        adapter = new ArrayAdapter<EventForList>(this,
-                android.R.layout.simple_list_item_1, eventForList);
-
-        mListView.setAdapter(adapter);
+        createAdapter(eventForList, customAdapter);
+        mListView.setAdapter(customAdapter);
         mListView.setDividerHeight(HEIGHT_DIVIDER);
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -69,14 +70,18 @@ public class EventListActivity extends DefaultActionBarActivity {
             public void onItemClick(AdapterView<?> arg0, View view,
                     int position, long arg3) {
 
-                EventForList event = (EventForList) mListView
+                ListViewItem item = (ListViewItem) mListView
                         .getItemAtPosition(position);
-                if (event.getmId() == DBQuester.NO_ID) {
-                    switchToCourseDetails(event.getmEventName());
-                } else {
-                    editEvent = true;
-                    switchToEditActivity(mDbQuester.getEvent(event.getmId()));
 
+                if (item.getmId() != SEPARATOR_ID) {
+                    if (item.getmId() == DBQuester.NO_ID) {
+                        switchToCourseDetails(item.getmName());
+                    } else {
+                        editEvent = true;
+                        switchToEditActivity(getDBQuester().getEvent(
+                                item.getmId()));
+
+                    }
                 }
 
             }
@@ -88,73 +93,90 @@ public class EventListActivity extends DefaultActionBarActivity {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                     final int pos, long arg3) {
 
-                final EventForList event = (EventForList) mListView
+                final ListViewItem item = (ListViewItem) mListView
                         .getItemAtPosition(pos);
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 dialog.setMessage("What do you want to do ?");
 
-                if (event.getmId() != DBQuester.NO_ID) {
-                    dialog.setNegativeButton("Delete", new OnClickListener() {
+                if (item.getmId() != SEPARATOR_ID) {
+                    if (item.getmId() != DBQuester.NO_ID) {
+                        dialog.setNegativeButton("Delete",
+                                new OnClickListener() {
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                            int which) {
 
-                            mDbQuester.deleteEvent(mDbQuester.getEvent(event
-                                    .getmId()));
-                            List<EventForList> list = eventForList;
-                            list.remove(event);
-                            adapter = new ArrayAdapter<EventForList>(context,
-                                    android.R.layout.simple_list_item_1, list);
-                            mListView.setAdapter(adapter);
+                                        getDBQuester().deleteEvent(
+                                                getDBQuester().getEvent(
+                                                        item.getmId()));
+                                        List<ListViewItem> list = eventForList;
+                                        list.remove(item);
+                                        CustomAdapter adap = new CustomAdapter(
+                                                context);
+                                        createAdapter(list, adap);
+                                        mListView.setAdapter(adap);
 
-                            dialog.cancel();
+                                        dialog.cancel();
 
-                        }
-                    });
-                    dialog.setPositiveButton("Edit", new OnClickListener() {
+                                    }
+                                });
+                        dialog.setPositiveButton("Edit", new OnClickListener() {
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            editEvent = true;
-                            switchToEditActivity(mDbQuester.getEvent(event
-                                    .getmId()));
-                        }
-                    });
-                }
-                dialog.setNeutralButton("Description", new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int which) {
+                                editEvent = true;
+                                switchToEditActivity(getDBQuester().getEvent(
+                                        item.getmId()));
 
-                    /*
-                     * (non-Javadoc)
-                     * 
-                     * @see
-                     * android.content.DialogInterface.OnClickListener#onClick
-                     * (android.content.DialogInterface, int)
-                     */
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if (event.getmId() == DBQuester.NO_ID) {
-                            switchToCourseDetails(event.getmEventName());
-                        } else {
-                            if (event.getmLinkedCourse().equals(App.NO_COURSE)) {
-                                String description = event.getmDescription();
-                                switchToEventDetail(event.getmEventName(),
-                                        description);
-                            } else {
-                                String coursName = event.getmLinkedCourse();
-                                switchToCourseDetails(coursName);
                             }
-                        }
-
-                        dialog.cancel();
-
+                        });
                     }
-                });
 
-                dialog.create();
-                dialog.show();
+                    dialog.setNeutralButton("Description",
+                            new OnClickListener() {
+
+                                /*
+                                 * (non-Javadoc)
+                                 * 
+                                 * @see
+                                 * android.content.DialogInterface.OnClickListener
+                                 * #onClick (android.content.DialogInterface,
+                                 * int)
+                                 */
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which) {
+
+                                    if (item.getmId() == DBQuester.NO_ID) {
+                                        switchToCourseDetails(item.getmName());
+                                    } else {
+                                        if (item.getmLinkedCourse().equals(
+                                                App.NO_COURSE)) {
+                                            String description = item
+                                                    .getmDescription();
+                                            switchToEventDetail(
+                                                    item.getmName(),
+                                                    description);
+                                        } else {
+                                            String coursName = item
+                                                    .getmLinkedCourse();
+                                            switchToCourseDetails(coursName);
+                                        }
+                                    }
+
+                                    dialog.cancel();
+
+                                }
+                            });
+
+                    dialog.create();
+                    dialog.show();
+                }
                 return true;
             }
+
         });
 
     }
@@ -207,8 +229,8 @@ public class EventListActivity extends DefaultActionBarActivity {
         }
     }
 
-    private List<EventForList> removePastEvents(List<EventForList> list) {
-        List<EventForList> result = new ArrayList<EventForList>();
+    private List<ListViewItem> removePastEvents(List<EventForList> list) {
+        List<ListViewItem> result = new ArrayList<ListViewItem>();
         Calendar today = Calendar.getInstance();
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getmStart().getTimeInMillis() > today
@@ -227,7 +249,7 @@ public class EventListActivity extends DefaultActionBarActivity {
         startActivity(courseDetailsActivityIntent);
     }
 
-    private List<EventForList> eventToEventForList(List<Course> cours,
+    private List<ListViewItem> eventToEventForList(List<Course> cours,
             List<Event> event) {
         List<EventForList> eventForList = new ArrayList<EventForList>();
         for (Course c : cours) {
@@ -243,8 +265,27 @@ public class EventListActivity extends DefaultActionBarActivity {
                     e.getLinkedCourse(), e.getmDescription()));
         }
         sort(eventForList);
-        List<EventForList> result = removePastEvents(eventForList);
+
+        List<ListViewItem> result = removePastEvents(eventForList);
+
         return result;
+    }
+
+    private CustomAdapter createAdapter(List<ListViewItem> eventForList,
+            CustomAdapter adapter) {
+        adapter.addSectionHeaderItem(new EventSeparator(eventForList.get(0)
+                .getmStart()));
+        adapter.addItem(eventForList.get(0));
+        for (int i = 1; i < eventForList.size(); i++) {
+            if (eventForList.get(i).getmStart().get(Calendar.DAY_OF_MONTH) != eventForList
+                    .get(i - 1).getmStart().get(Calendar.DAY_OF_MONTH)) {
+                adapter.addSectionHeaderItem(new EventSeparator(eventForList
+                        .get(i).getmStart()));
+            }
+            adapter.addItem(eventForList.get(i));
+        }
+        return adapter;
+
     }
 
     @Override
@@ -255,18 +296,33 @@ public class EventListActivity extends DefaultActionBarActivity {
         startActivity(addEventsActivityIntent);
     }
 
+    public void switchToAddBlockActivity() {
+        editEvent = true;
+        Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
+        startActivity(blockActivityIntent);
+    }
+
     @Override
     protected void onResume() {
         if (editEvent) {
-            List<EventForList> updatedEvent = eventToEventForList(
-                    mDbQuester.getAllCourses(), mDbQuester.getAllEvents());
-            adapter = new ArrayAdapter<EventForList>(context,
-                    android.R.layout.simple_list_item_1, updatedEvent);
-            mListView.setAdapter(adapter);
+
+            List<ListViewItem> updatedEvent = eventToEventForList(
+                    getDBQuester().getAllCourses(), getDBQuester()
+                            .getAllEvents());
+            CustomAdapter editAdapter = new CustomAdapter(context);
+            createAdapter(updatedEvent, editAdapter);
+            mListView.setAdapter(editAdapter);
+
             editEvent = false;
 
         }
         super.onResume();
+
+    }
+
+    @Override
+    public void updateData() {
+        onResume();
 
     }
 }

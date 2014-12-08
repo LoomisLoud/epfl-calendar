@@ -136,6 +136,11 @@ public class App extends Application {
      * DefaultActionBarActivity
      */
     private static DefaultActionBarActivity mActionBar;
+    
+    /**
+     * The username of the current user.
+     */
+    private static String mCurrentUsername;
 
     @Override
     public void onCreate() {
@@ -273,7 +278,7 @@ public class App extends Application {
 
         return dd + "." + mm + "." + yyyy + " " + hh + ":" + min;
     }
-
+    
     /**
      * Method to write a calendar in the form 'dd.mm.yyy hh:mm-hh2:mm2' if they are on the same day
      * 
@@ -329,20 +334,17 @@ public class App extends Application {
                     + dd2 + "." + mm2 + "." + Integer.toString(date2.get(Calendar.YEAR));
         }
 
-        
-
         int hour = date.get(Calendar.HOUR_OF_DAY);
         hh = Integer.toString(hour);
         if (hour < NUMERIC_TEN) {
             hh = "0".concat(hh);
         }
-
+        
         int minutes = date.get(Calendar.MINUTE);
         min = Integer.toString(minutes);
         if (minutes < NUMERIC_TEN) {
             min = "0".concat(min);
         }
-        
         int hour2 = date2.get(Calendar.HOUR_OF_DAY);
         hh2 = Integer.toString(hour2);
         if (hour2 < NUMERIC_TEN) {
@@ -358,6 +360,26 @@ public class App extends Application {
         hhminhhmin = hh + ":" + min + "-" + hh2 + ":" + min2;
         
         return new String[] {ddmmyyyy, hhminhhmin};
+    }
+
+    public static String calendarHourToBasicFormatString(Calendar date) {
+        String hh;
+        String min;
+        
+        int hour = date.get(Calendar.HOUR_OF_DAY);
+        hh = Integer.toString(hour);
+        if (hour < NUMERIC_TEN) {
+            hh = "0".concat(hh);
+        }
+
+        int minutes = date.get(Calendar.MINUTE);
+        min = Integer.toString(minutes);
+        if (minutes < NUMERIC_TEN) {
+            min = "0".concat(min);
+        }
+        
+        return hh + ":" + min;
+        
     }
 
     public static String boolToString(boolean bool) {
@@ -378,5 +400,13 @@ public class App extends Application {
 
     public static void setActionBar(DefaultActionBarActivity actionBar) {
         App.mActionBar = actionBar;
+    }
+
+    public static String getCurrentUsername() {
+        return mCurrentUsername;
+    }
+
+    public static void setCurrentUsername(String currentUsername) {
+        App.mCurrentUsername = currentUsername;
     }
 }
