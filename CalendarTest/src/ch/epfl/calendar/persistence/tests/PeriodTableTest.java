@@ -8,9 +8,9 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.persistence.PeriodTable;
 
 /**
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class PeriodTableTest extends TestCase {
 
@@ -42,6 +42,20 @@ public class PeriodTableTest extends TestCase {
             fail("Should throw an SQLiteException");
         } catch (SQLiteException e) {
             // success
+        	assertNotNull(e);
         }
+    }
+
+    public void testOnUpgrade() {
+    	try {
+    		PeriodTable.onUpgrade(mDb, 1, 2);
+    		String tableName = SQLiteDatabase
+                    .findEditTable(PeriodTable.TABLE_NAME_PERIOD);
+            Log.i("Database contains table : ", tableName);
+            assertTrue(tableName.equals(PeriodTable.TABLE_NAME_PERIOD));
+        } catch (SQLiteException e) {
+            // fail
+        	fail("Shouldn't have thrown an SQLiteException");
+    	}
     }
 }

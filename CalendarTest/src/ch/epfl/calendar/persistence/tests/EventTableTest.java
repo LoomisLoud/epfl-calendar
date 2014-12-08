@@ -34,7 +34,6 @@ public class EventTableTest extends TestCase {
     // For deeper tests,
     // @see ch.epfl.calendar.persistence.tests.DBHelperTest#testTableCreation()
     public void testOnCreate() {
-    	SQLiteException ex = null;
         try {
             EventTable.onCreate(mDb);
             String tableName = SQLiteDatabase
@@ -43,8 +42,20 @@ public class EventTableTest extends TestCase {
             fail("Should throw an SQLiteException");
         } catch (SQLiteException e) {
             // success
-        	ex = e;
-        	assertNotNull(ex);
+        	assertNotNull(e);
         }
+    }
+
+    public void testOnUpgrade() {
+    	try {
+    		EventTable.onUpgrade(mDb, 1, 2);
+    		String tableName = SQLiteDatabase
+                    .findEditTable(EventTable.TABLE_NAME_EVENT);
+            Log.i("Database contains table : ", tableName);
+            assertTrue(tableName.equals(EventTable.TABLE_NAME_EVENT));
+        } catch (SQLiteException e) {
+            // fail
+        	fail("Shouldn't have thrown an SQLiteException");
+    	}
     }
 }
