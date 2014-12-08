@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteException;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.MainActivity;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
@@ -43,11 +44,21 @@ public class DBQuesterTest extends
     protected void setUp() throws Exception {
         super.setUp();
 
+        mActivity = getActivity();
+
+        App.setCurrentUsername("testUsername");
+        // store the sessionID in the preferences
+        TequilaAuthenticationAPI.getInstance().setSessionID(
+                mActivity.getApplicationContext(), "sessionID");
+        TequilaAuthenticationAPI.getInstance().setUsername(
+                mActivity.getApplicationContext(),
+                "testUsername");
+
+        mActivity = getActivity();
+
         App.setDBHelper("calendar_test.db");
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
-
-        mActivity = getActivity();
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
