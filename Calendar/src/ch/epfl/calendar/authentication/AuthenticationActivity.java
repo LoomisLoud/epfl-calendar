@@ -1,5 +1,6 @@
 package ch.epfl.calendar.authentication;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ public class AuthenticationActivity extends Activity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         setContentView(R.layout.activity_authentication);
+
+        authenticationActionBar();
 
         mTxtUsername = (EditText) this.findViewById(R.id.txtUsername);
         mTxtPassword = (EditText) this.findViewById(R.id.txtPassword);
@@ -72,6 +75,12 @@ public class AuthenticationActivity extends Activity {
     public void onResume() {
         super.onResume();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+    }
+    
+    private void authenticationActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("Log In !");
+        actionBar.setDisplayShowHomeEnabled(false);
     }
 
     /**

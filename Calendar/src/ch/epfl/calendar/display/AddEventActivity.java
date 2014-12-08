@@ -1,18 +1,24 @@
 package ch.epfl.calendar.display;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.ActionBar;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -33,24 +39,34 @@ import ch.epfl.calendar.persistence.DBQuester;
 public class AddEventActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
+    private static final boolean IS_BLOCK = false;
+    public static final int AUTH_ACTIVITY_CODE = 1;
+
     private EditText mNameEvent;
     private EditText mDescriptionEvent;
-    private DatePicker mStartEventDate;
-
-    private TimePicker mStartEventHour;
-
-    private DatePicker mEndEventDate;
-    private TimePicker mEndEventHour;
+    private Spinner mSpinnerCourses;
 
     private int eventId = DBQuester.NO_ID;
 
     private String mLinkedCourse = App.NO_COURSE;
-    private Spinner mSpinnerCourses;
     private List<String> mCoursesNames = new ArrayList<String>();
 
-    private static final boolean IS_BLOCK = false;
-
-    public static final int AUTH_ACTIVITY_CODE = 1;
+    private Button mButtonStartDate;
+    private Button mButtonStartHour;
+    private Button mButtonEndDate;
+    private Button mButtonEndHour;
+    private Calendar mStartCalendar = Calendar.getInstance();
+    private Calendar mEndCalendar = Calendar.getInstance();
+    private DatePickerDialog mStartDatePickerDialog;
+    private TimePickerDialog mStartTimePickerDialog;
+    private DatePickerDialog mEndDatePickerDialog;
+    private TimePickerDialog mEndTimePickerDialog;
+    private DatePickerDialog.OnDateSetListener mStartDatePickerListener;
+    private TimePickerDialog.OnTimeSetListener mStartTimePickerListener;
+    private DatePickerDialog.OnDateSetListener mEndDatePickerListener;
+    private TimePickerDialog.OnTimeSetListener mEndTimePickerListener;
+    private String mDateFormat = "MM/dd/yy";
+    private String mTimeFormat = "hh:mm aa";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +81,136 @@ public class AddEventActivity extends DefaultActionBarActivity implements
         mNameEvent = (EditText) findViewById(R.id.name_event_text);
         mDescriptionEvent = (EditText) findViewById(R.id.description_event_text);
 
-        mStartEventDate = (DatePicker) findViewById(R.id.start_event_picker_date);
-        mStartEventHour = (TimePicker) findViewById(R.id.start_event_picker_hour);
-
-        mEndEventDate = (DatePicker) findViewById(R.id.end_event_picker_date);
-        mEndEventHour = (TimePicker) findViewById(R.id.end_event_picker_hour);
-
         mSpinnerCourses = (Spinner) findViewById(R.id.spinner_courses);
+
+        mButtonStartDate = (Button) findViewById(R.id.start_event_dialog_date);
+        mButtonStartHour = (Button) findViewById(R.id.start_event_dialog_hour);
+        mButtonEndDate = (Button) findViewById(R.id.end_event_dialog_date);
+        mButtonEndHour = (Button) findViewById(R.id.end_event_dialog_hour);
+
+        initializePickerDialog();
+        initializeButton();
 
         mCoursesNames = getDBQuester().getAllCoursesNames();
 
         setView();
         initializeValue(startingIntent);
+    }
+
+    private void initializePickerDialog() {
+        createPickerListener();
+
+        mStartDatePickerDialog = new DatePickerDialog(AddEventActivity.this,
+                mStartDatePickerListener, mStartCalendar.get(Calendar.YEAR),
+                mStartCalendar.get(Calendar.MONTH),
+                mStartCalendar.get(Calendar.DAY_OF_MONTH));
+
+        mStartTimePickerDialog = new TimePickerDialog(AddEventActivity.this,
+                mStartTimePickerListener,
+                mStartCalendar.get(Calendar.HOUR_OF_DAY),
+                mStartCalendar.get(Calendar.MINUTE), false);
+
+        mEndDatePickerDialog = new DatePickerDialog(AddEventActivity.this,
+                mEndDatePickerListener, mEndCalendar.get(Calendar.YEAR),
+                mEndCalendar.get(Calendar.MONTH),
+                mEndCalendar.get(Calendar.DAY_OF_MONTH));
+
+        mEndTimePickerDialog = new TimePickerDialog(AddEventActivity.this,
+                mEndTimePickerListener, mEndCalendar.get(Calendar.HOUR_OF_DAY),
+                mEndCalendar.get(Calendar.MINUTE), false);
+    }
+
+    private void initializeButton() {
+        mButtonStartDate.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStartDatePickerDialog.show();
+            }
+        });
+
+        mButtonStartHour.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStartTimePickerDialog.show();
+            }
+        });
+
+        mButtonEndDate.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEndDatePickerDialog.show();
+            }
+        });
+
+        mButtonEndHour.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEndTimePickerDialog.show();
+            }
+        });
+    }
+
+    private void createPickerListener() {
+        mStartDatePickerListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                    int dayOfMonth) {
+                updateCalendarAndButtons(mStartCalendar, mButtonStartDate,
+                        mDateFormat, year, monthOfYear, dayOfMonth);
+            }
+        };
+
+        mStartTimePickerListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                updateCalendarAndButtons(mStartCalendar, mButtonStartHour,
+                        mTimeFormat, hourOfDay, minute);
+            }
+        };
+
+        mEndDatePickerListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                    int dayOfMonth) {
+                updateCalendarAndButtons(mEndCalendar, mButtonEndDate,
+                        mDateFormat, year, monthOfYear, dayOfMonth);
+            }
+        };
+
+        mEndTimePickerListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                updateCalendarAndButtons(mEndCalendar, mButtonEndHour,
+                        mTimeFormat, hourOfDay, minute);
+            }
+        };
+    }
+
+    private void updateDateButton(Calendar calendar, Button button,
+            String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        button.setText(sdf.format(calendar.getTime()));
+    }
+
+    private void updateTimeButton(Calendar calendar, Button button,
+            String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        button.setText(sdf.format(calendar.getTime()));
+    }
+
+    private void updateCalendarAndButtons(Calendar calendar, Button button,
+            String format, int year, int month, int day) {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        updateDateButton(calendar, button, format);
+    }
+
+    private void updateCalendarAndButtons(Calendar calendar, Button button,
+            String format, int hour, int minute) {
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        updateTimeButton(calendar, button, format);
     }
 
     private void initializeSpinner(String linkCourses) {
@@ -89,7 +223,6 @@ public class AddEventActivity extends DefaultActionBarActivity implements
     }
 
     private void initializeValue(Intent intent) {
-
         if (intent.hasExtra("Id")) {
             eventId = intent.getIntExtra("Id", DBQuester.NO_ID);
             Event event = new DBQuester().getEvent(eventId);
@@ -101,22 +234,39 @@ public class AddEventActivity extends DefaultActionBarActivity implements
             int startYear = event.getStartDate().get(Calendar.YEAR);
             int startMonth = event.getStartDate().get(Calendar.MONTH);
             int startDay = event.getStartDate().get(Calendar.DAY_OF_MONTH);
-            mStartEventDate.updateDate(startYear, startMonth, startDay);
+            mStartDatePickerDialog.updateDate(startYear, startMonth, startDay);
+            updateCalendarAndButtons(mStartCalendar, mButtonStartDate,
+                    mDateFormat, startYear, startMonth, startDay);
 
             int startHour = event.getStartDate().get(Calendar.HOUR_OF_DAY);
-            mStartEventHour.setCurrentHour(startHour);
             int startMinute = event.getStartDate().get(Calendar.MINUTE);
-            mStartEventHour.setCurrentMinute(startMinute);
+            mStartTimePickerDialog.updateTime(startHour, startMinute);
+            updateCalendarAndButtons(mStartCalendar, mButtonStartHour,
+                    mTimeFormat, startHour, startMinute);
 
             int endYear = event.getEndDate().get(Calendar.YEAR);
             int endMonth = event.getEndDate().get(Calendar.MONTH);
             int endDay = event.getEndDate().get(Calendar.DAY_OF_MONTH);
-            mEndEventDate.updateDate(endYear, endMonth, endDay);
+            mEndDatePickerDialog.updateDate(endYear, endMonth, endDay);
+            updateCalendarAndButtons(mEndCalendar, mButtonEndDate, mDateFormat,
+                    endYear, endMonth, endDay);
 
             int endHour = event.getEndDate().get(Calendar.HOUR_OF_DAY);
-            mEndEventHour.setCurrentHour(endHour);
             int endMinute = event.getEndDate().get(Calendar.MINUTE);
-            mEndEventHour.setCurrentMinute(endMinute);
+            mEndTimePickerDialog.updateTime(endHour, endMinute);
+            updateCalendarAndButtons(mEndCalendar, mButtonEndHour, mTimeFormat,
+                    endHour, endMinute);
+
+        } else {
+            mEndCalendar.set(Calendar.HOUR_OF_DAY,
+                    mEndCalendar.get(Calendar.HOUR_OF_DAY) + 1);
+            mEndTimePickerDialog.updateTime(
+                    mEndCalendar.get(Calendar.HOUR_OF_DAY),
+                    mEndCalendar.get(Calendar.MINUTE));
+            updateDateButton(mStartCalendar, mButtonStartDate, mDateFormat);
+            updateTimeButton(mStartCalendar, mButtonStartHour, mTimeFormat);
+            updateDateButton(mEndCalendar, mButtonEndDate, mDateFormat);
+            updateTimeButton(mEndCalendar, mButtonEndHour, mTimeFormat);
         }
     }
 
@@ -125,62 +275,6 @@ public class AddEventActivity extends DefaultActionBarActivity implements
         actionBar.setTitle("New Event");
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        boolean retour = super.onCreateOptionsMenu(menu);
-        MenuItem addEventItem = (MenuItem) menu.findItem(R.id.add_event);
-        addEventItem.setVisible(false);
-        this.invalidateOptionsMenu();
-        return retour;
-    }
-
-    public Calendar createCalendar(int year, int month, int day, int hour,
-            int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.YEAR, year);
-
-        return calendar;
-    }
-
-    private void transferData() throws ReversedDatesException {
-
-        Calendar start = createCalendar(mStartEventDate.getYear(),
-                mStartEventDate.getMonth(), mStartEventDate.getDayOfMonth(),
-                mStartEventHour.getCurrentHour(),
-                mStartEventHour.getCurrentMinute());
-        Calendar end = createCalendar(mEndEventDate.getYear(),
-                mEndEventDate.getMonth(), mEndEventDate.getDayOfMonth(),
-                mEndEventHour.getCurrentHour(),
-                mEndEventHour.getCurrentMinute());
-
-        if (end.before(start)) {
-            throw new ReversedDatesException();
-        }
-
-        Event e = new Event(mNameEvent.getText().toString(),
-                App.calendarToBasicFormatString(start),
-                App.calendarToBasicFormatString(end),
-                PeriodType.DEFAULT.toString(), mLinkedCourse, mDescriptionEvent
-                        .getText().toString(), IS_BLOCK, eventId);
-        DBQuester dbQuester = getDBQuester();
-        dbQuester.storeEvent(e);
-    }
-
-    public void finishActivity(View v) {
-        try { 
-            transferData();
-        } catch (ReversedDatesException e) {
-            Toast.makeText(AddEventActivity.this.getBaseContext(),
-                    AddEventActivity.this.getString(R.string.reversed_dates),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        finish();
-    }
 
     private void setView() {
         mCoursesNames.add(0, "No connection with courses");
@@ -209,6 +303,42 @@ public class AddEventActivity extends DefaultActionBarActivity implements
             }
 
         });
+    }
+
+    private void transferData() throws ReversedDatesException {
+
+        if (mEndCalendar.before(mStartCalendar)) {
+            throw new ReversedDatesException();
+        }
+
+        Event e = new Event(mNameEvent.getText().toString(),
+                App.calendarToBasicFormatString(mStartCalendar),
+                App.calendarToBasicFormatString(mEndCalendar),
+                PeriodType.DEFAULT.toString(), mLinkedCourse, mDescriptionEvent
+                        .getText().toString(), IS_BLOCK, eventId);
+        DBQuester dbQuester = new DBQuester();
+        dbQuester.storeEvent(e);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean retour = super.onCreateOptionsMenu(menu);
+        MenuItem addEventItem = (MenuItem) menu.findItem(R.id.add_event);
+        addEventItem.setVisible(false);
+        this.invalidateOptionsMenu();
+        return retour;
+    }
+
+    public void finishActivity(View v) {
+        try {
+            transferData();
+        } catch (ReversedDatesException e) {
+            Toast.makeText(AddEventActivity.this.getBaseContext(),
+                    AddEventActivity.this.getString(R.string.reversed_dates),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        finish();
     }
 
     @Override
