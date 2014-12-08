@@ -10,8 +10,8 @@ import ch.epfl.calendar.App;
  */
 public class EventForList extends ListViewItem {
 
-    private static final int ZERO_MINUTE = 0;
-    private static final int TEN_MINUTE = 10;
+    //private static final int ZERO_MINUTE = 0;
+    //private static final int TEN_MINUTE = 10;
     
     private String mName;
     private Calendar mEnd;

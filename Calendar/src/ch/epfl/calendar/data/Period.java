@@ -27,8 +27,6 @@ public class Period implements Parcelable {
     private List<String> mRooms;
     private String mId;
 
-    //private static final int DOUBLE_DIGIT = 10;
-
     private static final String TYPE_EXERCISES_FR = "Exercices";
     private static final String TYPE_EXERCISES_EN = "Exercises";
     private static final String TYPE_PROJECT_FR = "Projet";
@@ -231,10 +229,32 @@ public class Period implements Parcelable {
         
         return periodType + " : " + day + " " + startTime + "-" + endTime;
     }
+    
+    public String toDisplayInCourseDetail() {
+        String periodType;
+        switch (mType) {
+            case LECTURE:
+                periodType = "Lecture";
+                break;
+            case PROJECT:
+                periodType = "Project";
+                break;
+            case EXERCISES:
+                periodType = "Exercises";
+                break;
+            default:
+                periodType = "Default";
+                break;
+        }
 
-    /*private boolean isSingleDigit(int number) {
-        return number < DOUBLE_DIGIT;
-    }*/
+        String day = mStartDate.getDisplayName(Calendar.DAY_OF_WEEK,
+                Calendar.SHORT, Locale.ENGLISH);
+        
+        String startHour = App.calendarTo12HoursString(mStartDate);  
+        String endHour = App.calendarTo12HoursString(mEndDate);
+        
+        return periodType + " : " + day + " " + startHour + "-" + endHour + "\n";
+    }
 
     /**
      * Return if classes are equals. Either object can't be null to return true.

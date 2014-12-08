@@ -133,7 +133,7 @@ public class App extends Application {
      * Application context.
      */
     private static Context mContext;
-    
+
     /**
      * DefaultActionBarActivity
      */
@@ -154,7 +154,7 @@ public class App extends Application {
     public static DBHelper getDBHelper() {
         return App.mDBHelper;
     }
-    
+
     public static void setDBHelper(String databaseName) {
         mDBHelper = new DBHelper(App.mContext, databaseName);
     }
@@ -281,6 +281,89 @@ public class App extends Application {
         return dd + "." + mm + "." + yyyy + " " + hh + ":" + min;
     }
     
+    /**
+     * Method to write a calendar in the form 'dd.mm.yyy hh:mm-hh2:mm2' if they are on the same day
+     * 
+     * @param date
+     * @return
+     */
+    public static String[] calendarToBasicFormatStringSameDaySpecialFormat(Calendar date, Calendar date2) {
+        String dd;
+        String mm;
+        String yyyy;
+        String hh;
+        String min;
+        
+
+        String hh2;
+        String min2;
+        
+        String ddmmyyyy;
+        String hhminhhmin;
+        
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        dd = Integer.toString(day);
+        if (day < NUMERIC_TEN) {
+            dd = "0".concat(dd);
+        }
+
+        int month = date.get(Calendar.MONTH);
+        month = month + 1;
+        mm = Integer.toString(month);
+        if (month < NUMERIC_TEN) {
+            mm = "0".concat(mm);
+        }
+        
+        // compare to see if both date are on the same days
+        if (date.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+                && date.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)) {
+            yyyy = Integer.toString(date.get(Calendar.YEAR));
+            ddmmyyyy = dd + "." + mm + "." + yyyy;
+        } else {
+            int day2 = date2.get(Calendar.DAY_OF_MONTH);
+            String dd2 = Integer.toString(day2);
+            if (day2 < NUMERIC_TEN) {
+                dd2 = "0".concat(dd2);
+            }
+
+            int month2 = date2.get(Calendar.MONTH);
+            month2 = month2 + 1;
+            String mm2 = Integer.toString(month2);
+            if (month2 < NUMERIC_TEN) {
+                mm2 = "0".concat(mm2);
+            }
+            ddmmyyyy = dd + "." + mm + "." + Integer.toString(date.get(Calendar.YEAR)) +  "-"
+                    + dd2 + "." + mm2 + "." + Integer.toString(date2.get(Calendar.YEAR));
+        }
+
+        int hour = date.get(Calendar.HOUR_OF_DAY);
+        hh = Integer.toString(hour);
+        if (hour < NUMERIC_TEN) {
+            hh = "0".concat(hh);
+        }
+        
+        int minutes = date.get(Calendar.MINUTE);
+        min = Integer.toString(minutes);
+        if (minutes < NUMERIC_TEN) {
+            min = "0".concat(min);
+        }
+        int hour2 = date2.get(Calendar.HOUR_OF_DAY);
+        hh2 = Integer.toString(hour2);
+        if (hour2 < NUMERIC_TEN) {
+            hh2 = "0".concat(hh2);
+        }
+
+        int minutes2 = date2.get(Calendar.MINUTE);
+        min2 = Integer.toString(minutes2);
+        if (minutes2 < NUMERIC_TEN) {
+            min2 = "0".concat(min2);
+        }
+        
+        hhminhhmin = hh + ":" + min + "-" + hh2 + ":" + min2;
+        
+        return new String[] {ddmmyyyy, hhminhhmin};
+    }
+
     public static String calendarHourToBasicFormatString(Calendar date) {
         String hh;
         String min;
@@ -290,7 +373,7 @@ public class App extends Application {
         if (hour < NUMERIC_TEN) {
             hh = "0".concat(hh);
         }
-        
+
         int minutes = date.get(Calendar.MINUTE);
         min = Integer.toString(minutes);
         if (minutes < NUMERIC_TEN) {
@@ -306,7 +389,7 @@ public class App extends Application {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         return sdf.format(date.getTime());
     }
-    
+
     public static String boolToString(boolean bool) {
         if (bool) {
             return App.TRUE;
@@ -314,7 +397,7 @@ public class App extends Application {
             return App.FALSE;
         }
     }
-    
+
     public static boolean stringToBool(String strBool) {
         return strBool.equals(App.TRUE);
     }
