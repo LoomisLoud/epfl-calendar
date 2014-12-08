@@ -303,7 +303,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     break;
                                 case 1:
                                 	if (eventFromDB.isAutomaticAddedBlock()) {
-                                		getDBQuester().deleteBlocks(eventFromDB);
+                                		getDBQuester().deleteBlock(eventFromDB);
                                 	} else {
                                 		getDBQuester().deleteEvent(eventFromDB);
                                 	}

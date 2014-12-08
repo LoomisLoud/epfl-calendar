@@ -130,7 +130,7 @@ public interface LocalDatabaseInterface {
      * 
      * @param event
      */
-    void deleteBlocks(Event event);
+    void deleteBlock(Event event);
 
     /**
      * Delete all tables in the database

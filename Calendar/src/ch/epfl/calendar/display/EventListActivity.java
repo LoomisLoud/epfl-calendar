@@ -109,7 +109,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                     	Event eventToDelete = getDBQuester().getEvent(
                                                 item.getmId());
                                     	if (eventToDelete.isAutomaticAddedBlock()) {
-                                    		getDBQuester().deleteBlocks(eventToDelete);
+                                    		getDBQuester().deleteBlock(eventToDelete);
                                     	} else {
                                             getDBQuester().deleteEvent(eventToDelete);
                                     	}
