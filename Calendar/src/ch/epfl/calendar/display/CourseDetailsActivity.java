@@ -117,7 +117,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
                     @Override
                     public void onClick(View v) {
-                        Event event = mDB.getEvent(v.getId());
+                        Event event = getDBQuester().getEvent(v.getId());
                         switchToEditActivity(event);
                     }
                     
