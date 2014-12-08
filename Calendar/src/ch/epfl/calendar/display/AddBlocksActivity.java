@@ -156,7 +156,12 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
             double timeToRemove = 0;
             if (!eventList.isEmpty()) {
                 for (Event e : eventList) {
-                    if (e.getEndDate().compareTo(today) > 0
+                	if (e.getStartDate().compareTo(today) < 0
+                			&& e.getEndDate().compareTo(today) > 0) {
+                		today.add(Calendar.DAY_OF_MONTH, 1);
+                		nextWeek.add(Calendar.DAY_OF_MONTH, 1);
+                	} 
+                	if (e.getEndDate().compareTo(today) > 0
                             && e.getStartDate().compareTo(nextWeek) < 0) {
                         timeToRemove += e.getHours();
                     }
