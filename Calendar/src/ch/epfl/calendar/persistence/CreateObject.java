@@ -13,7 +13,7 @@ public class CreateObject {
     private String mTable;
     private String mNullColumnHack;
 
-    protected CreateObject(ContentValues content, String nullColumnHack,
+    public CreateObject(ContentValues content, String nullColumnHack,
             String table) {
         this.mContent = content;
         this.mTable = table;

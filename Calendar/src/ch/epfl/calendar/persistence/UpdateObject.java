@@ -14,7 +14,7 @@ public class UpdateObject {
     private String mWhereClause;
     private String[] mWhereArgs;
 
-    protected UpdateObject(ContentValues content, String table,
+    public UpdateObject(ContentValues content, String table,
             String whereClause, String[] whereArgs) {
         this.mContent = content;
         this.mTable = table;

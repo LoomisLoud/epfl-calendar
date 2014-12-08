@@ -75,7 +75,11 @@ public class CourseDataSource implements DAO {
         
         CreateRowDBTask task = new CreateRowDBTask();
         CreateObject object = new CreateObject(values, null, CourseTable.TABLE_NAME_COURSE);
-        task.execute(object);
+        try {
+            task.execute(object);
+        } catch (SQLiteCalendarException e) {
+            Log.e("SQLiteCalendarException : ", "An error occured when trying to create " + object.toString());
+        }
     }
 
     /**
@@ -111,7 +115,11 @@ public class CourseDataSource implements DAO {
         UpdateRowDBTask task = new UpdateRowDBTask();
         UpdateObject object = new UpdateObject(values, CourseTable.TABLE_NAME_COURSE,
                 CourseTable.COLUMN_NAME_NAME + " = ?", new String[] {String.valueOf(course.getName())});
-        task.execute(object);
+        try {
+            task.execute(object);
+        } catch (SQLiteCalendarException e) {
+            Log.e("SQLiteCalendarException : ", "An error occured when trying to update " + object.toString());
+        }
     }
 
     /**
