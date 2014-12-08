@@ -233,14 +233,14 @@ public class MainActivity extends DefaultActionBarActivity implements
             for (Event event : c.getEvents()) {
                 mMListEvents.add(new WeekViewEvent(event.getId(), event
                         .getTitle(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getmDescription()));
+                        PeriodType.DEFAULT, event.getDescription()));
             }
 
         }
         for (Event event : mListEventWithoutCourse) {
             mMListEvents.add(new WeekViewEvent(event.getId(), event.getTitle(),
                     event.getStartDate(), event.getEndDate(),
-                    PeriodType.DEFAULT, event.getmDescription()));
+                    PeriodType.DEFAULT, event.getDescription()));
         }
 
         return mMListEvents;

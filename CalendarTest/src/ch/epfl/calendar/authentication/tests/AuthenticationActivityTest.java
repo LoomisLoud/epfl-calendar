@@ -1,24 +1,23 @@
 package ch.epfl.calendar.authentication.tests;
 
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.*;
-import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.*;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.*;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.*;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.EditText;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
 
 /**
  * This class tests the AuthenticationActivity
@@ -84,13 +83,4 @@ public class AuthenticationActivityTest
             }
         };
     }
-    
-    private int getIdByName(String name) {
-        Context context = getInstrumentation().getTargetContext();
-        int result = context.getResources().getIdentifier(name, "id",
-                context.getPackageName());
-        assertTrue("id for name not found: " + name, result != 0);
-        return result;
-    }
-
 }
