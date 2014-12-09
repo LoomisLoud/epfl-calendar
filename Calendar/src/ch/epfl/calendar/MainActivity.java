@@ -233,11 +233,12 @@ public class MainActivity extends DefaultActionBarActivity implements
             for (Event event : c.getEvents()) {
                 mMListEvents.add(new WeekViewEvent(event.getId(), event
                         .getTitle(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getmDescription()));
+                        PeriodType.DEFAULT, event.getDescription()));
             }
 
         }
         for (Event event : mListEventWithoutCourse) {
+
 
             int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
                     - event.getStartDate().get(Calendar.DAY_OF_MONTH);
@@ -259,7 +260,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                     }
                     mMListEvents.add(new WeekViewEvent(event.getId(), event
                             .getTitle(), startList.get(i), end,
-                            PeriodType.DEFAULT, event.getmDescription()));
+                            PeriodType.DEFAULT, event.getDescription()));
 
                     Calendar newStart = (Calendar) startList.get(i).clone();
                     newStart.add(Calendar.DAY_OF_MONTH, 1);
@@ -270,18 +271,19 @@ public class MainActivity extends DefaultActionBarActivity implements
             } else {
                 mMListEvents.add(new WeekViewEvent(event.getId(), event
                         .getName(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getmDescription()));
+                        PeriodType.DEFAULT, event.getDescription()));
             }
-
         }
 
         return mMListEvents;
     }
 
     private String getEventTitle(Course c, Period p) {
+
         String startHour = App
                 .calendarHourToBasicFormatString(p.getStartDate());
         String endHour = App.calendarHourToBasicFormatString(p.getEndDate());
+
 
         String hour = startHour + " - " + endHour;
         String result = c.getName() + "\n";
@@ -317,7 +319,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (event.getmType() == PeriodType.EXERCISES
                 || event.getmType() == PeriodType.LECTURE
                 || event.getmType() == PeriodType.PROJECT) {
-            String cours = event.getName().split("\n")[0];
+            String cours = event.getName().split("\n")[1];
             switchToCourseDetails(cours);
 
         } else {
@@ -337,7 +339,11 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     dialog.cancel();
                                     break;
                                 case 1:
-                                    getDBQuester().deleteEvent(eventFromDB);
+                                	if (eventFromDB.isAutomaticAddedBlock()) {
+                                		getDBQuester().deleteBlock(eventFromDB);
+                                	} else {
+                                		getDBQuester().deleteEvent(eventFromDB);
+                                	}
                                     updateData();
                                     dialog.cancel();
                                     break;

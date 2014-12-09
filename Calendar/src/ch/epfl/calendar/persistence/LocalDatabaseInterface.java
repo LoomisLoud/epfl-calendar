@@ -124,6 +124,13 @@ public interface LocalDatabaseInterface {
      * @param course
      */
     void deleteCourse(String courseName);
+    
+    /**
+     * Delete all the blocks of the event
+     * 
+     * @param event
+     */
+    void deleteBlock(Event event);
 
     /**
      * Delete all tables in the database

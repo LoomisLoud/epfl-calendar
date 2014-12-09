@@ -27,8 +27,6 @@ public class Period implements Parcelable {
     private List<String> mRooms;
     private String mId;
 
-    private static final int DOUBLE_DIGIT = 10;
-
     private static final String TYPE_EXERCISES_FR = "Exercices";
     private static final String TYPE_EXERCISES_EN = "Exercises";
     private static final String TYPE_PROJECT_FR = "Projet";
@@ -195,37 +193,67 @@ public class Period implements Parcelable {
                 periodType = "D";
                 break;
         }
+        
+        String day = mStartDate.getDisplayName(Calendar.DAY_OF_WEEK,
+                Calendar.SHORT, Locale.ENGLISH);
+        String startTime = App.calendarTo12HoursString(mStartDate);
+        String endTime = App.calendarTo12HoursString(mEndDate);
+        
+        return periodType + " : " + day + " " + startTime + " - " + endTime;
+    }
+    
+    public String to12HourString() {
+        String periodType;
+        switch (mType) {
+            case LECTURE:
+                periodType = "L";
+                break;
+            case PROJECT:
+                periodType = "P";
+                break;
+            case EXERCISES:
+                periodType = "E";
+                break;
+            case DEFAULT:
+                periodType = "D";
+                break;
+            default:
+                periodType = "D";
+                break;
+        }
+        
+        String day = mStartDate.getDisplayName(Calendar.DAY_OF_WEEK,
+                Calendar.SHORT, Locale.ENGLISH);
+        String startTime = App.calendarTo12HoursString(mStartDate);
+        String endTime = App.calendarTo12HoursString(mEndDate);
+        
+        return periodType + " : " + day + " " + startTime + "-" + endTime;
+    }
+    
+    public String toDisplayInCourseDetail() {
+        String periodType;
+        switch (mType) {
+            case LECTURE:
+                periodType = "Lecture";
+                break;
+            case PROJECT:
+                periodType = "Project";
+                break;
+            case EXERCISES:
+                periodType = "Exercises";
+                break;
+            default:
+                periodType = "Default";
+                break;
+        }
 
         String day = mStartDate.getDisplayName(Calendar.DAY_OF_WEEK,
                 Calendar.SHORT, Locale.ENGLISH);
-        int startHour = mStartDate.get(Calendar.HOUR_OF_DAY);
-        int startMinute = mStartDate.get(Calendar.MINUTE);
-        int endHour = mEndDate.get(Calendar.HOUR_OF_DAY);
-        int endMinute = mEndDate.get(Calendar.MINUTE);
-        String startHourToString = Integer.toString(startHour);
-        String startMinuteToString = Integer.toString(startMinute);
-        String endHourToString = Integer.toString(endHour);
-        String endMinuteToString = Integer.toString(endMinute);
-        if (isSingleDigit(startHour)) {
-            startHourToString = "0" + startHour;
-        }
-        if (isSingleDigit(startMinute)) {
-            startMinuteToString = "0" + startMinute;
-        }
-        if (isSingleDigit(endHour)) {
-            endHourToString = "0" + endHour;
-        }
-        if (isSingleDigit(endMinute)) {
-            endMinuteToString = "0" + endMinute;
-        }
-
-        return periodType + " : " + day + " " + startHourToString + ":"
-                + startMinuteToString + "-" + endHourToString + ":"
-                + endMinuteToString;
-    }
-
-    private boolean isSingleDigit(int number) {
-        return number < DOUBLE_DIGIT;
+        
+        String startHour = App.calendarTo12HoursString(mStartDate);  
+        String endHour = App.calendarTo12HoursString(mEndDate);
+        
+        return periodType + " : " + day + " " + startHour + "-" + endHour + "\n";
     }
 
     /**

@@ -106,10 +106,13 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                             int which) {
-
-                                        getDBQuester().deleteEvent(
-                                                getDBQuester().getEvent(
-                                                        item.getmId()));
+                                    	Event eventToDelete = getDBQuester().getEvent(
+                                                item.getmId());
+                                    	if (eventToDelete.isAutomaticAddedBlock()) {
+                                    		getDBQuester().deleteBlock(eventToDelete);
+                                    	} else {
+                                            getDBQuester().deleteEvent(eventToDelete);
+                                    	}
                                         List<ListViewItem> list = eventForList;
                                         list.remove(item);
                                         CustomAdapter adap = new CustomAdapter(
@@ -262,7 +265,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
         for (Event e : event) {
             eventForList.add(new EventForList(e.getName(), e.getStartDate(), e
                     .getEndDate(), stringToPeriodType(e.getType()), e.getId(),
-                    e.getLinkedCourse(), e.getmDescription()));
+                    e.getLinkedCourse(), e.getDescription()));
         }
         sort(eventForList);
 
