@@ -52,18 +52,10 @@ public class EventListActivity extends DefaultActionBarActivity implements
         super.setUdpateData(this);
         setContentView(R.layout.activity_event_list);
         listEventActionBar();
-        // CustomAdapter customAdapter = new CustomAdapter(context);
         mListView = (ListView) findViewById(R.id.list_event_view);
 
         editEvent = true;
-        // List<Course> course = getDBQuester().getAllCourses();
-        // List<Event> eventCreated = getDBQuester().getAllEvents();
-        // final List<ListViewItem> eventForList = eventToEventForList(course,
-        // eventCreated);
         final List<ListViewItem> eventForList = new ArrayList<ListViewItem>();
-        //
-        // createAdapter(eventForList, customAdapter);
-        // mListView.setAdapter(customAdapter);
         mListView.setDividerHeight(HEIGHT_DIVIDER);
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
