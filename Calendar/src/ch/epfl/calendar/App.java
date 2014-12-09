@@ -123,6 +123,10 @@ public class App extends Application {
      * 10 in a constant.
      */
     private static final int NUMERIC_TEN = 10;
+    
+    private static final String DATE_FORMAT = "dd.MM.yyyy";
+    
+    private static final String HOUR_FORMAT = "hh:mm aa";
 
     /**
      * Database helper.
@@ -288,82 +292,30 @@ public class App extends Application {
      * @return
      */
     public static String[] calendarToBasicFormatStringSameDaySpecialFormat(Calendar date, Calendar date2) {
-        String dd;
-        String mm;
-        String yyyy;
-        String hh;
-        String min;
+        String stringDateFormat = DATE_FORMAT;
+        String stringHourFormat = HOUR_FORMAT;
+        SimpleDateFormat sdfDate = new SimpleDateFormat(stringDateFormat, Locale.US);
+        SimpleDateFormat sdfTime = new SimpleDateFormat(stringHourFormat, Locale.US);
         
-
-        String hh2;
-        String min2;
-        
-        String ddmmyyyy;
-        String hhminhhmin;
-        
-        int day = date.get(Calendar.DAY_OF_MONTH);
-        dd = Integer.toString(day);
-        if (day < NUMERIC_TEN) {
-            dd = "0".concat(dd);
-        }
-
-        int month = date.get(Calendar.MONTH);
-        month = month + 1;
-        mm = Integer.toString(month);
-        if (month < NUMERIC_TEN) {
-            mm = "0".concat(mm);
-        }
-        
+        String datesToReturn = null;
         // compare to see if both date are on the same days
         if (date.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
                 && date.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)) {
-            yyyy = Integer.toString(date.get(Calendar.YEAR));
-            ddmmyyyy = dd + "." + mm + "." + yyyy;
+            datesToReturn = sdfDate.format(date.getTime());
         } else {
-            int day2 = date2.get(Calendar.DAY_OF_MONTH);
-            String dd2 = Integer.toString(day2);
-            if (day2 < NUMERIC_TEN) {
-                dd2 = "0".concat(dd2);
-            }
-
-            int month2 = date2.get(Calendar.MONTH);
-            month2 = month2 + 1;
-            String mm2 = Integer.toString(month2);
-            if (month2 < NUMERIC_TEN) {
-                mm2 = "0".concat(mm2);
-            }
-            ddmmyyyy = dd + "." + mm + "." + Integer.toString(date.get(Calendar.YEAR)) +  "-"
-                    + dd2 + "." + mm2 + "." + Integer.toString(date2.get(Calendar.YEAR));
+            datesToReturn = sdfDate.format(date.getTime()) + "-" + sdfDate.format(date2.getTime());
         }
 
-        int hour = date.get(Calendar.HOUR_OF_DAY);
-        hh = Integer.toString(hour);
-        if (hour < NUMERIC_TEN) {
-            hh = "0".concat(hh);
-        }
+        String hoursToReturn = sdfTime.format(date.getTime()) + "-" + sdfTime.format(date2.getTime());
         
-        int minutes = date.get(Calendar.MINUTE);
-        min = Integer.toString(minutes);
-        if (minutes < NUMERIC_TEN) {
-            min = "0".concat(min);
-        }
-        int hour2 = date2.get(Calendar.HOUR_OF_DAY);
-        hh2 = Integer.toString(hour2);
-        if (hour2 < NUMERIC_TEN) {
-            hh2 = "0".concat(hh2);
-        }
-
-        int minutes2 = date2.get(Calendar.MINUTE);
-        min2 = Integer.toString(minutes2);
-        if (minutes2 < NUMERIC_TEN) {
-            min2 = "0".concat(min2);
-        }
-        
-        hhminhhmin = hh + ":" + min + "-" + hh2 + ":" + min2;
-        
-        return new String[] {ddmmyyyy, hhminhhmin};
+        return new String[] {datesToReturn, hoursToReturn};
     }
 
+    /**
+     * 
+     * @param date
+     * @return a String representing the calendar in  format "hh:mm"
+     */
     public static String calendarHourToBasicFormatString(Calendar date) {
         String hh;
         String min;
@@ -384,8 +336,13 @@ public class App extends Application {
         
     }
     
+    /**
+     * 
+     * @param date
+     * @return the hour contained in the Calendar in a String formated "hh:mm aa" where aa parses to AM/PM.
+     */
     public static String calendarTo12HoursString(Calendar date) {
-        String format = "hh:mm aa";
+        String format = HOUR_FORMAT;
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         return sdf.format(date.getTime());
     }
