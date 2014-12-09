@@ -124,7 +124,7 @@ public class CourseDataSource implements DAO {
     public void delete(Object obj, String key) {
         Course course = (Course) obj;
         assert course != null;
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
 
         long rowId = db.delete(CourseTable.TABLE_NAME_COURSE,
                 CourseTable.COLUMN_NAME_NAME + " = '" + course.getName() + "'",
@@ -141,7 +141,7 @@ public class CourseDataSource implements DAO {
      */
     @Override
     public void deleteAll() {
-        SQLiteDatabase db = App.getDBHelper().getWritableDatabase();
+        SQLiteDatabase db = App.getDBHelper().getReadableDatabase();
         db.delete(CourseTable.TABLE_NAME_COURSE, null, null);
         db.delete(PeriodTable.TABLE_NAME_PERIOD, null, null);
         db.delete(EventTable.TABLE_NAME_EVENT, null, null);

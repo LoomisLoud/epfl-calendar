@@ -8,9 +8,9 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.persistence.EventTable;
 
 /**
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class EventTableTest extends TestCase {
 
@@ -42,6 +42,20 @@ public class EventTableTest extends TestCase {
             fail("Should throw an SQLiteException");
         } catch (SQLiteException e) {
             // success
+        	assertNotNull(e);
         }
+    }
+
+    public void testOnUpgrade() {
+    	try {
+    		EventTable.onUpgrade(mDb, 1, 2);
+    		String tableName = SQLiteDatabase
+                    .findEditTable(EventTable.TABLE_NAME_EVENT);
+            Log.i("Database contains table : ", tableName);
+            assertTrue(tableName.equals(EventTable.TABLE_NAME_EVENT));
+        } catch (SQLiteException e) {
+            // fail
+        	fail("Shouldn't have thrown an SQLiteException");
+    	}
     }
 }
