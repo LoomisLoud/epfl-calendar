@@ -8,8 +8,19 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
+import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.EventForList;
@@ -84,39 +95,39 @@ public class EventListActivityTest extends
                 App.getDBHelper().getDatabaseName());
     }
 
-//    public final void testNbOfElementsVisible() 
-//        setActivity()
-//        int nbOfElementsVisible = 8;
-//        for (int i = 0; i < nbOfElementsVisible; i++) {
-//            onData(is(instanceOf(ListViewItem.class)))
-//                    // Every entry in the ListView is a HashMap
-//                    .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
-//                    .check(matches(isDisplayed()));
-//
-//            onData(is(instanceOf(ListViewItem.class)))
-//                    // Every entry in the ListView is a HashMap
-//                    .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
-//                    .check(matches(isEnabled()));
-//        }
-//    }
-//
-//    public final void testClickOnCourse() {
-//        setActivity()
-//        // 2, 4, 5, 6, 8
-//        onData(is(instanceOf(ListViewItem.class)))
-//                // Every entry in the ListView is a HashMap
-//                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
-//                .perform(click()).check(doesNotExist());
-//    }
-//    
-//    public final void testClickOnEvent() {
-//        setActivity()
-//        // 2, 4, 5, 6, 8
-//        onData(is(instanceOf(ListViewItem.class)))
-//                // Every entry in the ListView is a HashMap
-//                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
-//                .perform(click()).check(doesNotExist());
-//    }
+    public final void testNbOfElementsVisible() {
+        setActivity();
+        int nbOfElementsVisible = 8;
+        for (int i = 0; i < nbOfElementsVisible; i++) {
+            onData(is(instanceOf(ListViewItem.class)))
+                    // Every entry in the ListView is a HashMap
+                    .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
+                    .check(matches(isDisplayed()));
+
+            onData(is(instanceOf(ListViewItem.class)))
+                    // Every entry in the ListView is a HashMap
+                    .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
+                    .check(matches(isEnabled()));
+        }
+    }
+
+    public final void testClickOnCourse() {
+        setActivity();
+        // 2, 4, 5, 6, 8
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
+                .perform(click()).check(doesNotExist());
+    }
+    
+    public final void testClickOnEvent() {
+        setActivity();
+        // 2, 4, 5, 6, 8
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+                .perform(click()).check(doesNotExist());
+    }
 
     public final void testSort() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
