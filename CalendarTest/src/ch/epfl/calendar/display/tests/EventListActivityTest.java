@@ -3,16 +3,6 @@
  */
 package ch.epfl.calendar.display.tests;
 
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
-import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -20,7 +10,6 @@ import java.util.List;
 
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.EventForList;
@@ -80,6 +69,7 @@ public class EventListActivityTest extends
             mDB.storeEvent(event);
         }
         waitOnInsertionInDB();
+        DBQuester.close();
 
         mActivity = getActivity();
 
@@ -210,6 +200,7 @@ public class EventListActivityTest extends
                 }));
     }
 
+    @SuppressWarnings("unchecked")
     public final void testRemovePastEvents() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
@@ -222,32 +213,34 @@ public class EventListActivityTest extends
 
         List<EventForList> eventForList = createEventForListFromCourses(mCourses);
 
-        List<ListViewItem> listViewEvents = (List<ListViewItem>) removePastEvents
+        Object listViewEvents = removePastEvents
                 .invoke(mActivity, new Object[] {
                     eventForList
                 });
 
-        assertEquals(4, listViewEvents.size());
+        assertEquals(4, ((List<ListViewItem>) listViewEvents).size());
     }
 
+    @SuppressWarnings("unchecked")
     public final void testEventToEventForList() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
         Method eventToEventForList;
         eventToEventForList = (EventListActivity.class).getDeclaredMethod(
                 "eventToEventForList", new Class[] {
-                        List.class, List.class
+                    List.class, List.class
                 });
         eventToEventForList.setAccessible(true);
 
         List<ListViewItem> listViewEvents = (List<ListViewItem>) eventToEventForList
                 .invoke(mActivity, new Object[] {
-                        mCourses, mEvents
+                    mCourses, mEvents
                 });
         // One event and one period are deleted because they are in the past
         assertEquals(5, listViewEvents.size());
     }
 
+    @SuppressWarnings("unchecked")
     public final void testCreateAdapter() throws IllegalAccessException,
             IllegalArgumentException, InvocationTargetException,
             NoSuchMethodException {
