@@ -164,9 +164,34 @@ public class AppTest extends TestCase {
                 MINUTES);
         String expectedResult = CALENDAR_IN_STRING;
         String result = App.calendarToBasicFormatString(cal);
-        Log.i("String expectedResult = ", expectedResult);
-        Log.i("String result = ", result);
         assertEquals(expectedResult, result);
+        
+        cal = new GregorianCalendar(YEAR, MONTH, DAY, 20,
+                MINUTES);
+        expectedResult = "03.09.2007 20:36";
+        result = App.calendarToBasicFormatString(cal);
+        assertEquals(expectedResult, result);
+        
+        result = App.calendarToBasicFormatString(null);
+        assertEquals(null, result);
+    }
+    
+    public static void testCalendarHourToBasicFormatString() {
+        GregorianCalendar cal = new GregorianCalendar(YEAR, MONTH, DAY, HOUR,
+                MINUTES);
+        String expectedResult = "08:36";
+        
+        String returned = App.calendarHourToBasicFormatString(null);
+        assertEquals(null, returned);
+        
+        returned = App.calendarHourToBasicFormatString(cal);
+        assertEquals(expectedResult, returned);
+        
+        cal = new GregorianCalendar(YEAR, MONTH, DAY, 20,
+                MINUTES);
+        expectedResult = "20:36";
+        returned = App.calendarHourToBasicFormatString(cal);
+        assertEquals(expectedResult, returned);
     }
     
     public static void testCalendarToBasicFormatStringSameDaySpecialFormat() {
@@ -206,5 +231,24 @@ public class AppTest extends TestCase {
                 MINUTES);
         returned = App.calendarTo12HoursString(cal);
         assertEquals("04:36 PM", returned);
+    }
+    
+    public static void testBoolToString() {
+        String returned = App.boolToString(true);
+        assertEquals("true", returned);
+        
+        returned = App.boolToString(false);
+        assertEquals("false", returned);
+    }
+    
+    public static void testStringToBool() {
+        boolean returned = App.stringToBool(null);
+        assertEquals(false, returned);
+        
+        returned = App.stringToBool("true");
+        assertEquals(true, returned);
+        
+        returned = App.stringToBool("false");
+        assertEquals(false, returned);
     }
 }
