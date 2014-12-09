@@ -168,4 +168,43 @@ public class AppTest extends TestCase {
         Log.i("String result = ", result);
         assertEquals(expectedResult, result);
     }
+    
+    public static void testCalendarToBasicFormatStringSameDaySpecialFormat() {
+        GregorianCalendar cal = new GregorianCalendar(YEAR, MONTH, DAY, HOUR,
+                MINUTES);
+        GregorianCalendar cal2 = new GregorianCalendar(YEAR, MONTH, DAY, HOUR+8,
+                MINUTES);
+        String expectedDate = "03.09.2007";
+        String expectedHour = "08:36 AM-04:36 PM";
+        
+        String[] returned = App.calendarToBasicFormatStringSameDaySpecialFormat(null, null);
+        assertEquals(null, returned);
+        
+        returned = App.calendarToBasicFormatStringSameDaySpecialFormat(cal, cal2);
+        assertEquals(expectedDate, returned[0]);
+        assertEquals(expectedHour, returned[1]);
+        
+        cal2 = new GregorianCalendar(YEAR, MONTH, DAY+1, HOUR+8,
+                MINUTES);
+        expectedDate = "03.09.2007-04.09.2007";
+        returned = App.calendarToBasicFormatStringSameDaySpecialFormat(cal, cal2);
+        assertEquals(expectedDate, returned[0]);
+        assertEquals(expectedHour, returned[1]);
+    }
+    
+    public static void testCalendarTo12HoursString() {
+        GregorianCalendar cal = new GregorianCalendar(YEAR, MONTH, DAY, HOUR,
+                MINUTES);
+        
+        String returned = App.calendarTo12HoursString(null);
+        assertEquals(null, returned);
+        
+        returned = App.calendarTo12HoursString(cal);
+        assertEquals("08:36 AM", returned);
+        
+        cal = new GregorianCalendar(YEAR, MONTH, DAY, HOUR+8,
+                MINUTES);
+        returned = App.calendarTo12HoursString(cal);
+        assertEquals("04:36 PM", returned);
+    }
 }

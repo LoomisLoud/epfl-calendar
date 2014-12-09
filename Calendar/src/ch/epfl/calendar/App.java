@@ -292,6 +292,9 @@ public class App extends Application {
      * @return
      */
     public static String[] calendarToBasicFormatStringSameDaySpecialFormat(Calendar date, Calendar date2) {
+        if (date == null || date2 == null) {
+            return null;
+        }
         String stringDateFormat = DATE_FORMAT;
         String stringHourFormat = HOUR_FORMAT;
         SimpleDateFormat sdfDate = new SimpleDateFormat(stringDateFormat, Locale.US);
@@ -342,6 +345,9 @@ public class App extends Application {
      * @return the hour contained in the Calendar in a String formated "hh:mm aa" where aa parses to AM/PM.
      */
     public static String calendarTo12HoursString(Calendar date) {
+        if (date == null) {
+            return null;
+        }
         String format = HOUR_FORMAT;
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         return sdf.format(date.getTime());
