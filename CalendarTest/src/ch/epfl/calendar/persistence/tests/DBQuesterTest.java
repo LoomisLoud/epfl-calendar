@@ -345,7 +345,6 @@ public class DBQuesterTest extends
         for (Event event : events) {
             event.setDescription("new description");
             newEvents.add(event);
-            System.out.println("EVENT :::::::::::::::: " + event.getId());
         }
         course.setEvents(newEvents);
         mDBQuester.storeEventsFromCourse(course);
@@ -382,6 +381,65 @@ public class DBQuesterTest extends
         List<Period> periodsAfterDelete = mDBQuester
                 .getAllPeriodsFromCourse(course.getName());
         assertEquals(1, periodsAfterDelete.size());
+    }
+    
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#deleteBlock(ch.epfl.calendar.data.Event)}.
+     */
+    public final void testDeleteBlock() {
+        //Course2 has no events
+        Event event1Course2 = new Event("event1", "01.11.2014 08:00",
+                "01.11.2014 18:00", null, "TestCourse2", "Event 1", true,
+                DBQuester.NO_ID);
+        Event event2Course2 = new Event("event2", "08.11.2014 08:00",
+                "08.11.2014 18:00", null, "TestCourse2", "Event 2", true,
+                DBQuester.NO_ID);
+        Event event3Course2 = new Event("event2", "09.11.2014 08:00",
+                "09.11.2014 18:00", null, "TestCourse2", "Event 2", true,
+                DBQuester.NO_ID);
+        //Not a block
+        Event event4Course2 = new Event("event2", "08.11.2014 08:00",
+                "08.11.2014 18:00", null, "TestCourse2", "Event 2", false,
+                DBQuester.NO_ID);
+        List<Event> events = new ArrayList<Event>();
+        events.add(event1Course2);
+        events.add(event2Course2);
+        
+        mListCourses.get(1).setEvents(events);
+        
+        mDBQuester.storeEventsFromCourse(mListCourses.get(1));
+
+        waitOnInsertionInDB();
+
+        events = mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName());
+        
+        assertEquals(2, events.size());
+        
+        mDBQuester.deleteBlock(events.get(0));
+        
+        assertEquals(new ArrayList<Event>(), mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName()));
+        
+        //Test with more events
+        events = new ArrayList<Event>();
+        events.add(event1Course2);
+        events.add(event2Course2);
+        events.add(event3Course2);
+        events.add(event4Course2);
+        
+        mListCourses.get(1).setEvents(events);
+        
+        mDBQuester.storeEventsFromCourse(mListCourses.get(1));
+
+        waitOnInsertionInDB();
+
+        events = mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName());
+        
+        assertEquals(4, events.size());
+        
+        mDBQuester.deleteBlock(events.get(0));
+        
+        assertEquals(2, mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName()).size());
     }
 
     /**

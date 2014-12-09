@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 /**
  * Handle migration for the event table.
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class EventTable {
 
@@ -47,6 +47,6 @@ public class EventTable {
     public static void onUpgrade(SQLiteDatabase db, int oldVersion,
             int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + EventTable.TABLE_NAME_EVENT);
-        PeriodTable.onCreate(db);
+        EventTable.onCreate(db);
     }
 }

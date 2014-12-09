@@ -31,51 +31,51 @@ public class EventForList extends ListViewItem {
         mDescription = description;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String name) {
+    public void setName(String name) {
         name = mName;
     }
 
-    public Calendar getmEnd() {
+    public Calendar getEnd() {
         return mEnd;
     }
 
-    public void setmEnd(Calendar end) {
+    public void setEnd(Calendar end) {
         this.mEnd = end;
     }
 
-    public PeriodType getmType() {
+    public PeriodType getType() {
         return mType;
     }
 
-    public void setmType(PeriodType type) {
+    public void setType(PeriodType type) {
         this.mType = type;
     }
 
-    public int getmId() {
+    public int getId() {
         return mId;
     }
 
-    public void setmId(int id) {
+    public void setId(int id) {
         this.mId = id;
     }
 
-    public String getmLinkedCourse() {
+    public String getLinkedCourse() {
         return mLinkedCourse;
     }
 
-    public void setmLinkedCourse(String linkedCourse) {
+    public void setLinkedCourse(String linkedCourse) {
         this.mLinkedCourse = linkedCourse;
     }
 
-    public String getmDescription() {
+    public String getDescription() {
         return mDescription;
     }
 
-    public void setmDescription(String description) {
+    public void setDescription(String description) {
         this.mDescription = description;
     }
 
