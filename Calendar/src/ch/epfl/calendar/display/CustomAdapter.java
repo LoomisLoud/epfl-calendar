@@ -112,8 +112,7 @@ public class CustomAdapter extends BaseAdapter {
                     holder.textView.setBackgroundColor(colorGreen);
                     break;
                 case LECTURE:
-                    holder.textView
-                            .setBackgroundColor(colorBlue);
+                    holder.textView.setBackgroundColor(colorBlue);
                     break;
                 case PROJECT:
                     holder.textView.setBackgroundColor(colorRed);
