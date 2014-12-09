@@ -281,8 +281,8 @@ public class MainActivity extends DefaultActionBarActivity implements
     private String getEventTitle(Course c, Period p) {
 
         String startHour = App
-                .calendarHourToBasicFormatString(p.getStartDate());
-        String endHour = App.calendarHourToBasicFormatString(p.getEndDate());
+                .calendarTo12HoursString(p.getStartDate());
+        String endHour = App.calendarTo12HoursString(p.getEndDate());
 
 
         String hour = startHour + " - " + endHour;
