@@ -15,7 +15,7 @@ public class ListViewItem {
         mDate = date;
     }
     
-    public String getmName() {
+    public String getName() {
         return "";
     }
    
@@ -27,26 +27,26 @@ public class ListViewItem {
         this.mDate = date;
     }
 
-    public Calendar getmEnd() {
+    public Calendar getEnd() {
         return null;
     }
 
-    public PeriodType getmType() {
+    public PeriodType getType() {
         return null;
     }
 
-    public int getmId() {
+    public int getId() {
         return ID_SEPARATOR;
     }
 
    
 
-    public String getmLinkedCourse() {
+    public String getLinkedCourse() {
         return "";
     }
 
     
-    public String getmDescription() {
+    public String getDescription() {
         return "";
     }
 }

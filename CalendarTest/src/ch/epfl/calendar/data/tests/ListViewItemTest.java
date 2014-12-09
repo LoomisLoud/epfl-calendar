@@ -31,12 +31,12 @@ public class ListViewItemTest extends TestCase {
 
     public void testGetter() {
 
-        assertEquals(mItem.getmDescription(), "");
-        assertEquals(mItem.getmId(), ID);
-        assertEquals(mItem.getmLinkedCourse(), "");
-        assertEquals(mItem.getmName(), "");
-        assertEquals(mItem.getmEnd(), null);
-        assertEquals(mItem.getmType(), null);
+        assertEquals(mItem.getDescription(), "");
+        assertEquals(mItem.getId(), ID);
+        assertEquals(mItem.getLinkedCourse(), "");
+        assertEquals(mItem.getName(), "");
+        assertEquals(mItem.getEnd(), null);
+        assertEquals(mItem.getType(), null);
     }
 
     public void testSetter() {

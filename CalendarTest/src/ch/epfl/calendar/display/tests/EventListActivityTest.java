@@ -3,12 +3,15 @@
  */
 package ch.epfl.calendar.display.tests;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Course;
+import ch.epfl.calendar.data.EventForList;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
@@ -65,8 +68,6 @@ public class EventListActivityTest extends
         // AsyncTask to be able to use callback functions
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
-//        mDB.storeCourses(mCourses);
-//        waitOnInsertionInDB();
     }
 
     /*
@@ -104,8 +105,37 @@ public class EventListActivityTest extends
         // fail("Not yet implemented"); // TODO
     }
 
-    public final void testSort() {
+    public final void testSort() throws NoSuchMethodException,
+        IllegalAccessException, IllegalArgumentException,
+        InvocationTargetException {
+        Method sort;
+        sort = (EventListActivity.class).getDeclaredMethod("sort",
+                new Class[] {List.class});
+        sort.setAccessible(true);
 
+        List<EventForList> eventForList = new ArrayList<EventForList>();
+        // Create the EventForList objects
+        for (Course c : mCourses) {
+            for (Period p : c.getPeriods()) {
+                eventForList.add(new EventForList(c.getName(),
+                        p.getStartDate(), p.getEndDate(), p.getType(),
+                        DBQuester.NO_ID, "", c.getDescription()));
+            }
+        }
+
+        sort.invoke(mActivity, new Object[] {eventForList});
+        
+        for (int i = 0; i < eventForList.size(); i++) {
+            if (i < eventForList.size() - 1) {
+                if (eventForList.get(i).getmStart().equals(eventForList.get(i+1).getmStart())) {
+                    if (!eventForList.get(i).getEnd().equals(eventForList.get(i+1).getEnd())) {
+                        assertTrue(eventForList.get(i).getEnd().before(eventForList.get(i+1).getEnd()));
+                    }
+                } else {
+                    assertTrue(eventForList.get(i).getmStart().before(eventForList.get(i+1).getmStart()));
+                }
+            }
+        }
     }
 
     public final void testStringToPeriodType() {
@@ -147,8 +177,8 @@ public class EventListActivityTest extends
         period1Course2Rooms.add("INF119");
         period2Course2Rooms.add("INM202");
         period2Course2Rooms.add("INM203");
-        Period period1Course2 = new Period("Lecture", "30.11.2034 08:00",
-                "30.11.2034 10:00", period1Course2Rooms, "3");
+        Period period1Course2 = new Period("Lecture", "27.11.2034 08:00",
+                "27.11.2034 17:00", period1Course2Rooms, "3");
         Period period2Course2 = new Period("Exercise", "02.11.2034 08:00",
                 "02.11.2034 10:00", period2Course2Rooms, "4");
         ArrayList<Period> periodsCourse2 = new ArrayList<Period>();

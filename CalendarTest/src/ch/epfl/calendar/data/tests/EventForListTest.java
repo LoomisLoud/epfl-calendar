@@ -36,14 +36,14 @@ public class EventForListTest extends TestCase {
 
     public void testConstructor() {
 
-        assertEquals(event.getmName(), "Football");
+        assertEquals(event.getName(), "Football");
         assertEquals(start.getTimeInMillis(), event.getmStart()
                 .getTimeInMillis());
-        assertEquals(end.getTimeInMillis(), event.getmEnd().getTimeInMillis());
-        assertEquals(PeriodType.DEFAULT, event.getmType());
-        assertEquals(ID, event.getmId());
-        assertEquals("", event.getmLinkedCourse());
-        assertEquals("Football game", event.getmDescription());
+        assertEquals(end.getTimeInMillis(), event.getEnd().getTimeInMillis());
+        assertEquals(PeriodType.DEFAULT, event.getType());
+        assertEquals(ID, event.getId());
+        assertEquals("", event.getLinkedCourse());
+        assertEquals("Football game", event.getDescription());
     }
 
     public void testToString() {
