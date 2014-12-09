@@ -114,21 +114,21 @@ public class EventListActivityTest extends
         }
     }
 
-    public final void testClickOnCourse() {
-        // 2, 4, 5, 6, 8
-        onData(is(instanceOf(ListViewItem.class)))
-                // Every entry in the ListView is a HashMap
-                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
-                .perform(click()).check(doesNotExist());
-    }
-    
-    public final void testClickOnEvent() {
-        // 2, 4, 5, 6, 8
-        onData(is(instanceOf(ListViewItem.class)))
-                // Every entry in the ListView is a HashMap
-                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
-                .perform(click()).check(doesNotExist());
-    }
+//    public final void testClickOnCourse() {
+//        // 2, 4, 5, 6, 8
+//        onData(is(instanceOf(ListViewItem.class)))
+//                // Every entry in the ListView is a HashMap
+//                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
+//                .perform(click()).check(doesNotExist());
+//    }
+//    
+//    public final void testClickOnEvent() {
+//        // 2, 4, 5, 6, 8
+//        onData(is(instanceOf(ListViewItem.class)))
+//                // Every entry in the ListView is a HashMap
+//                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+//                .perform(click()).check(doesNotExist());
+//    }
 
     public final void testSort() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
