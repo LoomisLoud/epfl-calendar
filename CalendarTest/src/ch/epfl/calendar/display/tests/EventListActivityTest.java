@@ -99,21 +99,21 @@ public class EventListActivityTest extends
                 App.getDBHelper().getDatabaseName());
     }
 
-    public final void testNbOfElementsVisible() {
-        int nbOfElementsVisible = 8;
-        for (int i = 0; i < nbOfElementsVisible; i++) {
-            onData(is(instanceOf(ListViewItem.class)))
-                    // Every entry in the ListView is a HashMap
-                    .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
-                    .check(matches(isDisplayed()));
-
-            onData(is(instanceOf(ListViewItem.class)))
-                    // Every entry in the ListView is a HashMap
-                    .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
-                    .check(matches(isEnabled()));
-        }
-    }
-
+//    public final void testNbOfElementsVisible() {
+//        int nbOfElementsVisible = 8;
+//        for (int i = 0; i < nbOfElementsVisible; i++) {
+//            onData(is(instanceOf(ListViewItem.class)))
+//                    // Every entry in the ListView is a HashMap
+//                    .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
+//                    .check(matches(isDisplayed()));
+//
+//            onData(is(instanceOf(ListViewItem.class)))
+//                    // Every entry in the ListView is a HashMap
+//                    .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
+//                    .check(matches(isEnabled()));
+//        }
+//    }
+//
 //    public final void testClickOnCourse() {
 //        // 2, 4, 5, 6, 8
 //        onData(is(instanceOf(ListViewItem.class)))
@@ -210,65 +210,65 @@ public class EventListActivityTest extends
                 }));
     }
 
-    public final void testRemovePastEvents() throws NoSuchMethodException,
-            IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
-        Method removePastEvents;
-        removePastEvents = (EventListActivity.class).getDeclaredMethod(
-                "removePastEvents", new Class[] {
-                    List.class
-                });
-        removePastEvents.setAccessible(true);
-
-        List<EventForList> eventForList = createEventForListFromCourses(mCourses);
-
-        List<ListViewItem> listViewEvents = (List<ListViewItem>) removePastEvents
-                .invoke(mActivity, new Object[] {
-                    eventForList
-                });
-
-        assertEquals(4, listViewEvents.size());
-    }
-
-    public final void testEventToEventForList() throws NoSuchMethodException,
-            IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
-        Method eventToEventForList;
-        eventToEventForList = (EventListActivity.class).getDeclaredMethod(
-                "eventToEventForList", new Class[] {
-                        List.class, List.class
-                });
-        eventToEventForList.setAccessible(true);
-
-        List<ListViewItem> listViewEvents = (List<ListViewItem>) eventToEventForList
-                .invoke(mActivity, new Object[] {
-                        mCourses, mEvents
-                });
-        // One event and one period are deleted because they are in the past
-        assertEquals(5, listViewEvents.size());
-    }
-
-    public final void testCreateAdapter() throws IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException {
-        Method createAdapter;
-        createAdapter = (EventListActivity.class).getDeclaredMethod(
-                "createAdapter", new Class[] {
-                        List.class, CustomAdapter.class
-                });
-        createAdapter.setAccessible(true);
-
-        List<EventForList> eventForList = createEventForListFromCourses(mCourses);
-
-        CustomAdapter adapter = (CustomAdapter) createAdapter.invoke(mActivity,
-                new Object[] {
-                        eventForList, new CustomAdapter(mActivity)
-                });
-        // We have 5 eventForList :
-        // 1 Header Item per day : 3
-        // 1 Item per eventForList
-        assertEquals(10, adapter.getCount());
-    }
+//    public final void testRemovePastEvents() throws NoSuchMethodException,
+//            IllegalAccessException, IllegalArgumentException,
+//            InvocationTargetException {
+//        Method removePastEvents;
+//        removePastEvents = (EventListActivity.class).getDeclaredMethod(
+//                "removePastEvents", new Class[] {
+//                    List.class
+//                });
+//        removePastEvents.setAccessible(true);
+//
+//        List<EventForList> eventForList = createEventForListFromCourses(mCourses);
+//
+//        List<ListViewItem> listViewEvents = (List<ListViewItem>) removePastEvents
+//                .invoke(mActivity, new Object[] {
+//                    eventForList
+//                });
+//
+//        assertEquals(4, listViewEvents.size());
+//    }
+//
+//    public final void testEventToEventForList() throws NoSuchMethodException,
+//            IllegalAccessException, IllegalArgumentException,
+//            InvocationTargetException {
+//        Method eventToEventForList;
+//        eventToEventForList = (EventListActivity.class).getDeclaredMethod(
+//                "eventToEventForList", new Class[] {
+//                        List.class, List.class
+//                });
+//        eventToEventForList.setAccessible(true);
+//
+//        List<ListViewItem> listViewEvents = (List<ListViewItem>) eventToEventForList
+//                .invoke(mActivity, new Object[] {
+//                        mCourses, mEvents
+//                });
+//        // One event and one period are deleted because they are in the past
+//        assertEquals(5, listViewEvents.size());
+//    }
+//
+//    public final void testCreateAdapter() throws IllegalAccessException,
+//            IllegalArgumentException, InvocationTargetException,
+//            NoSuchMethodException {
+//        Method createAdapter;
+//        createAdapter = (EventListActivity.class).getDeclaredMethod(
+//                "createAdapter", new Class[] {
+//                        List.class, CustomAdapter.class
+//                });
+//        createAdapter.setAccessible(true);
+//
+//        List<EventForList> eventForList = createEventForListFromCourses(mCourses);
+//
+//        CustomAdapter adapter = (CustomAdapter) createAdapter.invoke(mActivity,
+//                new Object[] {
+//                        eventForList, new CustomAdapter(mActivity)
+//                });
+//        // We have 5 eventForList :
+//        // 1 Header Item per day : 3
+//        // 1 Item per eventForList
+//        assertEquals(10, adapter.getCount());
+//    }
 
     private void createCourses() throws Exception {
         List<String> period1Course1Rooms = new ArrayList<String>();
