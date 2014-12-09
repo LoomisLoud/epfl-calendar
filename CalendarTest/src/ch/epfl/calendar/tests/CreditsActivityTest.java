@@ -1,6 +1,7 @@
 package ch.epfl.calendar.tests;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
@@ -43,12 +44,35 @@ public class CreditsActivityTest extends
 	}
 
     public void testButtonIsDisplayedAndEnabled() {
+//    	switchToTmpActivity();
         onView(withId(R.id.ok_btn)).check(matches(isDisplayed()));
         onView(withId(R.id.ok_btn)).check(matches(isEnabled()));
+        onView(withId(R.id.ok_btn)).perform(click());
+//        onData(is(instanceOf(CreditsActivity.class))).check(doesNotExist());
     }
 
     public void testButtonText() {
     	Button btn = (Button) mActivity.findViewById(R.id.ok_btn);
     	assertTrue(btn.getText().equals("OK"));
     }
+
+//    private void switchToTmpActivity() {
+//    	Intent i = new Intent(mActivity, TmpActivity.class);
+//    	mActivity.startActivity(i);
+//    }
+//
+//    /**
+//     * local need of an activity
+//     *
+//     * @author lweingart
+//     *
+//     */
+//    private class TmpActivity extends Activity {
+//    	@Override
+//    	protected void onCreate(Bundle savedInstanceState) {
+//    		super.onCreate(savedInstanceState);
+//    		Intent i = new Intent(this, CreditsActivity.class);
+//    		startActivity(i);
+//    	}
+//    }
 }
