@@ -70,13 +70,8 @@ public class EventListActivityTest extends
         }
         waitOnInsertionInDB();
         DBQuester.close();
-
-        mActivity = getActivity();
-
-        // We need to set up which activity is the current one (needed by
-        // AsyncTask to be able to use callback functions
-        App.setActionBar(mActivity);
-        mActivity.setUdpateData(mActivity);
+        
+        mActivity = new EventListActivity();
     }
 
     /*
@@ -89,7 +84,8 @@ public class EventListActivityTest extends
                 App.getDBHelper().getDatabaseName());
     }
 
-//    public final void testNbOfElementsVisible() {
+//    public final void testNbOfElementsVisible() 
+//        setActivity()
 //        int nbOfElementsVisible = 8;
 //        for (int i = 0; i < nbOfElementsVisible; i++) {
 //            onData(is(instanceOf(ListViewItem.class)))
@@ -105,6 +101,7 @@ public class EventListActivityTest extends
 //    }
 //
 //    public final void testClickOnCourse() {
+//        setActivity()
 //        // 2, 4, 5, 6, 8
 //        onData(is(instanceOf(ListViewItem.class)))
 //                // Every entry in the ListView is a HashMap
@@ -113,6 +110,7 @@ public class EventListActivityTest extends
 //    }
 //    
 //    public final void testClickOnEvent() {
+//        setActivity()
 //        // 2, 4, 5, 6, 8
 //        onData(is(instanceOf(ListViewItem.class)))
 //                // Every entry in the ListView is a HashMap
@@ -155,6 +153,7 @@ public class EventListActivityTest extends
     public final void testStringToPeriodType() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
+        mActivity.finish();
         Method stringToPeriodType;
         stringToPeriodType = (EventListActivity.class).getDeclaredMethod(
                 "stringToPeriodType", new Class[] {
@@ -204,6 +203,7 @@ public class EventListActivityTest extends
     public final void testRemovePastEvents() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
+        mActivity.finish();
         Method removePastEvents;
         removePastEvents = (EventListActivity.class).getDeclaredMethod(
                 "removePastEvents", new Class[] {
@@ -225,6 +225,7 @@ public class EventListActivityTest extends
     public final void testEventToEventForList() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
+        mActivity.finish();
         Method eventToEventForList;
         eventToEventForList = (EventListActivity.class).getDeclaredMethod(
                 "eventToEventForList", new Class[] {
@@ -240,10 +241,10 @@ public class EventListActivityTest extends
         assertEquals(5, listViewEvents.size());
     }
 
-    @SuppressWarnings("unchecked")
     public final void testCreateAdapter() throws IllegalAccessException,
             IllegalArgumentException, InvocationTargetException,
             NoSuchMethodException {
+        setActivity();
         Method createAdapter;
         createAdapter = (EventListActivity.class).getDeclaredMethod(
                 "createAdapter", new Class[] {
@@ -339,6 +340,15 @@ public class EventListActivityTest extends
             }
         }
         return eventForList;
+    }
+    
+    private void setActivity() {
+        mActivity = getActivity();
+
+        // We need to set up which activity is the current one (needed by
+        // AsyncTask to be able to use callback functions
+        App.setActionBar(mActivity);
+        mActivity.setUdpateData(mActivity);
     }
 
 }
