@@ -105,53 +105,53 @@ public class EventListActivityTest extends
         // fail("Not yet implemented"); // TODO
     }
 
-//    public final void testSort() throws NoSuchMethodException,
-//        IllegalAccessException, IllegalArgumentException,
-//        InvocationTargetException {
-//        Method sort;
-//        sort = (EventListActivity.class).getDeclaredMethod("sort",
-//                new Class[] {List.class});
-//        sort.setAccessible(true);
-//
-//        List<EventForList> eventForList = new ArrayList<EventForList>();
-//        // Create the EventForList objects
-//        for (Course c : mCourses) {
-//            for (Period p : c.getPeriods()) {
-//                eventForList.add(new EventForList(c.getName(),
-//                        p.getStartDate(), p.getEndDate(), p.getType(),
-//                        DBQuester.NO_ID, "", c.getDescription()));
-//            }
-//        }
-//
-//        sort.invoke(mActivity, new Object[] {eventForList});
-//        
-//        for (int i = 0; i < eventForList.size(); i++) {
-//            if (i < eventForList.size() - 1) {
-//                if (eventForList.get(i).getmStart().equals(eventForList.get(i+1).getmStart())) {
-//                    if (!eventForList.get(i).getEnd().equals(eventForList.get(i+1).getEnd())) {
-//                        assertTrue(eventForList.get(i).getEnd().before(eventForList.get(i+1).getEnd()));
-//                    }
-//                } else {
-//                    assertTrue(eventForList.get(i).getmStart().before(eventForList.get(i+1).getmStart()));
-//                }
-//            }
-//        }
-//    }
-//
-//    public final void testStringToPeriodType() throws NoSuchMethodException {
-//        Method stringToPeriodType;
-//        stringToPeriodType = (EventListActivity.class).getDeclaredMethod("stringToPeriodType",
-//                new Class[] {String.class});
-//        stringToPeriodType.setAccessible(true);
-//        
-//        String exercices = "exercices";
-//        String exercises = "exercises";
-//        String cours = "cours";
-//        String lecture = "lecture";
-//        String projet = "projet";
-//        String project = "project";
-//        
-//    }
+    public final void testSort() throws NoSuchMethodException,
+        IllegalAccessException, IllegalArgumentException,
+        InvocationTargetException {
+        Method sort;
+        sort = (EventListActivity.class).getDeclaredMethod("sort",
+                new Class[] {List.class});
+        sort.setAccessible(true);
+
+        List<EventForList> eventForList = new ArrayList<EventForList>();
+        // Create the EventForList objects
+        for (Course c : mCourses) {
+            for (Period p : c.getPeriods()) {
+                eventForList.add(new EventForList(c.getName(),
+                        p.getStartDate(), p.getEndDate(), p.getType(),
+                        DBQuester.NO_ID, "", c.getDescription()));
+            }
+        }
+
+        sort.invoke(mActivity, new Object[] {eventForList});
+        
+        for (int i = 0; i < eventForList.size(); i++) {
+            if (i < eventForList.size() - 1) {
+                if (eventForList.get(i).getmStart().equals(eventForList.get(i+1).getmStart())) {
+                    if (!eventForList.get(i).getEnd().equals(eventForList.get(i+1).getEnd())) {
+                        assertTrue(eventForList.get(i).getEnd().before(eventForList.get(i+1).getEnd()));
+                    }
+                } else {
+                    assertTrue(eventForList.get(i).getmStart().before(eventForList.get(i+1).getmStart()));
+                }
+            }
+        }
+    }
+
+    public final void testStringToPeriodType() throws NoSuchMethodException {
+        Method stringToPeriodType;
+        stringToPeriodType = (EventListActivity.class).getDeclaredMethod("stringToPeriodType",
+                new Class[] {String.class});
+        stringToPeriodType.setAccessible(true);
+        
+        String exercices = "exercices";
+        String exercises = "exercises";
+        String cours = "cours";
+        String lecture = "lecture";
+        String projet = "projet";
+        String project = "project";
+        
+    }
 
     public final void testRemovePastEvents() {
 
