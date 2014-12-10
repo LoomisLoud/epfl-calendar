@@ -44,6 +44,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
 
     private ListView mListView;
     private Context context = this;
+    private List<ListViewItem> mEventForList;
     private boolean editEvent = false;
 
     @Override
@@ -55,7 +56,8 @@ public class EventListActivity extends DefaultActionBarActivity implements
         mListView = (ListView) findViewById(R.id.list_event_view);
 
         editEvent = true;
-        final List<ListViewItem> eventForList = new ArrayList<ListViewItem>();
+        mEventForList = new ArrayList<ListViewItem>();
+        onResume();
         mListView.setDividerHeight(HEIGHT_DIVIDER);
 
         mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -110,7 +112,8 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                             getDBQuester().deleteEvent(
                                                     eventToDelete);
                                         }
-                                        List<ListViewItem> list = eventForList;
+                                        onResume();
+                                        List<ListViewItem> list = mEventForList;
                                         list.remove(item);
                                         CustomAdapter adap = new CustomAdapter(
                                                 context);
@@ -304,12 +307,11 @@ public class EventListActivity extends DefaultActionBarActivity implements
     protected void onResume() {
         super.onResume();
         if (editEvent) {
-
-            List<ListViewItem> updatedEvent = eventToEventForList(
+            mEventForList = eventToEventForList(
                     getDBQuester().getAllCourses(), getDBQuester()
                             .getAllEvents());
             CustomAdapter editAdapter = new CustomAdapter(context);
-            createAdapter(updatedEvent, editAdapter);
+            createAdapter(mEventForList, editAdapter);
             mListView.setAdapter(editAdapter);
 
             editEvent = false;
