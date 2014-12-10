@@ -13,10 +13,13 @@ import static org.hamcrest.Matchers.is;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.ListView;
 import ch.epfl.calendar.App;
+import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.CoursesListActivity;
@@ -31,7 +34,8 @@ public class CoursesListActivityTest extends
         ActivityInstrumentationTestCase2<CoursesListActivity> {
 
     private static final int N_LIST_VIEW_ELEMENTS = 2;
-
+    
+    private List<Course> mCourses = new ArrayList<Course>();
     private CoursesListActivity activity;
     private LocalDatabaseInterface mDB;
     public static final String TEST = "test";
@@ -106,12 +110,69 @@ public class CoursesListActivityTest extends
         // });
     }
 
+    public void testCreditImage() throws Throwable {
+        
+        final ListView listView = (ListView) activity
+                .findViewById(R.id.coursesListView);
+        runTestOnUiThread(new Runnable() {
+            
+            @SuppressWarnings("unchecked")
+            @Override
+            public void run() {
+                // List are not in the same size so index are switched
+                assertEquals(((Map<String, String>) listView.getAdapter()
+                        .getItem(0))
+                        .get("credit_image"), Integer.toString(getCreditImage(mCourses.get(1))));
+                
+                assertEquals(((Map<String, String>) listView.getAdapter()
+                        .getItem(1))
+                        .get("credit_image"), Integer.toString(getCreditImage(mCourses.get(0))));
+                
+            }
+        });
+       
+
+    }
+
     private int getIdByName(String name) {
         Context context = getInstrumentation().getTargetContext();
         int result = context.getResources().getIdentifier(name, "id",
                 context.getPackageName());
         assertTrue("id for name not found: " + name, result != 0);
         return result;
+    }
+    
+    private int getCreditImage(Course cours) {
+        switch (cours.getCredits()) {
+            case 1:
+                return R.drawable.un;
+            case 2:
+                return R.drawable.deux;
+            case 3:
+                return R.drawable.trois;
+            case 4:
+                return R.drawable.quatre;
+            case 5:
+                return R.drawable.cinq;
+            case 6:
+                return R.drawable.six;
+            case 7:
+                return R.drawable.sept;
+            case 8:
+                return R.drawable.huit;
+            case 9:
+                return R.drawable.neuf;
+            case 10:
+                return R.drawable.dix;
+            case 11:
+                return R.drawable.onze;
+            case 12:
+                return R.drawable.douze;
+
+            default:
+                return R.drawable.zero;
+
+        }
     }
 
     private void populateTestDB() throws Exception {
@@ -129,7 +190,7 @@ public class CoursesListActivityTest extends
         periodsCourse1.add(period1Course1);
         periodsCourse1.add(period2Course1);
         Course course1 = new Course("TestCourse1", periodsCourse1,
-                "Pr. Testpr1", 200, "CS-321", "awesome course", null);
+                "Pr. Testpr1", 12, "CS-321", "awesome course", null);
 
         List<String> period1Course2Rooms = new ArrayList<String>();
         List<String> period2Course2Rooms = new ArrayList<String>();
@@ -146,6 +207,9 @@ public class CoursesListActivityTest extends
         periodsCourse2.add(period2Course2);
         Course course2 = new Course("TestCourse2", periodsCourse2,
                 "Pr. Testpr2", 5, "CS-000", "cool course", null);
+        
+        mCourses.add(course1);
+        mCourses.add(course2);
 
         mDB.storeCourse(course1);
         mDB.storeCourse(course2);
