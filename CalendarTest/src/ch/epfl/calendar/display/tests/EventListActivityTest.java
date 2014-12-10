@@ -123,48 +123,48 @@ public class EventListActivityTest extends
                 .perform(click()).check(doesNotExist());
     }
 
-//    public final void testLongClickOnCourse() {
-//        setActivity();
-//
-//        onData(is(instanceOf(ListViewItem.class)))
-//                // Every entry in the ListView is a HashMap
-//                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
-//                .perform(longClick());
-//        onView(withText("Description")).perform(click()).check(doesNotExist());
-//    }
-//
-//    public final void testClickOnEvent() {
-//        setActivity();
-//        // 2, 4, 5, 6, 8
-//        onData(is(instanceOf(ListViewItem.class)))
-//                // Every entry in the ListView is a HashMap
-//                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
-//                .perform(click()).check(doesNotExist());
-//    }
-//
-//    public final void testLongClickOnEventEdit() {
-//        setActivity();
-//
-//        onData(is(instanceOf(ListViewItem.class)))
-//                // Every entry in the ListView is a HashMap
-//                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
-//                .perform(longClick());
-//        onView(withText("Edit")).perform(click()).check(doesNotExist());
-//    }
-//
-//    public final void testLongClickOnEventDelete() {
-//        setActivity();
-//
-//        onData(is(instanceOf(ListViewItem.class)))
-//                // Every entry in the ListView is a HashMap
-//                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
-//                .perform(longClick());
-//        onView(withText("Delete")).perform(click());
-//        onData(is(instanceOf(ListViewItem.class)))
-//                // Every entry in the ListView is a HashMap
-//                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
-//                .check(matches(isDisplayed()));
-//    }
+    public final void testLongClickOnCourse() {
+        setActivity();
+
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
+                .perform(longClick());
+        onView(withText("Description")).perform(click()).check(doesNotExist());
+    }
+
+    public final void testClickOnEvent() {
+        setActivity();
+        // 2, 4, 5, 6, 8
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+                .perform(click()).check(doesNotExist());
+    }
+
+    public final void testLongClickOnEventEdit() {
+        setActivity();
+
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+                .perform(longClick());
+        onView(withText("Edit")).perform(click()).check(doesNotExist());
+    }
+
+    public final void testLongClickOnEventDelete() {
+        setActivity();
+
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+                .perform(longClick());
+        onView(withText("Delete")).perform(click());
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
+                .check(matches(isDisplayed()));
+    }
 
     public final void testSort() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
