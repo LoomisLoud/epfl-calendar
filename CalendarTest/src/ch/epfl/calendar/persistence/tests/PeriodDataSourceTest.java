@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.PeriodDataSource;
 import ch.epfl.calendar.persistence.PeriodTable;
+import ch.epfl.calendar.testing.utils.MockActivity;
 
 
 /**
@@ -21,9 +21,9 @@ import ch.epfl.calendar.persistence.PeriodTable;
  *
  */
 public class PeriodDataSourceTest extends
-		ActivityInstrumentationTestCase2<CoursesListActivity>  {
+		ActivityInstrumentationTestCase2<MockActivity>  {
 
-	private CoursesListActivity mActivity;
+	private MockActivity mActivity;
 	private SQLiteDatabase mDb;
 	private PeriodDataSource mPds;
 	private List<Period> mPeriodList = null;
@@ -32,18 +32,17 @@ public class PeriodDataSourceTest extends
 	private static final int NB_OBJECTS_IN_DB = 2;
 
 	public PeriodDataSourceTest() {
-		super(CoursesListActivity.class);
+		super(MockActivity.class);
 	}
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        mActivity = getActivity();
+        mActivity = new MockActivity();
 
         App.setDBHelper("Calendar_test.db");
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
+        
 
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);

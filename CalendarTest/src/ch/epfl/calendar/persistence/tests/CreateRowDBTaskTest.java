@@ -10,28 +10,28 @@ import java.util.List;
 import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.MainActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.persistence.CreateObject;
 import ch.epfl.calendar.persistence.CreateRowDBTask;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.EventTable;
+import ch.epfl.calendar.testing.utils.MockActivity;
 
 /**
  * @author AblionGE
  * 
  */
 public class CreateRowDBTaskTest extends
-        ActivityInstrumentationTestCase2<MainActivity> {
+        ActivityInstrumentationTestCase2<MockActivity> {
 
-    private MainActivity mActivity;
+    private MockActivity mActivity;
     private Event mEvent = null;
     private DBQuester mDBQuester;
     private CreateRowDBTask instance;
 
     public CreateRowDBTaskTest() {
-        super(MainActivity.class);
+        super(MockActivity.class);
     }
 
     /*
@@ -45,21 +45,12 @@ public class CreateRowDBTaskTest extends
         // to get the activity before call "setDBHelper"
         // because in MainActivity, the name of database
         // is changed in "onCreate()"
-        mActivity = getActivity();
+        mActivity = new MockActivity();
 
         App.setCurrentUsername("testUsername");
         // store the sessionID in the preferences
-        TequilaAuthenticationAPI.getInstance().setSessionID(
-                mActivity.getApplicationContext(), "sessionID");
-        TequilaAuthenticationAPI.getInstance().setUsername(
-                mActivity.getApplicationContext(),
-                "testUsername");
-
-        mActivity = getActivity();
 
         App.setDBHelper("calendar_test.db");
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
