@@ -26,6 +26,7 @@ import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.LocalDatabaseInterface;
+import ch.epfl.calendar.testing.utils.MockActivity;
 import ch.epfl.calendar.testing.utils.Utils;
 
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
@@ -43,6 +44,7 @@ public class CoursesListActivityTest extends
     
     private List<Course> mCourses = new ArrayList<Course>();
     private CoursesListActivity mActivity;
+    private MockActivity mMockActivity;
     private LocalDatabaseInterface mDB;
     public static final String TEST = "test";
 
@@ -61,12 +63,9 @@ public class CoursesListActivityTest extends
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
 
-        mActivity = getActivity();
-
-        // We need to set up which activity is the current one (needed by
-        // AsyncTask to be able to use callback functions
-        App.setActionBar(mActivity);
-        mActivity.setUdpateData(mActivity);
+        mMockActivity = new MockActivity();
+        App.setActionBar(mMockActivity);
+        mMockActivity.setUdpateData(mMockActivity);
 
         mDB = new DBQuester();
 
@@ -87,6 +86,7 @@ public class CoursesListActivityTest extends
     }
 
     public void testSizeListView() throws InterruptedException {
+        getActivityOnTest();
         onData(is(instanceOf(HashMap.class)))
                 // Every entry in the ListView is a HashMap
                 .inAdapterView(withId(getIdByName("coursesListView")))
@@ -102,6 +102,7 @@ public class CoursesListActivityTest extends
     }
 
     public void testClickOnListView() {
+        getActivityOnTest();
         onData(is(instanceOf(HashMap.class)))
                 // Every entry in the ListView is a HashMap
                 .inAdapterView(withId(getIdByName("coursesListView")))
@@ -123,7 +124,7 @@ public class CoursesListActivityTest extends
     }
 
     public void testCreditImage() throws Throwable {
-        
+        getActivity();
         final ListView listView = (ListView) mActivity
                 .findViewById(R.id.coursesListView);
         runTestOnUiThread(new Runnable() {
@@ -227,7 +228,7 @@ public class CoursesListActivityTest extends
         mDB.storeCourse(course2);
     }
     
-    Activity getCurrentActivity() throws Throwable {
+    public Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {
@@ -238,4 +239,13 @@ public class CoursesListActivityTest extends
         }});
         return activity[0];
       }
+    
+    public void getActivityOnTest() {
+        mActivity = getActivity();
+
+        // We need to set up which activity is the current one (needed by
+        // AsyncTask to be able to use callback functions
+        App.setActionBar(mActivity);
+        mActivity.setUdpateData(mActivity);
+    }
 }
