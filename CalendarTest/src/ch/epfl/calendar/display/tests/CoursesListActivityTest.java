@@ -10,6 +10,8 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +146,36 @@ public class CoursesListActivityTest extends
             }
         });
        
-
+    }
+    
+    public final void testGetCreditImage() throws NoSuchMethodException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Method getCreditImage;
+        getCreditImage = (CoursesListActivity.class).getDeclaredMethod("getCreditImage",
+                new Class[] {Course.class});
+        getCreditImage.setAccessible(true);
+        CoursesListActivity instance = new CoursesListActivity();
+        
+        List<Integer> drawables = new ArrayList<Integer>();
+        drawables.add(R.drawable.zero);
+        drawables.add(R.drawable.un);
+        drawables.add(R.drawable.deux);
+        drawables.add(R.drawable.trois);
+        drawables.add(R.drawable.quatre);
+        drawables.add(R.drawable.cinq);
+        drawables.add(R.drawable.six);
+        drawables.add(R.drawable.sept);
+        drawables.add(R.drawable.huit);
+        drawables.add(R.drawable.neuf);
+        drawables.add(R.drawable.dix);
+        drawables.add(R.drawable.onze);
+        drawables.add(R.drawable.douze);
+        drawables.add(R.drawable.zero);
+        for (int i = 0; i < 14 ; i++) {
+            Course course = new Course("TestCourse1", null,
+                    "Pr. Testpr1", i, "CS-321", "awesome course", null);
+            assertEquals(drawables.get(i), getCreditImage.invoke(instance, course));
+        }
     }
 
     private int getIdByName(String name) {
