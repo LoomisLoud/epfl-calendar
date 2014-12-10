@@ -9,7 +9,7 @@ package ch.epfl.calendar.apiInterface;
 public interface UpdateDataFromDBInterface {
     
     /**
-     * This function needs to be implemented to fetch data from local database
+     * This function needs to be implemented to fetch data from local database.
      */
     void updateData();
 }

@@ -28,7 +28,7 @@ import ch.epfl.calendar.thirdParty.calendarViews.WeekView;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 
 /**
- * 
+ * The Main activity (calendar view) of the application.
  * @author lweingart
  * 
  */

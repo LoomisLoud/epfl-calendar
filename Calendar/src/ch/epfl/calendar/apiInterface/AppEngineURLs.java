@@ -4,6 +4,8 @@
 package ch.epfl.calendar.apiInterface;
 
 /**
+ * This class contains the URL to access the services in place on the AppEngine server.
+ * 
  * @author gilbrechbuhler
  *
  */

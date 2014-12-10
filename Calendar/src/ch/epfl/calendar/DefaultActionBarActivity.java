@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,8 +34,9 @@ import ch.epfl.calendar.utils.AuthenticationUtils;
 import ch.epfl.calendar.utils.ConstructListCourse;
 
 /**
- * @author fouchepi
- * 
+ * This class is the parent activity of all the other activities.
+ * Contains, for exemple, the number of running {@link AsyncTask} at any point of the application
+ * @author fouchepi * 
  */
 public abstract class DefaultActionBarActivity extends Activity implements
         CalendarClientDownloadInterface, AppEngineDownloadInterface,

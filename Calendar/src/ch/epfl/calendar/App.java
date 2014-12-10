@@ -16,6 +16,8 @@ import android.content.Context;
 import ch.epfl.calendar.persistence.DBHelper;
 
 /**
+ * This class contains methods and static values used in all the app.
+ * 
  * @author lweingart
  * 
  */

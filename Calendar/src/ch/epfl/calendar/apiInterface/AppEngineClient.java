@@ -37,7 +37,7 @@ public class AppEngineClient implements AppEngineDatabaseInterface {
     private HttpClient mHttpClient;
     
     /**
-     * 
+     * Create a client to the AppEngine application running at URL dbUrl.
      * @param dbUrl = http://versatile-hull-742.appspot.com to access app engine
      */
     public AppEngineClient(String dbUrl) throws CalendarClientException {
