@@ -108,9 +108,183 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         mWeekView.notifyDatasetChanged();
         activateRotation();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean retour = super.onCreateOptionsMenu(menu);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
 
+        MenuItem goToCalendarItem = (MenuItem) menu
+                .findItem(R.id.action_calendar);
+        goToCalendarItem.setVisible(false);
+        this.invalidateOptionsMenu();
+
+        return retour;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_today:
+                mWeekView.goToToday();
+                mWeekView.goToEight();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    @Override
+    public List<WeekViewEvent> onMonthChange() {
+
+        // Populate the week view with some events.
+        mMListEvents = new ArrayList<WeekViewEvent>();
+
+        for (Course c : mListCourses) {
+            for (Period p : c.getPeriods()) {
+                mMListEvents.add(new WeekViewEvent(mIdEvent++, getEventTitle(c,
+                        p), p.getStartDate(), p.getEndDate(), p.getType(), c
+                        .getDescription()));
+            }
+            for (Event event : c.getEvents()) {
+                mMListEvents.add(new WeekViewEvent(event.getId(), event
+                        .getTitle(), event.getStartDate(), event.getEndDate(),
+                        PeriodType.DEFAULT, event.getDescription()));
+            }
+
+        }
+        for (Event event : mListEventWithoutCourse) {
+
+
+            int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
+                    - event.getStartDate().get(Calendar.DAY_OF_MONTH);
+            int monthDuaration = event.getEndDate().get(Calendar.MONTH)
+                    - event.getStartDate().get(Calendar.MONTH);
+            int yearDuration = event.getEndDate().get(Calendar.YEAR)
+                    - event.getStartDate().get(Calendar.YEAR);
+
+            if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
+                List<Calendar> startList = new ArrayList<Calendar>();
+                Calendar start = (Calendar) event.getStartDate().clone();
+                startList.add(start);
+                for (int i = 0; i <= dayDuration; i++) {
+                    Calendar end = event.getEndDate();
+                    if (i != dayDuration) {
+                        end = (Calendar) start.clone();
+                        end.set(Calendar.HOUR_OF_DAY, HOUR_23);
+                        end.set(Calendar.MINUTE, MINUTE_59);
+                    }
+                    mMListEvents.add(new WeekViewEvent(event.getId(), event
+                            .getTitle(), startList.get(i), end,
+                            PeriodType.DEFAULT, event.getDescription()));
+
+                    Calendar newStart = (Calendar) startList.get(i).clone();
+                    newStart.add(Calendar.DAY_OF_MONTH, 1);
+                    newStart.set(Calendar.HOUR_OF_DAY, 0);
+                    newStart.set(Calendar.MINUTE, 0);
+                    startList.add(newStart);
+                }
+            } else {
+                mMListEvents.add(new WeekViewEvent(event.getId(), event
+                        .getName(), event.getStartDate(), event.getEndDate(),
+                        PeriodType.DEFAULT, event.getDescription()));
+            }
+        }
+
+        return mMListEvents;
+    }
+    
+    @Override
+    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
+        if (weekEvent.getmType().equals(PeriodType.LECTURE)
+                || weekEvent.getmType().equals(PeriodType.PROJECT)
+                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
+            String cours = weekEvent.getName().split("\n")[1];
+            switchToCourseDetails(cours);
+        } else {
+            Event event = getDBQuester().getEvent(weekEvent.getId());
+            switchToEditActivity(event);
+        }
+    }
+
+    @Override
+    public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
+        if (event.getmType() == PeriodType.EXERCISES
+                || event.getmType() == PeriodType.LECTURE
+                || event.getmType() == PeriodType.PROJECT) {
+            String cours = event.getName().split("\n")[1];
+            switchToCourseDetails(cours);
+
+        } else {
+
+            AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
+            choiceDialog.setTitle("Action on Event");
+            long id = event.getId();
+            final Event eventFromDB = getDBQuester().getEvent(id);
+            choiceDialog.setItems(R.array.choice_on_event,
+                    new OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    switchToEditActivity(eventFromDB);
+                                    dialog.cancel();
+                                    break;
+                                case 1:
+                                    if (eventFromDB.isAutomaticAddedBlock()) {
+                                        getDBQuester().deleteBlock(eventFromDB);
+                                    } else {
+                                        getDBQuester().deleteEvent(eventFromDB);
+                                    }
+                                    updateData();
+                                    dialog.cancel();
+                                    break;
+                                case 2:
+                                    if (event.getmType().equals(PeriodType.LECTURE)
+                                            || event.getmType().equals(
+                                                    PeriodType.PROJECT)
+                                            || event.getmType().equals(
+                                                    PeriodType.EXERCISES)) {
+                                        String cours = event.getName().split("\n")[0];
+                                        switchToCourseDetails(cours);
+                                    } else {
+    
+                                        if (eventFromDB.getLinkedCourse().equals(
+                                                App.NO_COURSE)) {
+                                            String description = event
+                                                    .getmDescription();
+                                            switchToEventDetail(event.getName(),
+                                                    description);
+                                        } else {
+                                            String coursName = eventFromDB
+                                                    .getLinkedCourse();
+                                            switchToCourseDetails(coursName);
+                                        }
+    
+                                    }
+                                    dialog.cancel();
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                        }
+                    });
+
+            choiceDialog.create();
+            choiceDialog.show();
+        }
+    }
+    
+    @Override
+    public void updateData() {
+        updateListsFromDB();
+        mWeekView.notifyDatasetChanged();
+    }
+    
     private void updateListsFromDB() {
         mListCourses = getDBQuester().getAllCourses();
         mListEventWithoutCourse = getDBQuester().getAllEventsWithoutCourse();
@@ -183,32 +357,6 @@ public class MainActivity extends DefaultActionBarActivity implements
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        boolean retour = super.onCreateOptionsMenu(menu);
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        MenuItem goToCalendarItem = (MenuItem) menu
-                .findItem(R.id.action_calendar);
-        goToCalendarItem.setVisible(false);
-        this.invalidateOptionsMenu();
-
-        return retour;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_today:
-                mWeekView.goToToday();
-                mWeekView.goToEight();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void switchToCourseDetails(String courseName) {
         Intent courseDetailsActivityIntent = new Intent(this,
                 CourseDetailsActivity.class);
@@ -219,66 +367,6 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog = new ProgressDialog(this);
         mDialog.setMessage("Loading course details");
         mDialog.show();
-    }
-
-    @Override
-    public List<WeekViewEvent> onMonthChange() {
-
-        // Populate the week view with some events.
-        mMListEvents = new ArrayList<WeekViewEvent>();
-
-        for (Course c : mListCourses) {
-            for (Period p : c.getPeriods()) {
-                mMListEvents.add(new WeekViewEvent(mIdEvent++, getEventTitle(c,
-                        p), p.getStartDate(), p.getEndDate(), p.getType(), c
-                        .getDescription()));
-            }
-            for (Event event : c.getEvents()) {
-                mMListEvents.add(new WeekViewEvent(event.getId(), event
-                        .getTitle(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getDescription()));
-            }
-
-        }
-        for (Event event : mListEventWithoutCourse) {
-
-
-            int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
-                    - event.getStartDate().get(Calendar.DAY_OF_MONTH);
-            int monthDuaration = event.getEndDate().get(Calendar.MONTH)
-                    - event.getStartDate().get(Calendar.MONTH);
-            int yearDuration = event.getEndDate().get(Calendar.YEAR)
-                    - event.getStartDate().get(Calendar.YEAR);
-
-            if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
-                List<Calendar> startList = new ArrayList<Calendar>();
-                Calendar start = (Calendar) event.getStartDate().clone();
-                startList.add(start);
-                for (int i = 0; i <= dayDuration; i++) {
-                    Calendar end = event.getEndDate();
-                    if (i != dayDuration) {
-                        end = (Calendar) start.clone();
-                        end.set(Calendar.HOUR_OF_DAY, HOUR_23);
-                        end.set(Calendar.MINUTE, MINUTE_59);
-                    }
-                    mMListEvents.add(new WeekViewEvent(event.getId(), event
-                            .getTitle(), startList.get(i), end,
-                            PeriodType.DEFAULT, event.getDescription()));
-
-                    Calendar newStart = (Calendar) startList.get(i).clone();
-                    newStart.add(Calendar.DAY_OF_MONTH, 1);
-                    newStart.set(Calendar.HOUR_OF_DAY, 0);
-                    newStart.set(Calendar.MINUTE, 0);
-                    startList.add(newStart);
-                }
-            } else {
-                mMListEvents.add(new WeekViewEvent(event.getId(), event
-                        .getName(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getDescription()));
-            }
-        }
-
-        return mMListEvents;
     }
 
     private String getEventTitle(Course c, Period p) {
@@ -305,89 +393,6 @@ public class MainActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
-        if (weekEvent.getmType().equals(PeriodType.LECTURE)
-                || weekEvent.getmType().equals(PeriodType.PROJECT)
-                || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = weekEvent.getName().split("\n")[1];
-            switchToCourseDetails(cours);
-        } else {
-            Event event = getDBQuester().getEvent(weekEvent.getId());
-            switchToEditActivity(event);
-        }
-    }
-
-    @Override
-    public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
-        if (event.getmType() == PeriodType.EXERCISES
-                || event.getmType() == PeriodType.LECTURE
-                || event.getmType() == PeriodType.PROJECT) {
-            String cours = event.getName().split("\n")[1];
-            switchToCourseDetails(cours);
-
-        } else {
-
-            AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
-            choiceDialog.setTitle("Action on Event");
-            long id = event.getId();
-            final Event eventFromDB = getDBQuester().getEvent(id);
-            choiceDialog.setItems(R.array.choice_on_event,
-                    new OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0:
-                                    switchToEditActivity(eventFromDB);
-                                    dialog.cancel();
-                                    break;
-                                case 1:
-                                	if (eventFromDB.isAutomaticAddedBlock()) {
-                                		getDBQuester().deleteBlock(eventFromDB);
-                                	} else {
-                                		getDBQuester().deleteEvent(eventFromDB);
-                                	}
-                                    updateData();
-                                    dialog.cancel();
-                                    break;
-                                case 2:
-                                    if (event.getmType().equals(PeriodType.LECTURE)
-                                            || event.getmType().equals(
-                                                    PeriodType.PROJECT)
-                                            || event.getmType().equals(
-                                                    PeriodType.EXERCISES)) {
-                                        String cours = event.getName().split("\n")[0];
-                                        switchToCourseDetails(cours);
-                                    } else {
-    
-                                        if (eventFromDB.getLinkedCourse().equals(
-                                                App.NO_COURSE)) {
-                                            String description = event
-                                                    .getmDescription();
-                                            switchToEventDetail(event.getName(),
-                                                    description);
-                                        } else {
-                                            String coursName = eventFromDB
-                                                    .getLinkedCourse();
-                                            switchToCourseDetails(coursName);
-                                        }
-    
-                                    }
-                                    dialog.cancel();
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                        }
-                    });
-
-            choiceDialog.create();
-            choiceDialog.show();
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
@@ -398,11 +403,5 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (mDialog != null) {
             mDialog.dismiss();
         }
-    }
-
-    @Override
-    public void updateData() {
-        updateListsFromDB();
-        mWeekView.notifyDatasetChanged();
     }
 }

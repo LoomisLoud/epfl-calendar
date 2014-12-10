@@ -364,10 +364,18 @@ public class App extends Application {
         App.mActionBar = actionBar;
     }
 
+    /**
+     * 
+     * @return the username of the currently connected user
+     */
     public static String getCurrentUsername() {
         return mCurrentUsername;
     }
 
+    /**
+     * changes the current username.
+     * @param currentUsername
+     */
     public static void setCurrentUsername(String currentUsername) {
         App.mCurrentUsername = currentUsername;
     }
