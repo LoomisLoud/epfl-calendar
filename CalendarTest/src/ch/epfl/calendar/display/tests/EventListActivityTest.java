@@ -292,7 +292,7 @@ public class EventListActivityTest extends
         Period period2Course1 = new Period("Exercise", "28.11.2034 08:00",
                 "28.11.2034 10:00", period2Course1Rooms, "2");
         Period period3Course1 = new Period("Project", "29.11.2010 08:00",
-                "29.11.2010 10:00", period2Course1Rooms, "2");
+                "29.11.2010 10:00", period2Course1Rooms, "3");
         ArrayList<Period> periodsCourse1 = new ArrayList<Period>();
         periodsCourse1.add(period1Course1);
         periodsCourse1.add(period2Course1);
@@ -307,9 +307,9 @@ public class EventListActivityTest extends
         period2Course2Rooms.add("INM202");
         period2Course2Rooms.add("INM203");
         Period period1Course2 = new Period("Lecture", "27.11.2034 08:00",
-                "27.11.2034 17:00", period1Course2Rooms, "3");
+                "27.11.2034 17:00", period1Course2Rooms, "4");
         Period period2Course2 = new Period("Exercise", "02.11.2034 08:00",
-                "02.11.2034 10:00", period2Course2Rooms, "4");
+                "02.11.2034 10:00", period2Course2Rooms, "5");
         ArrayList<Period> periodsCourse2 = new ArrayList<Period>();
         periodsCourse2.add(period1Course2);
         periodsCourse2.add(period2Course2);
