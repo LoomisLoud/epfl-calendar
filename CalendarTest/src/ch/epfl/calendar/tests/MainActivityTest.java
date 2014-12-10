@@ -13,6 +13,7 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.testing.utils.MockActivity;
 
 /**
  * @author AblionGE
@@ -22,6 +23,7 @@ public class MainActivityTest extends
         ActivityInstrumentationTestCase2<MainActivity> {
 
     private MainActivity mActivity;
+    private MockActivity mMockActivity;
     private DBQuester mDB;
 
     private static final int SLEEP_TIME = 250;
@@ -37,13 +39,13 @@ public class MainActivityTest extends
     protected void setUp() throws Exception {
         super.setUp();
 
-        mActivity = getActivity();
+        mMockActivity = new MockActivity();
 
         App.setDBHelper("calendar_test.db");
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
-        App.setActionBar(mActivity);
-        mActivity.setUdpateData(mActivity);
+        App.setActionBar(mMockActivity);
+        mMockActivity.setUdpateData(mMockActivity);
 
         mDB = new DBQuester();
 
@@ -140,7 +142,7 @@ public class MainActivityTest extends
     }
 
     private void waitOnInsertionInDB() {
-        while (mActivity.getNbOfAsyncTaskDB() > 0) {
+        while (mMockActivity.getNbOfAsyncTaskDB() > 0) {
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
@@ -154,12 +156,16 @@ public class MainActivityTest extends
         App.setCurrentUsername("testUsername");
         // store the sessionID in the preferences
         TequilaAuthenticationAPI.getInstance().setSessionID(
-                mActivity.getApplicationContext(), "sessionID");
+                getInstrumentation().getTargetContext(), "sessionID");
         TequilaAuthenticationAPI.getInstance().setUsername(
-                mActivity.getApplicationContext(), "testUsername");
+                getInstrumentation().getTargetContext(), "testUsername");
 
-        mActivity.finish();
         mActivity = getActivity();
+        
+        App.setDBHelper("calendar_test.db");
+        
+        App.setActionBar(mActivity);
+        mActivity.setUdpateData(mActivity);
     }
 
 }
