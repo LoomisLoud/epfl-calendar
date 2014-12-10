@@ -10,7 +10,6 @@ import java.util.List;
 import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.persistence.CreateObject;
 import ch.epfl.calendar.persistence.CreateRowDBTask;
