@@ -116,7 +116,7 @@ public class UpdateRowDBTaskTest extends
 
         List<Event> events = mDBQuester.getAllEventsWithoutCourse();
         assertEquals(events.get(0).getName(), mEvent.getName());
-        // Update an object that doesn't exist in DB
+        mActivity.finish();
     }
 
     private UpdateObject createObjectToUpdate(Event event) {
@@ -131,6 +131,8 @@ public class UpdateRowDBTaskTest extends
         values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getDescription());
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
+
+        mActivity.finish();
 
         return new UpdateObject(values, EventTable.TABLE_NAME_EVENT,
                 EventTable.COLUMN_NAME_ID + " = ?",

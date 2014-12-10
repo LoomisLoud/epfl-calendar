@@ -113,6 +113,7 @@ public class CreateRowDBTaskTest extends
 
         List<Event> events = mDBQuester.getAllEventsWithoutCourse();
         assertEquals(mEvent.getName(), events.get(0).getName());
+        mActivity.finish();
     }
 
     private CreateObject createObjectToStore(Event event) {
@@ -127,6 +128,8 @@ public class CreateRowDBTaskTest extends
         values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getDescription());
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
+
+        mActivity.finish();
 
         return new CreateObject(values, null,
                 EventTable.TABLE_NAME_EVENT);
