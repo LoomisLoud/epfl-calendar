@@ -6,11 +6,17 @@ import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewA
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
+import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.TextView;
 import ch.epfl.calendar.CreditsActivity;
 import ch.epfl.calendar.R;
+import ch.epfl.calendar.testing.utils.Utils;
+
+import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
+import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.common.collect.Iterables;
 
 /**
  * CreditsActivity test class
@@ -35,6 +41,12 @@ public class CreditsActivityTest extends
 
 	@Override
 	public void tearDown() throws Exception {
+	    try {
+            Utils.pressBack(getCurrentActivity());
+        } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 		super.tearDown();
 	}
 
@@ -55,6 +67,18 @@ public class CreditsActivityTest extends
     	Button btn = (Button) mActivity.findViewById(R.id.ok_btn);
     	assertTrue(btn.getText().equals("OK"));
     }
+    
+    Activity getCurrentActivity() throws Throwable {
+        getInstrumentation().waitForIdleSync();
+        final Activity[] activity = new Activity[1];
+        runTestOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
+            activity[0] = Iterables.getOnlyElement(activites);
+        }});
+        return activity[0];
+      }
 
 //    private void switchToTmpActivity() {
 //    	Intent i = new Intent(mActivity, TmpActivity.class);
