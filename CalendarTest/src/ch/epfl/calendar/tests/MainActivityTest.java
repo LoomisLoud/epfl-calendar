@@ -66,6 +66,8 @@ public class MainActivityTest extends
      */
     public final void testOnMonthChange() {
         setUser();
+
+        mActivity.finish();
     }
 
     /**
@@ -75,6 +77,8 @@ public class MainActivityTest extends
      */
     public final void testOnEventClick() {
         setUser();
+
+        mActivity.finish();
     }
 
     /**
@@ -84,6 +88,8 @@ public class MainActivityTest extends
      */
     public final void testOnEventLongPress() {
         setUser();
+
+        mActivity.finish();
     }
 
     /**
@@ -91,6 +97,8 @@ public class MainActivityTest extends
      */
     public final void testUpdateData() {
         setUser();
+
+        mActivity.finish();
     }
 
     private void populateTestDB() throws Exception {
@@ -150,6 +158,7 @@ public class MainActivityTest extends
         TequilaAuthenticationAPI.getInstance().setUsername(
                 mActivity.getApplicationContext(), "testUsername");
 
+        mActivity.finish();
         mActivity = getActivity();
     }
 
