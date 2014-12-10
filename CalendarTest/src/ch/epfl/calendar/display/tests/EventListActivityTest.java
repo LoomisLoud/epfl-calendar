@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.longClick;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
@@ -81,7 +84,7 @@ public class EventListActivityTest extends
         }
         waitOnInsertionInDB();
         DBQuester.close();
-        
+
         mActivity = new EventListActivity();
     }
 
@@ -121,7 +124,18 @@ public class EventListActivityTest extends
                 .perform(click()).check(doesNotExist());
         mActivity.finish();
     }
-    
+
+    public final void testLongClickOnCourse() {
+        setActivity();
+
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
+                .perform(longClick());
+        onView(withText("Description")).perform(click()).check(doesNotExist());
+        mActivity.finish();
+    }
+
     public final void testClickOnEvent() {
         setActivity();
         // 2, 4, 5, 6, 8
@@ -129,6 +143,32 @@ public class EventListActivityTest extends
                 // Every entry in the ListView is a HashMap
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
                 .perform(click()).check(doesNotExist());
+        mActivity.finish();
+    }
+
+    public final void testLongClickOnEventEdit() {
+        setActivity();
+
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+                .perform(longClick());
+        onView(withText("Edit")).perform(click()).check(doesNotExist());
+        mActivity.finish();
+    }
+
+    public final void testLongClickOnEventDelete() {
+        setActivity();
+
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+                .perform(longClick());
+        onView(withText("Delete")).perform(click());
+        onData(is(instanceOf(ListViewItem.class)))
+                // Every entry in the ListView is a HashMap
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
+                .check(matches(isDisplayed()));
         mActivity.finish();
     }
 
@@ -228,8 +268,8 @@ public class EventListActivityTest extends
 
         List<EventForList> eventForList = createEventForListFromCourses(mCourses);
 
-        Object listViewEvents = removePastEvents
-                .invoke(mActivity, new Object[] {
+        Object listViewEvents = removePastEvents.invoke(mActivity,
+                new Object[] {
                     eventForList
                 });
 
@@ -244,13 +284,13 @@ public class EventListActivityTest extends
         Method eventToEventForList;
         eventToEventForList = (EventListActivity.class).getDeclaredMethod(
                 "eventToEventForList", new Class[] {
-                    List.class, List.class
+                        List.class, List.class
                 });
         eventToEventForList.setAccessible(true);
 
         List<ListViewItem> listViewEvents = (List<ListViewItem>) eventToEventForList
                 .invoke(mActivity, new Object[] {
-                    mCourses, mEvents
+                        mCourses, mEvents
                 });
         // One event and one period are deleted because they are in the past
         assertEquals(5, listViewEvents.size());
@@ -357,7 +397,7 @@ public class EventListActivityTest extends
         }
         return eventForList;
     }
-    
+
     private void setActivity() {
         mActivity = getActivity();
 
