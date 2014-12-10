@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/courseDetailsLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/activity_margin"
@@ -16,8 +17,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/courseName"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        android:layout_marginTop="@dimen/activity_top_margin_medium" />
+        android:layout_marginTop="@dimen/activity_top_margin_medium"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
     <TextView
         android:id="@+id/courseCredits"
@@ -25,22 +26,30 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/courseProfessor"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
-     
-     <TextView
+
+    <TextView
+        android:id="@+id/coursePeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/courseCredits"
+        android:layout_marginTop="@dimen/activity_top_margin_small"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+    <TextView
         android:id="@+id/courseDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-        android:layout_below="@id/courseCredits" />
-        <!-- android:maxLines="50" /> -->
-        <!-- android:scrollbars="vertical" -->
-        
-     <TextView
+        android:layout_below="@id/coursePeriod"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+    <!-- android:maxLines="50" /> -->
+    <!-- android:scrollbars="vertical" -->
+
+    <TextView
         android:id="@+id/linkedEvents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/courseDescription"
-        android:layout_marginTop="@dimen/activity_top_margin_medium" />
-
+        android:layout_marginTop="@dimen/activity_top_margin_medium"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
 </RelativeLayout>

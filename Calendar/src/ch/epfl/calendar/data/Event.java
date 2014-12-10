@@ -22,11 +22,11 @@ public class Event {
     private String mDescription;
     private boolean mIsAutomaticAddedBlock;
     private static final int MINUTE_CONVERTER = 60;
-    private static final int MILLISECOND_CONVERTER = 1000;
 
     /**
      * Construct the event object. date format must be of format dd.mm.yyyy
      * startTime and endTime must be of format hh:mm
+     * 
      * @param date
      * @param name
      * @param startTime
@@ -36,8 +36,9 @@ public class Event {
      * @param description
      * @param isBlock
      */
-    public Event(String startDate, String endDate, String name, String startTime, String endTime,
-            String type, String linkedCourse, String description, boolean isBlock) {
+    public Event(String startDate, String endDate, String name,
+            String startTime, String endTime, String type, String linkedCourse,
+            String description, boolean isBlock) {
         this.mName = name;
         this.mStartDate = App.createCalendar(startDate, startTime);
         this.mEndDate = App.createCalendar(endDate, endTime);
@@ -54,11 +55,13 @@ public class Event {
         this.mLinkedCourse = linkedCourse;
         this.mDescription = description;
         this.mIsAutomaticAddedBlock = isBlock;
+
     }
 
     /**
      * Construct the event object. startTime and endTime must be of format
      * 'dd.mm.yyy hh:mm'
+     * 
      * @param name
      * @param startTime
      * @param endTime
@@ -70,28 +73,52 @@ public class Event {
      */
     public Event(String name, String startTime, String endTime, String type,
             String linkedCourse, String description, boolean isBlock, int id) {
-        this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX), 
-                endTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX), name, startTime.substring(App.START_TIME_INDEX), 
-                endTime.substring(App.START_TIME_INDEX), type, linkedCourse, description, isBlock);
+        this(startTime.substring(App.ZERO_INDEX, App.END_DATE_INDEX), endTime
+                .substring(App.ZERO_INDEX, App.END_DATE_INDEX), name, startTime
+                .substring(App.START_TIME_INDEX), endTime
+                .substring(App.START_TIME_INDEX), type, linkedCourse,
+                description, isBlock);
         this.mId = id;
     }
 
     @Override
     public String toString() {
         String name = this.mName;
-        String startDate = App.calendarToBasicFormatString(this.mStartDate);
-        String endDate = App.calendarToBasicFormatString(this.mEndDate);
+        String startDate = App.calendarTo12HoursString(this.mStartDate);
+        String endDate = App.calendarTo12HoursString(this.mEndDate);
         String description = this.mDescription;
 
-        return name.concat(" from ").concat(startDate).concat(" to ").concat(endDate)
-                .concat(" : ").concat(description).concat("\n");
+        return name.concat(" from ").concat(startDate).concat(" to ")
+                .concat(endDate).concat(" : ").concat(description).concat("\n");
     }
+    /**
+     * Same as toString but formatted to nice display of contents from human point of view
+     * @return the content of Object in a format to be displayed on screen.
+     */
+    public String toDisplay() {
+        String name = this.mName;
+        String[] date = App.calendarToBasicFormatStringSameDaySpecialFormat(this.mStartDate, mEndDate);
+        String description = this.mDescription;
+        
+        return date[0] + " : " + name + "\n" + date[1] + "  " + description;
+    }
+    
+    
 
     /**
      * @return the mName
      */
     public String getName() {
         return mName;
+    }
+    
+    public String getTitle() {
+        String startHour = App.calendarTo12HoursString(mStartDate);
+        String endHour = App.calendarTo12HoursString(mEndDate);
+        
+        String hour = startHour + " - " + endHour;
+        
+        return hour + "\n" + getName();
     }
 
     /**
@@ -162,11 +189,11 @@ public class Event {
         this.mLinkedCourse = linkedCourse;
     }
 
-    public String getmDescription() {
+    public String getDescription() {
         return mDescription;
     }
 
-    public void setmDescription(String description) {
+    public void setDescription(String description) {
         this.mDescription = description;
     }
 
@@ -178,10 +205,22 @@ public class Event {
         this.mId = id;
     }
 
+    /**
+     * Method to retrieve the hours of the event in form of a double
+     * 
+     * @return hours of the event in double
+     */
     public double getHours() {
-    	return (double) ((this.mEndDate.getTimeInMillis() - this.mStartDate.getTimeInMillis()) 
-    			/ (MINUTE_CONVERTER * MINUTE_CONVERTER * MILLISECOND_CONVERTER));
+        double hourStart = this.mStartDate.get(Calendar.HOUR_OF_DAY);
+        double hourEnd = this.mEndDate.get(Calendar.HOUR_OF_DAY);
+        double minuteStart = ((double) this.mStartDate.get(Calendar.MINUTE))
+                / MINUTE_CONVERTER;
+        double minuteEnd = ((double) this.mEndDate.get(Calendar.MINUTE))
+                / MINUTE_CONVERTER;
+
+        return (hourEnd + minuteEnd) - (hourStart + minuteStart);
     }
+
     public boolean isAutomaticAddedBlock() {
         return mIsAutomaticAddedBlock;
     }
@@ -190,7 +229,8 @@ public class Event {
         this.mIsAutomaticAddedBlock = isAutomaticAddedBlock;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -204,7 +244,8 @@ public class Event {
         result = prime * result
                 + ((mEndDate == null) ? 0 : mEndDate.hashCode());
         result = prime * result + mId;
-        result = prime * result + (mIsAutomaticAddedBlock ? constantValue1 : constantValue2);
+        result = prime * result
+                + (mIsAutomaticAddedBlock ? constantValue1 : constantValue2);
         result = prime * result
                 + ((mLinkedCourse == null) ? 0 : mLinkedCourse.hashCode());
         result = prime * result + ((mName == null) ? 0 : mName.hashCode());
@@ -214,7 +255,8 @@ public class Event {
         return result;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -278,5 +320,5 @@ public class Event {
             return false;
         }
         return true;
-    }    
+    }
 }

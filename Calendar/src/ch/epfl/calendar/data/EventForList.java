@@ -1,29 +1,29 @@
 package ch.epfl.calendar.data;
 
 import java.util.Calendar;
-import java.util.Locale;
+
+import ch.epfl.calendar.App;
 
 /**
  * @author MatthiasLeroyEPFL
  * 
  */
-public class EventForList {
+public class EventForList extends ListViewItem {
 
-    private String mEventName;
-    private Calendar mStart;
+    //private static final int ZERO_MINUTE = 0;
+    //private static final int TEN_MINUTE = 10;
+    
+    private String mName;
     private Calendar mEnd;
     private PeriodType mType;
     private int mId;
     private String mLinkedCourse;
     private String mDescription;
     
-    private static final int ZERO_MINUTE = 0;
-    private static final int TEN_MINUTE = 10;
-
     public EventForList(String name, Calendar start, Calendar end,
             PeriodType type, int id, String linkedCourse, String description) {
-        mEventName = name;
-        mStart = start;
+        super(start);
+        mName = name;
         mEnd = end;
         mType = type;
         mId = id;
@@ -31,65 +31,58 @@ public class EventForList {
         mDescription = description;
     }
 
-    public String getmEventName() {
-        return mEventName;
+    public String getName() {
+        return mName;
     }
 
-    public void setmEventName(String eventName) {
-        this.mEventName = eventName;
+    public void setName(String name) {
+        name = mName;
     }
 
-    public Calendar getmStart() {
-        return mStart;
-    }
-
-    public void setmStart(Calendar start) {
-        this.mStart = start;
-    }
-
-    public Calendar getmEnd() {
+    public Calendar getEnd() {
         return mEnd;
     }
 
-    public void setmEnd(Calendar end) {
+    public void setEnd(Calendar end) {
         this.mEnd = end;
     }
 
-    public PeriodType getmType() {
+    public PeriodType getType() {
         return mType;
     }
 
-    public void setmType(PeriodType type) {
+    public void setType(PeriodType type) {
         this.mType = type;
     }
 
-    public int getmId() {
+    public int getId() {
         return mId;
     }
 
-    public void setmId(int id) {
+    public void setId(int id) {
         this.mId = id;
     }
 
-    public String getmLinkedCourse() {
+    public String getLinkedCourse() {
         return mLinkedCourse;
     }
 
-    public void setmLinkedCourse(String linkedCourse) {
+    public void setLinkedCourse(String linkedCourse) {
         this.mLinkedCourse = linkedCourse;
     }
 
-    public String getmDescription() {
+    public String getDescription() {
         return mDescription;
     }
 
-    public void setmDescription(String description) {
+    public void setDescription(String description) {
         this.mDescription = description;
     }
 
-    private String calendarToString(Calendar date, boolean sameday) {
+    /*private String calendarToString(Calendar date) {
         String minute = "";
-        if (date.get(Calendar.MINUTE) >= ZERO_MINUTE && date.get(Calendar.MINUTE) < TEN_MINUTE) {
+        if (date.get(Calendar.MINUTE) >= ZERO_MINUTE
+                && date.get(Calendar.MINUTE) < TEN_MINUTE) {
             minute = "0" + date.get(Calendar.MINUTE);
         } else {
             minute = Integer.toString(date.get(Calendar.MINUTE));
@@ -97,30 +90,20 @@ public class EventForList {
 
         String hour = Integer.toString(date.get(Calendar.HOUR_OF_DAY)) + ":"
                 + minute;
-        if (sameday) {
-            return hour;
-        } else {
-            String year = Integer.toString(date.get(Calendar.YEAR));
-            String month = date.getDisplayName(Calendar.MONTH, Calendar.SHORT,
-                    Locale.ENGLISH);
-            String day = date.getDisplayName(Calendar.DAY_OF_WEEK,
-                    Calendar.SHORT, Locale.ENGLISH);
 
-            return day + " " + date.get(Calendar.DAY_OF_MONTH) + " " + month
-                    + " " + year + "\n " + hour;
-        }
-    }
+        return hour;
+
+    }*/
 
     public String toString() {
 
         if (mType == PeriodType.DEFAULT) {
-            return calendarToString(mStart, false) + "-"
-                    + calendarToString(mEnd, true) + "   " + mEventName;
+            return App.calendarTo12HoursString(super.getmStart()) + "-"
+                    + App.calendarTo12HoursString(mEnd) + "   " + mName;
         } else {
 
-            return calendarToString(mStart, false) + "-"
-                    + calendarToString(mEnd, true) + "   " + mEventName + ": "
-                    + mType;
+            return App.calendarTo12HoursString(super.getmStart()) + "-"
+                    + App.calendarTo12HoursString(mEnd) + "   " + mName + ": " + mType;
         }
     }
 }

@@ -24,7 +24,6 @@ import ch.epfl.calendar.data.Block;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.persistence.DBQuester;
 
 /**
  * @author LoomisLoud
@@ -44,7 +43,6 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
     private Intent intentToEventCreation;
     private SimpleAdapter simpleAdapter;
     private final ArrayList<Map<String, String>> blockListAdapter = new ArrayList<Map<String, String>>();
-    private DBQuester mDB;
 
     private void addEventActionBar() {
         ActionBar actionBar = getActionBar();
@@ -116,12 +114,13 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         return list;
     }
 
+    //This first one updates the credits from the addBlock
     private void updateCredits(Intent data) {
         if (data.hasExtra("courseName")) {
             final String course = data.getStringExtra("courseName");
             final int position = data.getIntExtra("position", -1);
             final ArrayList<Event> eventList = new ArrayList<Event>(
-                    mDB.getAllEventsFromCourseBlock(course));
+                    getDBQuester().getAllEventsFromCourseBlock(course));
 
             if (!eventList.isEmpty()) {
                 double timeToRemove = 0;
@@ -143,22 +142,26 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         }
     }
 
-    private void updateCreditsOnMain() {
-        // TODO for each course, get its eventslist, pick only this week's
-        // eventlist,
+    //The second one updates the credits from the Main Activity
+    private void updateCredits() {
         final ArrayList<Event> eventList = new ArrayList<Event>();
         final Calendar today = Calendar.getInstance();
         final Calendar nextWeek = Calendar.getInstance();
         nextWeek.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS);
         for (int position = 0; position < blockList.size(); position++) {
             eventList.clear();
-            eventList.addAll(mDB.getAllEventsFromCourseBlock(blockList
+            eventList.addAll(getDBQuester().getAllEventsFromCourseBlock(blockList
                     .get(position).getCourse().getName()));
             Block currentBlock = blockList.get(position);
             double timeToRemove = 0;
             if (!eventList.isEmpty()) {
                 for (Event e : eventList) {
-                    if (e.getEndDate().compareTo(today) > 0
+                	if (e.getStartDate().compareTo(today) < 0
+                			&& e.getEndDate().compareTo(today) > 0) {
+                		today.add(Calendar.DAY_OF_MONTH, 1);
+                		nextWeek.add(Calendar.DAY_OF_MONTH, 1);
+                	} 
+                	if (e.getEndDate().compareTo(today) > 0
                             && e.getStartDate().compareTo(nextWeek) < 0) {
                         timeToRemove += e.getHours();
                     }
@@ -179,7 +182,6 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         setContentView(R.layout.activity_add_blocks);
         addEventActionBar();
 
-        mDB = new DBQuester();
         intentToEventCreation = new Intent(this, AddEventBlockActivity.class);
 
         mGreeter = (TextView) findViewById(R.id.greeter);
@@ -199,10 +201,10 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
 
     @Override
     public void updateData() {
-        mCourses = mDB.getAllCourses();
+        mCourses = getDBQuester().getAllCourses();
         blockList = constructBlockList(mCourses);
         createAdapterAndListView();
-        updateCreditsOnMain();
+        updateCredits();
     }
 
     @Override

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.widget.Toast;
-import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.authentication.TequilaAuthenticationException;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
@@ -32,10 +32,12 @@ public class CalendarClient implements CalendarClientInterface {
      * The name of the class for the LOGs.
      */
 	public static final String TAG = "CalendarClient Class::";
+	private static final String ENCODING = "UTF-8";
 
     private Activity mParentActivity = null;
     private CalendarClientDownloadInterface mDownloadInterface = null;
     private TequilaAuthenticationTask mTask = null;
+    private List<Course> mCourseListForTests = null;
 
     /**
      * The constructor of {@link CalendarClient}
@@ -57,6 +59,7 @@ public class CalendarClient implements CalendarClientInterface {
                 new TequilaAuthenticationHandler(),
                 null,
                 null);
+        mParentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mTask.execute(null, null);
     }
 
@@ -64,7 +67,7 @@ public class CalendarClient implements CalendarClientInterface {
         List<Course> coursesList = new ArrayList<Course>();
         if (success) {
             try {
-                byte[] timeTableBytes = mTask.getResult().getBytes("UTF-8");
+                byte[] timeTableBytes = getTask().getResult().getBytes(ENCODING);
                 coursesList = new ISAXMLParser().parse(new ByteArrayInputStream(timeTableBytes));
             } catch (UnsupportedEncodingException e) {
                 Log.e(TAG + "UnsupportedEncodingException", e.getMessage());
@@ -77,8 +80,16 @@ public class CalendarClient implements CalendarClientInterface {
                 //We don't want that the user sees this exception
             }
         }
-
+        mCourseListForTests = new ArrayList<Course>(coursesList);
         mDownloadInterface.callbackDownload(success, coursesList);
+    }
+    
+    public TequilaAuthenticationTask getTask() {
+        return mTask;
+    }
+    
+    public List<Course> getCourseListForTests() {
+        return mCourseListForTests;
     }
     
     /**
@@ -91,9 +102,6 @@ public class CalendarClient implements CalendarClientInterface {
         public void onError(String msg) {
             boolean exceptionOccured = false;
             String errMessage = "";
-            if (msg.equals(mParentActivity.getString(R.string.error_disconnected))) {
-                TequilaAuthenticationAPI.getInstance().clearStoredData(mParentActivity);
-            }
             Toast.makeText(mParentActivity, msg, Toast.LENGTH_LONG).show();
             try {
                 callback(false);

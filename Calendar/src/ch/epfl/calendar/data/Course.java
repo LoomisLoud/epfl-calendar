@@ -1,7 +1,9 @@
 package ch.epfl.calendar.data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -275,7 +277,20 @@ public class Course implements Parcelable {
         }
         return result;
     }
-
+    
+    public String toDisplayPeriod() {
+        //Transform year's periods to week's period by removing duplicate
+        Set<String> periods = new HashSet<String>();  
+        for (Period period : mPeriods) {
+            periods.add(period.toDisplayInCourseDetail());
+        }
+        String concatPeriod = "";
+        for (String period : periods) {
+            concatPeriod += period;
+        }
+        
+        return concatPeriod;
+    }
 
     // Parcelable ----------------
     // using setter and getter to check for property in case of memory error or any problem that could happen

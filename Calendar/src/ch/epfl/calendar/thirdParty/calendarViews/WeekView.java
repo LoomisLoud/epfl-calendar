@@ -353,6 +353,7 @@ public class WeekView extends View {
 
         // Set default event color.
         mDefaultEventColor = Color.parseColor("#9fc6e7");
+
     }
 
     @Override
@@ -375,8 +376,9 @@ public class WeekView extends View {
                 + mHeaderRowPadding * 2, getWidth(), mHeaderRowPadding * 2
                 + mHeaderTextHeight + mHeaderMarginBottom + mTimeTextHeight / 2
                 - mHourSeparatorHeight / 2, mHeaderColumnBackgroundPaint);
+
     }
-    
+
     public boolean setIsFirstDrawBis(boolean firstDraw) {
         mIsFirstDrawBis = firstDraw;
         return mIsFirstDraw;
@@ -414,10 +416,10 @@ public class WeekView extends View {
                         mTimeTextPaint);
             }
         }
-        
+
         // FIX / Maybe not the best way
         if (mIsFirstDrawBis) {
-            mCurrentOrigin.y = - mHourHeight * 8;
+            mCurrentOrigin.y = -mHourHeight * 8;
             invalidate();
             mIsFirstDrawBis = false;
         }
@@ -1324,28 +1326,19 @@ public class WeekView extends View {
     //
     // ///////////////////////////////////////////////////////////////
 
-    
     public void goToEight() {
         mScroller.forceFinished(true);
         mStickyScroller.forceFinished(true);
-        mCurrentOrigin.y = - mHourHeight * 8;
+        mCurrentOrigin.y = -mHourHeight * 8;
         invalidate();
     }
-    
+
     /**
      * Show today on the week view.
      */
     public void goToToday() {
         Calendar today = Calendar.getInstance();
-        System.out.println(today.get(Calendar.DAY_OF_WEEK));
         goToDate(today);
-    }
-    
-    public void goTo(){
-        Calendar date = Calendar.getInstance();
-        date.set(2014, 9, 10);
-        
-        goToDate(date);
     }
 
     /**
@@ -1361,14 +1354,12 @@ public class WeekView extends View {
         date.set(Calendar.SECOND, 0);
 
         Calendar today = Calendar.getInstance();
-        System.out.println(today.get(Calendar.DAY_OF_WEEK));
         today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
 
         int dateDifference = (int) (date.getTimeInMillis() - today
                 .getTimeInMillis()) / (1000 * 60 * 60 * 24);
-        System.out.println(dateDifference);
         mCurrentOrigin.x = -dateDifference * (mWidthPerDay + mColumnGap);
 
         invalidate();

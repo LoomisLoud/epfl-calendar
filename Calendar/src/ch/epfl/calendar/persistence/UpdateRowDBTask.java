@@ -18,11 +18,6 @@ public class UpdateRowDBTask extends AsyncTask<UpdateObject, Void, Long> {
     private static final String SUCCESS_UPDATE = "Row Successfully update!";
 
     @Override
-    protected void onPreExecute() {
-        App.getActionBar().addTask();
-    }
-
-    @Override
     protected Long doInBackground(UpdateObject... params) {
         UpdateObject object = params[0];
 
@@ -33,10 +28,10 @@ public class UpdateRowDBTask extends AsyncTask<UpdateObject, Void, Long> {
 
         SQLiteDatabase db = DBQuester.openDatabase();
 
-        long rowId = db.update(table, values, whereClause, whereArgs);
+        long rowId = -1;
+        rowId = db.update(table, values, whereClause, whereArgs);
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_UPDATE);
-            throw new SQLiteCalendarException(ERROR_UPDATE);
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, SUCCESS_UPDATE);
