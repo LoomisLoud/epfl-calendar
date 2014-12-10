@@ -65,8 +65,8 @@ public class AddEventActivity extends DefaultActionBarActivity implements
     private TimePickerDialog.OnTimeSetListener mStartTimePickerListener;
     private DatePickerDialog.OnDateSetListener mEndDatePickerListener;
     private TimePickerDialog.OnTimeSetListener mEndTimePickerListener;
-    private String mDateFormat = "MM/dd/yy";
-    private String mTimeFormat = "hh:mm aa";
+    private static final String DATE_FORMAT = "MM/dd/yy";
+    private static final String TIME_FORMAT = "hh:mm aa";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,16 +155,16 @@ public class AddEventActivity extends DefaultActionBarActivity implements
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                     int dayOfMonth) {
-                updateCalendarAndButtons(mStartCalendar, mButtonStartDate,
-                        mDateFormat, year, monthOfYear, dayOfMonth);
+                updateCalendarDateAndButtons(mStartCalendar, mButtonStartDate,
+                        DATE_FORMAT, year, monthOfYear, dayOfMonth);
             }
         };
 
         mStartTimePickerListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                updateCalendarAndButtons(mStartCalendar, mButtonStartHour,
-                        mTimeFormat, hourOfDay, minute);
+                updateCalendarTimeAndButtons(mStartCalendar, mButtonStartHour,
+                        TIME_FORMAT, hourOfDay, minute);
             }
         };
 
@@ -172,16 +172,16 @@ public class AddEventActivity extends DefaultActionBarActivity implements
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                     int dayOfMonth) {
-                updateCalendarAndButtons(mEndCalendar, mButtonEndDate,
-                        mDateFormat, year, monthOfYear, dayOfMonth);
+                updateCalendarDateAndButtons(mEndCalendar, mButtonEndDate,
+                        DATE_FORMAT, year, monthOfYear, dayOfMonth);
             }
         };
 
         mEndTimePickerListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                updateCalendarAndButtons(mEndCalendar, mButtonEndHour,
-                        mTimeFormat, hourOfDay, minute);
+                updateCalendarTimeAndButtons(mEndCalendar, mButtonEndHour,
+                        TIME_FORMAT, hourOfDay, minute);
             }
         };
     }
@@ -198,7 +198,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
         button.setText(sdf.format(calendar.getTime()));
     }
 
-    private void updateCalendarAndButtons(Calendar calendar, Button button,
+    private void updateCalendarDateAndButtons(Calendar calendar, Button button,
             String format, int year, int month, int day) {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
@@ -206,7 +206,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
         updateDateButton(calendar, button, format);
     }
 
-    private void updateCalendarAndButtons(Calendar calendar, Button button,
+    private void updateCalendarTimeAndButtons(Calendar calendar, Button button,
             String format, int hour, int minute) {
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
@@ -228,33 +228,33 @@ public class AddEventActivity extends DefaultActionBarActivity implements
             Event event = new DBQuester().getEvent(eventId);
 
             mNameEvent.setText(event.getName());
-            mDescriptionEvent.setText(event.getmDescription());
+            mDescriptionEvent.setText(event.getDescription());
             initializeSpinner(event.getLinkedCourse());
 
             int startYear = event.getStartDate().get(Calendar.YEAR);
             int startMonth = event.getStartDate().get(Calendar.MONTH);
             int startDay = event.getStartDate().get(Calendar.DAY_OF_MONTH);
             mStartDatePickerDialog.updateDate(startYear, startMonth, startDay);
-            updateCalendarAndButtons(mStartCalendar, mButtonStartDate,
-                    mDateFormat, startYear, startMonth, startDay);
+            updateCalendarDateAndButtons(mStartCalendar, mButtonStartDate,
+                    DATE_FORMAT, startYear, startMonth, startDay);
 
             int startHour = event.getStartDate().get(Calendar.HOUR_OF_DAY);
             int startMinute = event.getStartDate().get(Calendar.MINUTE);
             mStartTimePickerDialog.updateTime(startHour, startMinute);
-            updateCalendarAndButtons(mStartCalendar, mButtonStartHour,
-                    mTimeFormat, startHour, startMinute);
+            updateCalendarTimeAndButtons(mStartCalendar, mButtonStartHour,
+                    TIME_FORMAT, startHour, startMinute);
 
             int endYear = event.getEndDate().get(Calendar.YEAR);
             int endMonth = event.getEndDate().get(Calendar.MONTH);
             int endDay = event.getEndDate().get(Calendar.DAY_OF_MONTH);
             mEndDatePickerDialog.updateDate(endYear, endMonth, endDay);
-            updateCalendarAndButtons(mEndCalendar, mButtonEndDate, mDateFormat,
+            updateCalendarDateAndButtons(mEndCalendar, mButtonEndDate, DATE_FORMAT,
                     endYear, endMonth, endDay);
 
             int endHour = event.getEndDate().get(Calendar.HOUR_OF_DAY);
             int endMinute = event.getEndDate().get(Calendar.MINUTE);
             mEndTimePickerDialog.updateTime(endHour, endMinute);
-            updateCalendarAndButtons(mEndCalendar, mButtonEndHour, mTimeFormat,
+            updateCalendarTimeAndButtons(mEndCalendar, mButtonEndHour, TIME_FORMAT,
                     endHour, endMinute);
 
         } else {
@@ -263,10 +263,10 @@ public class AddEventActivity extends DefaultActionBarActivity implements
             mEndTimePickerDialog.updateTime(
                     mEndCalendar.get(Calendar.HOUR_OF_DAY),
                     mEndCalendar.get(Calendar.MINUTE));
-            updateDateButton(mStartCalendar, mButtonStartDate, mDateFormat);
-            updateTimeButton(mStartCalendar, mButtonStartHour, mTimeFormat);
-            updateDateButton(mEndCalendar, mButtonEndDate, mDateFormat);
-            updateTimeButton(mEndCalendar, mButtonEndHour, mTimeFormat);
+            updateDateButton(mStartCalendar, mButtonStartDate, DATE_FORMAT);
+            updateTimeButton(mStartCalendar, mButtonStartHour, TIME_FORMAT);
+            updateDateButton(mEndCalendar, mButtonEndDate, DATE_FORMAT);
+            updateTimeButton(mEndCalendar, mButtonEndHour, TIME_FORMAT);
         }
     }
 

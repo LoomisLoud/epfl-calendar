@@ -103,8 +103,8 @@ public class CustomAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.textView.setText(mData.get(position).toString());
-        if (mData.get(position).getmId() != SEPARATOR_ID) {
-            switch (mData.get(position).getmType()) {
+        if (mData.get(position).getId() != SEPARATOR_ID) {
+            switch (mData.get(position).getType()) {
                 case DEFAULT:
                     holder.textView.setBackgroundColor(colorOrange);
                     break;
@@ -112,8 +112,7 @@ public class CustomAdapter extends BaseAdapter {
                     holder.textView.setBackgroundColor(colorGreen);
                     break;
                 case LECTURE:
-                    holder.textView
-                            .setBackgroundColor(colorBlue);
+                    holder.textView.setBackgroundColor(colorBlue);
                     break;
                 case PROJECT:
                     holder.textView.setBackgroundColor(colorRed);

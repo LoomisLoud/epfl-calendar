@@ -4,6 +4,7 @@
 package ch.epfl.calendar.persistence;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.database.Cursor;
@@ -271,21 +272,6 @@ public class DBQuester implements LocalDatabaseInterface {
         return events;
     }
 
-    public Event getEventWithRowId(long id) {
-        openDatabase();
-        Cursor cursor = mDB.rawQuery(SELECT_ALL_FROM
-                + EventTable.TABLE_NAME_EVENT + WHERE
-                + EventTable.COLUMN_NAME_ID + EQUAL + id, null);
-
-        Event event = null;
-        cursor.moveToFirst();
-        createEvent(cursor);
-
-        closeCursor(cursor);
-
-        return event;
-    }
-
     @Override
     public Course getCourse(String courseName) {
         openDatabase();
@@ -462,6 +448,26 @@ public class DBQuester implements LocalDatabaseInterface {
 
         CourseDataSource cds = CourseDataSource.getInstance();
         cds.delete(course, null);
+    }
+
+    @Override
+    public void deleteBlock(Event event) {
+        List<Event> events = getAllEventsFromCourseBlock(event
+                .getLinkedCourse());
+        for (Event e : events) {
+            if ((e.getStartDate().get(Calendar.HOUR_OF_DAY) == event
+                    .getStartDate().get(Calendar.HOUR_OF_DAY))
+                    && (e.getEndDate().get(Calendar.HOUR_OF_DAY) == event
+                            .getEndDate().get(Calendar.HOUR_OF_DAY))
+                    && (e.getStartDate().get(Calendar.MINUTE) == event
+                            .getStartDate().get(Calendar.MINUTE))
+                    && (e.getEndDate().get(Calendar.MINUTE) == event
+                            .getEndDate().get(Calendar.MINUTE))
+                    && (e.getStartDate().get(Calendar.DAY_OF_WEEK) == event
+                            .getEndDate().get(Calendar.DAY_OF_WEEK))) {
+                deleteEvent(e);
+            }
+        }
     }
 
     @Override

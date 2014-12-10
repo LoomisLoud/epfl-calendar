@@ -28,10 +28,10 @@ public class UpdateRowDBTask extends AsyncTask<UpdateObject, Void, Long> {
 
         SQLiteDatabase db = DBQuester.openDatabase();
 
-        long rowId = db.update(table, values, whereClause, whereArgs);
+        long rowId = -1;
+        rowId = db.update(table, values, whereClause, whereArgs);
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_UPDATE);
-            throw new SQLiteCalendarException(ERROR_UPDATE);
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, SUCCESS_UPDATE);

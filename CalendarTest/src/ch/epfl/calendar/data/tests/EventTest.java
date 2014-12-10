@@ -30,7 +30,7 @@ public class EventTest extends TestCase {
         assertEquals("Sweng project", event.getName());
         assertEquals("Project", event.getType());
         assertEquals("Sweng", event.getLinkedCourse());
-        assertEquals("description", event.getmDescription());
+        assertEquals("description", event.getDescription());
         assertEquals(true, event.isAutomaticAddedBlock());
     }
     
@@ -43,7 +43,7 @@ public class EventTest extends TestCase {
         assertEquals("Sweng project", event.getName());
         assertEquals("Project", event.getType());
         assertEquals("Sweng", event.getLinkedCourse());
-        assertEquals("description", event.getmDescription());
+        assertEquals("description", event.getDescription());
         assertEquals(true, event.isAutomaticAddedBlock());
         assertEquals(1, event.getId());
     }
@@ -103,7 +103,7 @@ public class EventTest extends TestCase {
     	Event event = new Event("28.11.2014", "28.11.2014", "Sweng", "10:30", "11:00", 
                 "Homework", "Sweng", "WrongDescription", true);
     	event.setLinkedCourse("Algorithms");
-    	event.setmDescription("description");
+    	event.setDescription("description");
     	event.setName("Algorithms");
     	assertEquals(mEvent.hashCode(), event.hashCode());
     }
@@ -116,7 +116,7 @@ public class EventTest extends TestCase {
     	Event event = new Event("28.11.2014", "28.11.2014", "Sweng", "10:30", "11:00", 
                 "Homework", "Sweng", "WrongDescription", true);
     	event.setLinkedCourse("Algorithms");
-    	event.setmDescription("description");
+    	event.setDescription("description");
     	event.setName("Algorithms");
     	assertEquals(mEvent, event);
     }

@@ -2,14 +2,16 @@ package ch.epfl.calendar.data;
 
 import java.util.Calendar;
 
+import ch.epfl.calendar.App;
+
 /**
  * @author MatthiasLeroyEPFL
  * 
  */
 public class EventForList extends ListViewItem {
 
-    private static final int ZERO_MINUTE = 0;
-    private static final int TEN_MINUTE = 10;
+    //private static final int ZERO_MINUTE = 0;
+    //private static final int TEN_MINUTE = 10;
     
     private String mName;
     private Calendar mEnd;
@@ -29,55 +31,55 @@ public class EventForList extends ListViewItem {
         mDescription = description;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String name) {
+    public void setName(String name) {
         name = mName;
     }
 
-    public Calendar getmEnd() {
+    public Calendar getEnd() {
         return mEnd;
     }
 
-    public void setmEnd(Calendar end) {
+    public void setEnd(Calendar end) {
         this.mEnd = end;
     }
 
-    public PeriodType getmType() {
+    public PeriodType getType() {
         return mType;
     }
 
-    public void setmType(PeriodType type) {
+    public void setType(PeriodType type) {
         this.mType = type;
     }
 
-    public int getmId() {
+    public int getId() {
         return mId;
     }
 
-    public void setmId(int id) {
+    public void setId(int id) {
         this.mId = id;
     }
 
-    public String getmLinkedCourse() {
+    public String getLinkedCourse() {
         return mLinkedCourse;
     }
 
-    public void setmLinkedCourse(String linkedCourse) {
+    public void setLinkedCourse(String linkedCourse) {
         this.mLinkedCourse = linkedCourse;
     }
 
-    public String getmDescription() {
+    public String getDescription() {
         return mDescription;
     }
 
-    public void setmDescription(String description) {
+    public void setDescription(String description) {
         this.mDescription = description;
     }
 
-    private String calendarToString(Calendar date) {
+    /*private String calendarToString(Calendar date) {
         String minute = "";
         if (date.get(Calendar.MINUTE) >= ZERO_MINUTE
                 && date.get(Calendar.MINUTE) < TEN_MINUTE) {
@@ -91,17 +93,17 @@ public class EventForList extends ListViewItem {
 
         return hour;
 
-    }
+    }*/
 
     public String toString() {
 
         if (mType == PeriodType.DEFAULT) {
-            return calendarToString(super.getmStart()) + "-"
-                    + calendarToString(mEnd) + "   " + mName;
+            return App.calendarTo12HoursString(super.getmStart()) + "-"
+                    + App.calendarTo12HoursString(mEnd) + "   " + mName;
         } else {
 
-            return calendarToString(super.getmStart()) + "-"
-                    + calendarToString(mEnd) + "   " + mName + ": " + mType;
+            return App.calendarTo12HoursString(super.getmStart()) + "-"
+                    + App.calendarTo12HoursString(mEnd) + "   " + mName + ": " + mType;
         }
     }
 }

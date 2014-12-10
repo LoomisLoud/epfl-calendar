@@ -1,6 +1,7 @@
 package ch.epfl.calendar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -8,8 +9,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.pm.ActivityInfo;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -38,6 +39,8 @@ public class MainActivity extends DefaultActionBarActivity implements
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
+    private static final int HOUR_23 = 23;
+    private static final int MINUTE_59 = 59;
 
     private static final int SIZE_COLUMN_GAP_DAY = 8;
     private static final int SIZE_FRONT_DAY = 12;
@@ -73,8 +76,6 @@ public class MainActivity extends DefaultActionBarActivity implements
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
 
-        
-
         // Show a toast message about the touched event.
         mWeekView.setOnEventClickListener(this);
 
@@ -93,7 +94,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             App.setCurrentUsername(TequilaAuthenticationAPI.getInstance()
                     .getUsername(this));
             App.setDBHelper(App.DATABASE_NAME + "_" + App.getCurrentUsername());
-           // this.deleteDatabase(App.getDBHelper().getDatabaseName());
+            // this.deleteDatabase(App.getDBHelper().getDatabaseName());
             updateListsFromDB();
         } else {
             mListCourses = new ArrayList<Course>();
@@ -149,7 +150,6 @@ public class MainActivity extends DefaultActionBarActivity implements
                     changeCalendarView(TYPE_WEEK_VIEW,
                             NUMBER_VISIBLE_DAYS_WEEK, SIZE_COLUMN_GAP_WEEK,
                             SIZE_FRONT_WEEK, SIZE_FRONT_EVENT_WEEK);
-
                     return true;
                 } else {
                     return false;
@@ -159,7 +159,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         actionBar.setListNavigationCallbacks(arrayAdapter,
                 mOnNavigationListener);
-        
+
     }
 
     private void changeCalendarView(int typeView, int numberVisibleDays,
@@ -233,34 +233,71 @@ public class MainActivity extends DefaultActionBarActivity implements
             for (Event event : c.getEvents()) {
                 mMListEvents.add(new WeekViewEvent(event.getId(), event
                         .getTitle(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getmDescription()));
+                        PeriodType.DEFAULT, event.getDescription()));
             }
 
         }
         for (Event event : mListEventWithoutCourse) {
-            mMListEvents.add(new WeekViewEvent(event.getId(), event.getTitle(),
-                    event.getStartDate(), event.getEndDate(),
-                    PeriodType.DEFAULT, event.getmDescription()));
+
+
+            int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
+                    - event.getStartDate().get(Calendar.DAY_OF_MONTH);
+            int monthDuaration = event.getEndDate().get(Calendar.MONTH)
+                    - event.getStartDate().get(Calendar.MONTH);
+            int yearDuration = event.getEndDate().get(Calendar.YEAR)
+                    - event.getStartDate().get(Calendar.YEAR);
+
+            if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
+                List<Calendar> startList = new ArrayList<Calendar>();
+                Calendar start = (Calendar) event.getStartDate().clone();
+                startList.add(start);
+                for (int i = 0; i <= dayDuration; i++) {
+                    Calendar end = event.getEndDate();
+                    if (i != dayDuration) {
+                        end = (Calendar) start.clone();
+                        end.set(Calendar.HOUR_OF_DAY, HOUR_23);
+                        end.set(Calendar.MINUTE, MINUTE_59);
+                    }
+                    mMListEvents.add(new WeekViewEvent(event.getId(), event
+                            .getTitle(), startList.get(i), end,
+                            PeriodType.DEFAULT, event.getDescription()));
+
+                    Calendar newStart = (Calendar) startList.get(i).clone();
+                    newStart.add(Calendar.DAY_OF_MONTH, 1);
+                    newStart.set(Calendar.HOUR_OF_DAY, 0);
+                    newStart.set(Calendar.MINUTE, 0);
+                    startList.add(newStart);
+                }
+            } else {
+                mMListEvents.add(new WeekViewEvent(event.getId(), event
+                        .getName(), event.getStartDate(), event.getEndDate(),
+                        PeriodType.DEFAULT, event.getDescription()));
+            }
         }
 
         return mMListEvents;
     }
 
     private String getEventTitle(Course c, Period p) {
-        String startHour = App.calendarHourToBasicFormatString(p.getStartDate());
-        String endHour = App.calendarHourToBasicFormatString(p.getEndDate());
-        
+
+        String startHour = App
+                .calendarTo12HoursString(p.getStartDate());
+        String endHour = App.calendarTo12HoursString(p.getEndDate());
+
+
         String hour = startHour + " - " + endHour;
         String result = c.getName() + "\n";
-        int i = p.getRooms().size();
-        for (String r : p.getRooms()) {
-            if (i > 1) {
-                result += r + ",";
-            } else {
-                result += r;
-            }
-            i--;
-        }
+       // int i = p.getRooms().size();
+        
+          /*  for (String r : p.getRooms()) {
+                if (i > 1) {
+                    result += r + ",";
+                } else {
+                    result += r;
+                }
+                i--;
+            }*/
+        
         return hour + "\n" + result + "\n" + p.getType();
     }
 
@@ -302,35 +339,36 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     dialog.cancel();
                                     break;
                                 case 1:
-                                    getDBQuester().deleteEvent(eventFromDB);
+                                	if (eventFromDB.isAutomaticAddedBlock()) {
+                                		getDBQuester().deleteBlock(eventFromDB);
+                                	} else {
+                                		getDBQuester().deleteEvent(eventFromDB);
+                                	}
                                     updateData();
                                     dialog.cancel();
                                     break;
                                 case 2:
-                                    if (event.getmType().equals(
-                                            PeriodType.LECTURE)
+                                    if (event.getmType().equals(PeriodType.LECTURE)
                                             || event.getmType().equals(
                                                     PeriodType.PROJECT)
                                             || event.getmType().equals(
                                                     PeriodType.EXERCISES)) {
-                                        String cours = event.getName().split(
-                                                "\n")[0];
+                                        String cours = event.getName().split("\n")[0];
                                         switchToCourseDetails(cours);
                                     } else {
-
-                                        if (eventFromDB.getLinkedCourse()
-                                                .equals(App.NO_COURSE)) {
+    
+                                        if (eventFromDB.getLinkedCourse().equals(
+                                                App.NO_COURSE)) {
                                             String description = event
                                                     .getmDescription();
-                                            switchToEventDetail(
-                                                    event.getName(),
+                                            switchToEventDetail(event.getName(),
                                                     description);
                                         } else {
                                             String coursName = eventFromDB
                                                     .getLinkedCourse();
                                             switchToCourseDetails(coursName);
                                         }
-
+    
                                     }
                                     dialog.cancel();
                                     break;

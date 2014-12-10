@@ -193,14 +193,41 @@ public class Period implements Parcelable {
                 periodType = "D";
                 break;
         }
-
+        
         String day = mStartDate.getDisplayName(Calendar.DAY_OF_WEEK,
                 Calendar.SHORT, Locale.ENGLISH);
+        String startTime = App.calendarTo12HoursString(mStartDate);
+        String endTime = App.calendarTo12HoursString(mEndDate);
         
-        String startHour = App.calendarHourToBasicFormatString(mStartDate);  
-        String endHour = App.calendarHourToBasicFormatString(mEndDate);
+        return periodType + " : " + day + " " + startTime + " - " + endTime;
+    }
+    
+    public String to12HourString() {
+        String periodType;
+        switch (mType) {
+            case LECTURE:
+                periodType = "L";
+                break;
+            case PROJECT:
+                periodType = "P";
+                break;
+            case EXERCISES:
+                periodType = "E";
+                break;
+            case DEFAULT:
+                periodType = "D";
+                break;
+            default:
+                periodType = "D";
+                break;
+        }
         
-        return periodType + " : " + day + " " + startHour + "-" + endHour;
+        String day = mStartDate.getDisplayName(Calendar.DAY_OF_WEEK,
+                Calendar.SHORT, Locale.ENGLISH);
+        String startTime = App.calendarTo12HoursString(mStartDate);
+        String endTime = App.calendarTo12HoursString(mEndDate);
+        
+        return periodType + " : " + day + " " + startTime + "-" + endTime;
     }
     
     public String toDisplayInCourseDetail() {
@@ -223,8 +250,8 @@ public class Period implements Parcelable {
         String day = mStartDate.getDisplayName(Calendar.DAY_OF_WEEK,
                 Calendar.SHORT, Locale.ENGLISH);
         
-        String startHour = App.calendarHourToBasicFormatString(mStartDate);  
-        String endHour = App.calendarHourToBasicFormatString(mEndDate);
+        String startHour = App.calendarTo12HoursString(mStartDate);  
+        String endHour = App.calendarTo12HoursString(mEndDate);
         
         return periodType + " : " + day + " " + startHour + "-" + endHour + "\n";
     }

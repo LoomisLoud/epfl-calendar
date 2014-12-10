@@ -48,7 +48,7 @@ public class EventDataSource implements DAO {
                 App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
-        values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getmDescription());
+        values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getDescription());
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
 
@@ -80,7 +80,7 @@ public class EventDataSource implements DAO {
                 App.calendarToBasicFormatString(event.getEndDate()));
         values.put(EventTable.COLUMN_NAME_TYPE, event.getType());
         values.put(EventTable.COLUMN_NAME_COURSE, event.getLinkedCourse());
-        values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getmDescription());
+        values.put(EventTable.COLUMN_NAME_DESCRIPTION, event.getDescription());
         values.put(EventTable.COLUMN_NAME_IS_BLOCK,
                 App.boolToString(event.isAutomaticAddedBlock()));
 
@@ -108,7 +108,6 @@ public class EventDataSource implements DAO {
                 EventTable.COLUMN_NAME_ID + " = '" + event.getId() + "'", null);
         if (rowId == -1) {
             Log.e(Logger.CALENDAR_SQL_ERROR, EventDataSource.ERROR_DELETE);
-            throw new SQLiteCalendarException(EventDataSource.ERROR_DELETE);
         }
 
         Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_DELETE);

@@ -353,7 +353,7 @@ public class WeekView extends View {
 
         // Set default event color.
         mDefaultEventColor = Color.parseColor("#9fc6e7");
-        
+
     }
 
     @Override
@@ -376,9 +376,9 @@ public class WeekView extends View {
                 + mHeaderRowPadding * 2, getWidth(), mHeaderRowPadding * 2
                 + mHeaderTextHeight + mHeaderMarginBottom + mTimeTextHeight / 2
                 - mHourSeparatorHeight / 2, mHeaderColumnBackgroundPaint);
-        
+
     }
-    
+
     public boolean setIsFirstDrawBis(boolean firstDraw) {
         mIsFirstDrawBis = firstDraw;
         return mIsFirstDraw;
@@ -416,10 +416,10 @@ public class WeekView extends View {
                         mTimeTextPaint);
             }
         }
-        
+
         // FIX / Maybe not the best way
         if (mIsFirstDrawBis) {
-            mCurrentOrigin.y = - mHourHeight * 8;
+            mCurrentOrigin.y = -mHourHeight * 8;
             invalidate();
             mIsFirstDrawBis = false;
         }
@@ -1326,14 +1326,13 @@ public class WeekView extends View {
     //
     // ///////////////////////////////////////////////////////////////
 
-    
     public void goToEight() {
         mScroller.forceFinished(true);
         mStickyScroller.forceFinished(true);
-        mCurrentOrigin.y = - mHourHeight * 8;
+        mCurrentOrigin.y = -mHourHeight * 8;
         invalidate();
     }
-    
+
     /**
      * Show today on the week view.
      */

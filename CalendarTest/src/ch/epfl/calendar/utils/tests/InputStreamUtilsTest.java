@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import ch.epfl.calendar.utils.InputStreamUtils;
 import junit.framework.TestCase;
+import ch.epfl.calendar.utils.InputStreamUtils;
 
 /**
  * @author gilbrechbuhler
