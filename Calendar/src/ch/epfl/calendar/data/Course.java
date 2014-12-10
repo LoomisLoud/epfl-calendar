@@ -38,8 +38,8 @@ public class Course implements Parcelable {
     }
 
     //Constructor for courses get from local DB
-    public Course(String name, List<Period> periods, String teacher, int credits,
-    		String code, String description, List<Event> events) {
+    public Course(String name, List<Period> periods, String teacher, int credits, 
+    		  String code, String description, List<Event> events) {
     	this.mName = name;
     	this.mPeriods = periods;
     	this.mTeacher = teacher;
