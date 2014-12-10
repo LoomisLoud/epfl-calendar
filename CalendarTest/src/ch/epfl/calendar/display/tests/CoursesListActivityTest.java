@@ -111,18 +111,6 @@ public class CoursesListActivityTest extends
                 .atPosition(0).perform(click())
                 // Check that activity has changed
                 .check(doesNotExist());
-
-        // final ListView listView = (ListView) activity
-        // .findViewById(R.id.coursesListView);
-        // runTestOnUiThread(new Runnable() {
-        //
-        // @Override
-        // public void run() {
-        // listView.performItemClick(listView, 0, listView.getAdapter()
-        // .getItemId(0));
-        //
-        // }
-        // });
     }
 
     public final void testGetCreditImage() throws NoSuchMethodException,
