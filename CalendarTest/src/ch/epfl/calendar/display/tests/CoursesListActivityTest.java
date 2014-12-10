@@ -15,12 +15,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.ListView;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
@@ -43,7 +41,7 @@ public class CoursesListActivityTest extends
         ActivityInstrumentationTestCase2<CoursesListActivity> {
 
     private static final int N_LIST_VIEW_ELEMENTS = 2;
-    
+
     private List<Course> mCourses = new ArrayList<Course>();
     private CoursesListActivity mActivity;
     private MockActivity mMockActivity;
@@ -125,37 +123,17 @@ public class CoursesListActivityTest extends
         // });
     }
 
-    public void testCreditImage() throws Throwable {
-        getActivity();
-        final ListView listView = (ListView) mActivity
-                .findViewById(R.id.coursesListView);
-        runTestOnUiThread(new Runnable() {
-            
-            @SuppressWarnings("unchecked")
-            @Override
-            public void run() {
-                // List are not in the same size so index are switched
-                assertEquals(((Map<String, String>) listView.getAdapter()
-                        .getItem(0))
-                        .get("credit_image"), Integer.toString(getCreditImage(mCourses.get(1))));
-                
-                assertEquals(((Map<String, String>) listView.getAdapter()
-                        .getItem(1))
-                        .get("credit_image"), Integer.toString(getCreditImage(mCourses.get(0))));
-                
-            }
-        });
-       
-    }
-    
     public final void testGetCreditImage() throws NoSuchMethodException,
-            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
         Method getCreditImage;
-        getCreditImage = (CoursesListActivity.class).getDeclaredMethod("getCreditImage",
-                new Class[] {Course.class});
+        getCreditImage = (CoursesListActivity.class).getDeclaredMethod(
+                "getCreditImage", new Class[] {
+                    Course.class
+                });
         getCreditImage.setAccessible(true);
         CoursesListActivity instance = new CoursesListActivity();
-        
+
         List<Integer> drawables = new ArrayList<Integer>();
         drawables.add(R.drawable.zero);
         drawables.add(R.drawable.un);
@@ -171,10 +149,11 @@ public class CoursesListActivityTest extends
         drawables.add(R.drawable.onze);
         drawables.add(R.drawable.douze);
         drawables.add(R.drawable.zero);
-        for (int i = 0; i < 14 ; i++) {
-            Course course = new Course("TestCourse1", null,
-                    "Pr. Testpr1", i, "CS-321", "awesome course", null);
-            assertEquals(drawables.get(i), getCreditImage.invoke(instance, course));
+        for (int i = 0; i < 14; i++) {
+            Course course = new Course("TestCourse1", null, "Pr. Testpr1", i,
+                    "CS-321", "awesome course", null);
+            assertEquals(drawables.get(i),
+                    getCreditImage.invoke(instance, course));
         }
     }
 
@@ -185,7 +164,7 @@ public class CoursesListActivityTest extends
         assertTrue("id for name not found: " + name, result != 0);
         return result;
     }
-    
+
     private int getCreditImage(Course cours) {
         switch (cours.getCredits()) {
             case 1:
@@ -251,26 +230,28 @@ public class CoursesListActivityTest extends
         periodsCourse2.add(period2Course2);
         Course course2 = new Course("TestCourse2", periodsCourse2,
                 "Pr. Testpr2", 5, "CS-000", "cool course", null);
-        
+
         mCourses.add(course1);
         mCourses.add(course2);
 
         mDB.storeCourse(course1);
         mDB.storeCourse(course2);
     }
-    
+
     public Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-            activity[0] = Iterables.getOnlyElement(activites);
-        }});
+            @Override
+            public void run() {
+                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry
+                        .getInstance().getActivitiesInStage(Stage.RESUMED);
+                activity[0] = Iterables.getOnlyElement(activites);
+            }
+        });
         return activity[0];
-      }
-    
+    }
+
     public void getActivityOnTest() {
         mActivity = getActivity();
 
