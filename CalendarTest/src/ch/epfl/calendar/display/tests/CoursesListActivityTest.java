@@ -167,39 +167,6 @@ public class CoursesListActivityTest extends
         return result;
     }
 
-    private int getCreditImage(Course cours) {
-        switch (cours.getCredits()) {
-            case 1:
-                return R.drawable.un;
-            case 2:
-                return R.drawable.deux;
-            case 3:
-                return R.drawable.trois;
-            case 4:
-                return R.drawable.quatre;
-            case 5:
-                return R.drawable.cinq;
-            case 6:
-                return R.drawable.six;
-            case 7:
-                return R.drawable.sept;
-            case 8:
-                return R.drawable.huit;
-            case 9:
-                return R.drawable.neuf;
-            case 10:
-                return R.drawable.dix;
-            case 11:
-                return R.drawable.onze;
-            case 12:
-                return R.drawable.douze;
-
-            default:
-                return R.drawable.zero;
-
-        }
-    }
-
     private void populateTestDB() throws Exception {
         List<String> period1Course1Rooms = new ArrayList<String>();
         List<String> period2Course1Rooms = new ArrayList<String>();
