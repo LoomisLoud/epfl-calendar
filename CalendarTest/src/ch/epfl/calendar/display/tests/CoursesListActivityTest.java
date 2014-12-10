@@ -42,6 +42,8 @@ public class CoursesListActivityTest extends
 
     private static final int N_LIST_VIEW_ELEMENTS = 2;
 
+    private static final int SLEEP_TIME = 250;
+
     private List<Course> mCourses = new ArrayList<Course>();
     private CoursesListActivity mActivity;
     private MockActivity mMockActivity;
@@ -236,6 +238,8 @@ public class CoursesListActivityTest extends
 
         mDB.storeCourse(course1);
         mDB.storeCourse(course2);
+
+        waitOnInsertionInDB();
     }
 
     public Activity getCurrentActivity() throws Throwable {
@@ -259,5 +263,16 @@ public class CoursesListActivityTest extends
         // AsyncTask to be able to use callback functions
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
+    }
+
+    private void waitOnInsertionInDB() {
+        while (mMockActivity.getNbOfAsyncTaskDB() > 0) {
+            try {
+                Thread.sleep(SLEEP_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
     }
 }
