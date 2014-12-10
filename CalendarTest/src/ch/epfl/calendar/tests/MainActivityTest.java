@@ -6,6 +6,11 @@ package ch.epfl.calendar.tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
+import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.common.collect.Iterables;
+
+import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.MainActivity;
@@ -14,6 +19,7 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.testing.utils.MockActivity;
+import ch.epfl.calendar.testing.utils.Utils;
 
 /**
  * @author AblionGE
@@ -60,6 +66,12 @@ public class MainActivityTest extends
      * @see junit.framework.TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
+        try {
+            Utils.pressBack(getCurrentActivity());
+        } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         super.tearDown();
     }
 
@@ -167,5 +179,17 @@ public class MainActivityTest extends
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
     }
+    
+    Activity getCurrentActivity() throws Throwable {
+        getInstrumentation().waitForIdleSync();
+        final Activity[] activity = new Activity[1];
+        runTestOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
+            activity[0] = Iterables.getOnlyElement(activites);
+        }});
+        return activity[0];
+      }
 
 }

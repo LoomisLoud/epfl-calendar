@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
+import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.common.collect.Iterables;
+
+import android.app.Activity;
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
@@ -22,6 +27,7 @@ import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.LocalDatabaseInterface;
+import ch.epfl.calendar.testing.utils.Utils;
 
 /**
  * @author gilbrechbuhler
@@ -32,7 +38,7 @@ public class CoursesListActivityTest extends
 
     private static final int N_LIST_VIEW_ELEMENTS = 2;
 
-    private CoursesListActivity activity;
+    private CoursesListActivity mActivity;
     private LocalDatabaseInterface mDB;
     public static final String TEST = "test";
 
@@ -51,12 +57,12 @@ public class CoursesListActivityTest extends
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
 
-        activity = getActivity();
+        mActivity = getActivity();
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
-        App.setActionBar(activity);
-        activity.setUdpateData(activity);
+        App.setActionBar(mActivity);
+        mActivity.setUdpateData(mActivity);
 
         mDB = new DBQuester();
 
@@ -67,6 +73,12 @@ public class CoursesListActivityTest extends
     }
 
     public void tearDown() throws Exception {
+        try {
+            Utils.pressBack(getCurrentActivity());
+        } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         super.tearDown();
     }
 
@@ -150,4 +162,16 @@ public class CoursesListActivityTest extends
         mDB.storeCourse(course1);
         mDB.storeCourse(course2);
     }
+    
+    Activity getCurrentActivity() throws Throwable {
+        getInstrumentation().waitForIdleSync();
+        final Activity[] activity = new Activity[1];
+        runTestOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
+            activity[0] = Iterables.getOnlyElement(activites);
+        }});
+        return activity[0];
+      }
 }

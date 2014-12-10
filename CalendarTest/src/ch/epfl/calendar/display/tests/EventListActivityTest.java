@@ -8,6 +8,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
+import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.common.collect.Iterables;
+
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
@@ -21,6 +25,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
+import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
@@ -34,6 +39,7 @@ import ch.epfl.calendar.display.CustomAdapter;
 import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.testing.utils.MockActivity;
+import ch.epfl.calendar.testing.utils.Utils;
 
 /**
  * @author AblionGE
@@ -93,6 +99,12 @@ public class EventListActivityTest extends
      * @see junit.framework.TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
+        try {
+            Utils.pressBack(getCurrentActivity());
+        } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         super.tearDown();
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
@@ -131,6 +143,7 @@ public class EventListActivityTest extends
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
                 .perform(longClick());
         onView(withText("Description")).perform(click()).check(doesNotExist());
+        
     }
 
     public final void testClickOnEvent() {
@@ -398,5 +411,17 @@ public class EventListActivityTest extends
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
     }
+    
+    Activity getCurrentActivity() throws Throwable {
+        getInstrumentation().waitForIdleSync();
+        final Activity[] activity = new Activity[1];
+        runTestOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
+            activity[0] = Iterables.getOnlyElement(activites);
+        }});
+        return activity[0];
+      }
 
 }
