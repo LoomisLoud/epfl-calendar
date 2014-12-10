@@ -112,7 +112,6 @@ public class EventListActivityTest extends
                     .inAdapterView(withId(R.id.list_event_view)).atPosition(i)
                     .check(matches(isEnabled()));
         }
-        mActivity.finish();
     }
 
     public final void testClickOnCourse() {
@@ -122,7 +121,6 @@ public class EventListActivityTest extends
                 // Every entry in the ListView is a HashMap
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
                 .perform(click()).check(doesNotExist());
-        mActivity.finish();
     }
 
     public final void testLongClickOnCourse() {
@@ -133,7 +131,6 @@ public class EventListActivityTest extends
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
                 .perform(longClick());
         onView(withText("Description")).perform(click()).check(doesNotExist());
-        mActivity.finish();
     }
 
     public final void testClickOnEvent() {
@@ -143,7 +140,6 @@ public class EventListActivityTest extends
                 // Every entry in the ListView is a HashMap
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
                 .perform(click()).check(doesNotExist());
-        mActivity.finish();
     }
 
     public final void testLongClickOnEventEdit() {
@@ -154,7 +150,6 @@ public class EventListActivityTest extends
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
                 .perform(longClick());
         onView(withText("Edit")).perform(click()).check(doesNotExist());
-        mActivity.finish();
     }
 
     public final void testLongClickOnEventDelete() {
@@ -169,7 +164,6 @@ public class EventListActivityTest extends
                 // Every entry in the ListView is a HashMap
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
                 .check(matches(isDisplayed()));
-        mActivity.finish();
     }
 
     public final void testSort() throws NoSuchMethodException,
@@ -202,7 +196,6 @@ public class EventListActivityTest extends
                 }
             }
         }
-        mActivity.finish();
     }
 
     public final void testStringToPeriodType() throws NoSuchMethodException,
@@ -317,7 +310,6 @@ public class EventListActivityTest extends
         // 1 Header Item per day : 3
         // 1 Item per eventForList
         assertEquals(10, adapter.getCount());
-        mActivity.finish();
     }
 
     private void createCourses() throws Exception {
