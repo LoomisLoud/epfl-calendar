@@ -56,7 +56,7 @@ public class AddEventBlockActivityTest extends
     private Button mButtonEndHour;
     private Button mButtonStartHour;
     private Button mSaveButton;
-	
+
     private static final int SLEEP_TIME = 250;
 
     public AddEventBlockActivityTest() {
@@ -112,7 +112,6 @@ public class AddEventBlockActivityTest extends
                 App.getDBHelper().getDatabaseName());
     }
 
-    
     private void createCourses() throws Exception {
         List<String> period1Course1Rooms = new ArrayList<String>();
         List<String> period2Course1Rooms = new ArrayList<String>();
@@ -191,10 +190,12 @@ public class AddEventBlockActivityTest extends
         mSpinner = (Spinner) mActivity.findViewById(R.id.spinner_week_days);
         mFrom = (TextView) mActivity.findViewById(R.id.start_event_text_date);
         mTo = (TextView) mActivity.findViewById(R.id.end_event_text_date);
-        mButtonEndHour = (Button) mActivity.findViewById(R.id.end_event_dialog_hour);
-        mButtonStartHour = (Button) mActivity.findViewById(R.id.start_event_dialog_hour);
+        mButtonEndHour = (Button) mActivity
+                .findViewById(R.id.end_event_dialog_hour);
+        mButtonStartHour = (Button) mActivity
+                .findViewById(R.id.start_event_dialog_hour);
         mSaveButton = (Button) mActivity.findViewById(R.id.valid_block_event);
-        
+
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
         App.setActionBar(mActivity);
@@ -202,89 +203,88 @@ public class AddEventBlockActivityTest extends
     }
 
     public Activity getCurrentActivity() throws Throwable {
-	    getInstrumentation().waitForIdleSync();
-	    final Activity[] activity = new Activity[1];
-	    runTestOnUiThread(new Runnable() {
-	        @Override
-	        public void run() {
-	            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry
-	                    .getInstance().getActivitiesInStage(Stage.RESUMED);
-	            activity[0] = Iterables.getOnlyElement(activites);
-	        }
-	    });
-	    return activity[0];
-	}
+        getInstrumentation().waitForIdleSync();
+        final Activity[] activity = new Activity[1];
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry
+                        .getInstance().getActivitiesInStage(Stage.RESUMED);
+                activity[0] = Iterables.getOnlyElement(activites);
+            }
+        });
+        return activity[0];
+    }
 
-	/**
-	 * Test method for
-	 * {@link ch.epfl.calendar.display.AddEventBlockActivity#finishActivity(android.view.View)}
-	 * .
-	 */
-	public final void testFinishActivityView() {
-	    setActivity();
-	}
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.display.AddEventBlockActivity#finishActivity(android.view.View)}
+     * .
+     */
+    public final void testFinishActivityView() {
+        setActivity();
+    }
 
-	/**
-	 * Test method for
-	 * {@link ch.epfl.calendar.display.AddEventBlockActivity#updateData()}.
-	 */
-	public final void testUpdateData() {
-	}
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.display.AddEventBlockActivity#updateData()}.
+     */
+    public final void testUpdateData() {
+    }
 
-	public void testSpinner() {
-		setActivity();
-		
-		ArrayAdapter<CharSequence> adapter =  (ArrayAdapter<CharSequence>) mSpinner.getAdapter();
-        
-		assertEquals(7, mSpinner.getCount());
-		assertEquals("Monday", adapter.getItem(0).toString());
-		assertEquals("Tuesday", adapter.getItem(1).toString());
-		assertEquals("Wednesday", adapter.getItem(2).toString());
-		assertEquals("Thursday", adapter.getItem(3).toString());
-		assertEquals("Friday", adapter.getItem(4).toString());
-		assertEquals("Saturday", adapter.getItem(5).toString());
-		assertEquals("Sunday", adapter.getItem(6).toString());
-	}	
-	
-	public void testTextView() {
-		setActivity();
-		
-		assertEquals("From", mFrom.getText().toString());
-		assertEquals("To", mTo.getText().toString());
-	}
-	
-	public void testButtons() {
-		setActivity();
-		Calendar start = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		end.add(Calendar.HOUR_OF_DAY, 1);
+    public void testSpinner() {
+        setActivity();
+
+        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) mSpinner
+                .getAdapter();
+
+        assertEquals(7, mSpinner.getCount());
+        assertEquals("Monday", adapter.getItem(0).toString());
+        assertEquals("Tuesday", adapter.getItem(1).toString());
+        assertEquals("Wednesday", adapter.getItem(2).toString());
+        assertEquals("Thursday", adapter.getItem(3).toString());
+        assertEquals("Friday", adapter.getItem(4).toString());
+        assertEquals("Saturday", adapter.getItem(5).toString());
+        assertEquals("Sunday", adapter.getItem(6).toString());
+    }
+
+    public void testTextView() {
+        setActivity();
+
+        assertEquals("From", mFrom.getText().toString());
+        assertEquals("To", mTo.getText().toString());
+    }
+
+    public void testButtons() {
+        setActivity();
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        end.add(Calendar.HOUR_OF_DAY, 1);
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.US);
-        
-		assertEquals(sdf.format(start.getTime()), mButtonStartHour.getText().toString());
-		assertEquals(sdf.format(end.getTime()), mButtonEndHour.getText().toString());
-		assertEquals("Save the event", mSaveButton.getText().toString());
-		
-		onView(withId(mButtonStartHour.getId())).check(matches(isDisplayed()));
+
+        assertEquals(sdf.format(start.getTime()), mButtonStartHour.getText()
+                .toString());
+        assertEquals(sdf.format(end.getTime()), mButtonEndHour.getText()
+                .toString());
+        assertEquals("Save the event", mSaveButton.getText().toString());
+
+        onView(withId(mButtonStartHour.getId())).check(matches(isDisplayed()));
         onView(withId(mButtonStartHour.getId())).check(matches(isEnabled()));
         onView(withId(mButtonStartHour.getId())).perform(click());
-        onView(withText("Cancel")).perform(click());
-        onView(withId(mButtonStartHour.getId())).perform(click());
-        onView(withText("OK")).perform(click());
-		
+        onView(withText("Done")).perform(click());
+
         onView(withId(mButtonEndHour.getId())).check(matches(isDisplayed()));
         onView(withId(mButtonEndHour.getId())).check(matches(isEnabled()));
         onView(withId(mButtonEndHour.getId())).perform(click());
-        onView(withText("Cancel")).perform(click());
-        onView(withId(mButtonEndHour.getId())).perform(click());
-        onView(withText("OK")).perform(click());
-        
+        onView(withText("Done")).perform(click());
+
         onView(withId(mSaveButton.getId())).check(matches(isDisplayed()));
         onView(withId(mSaveButton.getId())).check(matches(isEnabled()));
         try {
             onView(withId(mSaveButton.getId())).perform(click());
         } catch (Exception e) {
-        	e.printStackTrace();
-        }        
+            e.printStackTrace();
+        }
         assertNotNull(mDB.getAllEventsFromCourseBlock("TestCourse1"));
-	}
+    }
 }
