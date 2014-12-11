@@ -80,12 +80,12 @@ public class DefaultActionBarActivityTest extends
                 "27.11.2034 18:00", "exercises", App.NO_COURSE, "Event",
                 false, DBQuester.NO_ID);
 
-        DBQuester DB = new DBQuester();
-        DB.storeEvent(event);
+        DBQuester db = new DBQuester();
+        db.storeEvent(event);
         waitOnInsertionInDB();
 
         Class<? extends CourseDetailsActivity> oldActivity = getActivity().getClass();
-        mActivity.switchToEditActivity(DB.getAllEvents().get(0));
+        mActivity.switchToEditActivity(db.getAllEvents().get(0));
         assertNotSame(oldActivity, getCurrentActivity().getClass());
     }
 
@@ -116,7 +116,6 @@ public class DefaultActionBarActivityTest extends
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         super.tearDown();
@@ -137,12 +136,14 @@ public class DefaultActionBarActivityTest extends
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-            activity[0] = Iterables.getOnlyElement(activites);
-        }});
+        	@Override
+        	public void run() {
+        		java.util.Collection<Activity> activites =
+        				ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
+        		activity[0] = Iterables.getOnlyElement(activites);
+        	}
+        });
         return activity[0];
-      }
+    }
 
 }
