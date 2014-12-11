@@ -3,7 +3,6 @@ package ch.epfl.calendar.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 import ch.epfl.calendar.data.Course;

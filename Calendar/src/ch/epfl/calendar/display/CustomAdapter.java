@@ -3,7 +3,6 @@ package ch.epfl.calendar.display;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

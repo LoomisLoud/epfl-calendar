@@ -3,7 +3,6 @@
  */
 package ch.epfl.calendar.persistence;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;

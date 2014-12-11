@@ -1,7 +1,6 @@
 package ch.epfl.calendar.persistence;
 
 import android.content.ContentValues;
-import android.os.AsyncTask;
 
 /**
  * This class serves as a gateway to pass objects to {@link AsyncTask} working on the local database

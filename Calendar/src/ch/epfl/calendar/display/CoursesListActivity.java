@@ -20,7 +20,6 @@ import android.widget.SimpleAdapter;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
-import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 

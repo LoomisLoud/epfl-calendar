@@ -28,7 +28,6 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
-import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.persistence.DBQuester;

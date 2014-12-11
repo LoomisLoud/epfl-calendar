@@ -3,7 +3,6 @@
  */
 package ch.epfl.calendar.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 

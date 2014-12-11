@@ -1,6 +1,5 @@
 package ch.epfl.calendar.persistence;
 
-import ch.epfl.calendar.data.Event;
 import android.database.sqlite.SQLiteDatabase;
 
 /**

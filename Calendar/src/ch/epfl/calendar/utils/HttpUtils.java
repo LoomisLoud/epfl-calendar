@@ -1,7 +1,6 @@
 package ch.epfl.calendar.utils;
 
 import java.io.IOException;
-import java.net.ResponseCache;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -14,7 +13,6 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
