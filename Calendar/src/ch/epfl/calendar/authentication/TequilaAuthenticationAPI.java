@@ -78,7 +78,7 @@ public class TequilaAuthenticationAPI {
     
     /**
      * Removes the stored data from the {@link SharedPreferences}.
-     * @param context the context of the {@link Activity} calling this function
+     * @param context the context of the application
      */
     public void clearStoredData(Context context) {
         clearSessionID(context);
@@ -88,7 +88,7 @@ public class TequilaAuthenticationAPI {
     
     /**
      * Stores the session ID in the {@link SharedPreferences}
-     * @param context the context of the {@link Activity} calling this function
+     * @param context the context of the application
      * @param sessionID the session ID to store
      */
     public void setSessionID(Context context, String sessionID) {
@@ -102,7 +102,7 @@ public class TequilaAuthenticationAPI {
     /**
      * This function should be called whenever the user logs out
      *
-     * @param context the context of the {@link Activity} calling this function
+     * @param context the context of the application
      */
     public void clearSessionID(Context context) {
         SharedPreferences prefs = context.
@@ -115,7 +115,7 @@ public class TequilaAuthenticationAPI {
     /**
      * This function returns the sessionID if there is one stored
      * inside the SharedPreferences otherwise it returns an empty string
-     * @param context the context of the {@link Activity} calling this function
+     * @param context the context of the application
      * @return the session ID of the current user if it exists
      */
     public String getSessionID(Context context) {
@@ -127,7 +127,7 @@ public class TequilaAuthenticationAPI {
     /**
      * This function stores the username of the current user in the {@link SharedPreferences}
      *
-     * @param context the context of the {@link Activity} calling this function
+     * @param context the context of the application
      * @param username the username to store
      */
     public void setUsername(Context context, String username) {
@@ -141,7 +141,7 @@ public class TequilaAuthenticationAPI {
     /**
      * This function should be called whenever the user logs out.
      *
-     * @param context the context of the {@link Activity} calling this function
+     * @param context the context of the application
      */
     public void clearUsername(Context context) {
         SharedPreferences prefs = context.
@@ -154,7 +154,7 @@ public class TequilaAuthenticationAPI {
     /**
      * This function returns the sessionID if there is one stored
      * inside the SharedPreferences otherwise it returns an empty string
-     * @param context the context of the {@link Activity} calling this function
+     * @param context the context of the application
      * @return the sessionID if there is one stored inside the SharedPreferences otherwise it returns an empty string
      */
     public String getUsername(Context context) {
@@ -166,7 +166,7 @@ public class TequilaAuthenticationAPI {
     /**
      * This function stores the tequila key in the {@link SharedPreferences}
      *
-     * @param context the context of the {@link Activity} calling this function
+     * @param context the context of the application
      * @param tequilaKey the tequila key to store
      */
     public void setTequilaKey(Context context, String tequilaKey) {
@@ -180,7 +180,7 @@ public class TequilaAuthenticationAPI {
     /**
      * This function should be called whenever the user logs out.
      *
-     * @param context
+     * @param context the context of the application
      */
     public void clearTequilaKey(Context context) {
         SharedPreferences prefs = context.
@@ -193,7 +193,7 @@ public class TequilaAuthenticationAPI {
     /**
      * This function returns the tequila key if there is one stored
      * inside the SharedPreferences otherwise it returns an empty string
-     * @param context context the context of the {@link Activity} calling this function
+     * @param context context the context of the application
      * @return the tequila key if there is one stored inside the SharedPreferences otherwise it returns an empty string
      */
     public String getTequilaKey(Context context) {

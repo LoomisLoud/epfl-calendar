@@ -80,6 +80,32 @@ public class AuthenticationActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
     }
     
+    /**
+     * @param msg the error message to show 
+     * @return Executes the onError method of the authentication handler of this class.
+     */
+    public void tequilaAuthenticationHandlerOnError(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new TequilaAuthenticationHandler().onError(msg);
+            }
+        });
+    }
+    
+    /**
+    * @param msg the session ID to store message to show 
+    * @return Executes the onSuccess method of the authentication handler of this class.
+    */
+    public void tequilaAuthenticationHandlerOnSuccess(final String sessionID) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new TequilaAuthenticationHandler().onSuccess(sessionID);
+            }
+        });
+    }
+    
     private void authenticationActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("Log In !");
