@@ -43,6 +43,7 @@ public class CourseDetailsActivityInstrumentationTest extends
     private LocalDatabaseInterface mDB;
     private List<Course> mCourses;
     private List<Event> mEvents;
+    private ArrayList<Event> mEvents2;
     private static final int SLEEP_TIME = 250;
     public static final String TEST = "test";
 
@@ -144,11 +145,17 @@ public class CourseDetailsActivityInstrumentationTest extends
     }
 
     public void testCourseWithNoEventRelated() {
-        // setActivity with extra of courseName to be retrieved
         setIntentActivityWithExtra(mCourses.get(1).getName());
         // check if eventRelated is displayed (shouldn't since no event are
         // inside)
         onView(withId(R.id.linkedEvents)).check(matches(not(isDisplayed())));
+    }
+    
+    public void testCourseWithMultipleEvent() {
+        setIntentActivityWithExtra(mCourses.get(3).getName());
+        for (Event event : mEvents2) {
+            onView(withText(containsString(event.getName()))).check(matches(isDisplayed()));
+        }
     }
 
     /**
@@ -203,20 +210,33 @@ public class CourseDetailsActivityInstrumentationTest extends
 
         Course course3 = new Course("TestCourse3", periodsCourse2,
                 "Pr. Testpr3", 5, "CS-000", "", null);
+        
+        Course course4 = new Course("TestCourse4", periodsCourse2,
+                "Pr. Testpr4", 5, "CS-000", "cool course", null);
         // Add events
         Event event1 = new Event("event1", "27.11.2034 08:00",
                 "27.11.2034 18:00", "exercises", course1.getName(),
                 "Description of event", false, 1082838);
-
+        Event event2 = new Event("event2", "27.11.2034 08:00",
+                "27.11.2034 18:00", "exercises", course4.getName(),
+                "Description of event", false, 1082838);
+        Event event3 = new Event("event3", "27.11.2034 08:00",
+                "27.11.2034 18:00", "exercises", course4.getName(),
+                "Description of event", false, 1082838);
         mEvents = new ArrayList<Event>();
         mEvents.add(event1);
         course1.setEvents(new ArrayList<Event>(mEvents));
+        mEvents2 = new ArrayList<Event>();
+        mEvents2.add(event2);
+        mEvents2.add(event3);
+        course4.setEvents(mEvents2);
 
         mCourses = new ArrayList<Course>();
 
         mCourses.add(course1);
         mCourses.add(course2);
         mCourses.add(course3);
+        mCourses.add(course4);
     }
 
     private void waitOnInsertionInDB() {
