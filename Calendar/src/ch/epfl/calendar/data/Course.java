@@ -13,9 +13,9 @@ import android.os.Parcelable;
 
 /**
  * A course of EPFL with its informations : - Name - Date - Period classes
- * 
+ *
  * @author AblionGE
- * 
+ *
  */
 public class Course implements Parcelable {
     private String mName;
@@ -28,7 +28,7 @@ public class Course implements Parcelable {
 
     /**
      * Constructor used for courses get from ISA
-     * 
+     *
      * @param name
      *            the name of the course
      * @param date
@@ -57,7 +57,7 @@ public class Course implements Parcelable {
 
     /**
      * Constructor used for courses get from the local DB
-     * 
+     *
      * @param name
      *            the name of the course
      * @param periods
@@ -67,7 +67,7 @@ public class Course implements Parcelable {
      * @param credits
      *            the number of credits of the course
      * @param code
-     *            the code of the course (CS-XXX, GC-XXX, ...)
+     *            the code of the course (CS-xxx, GC-xxx, ...)
      * @param description
      *            the description of the course
      * @param events
@@ -91,7 +91,7 @@ public class Course implements Parcelable {
     /**
      * Constructs a course with the given name, no period and events (empty
      * lists), no teacher (null) and no credits (0).
-     * 
+     *
      * @param name
      *            the name of the course
      */
@@ -106,7 +106,7 @@ public class Course implements Parcelable {
     /**
      * Builds a full course. Used in
      * {@link ch.epfl.calendar.data.Course#parseFromJSON(JSONObject)}
-     * 
+     *
      * @param code
      *            the code of the course
      * @param name
@@ -129,7 +129,7 @@ public class Course implements Parcelable {
 
     /**
      * Add a period to the current list of periods
-     * 
+     *
      * @param period
      *            the period to add to the list of {@link Period}
      */
@@ -146,7 +146,7 @@ public class Course implements Parcelable {
 
     /**
      * Sets the name of the course
-     * 
+     *
      * @param mName
      *            the new name of the course
      */
@@ -163,7 +163,7 @@ public class Course implements Parcelable {
 
     /**
      * Sets the {@link List} of {@link Period} of this {@link Course}
-     * 
+     *
      * @param mPeriods
      *            the new {@link List} of {@link Period}
      */
@@ -180,7 +180,7 @@ public class Course implements Parcelable {
 
     /**
      * Sets the number of credits of a course
-     * 
+     *
      * @param mCredits
      *            the new number of credits
      */
@@ -197,7 +197,7 @@ public class Course implements Parcelable {
 
     /**
      * Sets the teacher name of the course
-     * 
+     *
      * @param mTeacher
      *            the new teacher name
      */
@@ -214,7 +214,7 @@ public class Course implements Parcelable {
 
     /**
      * Sets the code of the course
-     * 
+     *
      * @param mCode
      *            the new code of the course.
      */
@@ -231,7 +231,7 @@ public class Course implements Parcelable {
 
     /**
      * Sets the description of the course
-     * 
+     *
      * @param mDescription
      *            the new description of the course
      */
@@ -248,7 +248,7 @@ public class Course implements Parcelable {
 
     /**
      * Sets a new {@link List} of {@link Event} related to this course
-     * 
+     *
      * @param mEvents
      *            the new {@link List} of {@link Event} related to this course
      */
@@ -276,7 +276,7 @@ public class Course implements Parcelable {
     /**
      * Returns a {@link Course} parsed from a {@link JSONObject} representing
      * it?
-     * 
+     *
      * @param jsonObject
      *            the JSONObject to parse
      * @return A Course filled with the informations from the JSON
@@ -332,7 +332,7 @@ public class Course implements Parcelable {
     }
 
     /**
-     * 
+     *
      * @return the periods of the course nicely compacted and formated for
      *         {@link CourseDetailsActivity}
      */
@@ -368,7 +368,6 @@ public class Course implements Parcelable {
 
     @Override
     public int describeContents() {
-        // TODO Auto-generated method stub
         return 0;
     }
 

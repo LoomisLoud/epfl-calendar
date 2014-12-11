@@ -192,7 +192,6 @@ public class ISAXMLParser {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    //TODO : Manage different languages (en-fr)
     private String readType() throws XmlPullParserException, IOException {
         if (mParser == null) {
             throw new NullPointerException("Parser is null");
