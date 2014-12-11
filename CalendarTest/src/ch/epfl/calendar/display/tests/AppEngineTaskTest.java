@@ -52,11 +52,8 @@ public class AppEngineTaskTest extends MockTestCase {
         doInBackground = (AppEngineTask.class).getDeclaredMethod(
                 "doInBackground", String[].class);
         doInBackground.setAccessible(true);
-        returnedCourse = (Course) doInBackground.invoke(instance, new Object[] {
-            new String[] {
-                COURSE_NAME
-            }
-        });
+        returnedCourse = (Course) doInBackground.invoke(instance,
+                new Object[] { new String[] { COURSE_NAME } });
 
         assertEquals(COURSE_NAME, returnedCourse.getName());
         assertEquals(COURSE_CODE, returnedCourse.getCode());
@@ -68,7 +65,6 @@ public class AppEngineTaskTest extends MockTestCase {
     public void testRetrieveCourse() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
-        Course returnedCourse = null;
 
         Method retrieveCourse;
         retrieveCourse = (AppEngineTask.class).getDeclaredMethod(
@@ -76,13 +72,10 @@ public class AppEngineTaskTest extends MockTestCase {
                     String.class
                 });
         retrieveCourse.setAccessible(true);
-        returnedCourse = (Course) retrieveCourse.invoke(instance, COURSE_NAME);
-
+        Course returnedCourse = (Course) retrieveCourse.invoke(instance,
+                    COURSE_NAME);
+        
         assertEquals(COURSE_NAME, returnedCourse.getName());
-        assertEquals(COURSE_CODE, returnedCourse.getCode());
-        assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
-        assertEquals(COURSE_DESCRIPTION, returnedCourse.getDescription());
-        assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
     }
 
     public void testRetrieveCourseWithException() throws NoSuchMethodException,
@@ -102,7 +95,7 @@ public class AppEngineTaskTest extends MockTestCase {
         Mockito.doThrow(new CalendarClientException()).when(appEngineInterface)
                 .getCourseByName(COURSE_NAME);
         returnedCourse = (Course) retrieveCourse.invoke(instance, COURSE_NAME);
-        assertNull(returnedCourse);
+        assertEquals(COURSE_NAME, returnedCourse.getName());
     }
 
     public void testOnPostExecuteWhenError() throws NoSuchMethodException,
