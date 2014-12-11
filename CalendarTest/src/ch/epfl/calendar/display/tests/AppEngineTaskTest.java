@@ -45,15 +45,25 @@ public class AppEngineTaskTest extends MockTestCase {
 
     public void testDoInBackGround() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
+            InvocationTargetException, CalendarClientException {
         Course returnedCourse = null;
+
+        Course course = new Course(COURSE_CODE, COURSE_NAME, COURSE_DESCRIPTION, COURSE_TEACHER, COURSE_CREDITS);
+        
+        Mockito.doReturn(appEngineInterface).when(instance)
+                .getAppEngineClient();
+        Mockito.doReturn(course).when(appEngineInterface)
+                .getCourseByName(COURSE_NAME);
 
         Method doInBackground;
         doInBackground = (AppEngineTask.class).getDeclaredMethod(
                 "doInBackground", String[].class);
         doInBackground.setAccessible(true);
-        returnedCourse = (Course) doInBackground.invoke(instance,
-                new Object[] { new String[] { COURSE_NAME } });
+        returnedCourse = (Course) doInBackground.invoke(instance, new Object[] {
+            new String[] {
+                COURSE_NAME
+            }
+        });
 
         assertEquals(COURSE_NAME, returnedCourse.getName());
         assertEquals(COURSE_CODE, returnedCourse.getCode());
@@ -73,8 +83,8 @@ public class AppEngineTaskTest extends MockTestCase {
                 });
         retrieveCourse.setAccessible(true);
         Course returnedCourse = (Course) retrieveCourse.invoke(instance,
-                    COURSE_NAME);
-        
+                COURSE_NAME);
+
         assertEquals(COURSE_NAME, returnedCourse.getName());
     }
 
@@ -148,9 +158,7 @@ public class AppEngineTaskTest extends MockTestCase {
                 });
         onPostExecute.setAccessible(true);
 
-        Mockito.doNothing()
-                .when(listener)
-                .onSuccess();
+        Mockito.doNothing().when(listener).onSuccess();
 
         onPostExecute.invoke(instance, returnedCourse);
     }
