@@ -15,9 +15,9 @@ import ch.epfl.calendar.data.Course;
  */
 public class AppEngineTask extends AsyncTask<String, Void, Course> {
     private Course mCourse;
-    private ProgressDialog mDialog;
     private Context mContext;
     private AppEngineListener mListener = null;
+    private AppEngineDatabaseInterface mAppEngineClient;
     private boolean mExceptionOccured = false;
     
     /**
@@ -63,14 +63,13 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     }
 
     private Course retrieveCourse(String courseName) {
-        AppEngineDatabaseInterface appEngineClient;
-        Course result = null;
+        Course result = new Course(courseName);
 
         try {
-            appEngineClient = new AppEngineClient(
+            mAppEngineClient = new AppEngineClient(
                     "http://versatile-hull-742.appspot.com");
 
-            result = appEngineClient.getCourseByName(courseName);
+            result = getAppEngineClient().getCourseByName(courseName);
 
         } catch (CalendarClientException e) {
             mExceptionOccured = true;
@@ -82,10 +81,6 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
 
     @Override
     protected void onPostExecute(Course result) {
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
-
         if (mExceptionOccured) {
             mListener.onError(mContext, "Can't retrieve : " + result.getName());
         } else {
@@ -94,4 +89,7 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
         }
     }
 
+    public AppEngineDatabaseInterface getAppEngineClient() {
+        return mAppEngineClient;
+    }
 }
