@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.tests;
 
@@ -17,7 +17,7 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.persistence.DBQuester;
-import ch.epfl.calendar.testing.utils.Utils;
+import ch.epfl.calendar.test.utils.Utils;
 
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
 import com.google.android.apps.common.testing.testrunner.Stage;
@@ -25,25 +25,26 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author fouchepi
- * 
+ *
  */
 public class DefaultActionBarActivityTest extends
         ActivityInstrumentationTestCase2<CourseDetailsActivity> {
-    
+
     private CourseDetailsActivity mActivity;
     private static final int SLEEP_TIME = 250;
-    
+
     public DefaultActionBarActivityTest() {
         super(CourseDetailsActivity.class);
     }
-    
-    public void setUp() throws Exception {
+
+    @Override
+	public void setUp() throws Exception {
         super.setUp();
-        
+
         App.setDBHelper("calendar_test.db");
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
-        
+
         mActivity = getActivity();
     }
 
@@ -51,21 +52,21 @@ public class DefaultActionBarActivityTest extends
         openContextualActionModeOverflowMenu();
         onView(withText("Courses")).perform(click()).check(doesNotExist());
     }
-    
+
     public void testSwitchToCreditsActivity() {
         openContextualActionModeOverflowMenu();
         onView(withText("Settings")).perform(click()).check(doesNotExist());
     }
-        
+
     public void testSwitchToAddEventsActivity() {
         onView(withId(R.id.add_event)).perform(click()).check(doesNotExist());
     }
-    
+
     public void testSwitchToAddBlockActivity() {
         openContextualActionModeOverflowMenu();
         onView(withText("Add blocks of credits")).perform(click()).check(doesNotExist());
     }
-    
+
     public void testSwitchToListEvent() throws Throwable {
         openContextualActionModeOverflowMenu();
         Class<? extends CourseDetailsActivity> oldActivity = getActivity().getClass();
@@ -73,26 +74,26 @@ public class DefaultActionBarActivityTest extends
         assertNotSame(oldActivity, getCurrentActivity().getClass());
     }
 
-    
+
     public void testSwitchToEditActivity() throws Throwable {
         Event event = new Event("event", "27.11.2034 08:00",
                 "27.11.2034 18:00", "exercises", App.NO_COURSE, "Event",
                 false, DBQuester.NO_ID);
-        
+
         DBQuester DB = new DBQuester();
         DB.storeEvent(event);
         waitOnInsertionInDB();
-        
+
         Class<? extends CourseDetailsActivity> oldActivity = getActivity().getClass();
         mActivity.switchToEditActivity(DB.getAllEvents().get(0));
         assertNotSame(oldActivity, getCurrentActivity().getClass());
     }
-    
+
     public void testLogout() {
         openContextualActionModeOverflowMenu();
         onView(withText("Logout")).perform(click()).check(doesNotExist());
     }
-    
+
     public void testSwitchToCalendar() {
         App.setCurrentUsername("testUsername");
         // store the sessionID in the preferences
@@ -102,15 +103,16 @@ public class DefaultActionBarActivityTest extends
                 getInstrumentation().getTargetContext(), "testUsername");
 
         mActivity = getActivity();
-        
+
         App.setDBHelper("calendar_test.db");
-        
+
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
         onView(withId(R.id.action_calendar)).perform(click()).check(doesNotExist());
     }
-    
-    protected void tearDown() throws Exception {
+
+    @Override
+	protected void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
@@ -119,7 +121,7 @@ public class DefaultActionBarActivityTest extends
         }
         super.tearDown();
     }
-    
+
     private void waitOnInsertionInDB() {
         while (mActivity.getNbOfAsyncTaskDB() > 0) {
             try {
@@ -130,7 +132,7 @@ public class DefaultActionBarActivityTest extends
             }
         }
     }
-    
+
     private Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
