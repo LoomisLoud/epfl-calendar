@@ -298,7 +298,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                 i--;
             }*/
         
-        return hour + "\n" + result + "\n" + p.getType();
+        return hour + "\n" + result  + p.getType();
     }
 
     @Override
