@@ -24,18 +24,25 @@ public class ISAXMLParser {
     private static final String NMP = null;
     private XmlPullParser mParser = null;
 
+    /**
+     * Constructs a new parser.
+     */
     public ISAXMLParser() {
         mParser = Xml.newPullParser();
     }
 
+    /**
+     * Constructs a new parser and allows to give a custom {@link XmlPullParser}
+     * @param parser the {@link XmlPullParser} to use
+     */
     public ISAXMLParser(XmlPullParser parser) {
         mParser = parser;
     }
 
     /**
      * Parse an InputStream
-     * @param in
-     * @return
+     * @param in the {@link InputStream} to parse
+     * @return a {@link List} of {@link Course} parsed from the given {@link InputStream}.
      * @throws XmlPullParserException
      * @throws IOException
      */

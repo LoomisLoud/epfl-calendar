@@ -17,6 +17,9 @@ public final class GlobalPreferences {
     private GlobalPreferences() {
     }
 
+    /**
+     * @return the instance of this class
+     */
     public static GlobalPreferences getInstance() {
         if (mInstance == null) {
             mInstance = new GlobalPreferences();
@@ -24,26 +27,50 @@ public final class GlobalPreferences {
         return mInstance;
     }
 
+    /**
+     * 
+     * @return the {@link Cookie} containing the session ID for the current session.
+     */
     public Cookie getSessionIDCookie() {
     	return mCookieWithSessionID;
     }
 
+    /**
+     * Set the {@link Cookie} containing the session ID.
+     * @param cookieWithSessionID the {@link Cookie} to set.
+     */
     public void setSessionIDCookie(Cookie cookieWithSessionID) {
     	mCookieWithSessionID = cookieWithSessionID;
     }
 
+    /**
+     * 
+     * @return the {@link Cookie} containing the username of the current user.
+     */
     public Cookie getTequilaUsernameCookie() {
     	return mCookieWithTequilaUsername;
     }
 
+    /**
+     * Sets the {@link Cookie} containing the username of the current user.
+     * @param cookieWithTequilaUsername the cookie to set
+     */
     public void setTequilaUsernameCookie(Cookie cookieWithTequilaUsername) {
     	mCookieWithTequilaUsername = cookieWithTequilaUsername;
     }
 
+    /**
+     * 
+     * @return the {@link Cookie} containing the tequila key of the current user.
+     */
     public Cookie getTequilaKeyCookie() {
     	return mCookieWithTequilaKey;
     }
 
+    /**
+     * Sets the {@link Cookie} containing the tequila key of the current user.
+     * @param cookieWithTequilaUsername the cookie to set
+     */
     public void setTequilaKeyCookie(Cookie cookieWithTequilaKey) {
     	mCookieWithTequilaKey = cookieWithTequilaKey;
     }
