@@ -30,7 +30,6 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.EventForList;
 import ch.epfl.calendar.data.ListViewItem;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.CustomAdapter;
 import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
@@ -210,55 +209,6 @@ public class EventListActivityTest extends
                 }
             }
         }
-    }
-
-    public final void testStringToPeriodType() throws NoSuchMethodException,
-            IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
-        mActivity.finish();
-        Method stringToPeriodType;
-        stringToPeriodType = (EventListActivity.class).getDeclaredMethod(
-                "stringToPeriodType", new Class[] {
-                    String.class
-                });
-        stringToPeriodType.setAccessible(true);
-
-        String exercices = "exercices";
-        String exercises = "exercises";
-        String cours = "cours";
-        String lecture = "lecture";
-        String projet = "projet";
-        String project = "project";
-        String other = "other";
-
-        assertEquals(PeriodType.EXERCISES,
-                stringToPeriodType.invoke(mActivity, new Object[] {
-                    exercices
-                }));
-        assertEquals(PeriodType.EXERCISES,
-                stringToPeriodType.invoke(mActivity, new Object[] {
-                    exercises
-                }));
-        assertEquals(PeriodType.LECTURE,
-                stringToPeriodType.invoke(mActivity, new Object[] {
-                    lecture
-                }));
-        assertEquals(PeriodType.LECTURE,
-                stringToPeriodType.invoke(mActivity, new Object[] {
-                    cours
-                }));
-        assertEquals(PeriodType.PROJECT,
-                stringToPeriodType.invoke(mActivity, new Object[] {
-                    projet
-                }));
-        assertEquals(PeriodType.PROJECT,
-                stringToPeriodType.invoke(mActivity, new Object[] {
-                    project
-                }));
-        assertEquals(PeriodType.DEFAULT,
-                stringToPeriodType.invoke(mActivity, new Object[] {
-                    other
-                }));
     }
 
     @SuppressWarnings("unchecked")

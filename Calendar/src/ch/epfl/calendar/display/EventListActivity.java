@@ -256,21 +256,6 @@ public class EventListActivity extends DefaultActionBarActivity implements
         });
     }
 
-    private PeriodType stringToPeriodType(String type) {
-        if (type.equalsIgnoreCase("exercices")
-                || type.equalsIgnoreCase("exercises")) {
-            return PeriodType.EXERCISES;
-        } else if (type.equalsIgnoreCase("cours")
-                || type.equalsIgnoreCase("lecture")) {
-            return PeriodType.LECTURE;
-        } else if (type.equalsIgnoreCase("projet")
-                || type.equalsIgnoreCase("project")) {
-            return PeriodType.PROJECT;
-        } else {
-            return PeriodType.DEFAULT;
-        }
-    }
-
     private List<ListViewItem> removePastEvents(List<EventForList> list) {
         List<ListViewItem> result = new ArrayList<ListViewItem>();
         Calendar today = Calendar.getInstance();
