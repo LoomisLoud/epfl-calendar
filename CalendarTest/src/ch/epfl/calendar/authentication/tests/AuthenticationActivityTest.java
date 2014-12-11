@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
+import ch.epfl.calendar.testing.utils.Utils;
 
 /**
  * This class tests the AuthenticationActivity
@@ -37,6 +38,12 @@ public class AuthenticationActivityTest
     public void setUp() throws Exception {
         super.setUp();
         mAuthActivity = getActivity();
+    }
+    
+    @Override
+    public void tearDown() throws Exception {
+        Utils.pressBack(mAuthActivity);
+        super.tearDown();
     }
 
     public void testButtonIsDisplayedAndEnabled() {

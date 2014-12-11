@@ -1,7 +1,6 @@
 package ch.epfl.calendar.utils.isaparser.tests;
 
 import junit.framework.TestCase;
-
 import ch.epfl.calendar.utils.isaparser.ISAServices;
 import ch.epfl.calendar.utils.isaparser.ISAServices.Sections;
 import ch.epfl.calendar.utils.isaparser.ISAServices.Term;

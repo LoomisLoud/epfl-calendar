@@ -8,11 +8,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicStatusLine;
+import org.mockito.Mockito;
 
 import ch.epfl.calendar.authentication.TequilaResponseHandler;
 import ch.epfl.calendar.testing.utils.MockTestCase;
-
-import org.mockito.Mockito;
 
 /**
  * Class for testing the TequilaResponseHandler

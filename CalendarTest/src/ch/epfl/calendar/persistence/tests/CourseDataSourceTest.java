@@ -10,10 +10,10 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.display.CoursesListActivity;
 import ch.epfl.calendar.persistence.CourseDataSource;
 import ch.epfl.calendar.persistence.CourseTable;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.testing.utils.MockActivity;
 
 /**
  * CourseDataSource test class.
@@ -22,12 +22,12 @@ import ch.epfl.calendar.persistence.DBQuester;
  *
  */
 public class CourseDataSourceTest extends
-		ActivityInstrumentationTestCase2<CoursesListActivity> {
+		ActivityInstrumentationTestCase2<MockActivity> {
 
 	private SQLiteDatabase mDb;
 	private List<Course> mCoursesList = null;
 	private CourseDataSource mCds;
-	private CoursesListActivity mActivity;
+	private MockActivity mActivity;
 
     private static final int SLEEP_TIME = 250;
     private static final int NB_OBJECTS_IN_DB = 8;
@@ -35,18 +35,16 @@ public class CourseDataSourceTest extends
 
 
 	public CourseDataSourceTest() {
-		super(CoursesListActivity.class);
+		super(MockActivity.class);
 	}
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        mActivity = getActivity();
+        mActivity = new MockActivity();
 
         App.setDBHelper("calendar_test.db");
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
 
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);

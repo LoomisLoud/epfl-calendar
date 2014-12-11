@@ -9,12 +9,11 @@ import java.util.List;
 import android.database.sqlite.SQLiteException;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.MainActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.testing.utils.MockActivity;
 
 /**
  * Test of the DBQuester This test class extends
@@ -25,16 +24,16 @@ import ch.epfl.calendar.persistence.DBQuester;
  * 
  */
 public class DBQuesterTest extends
-        ActivityInstrumentationTestCase2<MainActivity> {
+        ActivityInstrumentationTestCase2<MockActivity> {
 
     private List<Course> mListCourses = null;
     private DBQuester mDBQuester;
-    private MainActivity mActivity;
+    private MockActivity mActivity;
 
     private static final int SLEEP_TIME = 250;
 
     public DBQuesterTest() {
-        super(MainActivity.class);
+        super(MockActivity.class);
     }
 
     /*
@@ -48,21 +47,10 @@ public class DBQuesterTest extends
         // to get the activity before call "setDBHelper"
         // because in MainActivity, the name of database
         // is changed in "onCreate()"
-        mActivity = getActivity();
+        mActivity = new MockActivity();
 
         App.setCurrentUsername("testUsername");
-        // store the sessionID in the preferences
-        TequilaAuthenticationAPI.getInstance().setSessionID(
-                mActivity.getApplicationContext(), "sessionID");
-        TequilaAuthenticationAPI.getInstance().setUsername(
-                mActivity.getApplicationContext(),
-                "testUsername");
-
-        mActivity = getActivity();
-
         App.setDBHelper("calendar_test.db");
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
@@ -84,8 +72,6 @@ public class DBQuesterTest extends
     protected void tearDown() throws Exception {
         super.tearDown();
 
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
         mDBQuester = null;
         mListCourses = null;
     }

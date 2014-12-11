@@ -6,13 +6,12 @@ package ch.epfl.calendar.display.tests;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import ch.epfl.calendar.display.CourseDetailsActivity;
-
 import junit.framework.TestCase;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import ch.epfl.calendar.display.CourseDetailsActivity;
 
 /**
  * @author LoomisLoud
