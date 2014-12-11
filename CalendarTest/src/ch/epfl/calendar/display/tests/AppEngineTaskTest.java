@@ -43,8 +43,9 @@ public class AppEngineTaskTest extends MockTestCase {
         doInBackground = (AppEngineTask.class).getDeclaredMethod(
                 "doInBackground", String[].class);
         doInBackground.setAccessible(true);
-        returnedCourse = (Course) doInBackground.invoke(instance, new Object[]{new String[]{COURSE_NAME}});
-        
+        returnedCourse = (Course) doInBackground.invoke(instance,
+                new Object[] { new String[] { COURSE_NAME } });
+
         assertEquals(COURSE_NAME, returnedCourse.getName());
         assertEquals(COURSE_CODE, returnedCourse.getCode());
         assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
@@ -63,21 +64,22 @@ public class AppEngineTaskTest extends MockTestCase {
                 "retrieveCourse", new Class[] { String.class });
         retrieveCourse.setAccessible(true);
         try {
-            returnedCourse = (Course) retrieveCourse.invoke(instance, COURSE_NAME);
-        }
-            catch (InvocationTargetException e) {
-                if (e.getTargetException() instanceof CalendarClientException) {
-                    if (e.getTargetException().getMessage().equals("errorWaited")) {
-                        //Waited
-                    } else {
-                        e.printStackTrace();
-                        System.out.println(e.getMessage());
-                        fail();
-                    }
+            returnedCourse = (Course) retrieveCourse.invoke(instance,
+                    COURSE_NAME);
+
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof CalendarClientException) {
+                if (e.getTargetException().getMessage().equals("errorWaited")) {
+                    // Waited
                 } else {
+                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                     fail();
                 }
+            } else {
+                fail();
             }
+        }
         returnedCourse = (Course) retrieveCourse.invoke(instance, COURSE_NAME);
 
         assertEquals(COURSE_NAME, returnedCourse.getName());
@@ -85,7 +87,6 @@ public class AppEngineTaskTest extends MockTestCase {
         assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
         assertEquals(COURSE_DESCRIPTION, returnedCourse.getDescription());
         assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
-        
-        
+
     }
 }
