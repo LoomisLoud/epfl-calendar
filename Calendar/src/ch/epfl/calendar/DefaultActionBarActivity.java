@@ -4,10 +4,7 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -79,7 +76,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             populateCalendarFromISA();
         }
     }
-    
+
     protected void activateRotation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
@@ -158,8 +155,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", new String[] {name,
-            description});
+        eventDetailActivityIntent.putExtra("description", new String[] {name, description});
         startActivity(eventDetailActivityIntent);
     }
 
@@ -207,63 +203,67 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     @Override
     public void logout(boolean isLogoutDoneByUser) {
-        if (isLogoutDoneByUser) {
-            // Menu to delete DB
-            createMenuDeleteDB();
-        } else {
-            App.setDBHelper(App.DATABASE_NAME);
-            DBQuester.close();
-            TequilaAuthenticationAPI.getInstance().clearStoredData(
-                    getApplicationContext());
-            populateCalendarFromISA();
-        }
+        /*
+         * if (isLogoutDoneByUser) { Menu to delete DB createMenuDeleteDB(); }
+         * else { App.setDBHelper(App.DATABASE_NAME); DBQuester.close();
+         * TequilaAuthenticationAPI.getInstance().clearStoredData(
+         * getApplicationContext()); populateCalendarFromISA(); }
+         */
+        App.setDBHelper(App.DATABASE_NAME);
+        mCurrentDBName = "none";
+        App.setCurrentUsername("noUser");
+        DBQuester.close();
+        TequilaAuthenticationAPI.getInstance().clearStoredData(
+                getApplicationContext());
+        populateCalendarFromISA();
+
     }
 
-    private void createMenuDeleteDB() {
-        AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
-        choiceDialog
-                .setTitle("Do you want do delete the data for the user "
-                        + TequilaAuthenticationAPI.getInstance().getUsername(
-                                mThisActivity.getApplicationContext()) + " ?");
-        choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        // Yes
-                        getDBQuester().deleteAllTables();
-                        getApplicationContext().deleteDatabase(
-                                App.getDBHelper().getDatabaseName());
-                        App.setDBHelper(App.DATABASE_NAME);
-                        mCurrentDBName = "none";
-                        App.setCurrentUsername("noUser");
-                        DBQuester.close();
-                        dialog.cancel();
-                        TequilaAuthenticationAPI.getInstance().clearStoredData(
-                                getApplicationContext());
-                        populateCalendarFromISA();
-                        break;
-                    case 1:
-                        // No
-                        App.setDBHelper(App.DATABASE_NAME);
-                        App.setCurrentUsername("noUser");
-                        mCurrentDBName = "none";
-                        DBQuester.close();
-                        dialog.cancel();
-                        TequilaAuthenticationAPI.getInstance().clearStoredData(
-                                getApplicationContext());
-                        populateCalendarFromISA();
-                        break;
-                    default:
-                        // Cancel
-                        dialog.cancel();
-                        break;
-                }
-            }
-        });
-        choiceDialog.create();
-        choiceDialog.show();
-    }
+    // private void createMenuDeleteDB() {
+    // AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
+    // choiceDialog
+    // .setTitle("Do you want do delete the data for the user "
+    // + TequilaAuthenticationAPI.getInstance().getUsername(
+    // mThisActivity.getApplicationContext()) + " ?");
+    // choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
+    // @Override
+    // public void onClick(DialogInterface dialog, int which) {
+    // switch (which) {
+    // case 0:
+    // // Yes
+    // getDBQuester().deleteAllTables();
+    // getApplicationContext().deleteDatabase(
+    // App.getDBHelper().getDatabaseName());
+    // App.setDBHelper(App.DATABASE_NAME);
+    // mCurrentDBName = "none";
+    // App.setCurrentUsername("noUser");
+    // DBQuester.close();
+    // dialog.cancel();
+    // TequilaAuthenticationAPI.getInstance().clearStoredData(
+    // getApplicationContext());
+    // populateCalendarFromISA();
+    // break;
+    // case 1:
+    // // No
+    // App.setDBHelper(App.DATABASE_NAME);
+    // App.setCurrentUsername("noUser");
+    // mCurrentDBName = "none";
+    // DBQuester.close();
+    // dialog.cancel();
+    // TequilaAuthenticationAPI.getInstance().clearStoredData(
+    // getApplicationContext());
+    // populateCalendarFromISA();
+    // break;
+    // default:
+    // // Cancel
+    // dialog.cancel();
+    // break;
+    // }
+    // }
+    // });
+    // choiceDialog.create();
+    // choiceDialog.show();
+    // }
 
     @Override
     public void callbackDownload(boolean success, List<Course> courses) {

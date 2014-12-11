@@ -142,6 +142,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
 
                                 /*
                                  * (non-Javadoc)
+                                 * 
                                  * @see
                                  * android.content.DialogInterface.OnClickListener
                                  * #onClick (android.content.DialogInterface,
@@ -158,8 +159,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                                 App.NO_COURSE)) {
                                             String description = item
                                                     .getDescription();
-                                            switchToEventDetail(
-                                                    item.getName(),
+                                            switchToEventDetail(item.getName(),
                                                     description);
                                         } else {
                                             String coursName = item
@@ -274,16 +274,18 @@ public class EventListActivity extends DefaultActionBarActivity implements
 
     private CustomAdapter createAdapter(List<ListViewItem> eventForList,
             CustomAdapter adapter) {
-        adapter.addSectionHeaderItem(new EventSeparator(eventForList.get(0)
-                .getmStart()));
-        adapter.addItem(eventForList.get(0));
-        for (int i = 1; i < eventForList.size(); i++) {
-            if (eventForList.get(i).getmStart().get(Calendar.DAY_OF_MONTH) != eventForList
-                    .get(i - 1).getmStart().get(Calendar.DAY_OF_MONTH)) {
-                adapter.addSectionHeaderItem(new EventSeparator(eventForList
-                        .get(i).getmStart()));
+        if (eventForList.size() > 0) {
+            adapter.addSectionHeaderItem(new EventSeparator(eventForList.get(0)
+                    .getmStart()));
+            adapter.addItem(eventForList.get(0));
+            for (int i = 1; i < eventForList.size(); i++) {
+                if (eventForList.get(i).getmStart().get(Calendar.DAY_OF_MONTH) != eventForList
+                        .get(i - 1).getmStart().get(Calendar.DAY_OF_MONTH)) {
+                    adapter.addSectionHeaderItem(new EventSeparator(
+                            eventForList.get(i).getmStart()));
+                }
+                adapter.addItem(eventForList.get(i));
             }
-            adapter.addItem(eventForList.get(i));
         }
         return adapter;
 
@@ -307,9 +309,8 @@ public class EventListActivity extends DefaultActionBarActivity implements
     protected void onResume() {
         super.onResume();
         if (editEvent) {
-            mEventForList = eventToEventForList(
-                    getDBQuester().getAllCourses(), getDBQuester()
-                            .getAllEvents());
+            mEventForList = eventToEventForList(getDBQuester().getAllCourses(),
+                    getDBQuester().getAllEvents());
             CustomAdapter editAdapter = new CustomAdapter(context);
             createAdapter(mEventForList, editAdapter);
             mListView.setAdapter(editAdapter);

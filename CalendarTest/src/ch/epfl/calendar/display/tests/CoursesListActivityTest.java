@@ -163,7 +163,7 @@ public class CoursesListActivityTest extends
         mDB.storeCourse(course2);
     }
     
-    Activity getCurrentActivity() throws Throwable {
+    private Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {

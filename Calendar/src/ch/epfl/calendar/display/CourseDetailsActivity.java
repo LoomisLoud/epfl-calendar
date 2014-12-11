@@ -62,12 +62,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("Course Details");
     }
-    
-    public void switchToEditActivity(Event event) {
-        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
-        editActivityIntent.putExtra("Id", event.getId());
-        startActivity(editActivityIntent);
-    }
 
     private void setTextViewsFromCourse() {
         String courseProfessor = mCourse.getTeacher();
