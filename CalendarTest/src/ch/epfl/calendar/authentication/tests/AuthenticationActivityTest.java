@@ -93,7 +93,7 @@ public class AuthenticationActivityTest
         onView(withId(R.id.txtUsername)).perform(typeText("test_username"));
         onView(withId(R.id.txtPassword)).perform(typeText("test_password"));
         mAuthActivity.tequilaAuthenticationHandlerOnSuccess("123");
-        assertEquals("123", TequilaAuthenticationAPI.getInstance().getSessionID(mAuthActivity.getApplicationContext()));
+        assertEquals("123", TequilaAuthenticationAPI.getInstance().getSessionID(getInstrumentation().getTargetContext()));
         assertEquals("test_username", App.getCurrentUsername());
         assertEquals("test_username", TequilaAuthenticationAPI.getInstance()
                 .getUsername(mAuthActivity.getApplicationContext()));
