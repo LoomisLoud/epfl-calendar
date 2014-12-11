@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.display;
 
@@ -35,7 +35,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author gilbrechbuhler
- * 
+ *
  */
 public class CoursesListActivityTest extends
         ActivityInstrumentationTestCase2<CoursesListActivity> {
@@ -54,7 +54,8 @@ public class CoursesListActivityTest extends
         super(CoursesListActivity.class);
     }
 
-    public void setUp() throws Exception {
+    @Override
+	public void setUp() throws Exception {
         super.setUp();
 
         /*
@@ -77,11 +78,11 @@ public class CoursesListActivityTest extends
         populateTestDB();
     }
 
-    public void tearDown() throws Exception {
+    @Override
+	public void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         super.tearDown();

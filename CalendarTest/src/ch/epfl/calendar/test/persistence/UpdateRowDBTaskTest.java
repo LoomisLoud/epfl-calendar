@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.persistence;
 
@@ -21,10 +21,13 @@ import ch.epfl.calendar.test.utils.MockActivity;
 
 /**
  * @author AblionGE
- * 
+ *
  */
 public class UpdateRowDBTaskTest extends
         ActivityInstrumentationTestCase2<MockActivity> {
+
+	private static final int NB_TASKS_3 = 3;
+	private static final int NB_TASKS_6 = 6;
 
     private MockActivity mActivity;
     private Event mEvent = null;
@@ -39,7 +42,8 @@ public class UpdateRowDBTaskTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
 
         // When the activity is MainActivity, it is important
@@ -73,7 +77,8 @@ public class UpdateRowDBTaskTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         super.tearDown();
 
         mDBQuester = null;
@@ -84,7 +89,7 @@ public class UpdateRowDBTaskTest extends
      * Test method for
      * {@link ch.epfl.calendar.persistence.UpdateRowDBTask#doInBackground(ch.epfl.calendar.persistence.UpdateObject[])}
      * .
-     * 
+     *
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
      * @throws NoSuchMethodException
@@ -97,7 +102,7 @@ public class UpdateRowDBTaskTest extends
         doInBackground = (UpdateRowDBTask.class).getDeclaredMethod(
                 "doInBackground", UpdateObject[].class);
         doInBackground.setAccessible(true);
-        App.getActionBar().addTask(3);
+        App.getActionBar().addTask(NB_TASKS_3);
         doInBackground
                 .invoke(instance,
                         new Object[] {new UpdateObject[] {createObjectToUpdate(mEvent)}});
@@ -156,7 +161,7 @@ public class UpdateRowDBTaskTest extends
         doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
                 "doInBackground", CreateObject[].class);
         doInBackground.setAccessible(true);
-        App.getActionBar().addTask(6);
+        App.getActionBar().addTask(NB_TASKS_6);
         doInBackground
                 .invoke(createTask,
                         new Object[] {new CreateObject[] {createObjectToStore(event)}});

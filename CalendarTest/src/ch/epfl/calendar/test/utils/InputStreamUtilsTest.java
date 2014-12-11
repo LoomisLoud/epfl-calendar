@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.utils;
 
@@ -13,7 +13,7 @@ import ch.epfl.calendar.utils.InputStreamUtils;
 
 /**
  * @author gilbrechbuhler
- * 
+ *
  */
 public class InputStreamUtilsTest extends TestCase {
 
@@ -47,7 +47,7 @@ public class InputStreamUtilsTest extends TestCase {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        
+
         try {
             is1 = new ByteArrayInputStream(TEST_STRING.getBytes(UTF8_ENCODING));
             InputStreamUtils.readInputStream(is1, "");
@@ -66,15 +66,14 @@ public class InputStreamUtilsTest extends TestCase {
             e.printStackTrace();
         }
     }
-    
+
     public void testReadInputStreamNullEncoding() {
         try {
             InputStream is = new ByteArrayInputStream(TEST_STRING.getBytes(UTF8_ENCODING));
             InputStreamUtils.readInputStream(is, null);
-            
+
             fail("IOException for null encoding should be raised");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

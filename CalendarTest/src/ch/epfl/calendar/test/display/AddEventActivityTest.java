@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.display;
 
@@ -24,7 +24,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author AblionGE
- * 
+ *
  */
 public class AddEventActivityTest extends
         ActivityInstrumentationTestCase2<AddEventActivity> {
@@ -36,6 +36,8 @@ public class AddEventActivityTest extends
     private List<Event> mEvents;
 
     private static final int SLEEP_TIME = 250;
+    private static final int NB_CREDITS_200 = 200;
+    private static final int NB_CREDITS_5 = 5;
 
     public AddEventActivityTest() {
         super(AddEventActivity.class);
@@ -45,7 +47,8 @@ public class AddEventActivityTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
 
         /*
@@ -79,12 +82,12 @@ public class AddEventActivityTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         super.tearDown();
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         super.tearDown();
@@ -126,7 +129,7 @@ public class AddEventActivityTest extends
         periodsCourse1.add(period2Course1);
         periodsCourse1.add(period3Course1);
         Course course1 = new Course("TestCourse1", periodsCourse1,
-                "Pr. Testpr1", 200, "CS-321", "awesome course", null);
+                "Pr. Testpr1", NB_CREDITS_200, "CS-321", "awesome course", null);
 
         List<String> period1Course2Rooms = new ArrayList<String>();
         List<String> period2Course2Rooms = new ArrayList<String>();
@@ -142,7 +145,7 @@ public class AddEventActivityTest extends
         periodsCourse2.add(period1Course2);
         periodsCourse2.add(period2Course2);
         Course course2 = new Course("TestCourse2", periodsCourse2,
-                "Pr. Testpr2", 5, "CS-000", "cool course", null);
+                "Pr. Testpr2", NB_CREDITS_5, "CS-000", "cool course", null);
 
         mCourses = new ArrayList<Course>();
         mCourses.add(course1);
@@ -179,7 +182,7 @@ public class AddEventActivityTest extends
         Intent intent = new Intent();
         intent.putExtra("Id", 1);
         setActivityIntent(intent);
-        
+
         mActivity = getActivity();
 
         // We need to set up which activity is the current one (needed by

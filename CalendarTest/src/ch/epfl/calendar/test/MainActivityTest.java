@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test;
 
@@ -23,7 +23,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author AblionGE
- * 
+ *
  */
 public class MainActivityTest extends
         ActivityInstrumentationTestCase2<MainActivity> {
@@ -33,6 +33,8 @@ public class MainActivityTest extends
     private DBQuester mDB;
 
     private static final int SLEEP_TIME = 250;
+    private static final int NB_CREDITS_200 = 200;
+    private static final int NB_CREDITS_5 = 5;
 
     public MainActivityTest() {
         super(MainActivity.class);
@@ -42,7 +44,8 @@ public class MainActivityTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
 
         mMockActivity = new MockActivity();
@@ -65,11 +68,11 @@ public class MainActivityTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         super.tearDown();
@@ -86,7 +89,7 @@ public class MainActivityTest extends
 
     /**
      * Test method for
-     * {@link ch.epfl.calendar.MainActivity#onEventClick(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent, 
+     * {@link ch.epfl.calendar.MainActivity#onEventClick(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent,
      * android.graphics.RectF)}
      * .
      */
@@ -98,7 +101,7 @@ public class MainActivityTest extends
 
     /**
      * Test method for
-     * {@link ch.epfl.calendar.MainActivity#onEventLongPress(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent, 
+     * {@link ch.epfl.calendar.MainActivity#onEventLongPress(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent,
      * android.graphics.RectF)}
      * .
      */
@@ -132,7 +135,7 @@ public class MainActivityTest extends
         periodsCourse1.add(period1Course1);
         periodsCourse1.add(period2Course1);
         Course course1 = new Course("TestCourse1", periodsCourse1,
-                "Pr. Testpr1", 200, "CS-321", "awesome course", null);
+                "Pr. Testpr1", NB_CREDITS_200, "CS-321", "awesome course", null);
 
         List<String> period1Course2Rooms = new ArrayList<String>();
         List<String> period2Course2Rooms = new ArrayList<String>();
@@ -148,7 +151,7 @@ public class MainActivityTest extends
         periodsCourse2.add(period1Course2);
         periodsCourse2.add(period2Course2);
         Course course2 = new Course("TestCourse2", periodsCourse2,
-                "Pr. Testpr2", 5, "CS-000", "cool course", null);
+                "Pr. Testpr2", NB_CREDITS_5, "CS-000", "cool course", null);
 
         mDB.storeCourse(course1);
         mDB.storeCourse(course2);
@@ -175,13 +178,13 @@ public class MainActivityTest extends
                 getInstrumentation().getTargetContext(), "testUsername");
 
         mActivity = getActivity();
-        
+
         App.setDBHelper("calendar_test.db");
-        
+
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
     }
-    
+
     Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.display;
 
@@ -20,7 +20,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author AblionGE
- * 
+ *
  */
 public class EventDetailActivityTest extends
         ActivityInstrumentationTestCase2<EventDetailActivity> {
@@ -37,7 +37,8 @@ public class EventDetailActivityTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
 
         Intent intent = new Intent();
@@ -50,11 +51,11 @@ public class EventDetailActivityTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         super.tearDown();
@@ -72,7 +73,7 @@ public class EventDetailActivityTest extends
         // Just for code coverage...
         mActivity.updateData();
     }
-    
+
     Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];

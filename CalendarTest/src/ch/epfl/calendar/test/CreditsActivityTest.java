@@ -20,9 +20,9 @@ import com.google.common.collect.Iterables;
 
 /**
  * CreditsActivity test class
- * 
+ *
  * @author lweingart
- * 
+ *
  */
 public class CreditsActivityTest extends
         ActivityInstrumentationTestCase2<CreditsActivity> {
@@ -44,7 +44,6 @@ public class CreditsActivityTest extends
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         super.tearDown();

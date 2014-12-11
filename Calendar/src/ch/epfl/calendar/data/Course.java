@@ -67,7 +67,7 @@ public class Course implements Parcelable {
      * @param credits
      *            the number of credits of the course
      * @param code
-     *            the code of the course (CS-XXX, GC-XXX, ...)
+     *            the code of the course (CS-xxx, GC-xxx, ...)
      * @param description
      *            the description of the course
      * @param events

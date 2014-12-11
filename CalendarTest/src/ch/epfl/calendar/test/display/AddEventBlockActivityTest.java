@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.display;
 
@@ -40,7 +40,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author AblionGE
- * 
+ *
  */
 public class AddEventBlockActivityTest extends
         ActivityInstrumentationTestCase2<AddEventBlockActivity> {
@@ -67,7 +67,8 @@ public class AddEventBlockActivityTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
 
         /*
@@ -101,7 +102,8 @@ public class AddEventBlockActivityTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
@@ -181,7 +183,6 @@ public class AddEventBlockActivityTest extends
         // If the Id's value needs to be changed, just move the 3 following
         // lines directly in the tests method BEFORE calling setActivity()
         Intent intent = new Intent();
-        // TODO : Change values
         intent.putExtra("courseName", mCourses.get(0));
         intent.putExtra("position", 1);
         setActivityIntent(intent);
