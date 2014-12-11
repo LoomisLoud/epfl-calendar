@@ -159,10 +159,10 @@ public class CourseDetailsActivityInstrumentationTest extends
         onView(withId(R.id.courseDescription)).check(matches(isDisplayed()));
     }
     
-    public void testCourseWithNoTeacher() {
+    public void testCourseWithNoDescription() {
         setIntentActivityWithExtra(mCourses.get(2).getName());
         //no text should be shown
-        onView(withId(R.id.courseProfessor)).check(matches(withText("")));
+        onView(withId(R.id.courseDescription)).check(matches(withText("")));
     }
     
     public void testSwitchActivityEvent() throws Throwable {
@@ -274,7 +274,7 @@ public class CourseDetailsActivityInstrumentationTest extends
 
         
         Course course3 = new Course("TestCourse3", periodsCourse2,
-                "", 5, "CS-000", "cool course", null);
+                "Pr. Testpr3", 5, "CS-000", "", null);
         // Add events
         Event event1 = new Event("event1", "27.11.2034 08:00",
                 "27.11.2034 18:00", "exercises", course1.getName(),
