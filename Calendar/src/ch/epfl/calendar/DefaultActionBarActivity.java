@@ -32,7 +32,7 @@ import ch.epfl.calendar.utils.ConstructListCourse;
 /**
  * This class is the parent activity of all the other activities.
  * Contains, for exemple, the number of running {@link AsyncTask} at any point of the application
- * @author fouchepi * 
+ * @author fouchepi *
  */
 public abstract class DefaultActionBarActivity extends Activity implements
         CalendarClientDownloadInterface, AppEngineDownloadInterface,
@@ -44,14 +44,14 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private AuthenticationUtils mAuthUtils;
     private int mNbOfAsyncTaskDB = 0;
     private ProgressDialog mDialog;
-    
+
     private String mCurrentDBName;
 
     /**
      * The code representing the {@link AuthenticationActivity}.
      */
     public static final int AUTH_ACTIVITY_CODE = 1;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +79,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             case R.id.add_event_block:
                 switchToAddBlockActivity();
                 return true;
-            case R.id.action_settings:
+            case R.id.action_credits:
                 switchToCreditsActivity();
                 return true;
             case R.id.add_event:
@@ -100,7 +100,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     /**
      * Switches to {@link AddEventActivity}
      */
@@ -109,12 +109,12 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 AddEventActivity.class);
         startActivity(addEventsActivityIntent);
     }
-    
+
     public void switchToAddBlockActivity() {
         Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
         startActivity(blockActivityIntent);
     }
-    
+
     /**
      * Switch to {@link EventDetailActivity}
      * @param name name of the event
@@ -127,7 +127,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         eventDetailActivityIntent.putExtra("description", new String[] {name, description});
         startActivity(eventDetailActivityIntent);
     }
-    
+
     /**
      * Switches to {@link AddEventActivity} (will be an activity to edit event if an ID is passed in intent).
      */
@@ -136,7 +136,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         editActivityIntent.putExtra("Id", event.getId());
         startActivity(editActivityIntent);
     }
-    
+
     /**
      * Switches to {@link AuthenticationActivity}
      */
@@ -147,7 +147,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mThisActivity.startActivityForResult(
                 displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
     }
-    
+
     /**
      * Gets the courses from ISA and populates the database.
      */
@@ -223,7 +223,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @return the {@link UpdateDataFromDBInterface} of the application.
      */
     public UpdateDataFromDBInterface getUdpateData() {
@@ -231,7 +231,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @param udpateData sets the {@link UpdateDataFromDBInterface} of this class.
      */
     public void setUdpateData(UpdateDataFromDBInterface udpateData) {
@@ -264,7 +264,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @return the number of AsyncTasks actually running.
      */
     public synchronized int getNbOfAsyncTaskDB() {
@@ -277,7 +277,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @return the {@link AuthenticationUtils} object of this class
      */
     public AuthenticationUtils getAuthUtils() {
@@ -293,7 +293,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @return a reference to this {@link DefaultActionBarActivity}
      */
     public Activity getThisActivity() {
@@ -319,7 +319,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             populateCalendarFromISA();
         }
     }
-    
+
     protected void activateRotation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }

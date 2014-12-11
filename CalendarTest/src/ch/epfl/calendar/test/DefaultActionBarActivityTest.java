@@ -55,7 +55,7 @@ public class DefaultActionBarActivityTest extends
 
     public void testSwitchToCreditsActivity() {
         openContextualActionModeOverflowMenu();
-        onView(withText("Settings")).perform(click()).check(doesNotExist());
+        onView(withText("Credits")).perform(click()).check(doesNotExist());
     }
 
     public void testSwitchToAddEventsActivity() {
