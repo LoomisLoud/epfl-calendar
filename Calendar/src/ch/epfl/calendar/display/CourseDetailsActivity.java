@@ -24,8 +24,8 @@ import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 
 /**
- * @author LoomisLoud
- * 
+ * This activity shows the details of a {@link Course}
+ * @author LoomisLoud 
  */
 
 public class CourseDetailsActivity extends DefaultActionBarActivity implements
@@ -50,6 +50,26 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         mCourseName = startingIntent.getStringExtra("course");
 
         updateData();
+    }
+    
+    /**
+     * Switch to {@link AddEventActivity} in edit mode.
+     */
+    public void switchToEditActivity(Event event) {
+        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
+        editActivityIntent.putExtra("Id", event.getId());
+        startActivity(editActivityIntent);
+    }
+    
+    @Override
+    public void updateData() {
+        mCourse = getDBQuester().getCourse(mCourseName);
+        if (mCourse == null) {
+            TextView textView = (TextView) findViewById(R.id.courseName);
+            textView.setText(mCourseName + " not found in data base.");
+        } else {
+            setTextViewsFromCourse();
+        }
     }
 
     @Override
@@ -188,16 +208,4 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
      * StyleSpan(Typeface.BOLD); spannable.setSpan(boldSpan, 0, body.length(),
      * 0); return spannable; }
      */
-
-    @Override
-    public void updateData() {
-        mCourse = getDBQuester().getCourse(mCourseName);
-        if (mCourse == null) {
-            TextView textView = (TextView) findViewById(R.id.courseName);
-            textView.setText(mCourseName + " not found in data base.");
-        } else {
-            setTextViewsFromCourse();
-        }
-    }
-
 }

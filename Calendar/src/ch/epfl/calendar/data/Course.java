@@ -13,9 +13,9 @@ import android.os.Parcelable;
 
 /**
  * A course of EPFL with its informations : - Name - Date - Period classes
- *
+ * 
  * @author AblionGE
- *
+ * 
  */
 public class Course implements Parcelable {
     private String mName;
@@ -26,33 +26,75 @@ public class Course implements Parcelable {
     private String mDescription;
     private List<Event> mEvents;
 
-    //Constructor for courses get for ISA
+    /**
+     * Constructor used for courses get from ISA
+     * 
+     * @param name
+     *            the name of the course
+     * @param date
+     *            the date of a new period of the course
+     * @param startTime
+     *            the starting time of the new period of the course
+     * @param endTime
+     *            the ending time of the new period of the course
+     * @param type
+     *            the type (LECTURE, EXERCISE, ...)
+     * @param rooms
+     *            the rooms in which the period takes place
+     * @param idPeriod
+     *            the id of the period in the ISA database
+     */
     public Course(String name, String date, String startTime, String endTime,
             String type, List<String> rooms, String idPeriod) {
         this.mName = name;
         this.mPeriods = new ArrayList<Period>();
-        this.addPeriod(new Period(date, startTime, endTime, type, rooms, idPeriod));
+        this.addPeriod(new Period(date, startTime, endTime, type, rooms,
+                idPeriod));
         this.mTeacher = null;
         this.mCredits = 0;
         this.mEvents = new ArrayList<Event>();
     }
 
-    //Constructor for courses get from local DB
-    public Course(String name, List<Period> periods, String teacher, int credits,
-    		String code, String description, List<Event> events) {
-    	this.mName = name;
-    	this.mPeriods = periods;
-    	this.mTeacher = teacher;
-    	this.mCredits = credits;
-    	this.mCode = code;
-    	this.mDescription = description;
-    	if (events == null) {
+    /**
+     * Constructor used for courses get from the local DB
+     * 
+     * @param name
+     *            the name of the course
+     * @param periods
+     *            the list of the periods of the course
+     * @param teacher
+     *            the name of the teacher of this course
+     * @param credits
+     *            the number of credits of the course
+     * @param code
+     *            the code of the course (CS-XXX, GC-XXX, ...)
+     * @param description
+     *            the description of the course
+     * @param events
+     *            the list of the events related to the course
+     */
+    public Course(String name, List<Period> periods, String teacher,
+            int credits, String code, String description, List<Event> events) {
+        this.mName = name;
+        this.mPeriods = periods;
+        this.mTeacher = teacher;
+        this.mCredits = credits;
+        this.mCode = code;
+        this.mDescription = description;
+        if (events == null) {
             this.mEvents = new ArrayList<Event>();
         } else {
             this.mEvents = events;
         }
     }
 
+    /**
+     * Constructs a course with the given name, no period and events (empty
+     * lists), no teacher (null) and no credits (0).
+     * 
+     * @param name
+     *            the name of the course
+     */
     public Course(String name) {
         this.setName(name);
         this.mPeriods = new ArrayList<Period>();
@@ -64,7 +106,7 @@ public class Course implements Parcelable {
     /**
      * Builds a full course. Used in
      * {@link ch.epfl.calendar.data.Course#parseFromJSON(JSONObject)}
-     *
+     * 
      * @param code
      *            the code of the course
      * @param name
@@ -87,143 +129,161 @@ public class Course implements Parcelable {
 
     /**
      * Add a period to the current list of periods
-     *
+     * 
      * @param period
+     *            the period to add to the list of {@link Period}
      */
     public void addPeriod(Period period) {
         this.mPeriods.add(period);
     }
 
     /**
-     * @return the mName
+     * @return the name of the course
      */
     public String getName() {
         return mName;
     }
 
     /**
+     * Sets the name of the course
+     * 
      * @param mName
-     *            the mName to set
+     *            the new name of the course
      */
     public void setName(String name) {
         this.mName = name;
     }
 
     /**
-     * @return the mPeriods
+     * @return the {@link List} of {@link Period} of this {@link Course}
      */
     public List<Period> getPeriods() {
         return new ArrayList<Period>(mPeriods);
     }
 
     /**
+     * Sets the {@link List} of {@link Period} of this {@link Course}
+     * 
      * @param mPeriods
-     *            the mPeriods to set
+     *            the new {@link List} of {@link Period}
      */
     public void setPeriods(List<Period> periods) {
         this.mPeriods = new ArrayList<Period>(periods);
     }
 
     /**
-     * @return the mCredits
+     * @return the number of credits of this course
      */
     public int getCredits() {
         return mCredits;
     }
 
     /**
+     * Sets the number of credits of a course
+     * 
      * @param mCredits
-     *            the mCredits to set
+     *            the new number of credits
      */
     public void setCredits(int credits) {
         this.mCredits = credits;
     }
 
     /**
-     * @return the mTeacher
+     * @return the teacher of the course
      */
     public String getTeacher() {
         return mTeacher;
     }
 
     /**
+     * Sets the teacher name of the course
+     * 
      * @param mTeacher
-     *            the mTeacher to set
+     *            the new teacher name
      */
     public void setTeacher(String teacher) {
         this.mTeacher = teacher;
     }
 
     /**
-     * @return the mCode
+     * @return the code of the course
      */
     public String getCode() {
         return mCode;
     }
 
     /**
+     * Sets the code of the course
+     * 
      * @param mCode
-     *            the mCode to set
+     *            the new code of the course.
      */
     public void setCode(String code) {
         mCode = code;
     }
 
     /**
-     * @return the mDescription
+     * @return the description of the course
      */
     public String getDescription() {
         return mDescription;
     }
 
     /**
+     * Sets the description of the course
+     * 
      * @param mDescription
-     *            the mDescription to set
+     *            the new description of the course
      */
     public void setDescription(String description) {
         mDescription = description;
     }
 
     /**
-     * @return the mEvents
+     * @return the {@link List} of {@link Event} related to this {@link Course}
      */
     public List<Event> getEvents() {
-    	return new ArrayList<Event>(mEvents);
+        return new ArrayList<Event>(mEvents);
     }
 
     /**
+     * Sets a new {@link List} of {@link Event} related to this course
+     * 
      * @param mEvents
-     * 			 the mEvents to set
+     *            the new {@link List} of {@link Event} related to this course
      */
     public void setEvents(List<Event> events) {
-    	this.mEvents = new ArrayList<Event>(events);
+        this.mEvents = new ArrayList<Event>(events);
     }
 
     /*
      * (non-Javadoc)
-     *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-    	if (mEvents == null) {
-    		return mName + ", Periods : " + mPeriods + ", Teacher : " + mTeacher
-    				+ ", nb Credits : " + mCredits;
-		} else {
-    		return mName + ", Periods : " + mPeriods + ", Teacher : " + mTeacher
-    				+ ", nb Credits : " + mCredits + ", Events : " + mEvents;
-		}
+        if (mEvents == null) {
+            return mName + ", Periods : " + mPeriods + ", Teacher : "
+                    + mTeacher + ", nb Credits : " + mCredits;
+        } else {
+            return mName + ", Periods : " + mPeriods + ", Teacher : "
+                    + mTeacher + ", nb Credits : " + mCredits + ", Events : "
+                    + mEvents;
+        }
     }
 
     /**
-     *
+     * Returns a {@link Course} parsed from a {@link JSONObject} representing
+     * it?
+     * 
      * @param jsonObject
-     *            the JSONObject to parse.
+     *            the JSONObject to parse
      * @return A Course filled with the informations from the JSON
      * @throws JSONException
+     *             if the JSON is badly formated
      */
     public static Course parseFromJSON(JSONObject jsonObject)
-        throws JSONException {
+            throws JSONException {
 
         String code = jsonObject.getString("code");
         String name = jsonObject.getString("name");
@@ -234,11 +294,7 @@ public class Course implements Parcelable {
         return new Course(code, name, description, professorName,
                 numberOfCredits);
     }
-    /**
-    * Return if classes are equals. Either object can't be null to return true.
-    * if they are the same object (==), return true.
-    * if they don't have the same reference, the method test each member of the class and check if they are all equals.
-    */
+
     @Override
     public boolean equals(Object other) {
         if (other == null) {
@@ -251,7 +307,7 @@ public class Course implements Parcelable {
             return false;
         }
         Course otherCourse = (Course) other;
-        //test each member
+        // test each member
         if (!this.getName().equals(otherCourse.getName())
                 || !this.getPeriods().equals(otherCourse.getPeriods())
                 || !this.getTeacher().equals(otherCourse.getTeacher())
@@ -260,27 +316,29 @@ public class Course implements Parcelable {
                 || !this.getDescription().equals(otherCourse.getDescription())) {
             return false;
         }
-        //all member are equals
+        // all member are equals
         return true;
     }
-    /**
-     * Respect the contract of equals methods
-     * @see java.lang.Object#equals(Object)
-     */
+
     @Override
     public int hashCode() {
         int result = 0;
-        result += mName.hashCode() + mTeacher.hashCode() + mCredits + mCode.hashCode()
-                 + mDescription.hashCode();
+        result += mName.hashCode() + mTeacher.hashCode() + mCredits
+                + mCode.hashCode() + mDescription.hashCode();
         for (Period p : mPeriods) {
             result += p.hashCode();
         }
         return result;
     }
-    
+
+    /**
+     * 
+     * @return the periods of the course nicely compacted and formated for
+     *         {@link CourseDetailsActivity}
+     */
     public String toDisplayPeriod() {
-        //Transform year's periods to week's period by removing duplicate
-        Set<String> periods = new HashSet<String>();  
+        // Transform year's periods to week's period by removing duplicate
+        Set<String> periods = new HashSet<String>();
         for (Period period : mPeriods) {
             periods.add(period.toDisplayInCourseDetail());
         }
@@ -288,15 +346,17 @@ public class Course implements Parcelable {
         for (String period : periods) {
             concatPeriod += period;
         }
-        
+
         return concatPeriod;
     }
 
-    // Parcelable ----------------
-    // using setter and getter to check for property in case of memory error or any problem that could happen
-    // at execution between writing and reading and corrupt integrity.
+    /*
+     * Parcelable ---------------- using setter and getter to check for property
+     * in case of memory error or any problem that could happen at execution
+     * between writing and reading and corrupt integrity.
+     */
     @Override
-	public void writeToParcel(Parcel parcel, int i) {
+    public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getName());
         parcel.writeList(getPeriods());
         parcel.writeString(getTeacher());
@@ -305,6 +365,27 @@ public class Course implements Parcelable {
         parcel.writeString(getDescription());
         parcel.writeList(getEvents());
     }
+
+    @Override
+    public int describeContents() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /**
+     * A {@link Parcelable.Creator} for the {@link Course} class.
+     */
+    public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
+        @Override
+        public Course createFromParcel(Parcel in) {
+            return new Course(in);
+        }
+
+        @Override
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
+    };
 
     private Course(Parcel in) {
         setName(in.readString());
@@ -319,22 +400,4 @@ public class Course implements Parcelable {
         in.readList(eventList, Event.class.getClassLoader());
         setEvents(eventList);
     }
-
-    @Override
-    public int describeContents() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
-        @Override
-		public Course createFromParcel(Parcel in) {
-            return new Course(in);
-        }
-
-        @Override
-		public Course[] newArray(int size) {
-            return new Course[size];
-        }
-    };
 }

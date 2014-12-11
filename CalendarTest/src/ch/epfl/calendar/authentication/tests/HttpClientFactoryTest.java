@@ -1,12 +1,12 @@
 package ch.epfl.calendar.authentication.tests;
 
+import junit.framework.TestCase;
+
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 
 import ch.epfl.calendar.authentication.HttpClientFactory;
-
-import junit.framework.TestCase;
 
 /**
  * Test class for the HttpClientFactory

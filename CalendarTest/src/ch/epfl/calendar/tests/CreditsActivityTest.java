@@ -6,11 +6,6 @@ import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewA
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
-
-import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
-import com.google.android.apps.common.testing.testrunner.Stage;
-import com.google.common.collect.Iterables;
-
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
@@ -18,6 +13,10 @@ import android.widget.TextView;
 import ch.epfl.calendar.CreditsActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.testing.utils.Utils;
+
+import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
+import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.common.collect.Iterables;
 
 /**
  * CreditsActivity test class

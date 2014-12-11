@@ -12,9 +12,6 @@ package ch.epfl.calendar.apiInterface;
  */
 public class CalendarClientException extends Exception {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     /**

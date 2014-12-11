@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- *
+ * This activity show the credits of the APP (who are its developpers).
  * @author lweingart
  *
  */

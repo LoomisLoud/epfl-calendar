@@ -7,7 +7,6 @@ import java.util.GregorianCalendar;
 
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
-
 import ch.epfl.calendar.MainActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 

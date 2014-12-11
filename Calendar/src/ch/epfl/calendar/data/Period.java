@@ -38,11 +38,11 @@ public class Period implements Parcelable {
      * Construct the period object. date format must be of format dd.mm.yyyy
      * startTime and endTime must be of format hh:mm
      * 
-     * @param date
-     * @param startTime
-     * @param endTime
-     * @param type
-     * @param rooms
+     * @param date the date of the period
+     * @param startTime the start time  of the period
+     * @param endTime the end time of the period
+     * @param type the type of the period (LECTURE, EXERCISE, PROJECT)
+     * @param rooms the rooms in which the period takes place
      */
     public Period(String date, String startTime, String endTime, String type,
             List<String> rooms, String id) {
@@ -66,10 +66,10 @@ public class Period implements Parcelable {
      * Construct the period object. startDate and endDate must be of format
      * 'dd.mm.yyyy hh:mm'
      * 
-     * @param type
-     * @param startDate
-     * @param endDate
-     * @param rooms
+     * @param type the type of the period (LECTURE, EXERCISE, PROJECT)
+     * @param startDate the start time of the period
+     * @param endDate the end time of the period
+     * @param rooms the rooms in which the period takes place
      */
     public Period(String type, String startDate, String endDate,
             List<String> rooms, String id) {
@@ -79,15 +79,15 @@ public class Period implements Parcelable {
     }
 
     /**
-     * @return the mType
+     * @return the type of the period
      */
     public PeriodType getType() {
         return mType;
     }
 
     /**
-     * @param type
-     *            the mType to set
+     * Set the type of the period
+     * @param type the type to set
      */
     public void setType(PeriodType type) {
         if (type == null) {
@@ -97,8 +97,8 @@ public class Period implements Parcelable {
     }
 
     /**
-     * @param type
-     *            the mType to set
+     * Set the type of the period from a String
+     * @param type the type to set
      */
     public void setType(String type) {
         if (type == null) {
@@ -121,15 +121,15 @@ public class Period implements Parcelable {
     }
 
     /**
-     * @return the mRoom
+     * @return the rooms of the period
      */
     public List<String> getRooms() {
         return new ArrayList<String>(mRooms);
     }
 
     /**
-     * @param mRoom
-     *            the mRoom to set
+     * Set the rooms of the period
+     * @param mRoom the room to set
      */
     public void setRooms(List<String> room) {
         if (room == null) {
@@ -138,10 +138,18 @@ public class Period implements Parcelable {
         this.mRooms = new ArrayList<String>(room);
     }
 
+    /**
+     * 
+     * @return the start date of the period
+     */
     public Calendar getStartDate() {
         return mStartDate;
     }
 
+    /**
+     * Set the start date of the period
+     * @param startDate the sart date to set
+     */
     public void setStartDate(Calendar startDate) {
         if (startDate == null) {
             throw new NullPointerException();
@@ -149,11 +157,18 @@ public class Period implements Parcelable {
         this.mStartDate = startDate;
     }
 
+    /**
+     * 
+     * @return the end date of the period
+     */
     public Calendar getEndDate() {
         return mEndDate;
-
     }
 
+    /**
+     * Set the end date of the period
+     * @param endDate the end date to set
+     */
     public void setEndDate(Calendar endDate) {
         if (endDate == null) {
             throw new NullPointerException();
@@ -161,10 +176,18 @@ public class Period implements Parcelable {
         this.mEndDate = endDate;
     }
 
+    /**
+     * 
+     * @return the ID of the period in local database
+     */
     public String getId() {
         return mId;
     }
 
+    /**
+     * Set the ID of the period
+     * @param id the ID to set
+     */
     public void setId(String id) {
         this.mId = id;
     }
@@ -202,6 +225,10 @@ public class Period implements Parcelable {
         return periodType + " : " + day + " " + startTime + " - " + endTime;
     }
     
+    /**
+     * 
+     * @return the same as toString but with the hours formated in 12-hour format (AM/PM)
+     */
     public String to12HourString() {
         String periodType;
         switch (mType) {
@@ -230,6 +257,10 @@ public class Period implements Parcelable {
         return periodType + " : " + day + " " + startTime + "-" + endTime;
     }
     
+    /**
+     * 
+     * @return the period in String format to be displayed in {@link CourseDetailsActivity}
+     */
     public String toDisplayInCourseDetail() {
         String periodType;
         switch (mType) {
@@ -256,12 +287,6 @@ public class Period implements Parcelable {
         return periodType + " : " + day + " " + startHour + "-" + endHour + "\n";
     }
 
-    /**
-     * Return if classes are equals. Either object can't be null to return true.
-     * if they are the same object (==), return true. if they don't have the
-     * same reference, the method test each member of the class and check if
-     * they are all equals.
-     */
     @Override
     public boolean equals(Object other) {
         if (other == null) {
@@ -287,11 +312,6 @@ public class Period implements Parcelable {
         return true;
     }
 
-    /**
-     * Respect the contract of equals methods
-     * 
-     * @see java.lang.Object#equals(Object)
-     */
     @Override
     public int hashCode() {
         int result = 0;
@@ -303,34 +323,14 @@ public class Period implements Parcelable {
         return result;
     }
 
-    // Parcelable ----------------
-    // using setter and getter to check for property in case of memory error or
-    // any problem that could happen
-    // at execution between writing and reading and corrupt integrity.
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeSerializable(getType());
-        parcel.writeSerializable(getStartDate());
-        parcel.writeSerializable(getEndDate());
-        parcel.writeList(getRooms());
-        parcel.writeSerializable(getId());
-    }
-
-    private Period(Parcel in) {
-        this.setType((PeriodType) in.readSerializable());
-        this.setStartDate((Calendar) in.readSerializable());
-        this.setEndDate((Calendar) in.readSerializable());
-        ArrayList<String> rooms = new ArrayList<String>();
-        in.readList(rooms, String.class.getClassLoader());
-        this.setRooms(rooms);
-        this.setId((String) in.readSerializable());
-    }
-
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * The {@link Parcelable.Creator} of this class
+     */
     public static final Parcelable.Creator<Period> CREATOR = new Parcelable.Creator<Period>() {
         @Override
         public Period createFromParcel(Parcel in) {
@@ -342,4 +342,27 @@ public class Period implements Parcelable {
             return new Period[size];
         }
     };
+    
+ // Parcelable ----------------
+    // using setter and getter to check for property in case of memory error or
+    // any problem that could happen
+    // at execution between writing and reading and corrupt integrity.
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeSerializable(getType());
+        parcel.writeSerializable(getStartDate());
+        parcel.writeSerializable(getEndDate());
+        parcel.writeList(getRooms());
+        parcel.writeSerializable(getId());
+    }
+    
+    private Period(Parcel in) {
+        this.setType((PeriodType) in.readSerializable());
+        this.setStartDate((Calendar) in.readSerializable());
+        this.setEndDate((Calendar) in.readSerializable());
+        ArrayList<String> rooms = new ArrayList<String>();
+        in.readList(rooms, String.class.getClassLoader());
+        this.setRooms(rooms);
+        this.setId((String) in.readSerializable());
+    }
 }

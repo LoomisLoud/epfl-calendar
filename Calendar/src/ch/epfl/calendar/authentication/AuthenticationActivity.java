@@ -13,7 +13,7 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask.TequilaAuthenticationListener;
 
 /**
- * Authentication activity
+ * The Authentication activity
  * 
  * @author lweingart
  * 
@@ -64,13 +64,16 @@ public class AuthenticationActivity extends Activity {
         });
     }
 
+    /*
+     * An empty onBackPressed() function cancels the back button functionnality.
+     * (non-Javadoc)
+     * @see android.app.Activity#onBackPressed()
+     */
     @Override
     public void onBackPressed() {
         // Do nothing
     }
-    
 
-    //FIXME POUR ORIENTATION : onPause, onResume, on Stop ?
     @Override
     public void onResume() {
         super.onResume();

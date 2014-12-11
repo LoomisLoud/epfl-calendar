@@ -2,9 +2,9 @@ package ch.epfl.calendar.data.tests;
 
 import java.util.Calendar;
 
+import junit.framework.TestCase;
 import ch.epfl.calendar.data.EventForList;
 import ch.epfl.calendar.data.PeriodType;
-import junit.framework.TestCase;
 
 /**
  * @author MatthiasLeroyEPFL

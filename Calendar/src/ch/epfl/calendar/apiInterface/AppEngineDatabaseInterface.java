@@ -28,14 +28,4 @@ public interface AppEngineDatabaseInterface {
      * @throws CalendarClientException
      */
     Course getCourseByCode(String code) throws CalendarClientException;
-
-    /*
-     *
-     * @param period The period to put in the database
-     * @param courseCode the code of the course of which the period belongs.
-     * @throws CalendarClientException
-     */
-
-//    void createPeriod(Period period, String courseCode) throws CalendarClientException;
-
 }

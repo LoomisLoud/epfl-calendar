@@ -33,8 +33,8 @@ import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.persistence.DBQuester;
 
 /**
- * @author MatthiasLeroyEPFL
- * 
+ * The list of the events and periods (planning view)
+ * @author MatthiasLeroyEPFL 
  */
 public class EventListActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
@@ -192,6 +192,45 @@ public class EventListActivity extends DefaultActionBarActivity implements
         this.invalidateOptionsMenu();
         return retour;
     }
+    
+    @Override
+    public void switchToAddEventsActivity() {
+        editEvent = true;
+        Intent addEventsActivityIntent = new Intent(this,
+                AddEventActivity.class);
+        startActivity(addEventsActivityIntent);
+    }
+
+    /**
+     * Switch to {@link AddEventBlockActivity}
+     */
+    public void switchToAddBlockActivity() {
+        editEvent = true;
+        Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
+        startActivity(blockActivityIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (editEvent) {
+            mEventForList = eventToEventForList(
+                    getDBQuester().getAllCourses(), getDBQuester()
+                            .getAllEvents());
+            CustomAdapter editAdapter = new CustomAdapter(context);
+            createAdapter(mEventForList, editAdapter);
+            mListView.setAdapter(editAdapter);
+
+            editEvent = false;
+
+        }
+    }
+
+    @Override
+    public void updateData() {
+        editEvent = true;
+        onResume();
+    }
 
     private void listEventActionBar() {
         getActionBar().setTitle("Planning");
@@ -289,40 +328,5 @@ public class EventListActivity extends DefaultActionBarActivity implements
         }
         return adapter;
 
-    }
-
-    @Override
-    public void switchToAddEventsActivity() {
-        editEvent = true;
-        Intent addEventsActivityIntent = new Intent(this,
-                AddEventActivity.class);
-        startActivity(addEventsActivityIntent);
-    }
-
-    public void switchToAddBlockActivity() {
-        editEvent = true;
-        Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
-        startActivity(blockActivityIntent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (editEvent) {
-            mEventForList = eventToEventForList(getDBQuester().getAllCourses(),
-                    getDBQuester().getAllEvents());
-            CustomAdapter editAdapter = new CustomAdapter(context);
-            createAdapter(mEventForList, editAdapter);
-            mListView.setAdapter(editAdapter);
-
-            editEvent = false;
-
-        }
-    }
-
-    @Override
-    public void updateData() {
-        editEvent = true;
-        onResume();
     }
 }

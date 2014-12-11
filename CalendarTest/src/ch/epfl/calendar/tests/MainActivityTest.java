@@ -6,10 +6,6 @@ package ch.epfl.calendar.tests;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
-import com.google.android.apps.common.testing.testrunner.Stage;
-import com.google.common.collect.Iterables;
-
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
@@ -20,6 +16,10 @@ import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.testing.utils.MockActivity;
 import ch.epfl.calendar.testing.utils.Utils;
+
+import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
+import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.common.collect.Iterables;
 
 /**
  * @author AblionGE
