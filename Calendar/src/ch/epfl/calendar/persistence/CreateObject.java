@@ -1,9 +1,10 @@
 package ch.epfl.calendar.persistence;
 
 import android.content.ContentValues;
+import android.os.AsyncTask;
 
 /**
- * 
+ * This class serves as a gateway to pass objects to {@link AsyncTask} working on the local database
  * @author AblionGE
  * 
  */
@@ -13,6 +14,12 @@ public class CreateObject {
     private String mTable;
     private String mNullColumnHack;
 
+    /**
+     * Create an instance of this class.
+     * @param content values to store in database
+     * @param nullColumnHack null
+     * @param table the table in which to add the values
+     */
     public CreateObject(ContentValues content, String nullColumnHack,
             String table) {
         this.mContent = content;

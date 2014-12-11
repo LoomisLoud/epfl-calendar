@@ -8,7 +8,7 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.utils.Logger;
 
 /**
- * This AsyncTask allows to access to the DB in an asynchronous way
+ * This AsyncTask allows to create rows the DB in an asynchronous way
  * 
  * @author AblionGE
  * 

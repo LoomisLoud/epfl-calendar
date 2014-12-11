@@ -3,6 +3,7 @@
  */
 package ch.epfl.calendar.persistence;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -19,7 +20,8 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * Construct a new DBPoint entry.
      * 
-     * @param context
+     * @param context the context of the {@link Activity} actually using the {@link DBHelper}
+     * @param databaseName the name of the database to use.
      */
     public DBHelper(Context context, String databaseName) {
         super(context, databaseName, null, App.DATABASE_VERSION);
