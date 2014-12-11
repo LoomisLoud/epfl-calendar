@@ -29,6 +29,7 @@ import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 
 /**
  * The Main activity (calendar view) of the application.
+ * 
  * @author lweingart
  * 
  */
@@ -109,7 +110,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mWeekView.notifyDatasetChanged();
         activateRotation();
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean retour = super.onCreateOptionsMenu(menu);
@@ -135,7 +136,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     @Override
     public List<WeekViewEvent> onMonthChange() {
 
@@ -144,91 +145,28 @@ public class MainActivity extends DefaultActionBarActivity implements
 
         for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
-                mMListEvents.add(new WeekViewEvent(mIdEvent++, getEventTitle(c,
-                        p), p.getStartDate(), p.getEndDate(), p.getType(), c
+                mMListEvents.add(new WeekViewEvent(mIdEvent++, c.getName(), p
+                        .getStartDate(), p.getEndDate(), p.getType(), c
                         .getDescription()));
             }
             for (Event event : c.getEvents()) {
-                mMListEvents.add(new WeekViewEvent(event.getId(), event
-                        .getTitle(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getDescription()));
+                addEvent(event);
             }
 
         }
         for (Event event : mListEventWithoutCourse) {
-
-
-            int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
-                    - event.getStartDate().get(Calendar.DAY_OF_MONTH);
-            int monthDuaration = event.getEndDate().get(Calendar.MONTH)
-                    - event.getStartDate().get(Calendar.MONTH);
-            int yearDuration = event.getEndDate().get(Calendar.YEAR)
-                    - event.getStartDate().get(Calendar.YEAR);
-
-            if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
-                List<Calendar> startList = new ArrayList<Calendar>();
-                Calendar start = (Calendar) event.getStartDate().clone();
-                startList.add(start);
-                for (int i = 0; i <= dayDuration; i++) {
-                    Calendar end = event.getEndDate();
-                    if (i != dayDuration) {
-                        end = (Calendar) start.clone();
-                        end.set(Calendar.HOUR_OF_DAY, HOUR_23);
-                        end.set(Calendar.MINUTE, MINUTE_59);
-                    }
-                    mMListEvents.add(new WeekViewEvent(event.getId(), event
-                            .getTitle(), startList.get(i), end,
-                            PeriodType.DEFAULT, event.getDescription()));
-
-                    Calendar newStart = (Calendar) startList.get(i).clone();
-                    newStart.add(Calendar.DAY_OF_MONTH, 1);
-                    newStart.set(Calendar.HOUR_OF_DAY, 0);
-                    newStart.set(Calendar.MINUTE, 0);
-                    startList.add(newStart);
-                }
-            } else {
-                mMListEvents.add(new WeekViewEvent(event.getId(), event
-                        .getName(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getDescription()));
-            }
+            addEvent(event);
         }
 
         return mMListEvents;
     }
-
-
-    private String getEventTitle(Course c, Period p) {
-
-        String startHour = App
-                .calendarHourToBasicFormatString(p.getStartDate());
-        String endHour = App.calendarHourToBasicFormatString(p.getEndDate());
-
-
-        String hour = startHour + " - " + endHour;
-        String result = c.getName() + "\n";
-       // int i = p.getRooms().size();
-        
-          /*  for (String r : p.getRooms()) {
-                if (i > 1) {
-                    result += r + ",";
-                } else {
-                    result += r;
-                }
-                i--;
-            }*/
-        
-        return hour + "\n" + result  + p.getType();
-    }
-
-
-    
 
     @Override
     public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
         if (weekEvent.getmType().equals(PeriodType.LECTURE)
                 || weekEvent.getmType().equals(PeriodType.PROJECT)
                 || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = weekEvent.getName().split("\n")[1];
+            String cours = weekEvent.getName();
             switchToCourseDetails(cours);
         } else {
             Event event = getDBQuester().getEvent(weekEvent.getId());
@@ -241,7 +179,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (event.getmType() == PeriodType.EXERCISES
                 || event.getmType() == PeriodType.LECTURE
                 || event.getmType() == PeriodType.PROJECT) {
-            String cours = event.getName().split("\n")[1];
+            String cours = event.getName();
             switchToCourseDetails(cours);
 
         } else {
@@ -275,7 +213,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                                                     PeriodType.PROJECT)
                                             || event.getmType().equals(
                                                     PeriodType.EXERCISES)) {
-                                        String cours = event.getName().split("\n")[0];
+                                        String cours = event.getName();
                                         switchToCourseDetails(cours);
                                     } else {
     
@@ -305,16 +243,53 @@ public class MainActivity extends DefaultActionBarActivity implements
             choiceDialog.show();
         }
     }
-    
+
     @Override
     public void updateData() {
         updateListsFromDB();
         mWeekView.notifyDatasetChanged();
     }
-    
+
     private void updateListsFromDB() {
         mListCourses = getDBQuester().getAllCourses();
         mListEventWithoutCourse = getDBQuester().getAllEventsWithoutCourse();
+    }
+
+    private void addEvent(Event event) {
+        int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
+                - event.getStartDate().get(Calendar.DAY_OF_MONTH);
+        int monthDuaration = event.getEndDate().get(Calendar.MONTH)
+                - event.getStartDate().get(Calendar.MONTH);
+        int yearDuration = event.getEndDate().get(Calendar.YEAR)
+                - event.getStartDate().get(Calendar.YEAR);
+
+        if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
+            List<Calendar> startList = new ArrayList<Calendar>();
+            Calendar start = (Calendar) event.getStartDate().clone();
+            startList.add(start);
+            for (int i = 0; i <= dayDuration; i++) {
+                Calendar end = event.getEndDate();
+                if (i != dayDuration) {
+                    end = (Calendar) startList.get(i).clone();
+                    end.set(Calendar.HOUR_OF_DAY, HOUR_23);
+                    end.set(Calendar.MINUTE, MINUTE_59);
+                }
+
+                mMListEvents.add(new WeekViewEvent(event.getId(), event
+                        .getName(), startList.get(i), end, PeriodType.DEFAULT,
+                        event.getDescription()));
+
+                Calendar newStart = (Calendar) startList.get(i).clone();
+                newStart.add(Calendar.DAY_OF_MONTH, 1);
+                newStart.set(Calendar.HOUR_OF_DAY, 0);
+                newStart.set(Calendar.MINUTE, 0);
+                startList.add(newStart);
+            }
+        } else {
+            mMListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
+                    event.getStartDate(), event.getEndDate(),
+                    PeriodType.DEFAULT, event.getDescription()));
+        }
     }
 
     private ArrayList<String> spinnerList() {
