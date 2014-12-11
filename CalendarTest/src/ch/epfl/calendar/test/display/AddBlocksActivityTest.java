@@ -58,7 +58,8 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
 		super(AddBlocksActivity.class);
 	}
 
-    public void setUp() throws Exception {
+    @Override
+	public void setUp() throws Exception {
         super.setUp();
 
         /*
@@ -68,7 +69,7 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
         App.setDBHelper("calendar_test.db");
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
-        
+
         mMockActivity = new MockActivity();
         App.setActionBar(mMockActivity);
         mMockActivity.setUdpateData(mMockActivity);
@@ -80,9 +81,10 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
 
         populateTestDB();
     }
-    
-    
-    public void tearDown() throws Exception {
+
+
+    @Override
+	public void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
@@ -90,15 +92,15 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
         }
         super.tearDown();
     }
-    
+
     public void testSizeListView() throws InterruptedException {
         getActivityOnTest();
         onData(is(instanceOf(HashMap.class)))
                 // Every entry in the ListView is a HashMap
                 .inAdapterView(withId(getIdByName("credits_blocks_list")))
-                .atPosition(N_LIST_VIEW_ELEMENTS - 1).perform(); 
+                .atPosition(N_LIST_VIEW_ELEMENTS - 1).perform();
     }
-    
+
     public void testClickOnListView() {
         getActivityOnTest();
         onData(is(instanceOf(HashMap.class)))
@@ -107,98 +109,98 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
                 .atPosition(0).perform(click())
                 .check(doesNotExist());
     }
-    
+
     public void testUpdateCredits() {
-    	
+
     	mDB.deleteCourse("TestCourse1");
         mDB.deleteCourse("TestCourse2");
 
         waitOnInsertionInDB();
-        
+
     	getActivityOnTest();
 
     	assertEquals("There are no more blocks to be placed "
       		  + "into the calendar, your week is full, good work !", mText.getText().toString());
     }
-    
+
     public void testGreeter() {
     	getActivityOnTest();
-    	
+
         assertEquals("It seems like you did not fill "
         		  + "all your week up with your timetable"
         		  + " according to your credits. To add an"
         		  + " element to the timetable, click on the course:", mText.getText().toString());
     }
-    
+
     public void testChangeCredits() {
     	Calendar startEvent = Calendar.getInstance();
     	Calendar endEvent = Calendar.getInstance();
     	endEvent.add(Calendar.HOUR_OF_DAY, 2);
-    	
+
     	Event e = new Event("Do " + mCourses.get(0).getName() + " homework",
                 App.calendarToBasicFormatString(startEvent),
                 App.calendarToBasicFormatString(endEvent),
                 PeriodType.DEFAULT.toString(), mCourses.get(0).getName(),
                 "You have to work on " + mCourses.get(0).getName() + " now", true,
                 DBQuester.NO_ID);
-    	        
+
     	Event eSecond = new Event("Do " + mCourses.get(1).getName() + " homework",
                 App.calendarToBasicFormatString(startEvent),
                 App.calendarToBasicFormatString(endEvent),
                 PeriodType.DEFAULT.toString(), mCourses.get(1).getName(),
                 "You have to work on " + mCourses.get(1).getName() + " now", true,
                 DBQuester.NO_ID);
-    	
+
     	mDB.storeEvent(e);
     	mDB.storeEvent(eSecond);
         waitOnInsertionInDB();
 
         getActivityOnTest();
-        
+
         @SuppressWarnings("unchecked")
 		HashMap<String, String> adapter =  (HashMap<String, String>) mList.getAdapter().getItem(0);
         String credits = adapter.get("Remaining credits");
-        
+
         assertEquals("Remaining credits: 2", credits);
         onData(is(instanceOf(HashMap.class)))
-        .inAdapterView(withId(getIdByName("credits_blocks_list")))
-        .atPosition(0).perform();
+        	.inAdapterView(withId(getIdByName("credits_blocks_list")))
+        	.atPosition(0).perform();
     }
-    
+
     @SuppressWarnings("unchecked")
 	public void testOnResult() {
     	getActivityOnTest();
-    	
+
     	//Initial conditions
 		HashMap<String, String> adapter =  (HashMap<String, String>) mList.getAdapter().getItem(0);
         String credits = adapter.get("Remaining credits");
         assertEquals("Remaining credits: 2", credits);
-        
+
         //Mocking up an activityResult
         Intent intent = new Intent();
         intent.putExtra("courseName", "TestCourse1");
         intent.putExtra("position", 0);
-        
+
         Calendar startEvent = Calendar.getInstance();
     	Calendar endEvent = Calendar.getInstance();
     	endEvent.add(Calendar.HOUR_OF_DAY, 1);
-    	
+
     	Event e = new Event("Do " + mCourses.get(0).getName() + " homework",
                 App.calendarToBasicFormatString(startEvent),
                 App.calendarToBasicFormatString(endEvent),
                 PeriodType.DEFAULT.toString(), mCourses.get(0).getName(),
                 "You have to work on " + mCourses.get(0).getName() + " now", true,
                 DBQuester.NO_ID);
-    	        
+
     	mDB.storeEvent(e);
         waitOnInsertionInDB();
         getActivityOnTest();
-        
+
         Instrumentation.ActivityResult activityResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
 
         Instrumentation.ActivityMonitor activityMonitor = getInstrumentation()
         		  .addMonitor(AddEventBlockActivity.class.getName(), activityResult , true);
-        
+
         onData(is(instanceOf(HashMap.class))).inAdapterView(withId(getIdByName("credits_blocks_list")))
         .atPosition(0).perform(click());
 
@@ -211,7 +213,7 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
         credits = adapter.get("Remaining credits");
         assertEquals("Remaining credits: 1", credits);
     }
-    
+
     private int getIdByName(String name) {
         Context context = getInstrumentation().getTargetContext();
         int result = context.getResources().getIdentifier(name, "id",
@@ -219,7 +221,7 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
         assertTrue("id for name not found: " + name, result != 0);
         return result;
     }
-    
+
     private void populateTestDB() throws Exception {
         List<String> period1Course1Rooms = new ArrayList<String>();
         List<String> period2Course1Rooms = new ArrayList<String>();
@@ -261,7 +263,7 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
 
         waitOnInsertionInDB();
     }
-    
+
     public Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
@@ -275,18 +277,18 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
         });
         return activity[0];
     }
-    
+
     public void getActivityOnTest() {
         mActivity = getActivity();
         mText = (TextView) mActivity.findViewById(R.id.greeter);
         mList = (ListView) mActivity.findViewById(R.id.credits_blocks_list);
-        
+
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
     }
-    
+
     private void waitOnInsertionInDB() {
         while (mMockActivity.getNbOfAsyncTaskDB() > 0) {
             try {

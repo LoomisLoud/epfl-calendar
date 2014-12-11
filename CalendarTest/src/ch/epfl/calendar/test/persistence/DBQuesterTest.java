@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.persistence;
 
@@ -19,18 +19,21 @@ import ch.epfl.calendar.test.utils.MockActivity;
  * Test of the DBQuester This test class extends
  * ActivityInstrumentationTestCase2 because an activity is needed to delete the
  * tests database and we have to use methods from DefaultActionBarActivity
- * 
+ *
  * @author AblionGE
- * 
+ *
  */
 public class DBQuesterTest extends
         ActivityInstrumentationTestCase2<MockActivity> {
+
+	private static final int SLEEP_TIME = 250;
+	private static final int NB_CREDITS_200 = 200;
+	private static final int NB_CREDITS_5 = 5;
 
     private List<Course> mListCourses = null;
     private DBQuester mDBQuester;
     private MockActivity mActivity;
 
-    private static final int SLEEP_TIME = 250;
 
     public DBQuesterTest() {
         super(MockActivity.class);
@@ -40,7 +43,8 @@ public class DBQuesterTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
 
         // When the activity is MainActivity, it is important
@@ -69,7 +73,8 @@ public class DBQuesterTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         super.tearDown();
 
         mDBQuester = null;
@@ -93,20 +98,20 @@ public class DBQuesterTest extends
         for (Course course : mListCourses) {
             assertTrue(coursesInDB.contains(course));
         }
-        
+
         //delete a course and modify the other !
         Course course = coursesInDB.get(0);
         course.setTeacher("new Teacher");
         List<Course> newListCourses = new ArrayList<Course>();
         newListCourses.add(course);
-        
+
         mDBQuester.storeCourses(newListCourses);
-        
+
         waitOnInsertionInDB();
-        
+
         coursesInDB = new ArrayList<Course>();
         coursesInDB = mDBQuester.getAllCourses();
-        
+
         assertEquals(1, coursesInDB.size());
         assertTrue(coursesInDB.contains(course));
     }
@@ -166,15 +171,15 @@ public class DBQuesterTest extends
         Event eventInDB = mDBQuester.getEvent(eventsInDB.get(0).getId());
 
         assertEquals(event1.toString(), eventInDB.toString());
-        
+
         //Modify the event
         eventInDB.setDescription("new description");
         event1 = eventInDB;
-        
+
         mDBQuester.storeEvent(eventInDB);
-        
+
         waitOnInsertionInDB();
-        
+
         eventInDB = mDBQuester.getEvent(eventsInDB.get(0).getId());
 
         assertEquals(event1.toString(), eventInDB.toString());
@@ -295,16 +300,16 @@ public class DBQuesterTest extends
         Course courseInDB = mDBQuester.getCourse(mListCourses.get(0).getName());
 
         assertEquals(mListCourses.get(0).toString(), courseInDB.toString());
-        
+
       //Change a course and update it
         Course course = mListCourses.get(0);
         course.setDescription("new description");
         mDBQuester.storeCourse(course);
-        
+
         waitOnInsertionInDB();
-        
+
         courseInDB = mDBQuester.getCourse(course.getName());
-        
+
         assertEquals(course.toString(), courseInDB.toString());
     }
 
@@ -324,10 +329,10 @@ public class DBQuesterTest extends
                 .getAllEventsFromCourse(course.getName());
 
         assertEquals(2, events.size());
-        
+
         //Update both with same description
         List<Event> newEvents = new ArrayList<Event>();
-        
+
         for (Event event : events) {
             event.setDescription("new description");
             newEvents.add(event);
@@ -341,7 +346,7 @@ public class DBQuesterTest extends
                 .getAllEventsFromCourse(course.getName());
 
         assertEquals(2, events.size());
-        
+
         for (Event event : events) {
             assertEquals("new description", event.getDescription());
         }
@@ -368,7 +373,7 @@ public class DBQuesterTest extends
                 .getAllPeriodsFromCourse(course.getName());
         assertEquals(1, periodsAfterDelete.size());
     }
-    
+
     /**
      * Test method for
      * {@link ch.epfl.calendar.persistence.DBQuester#deleteBlock(ch.epfl.calendar.data.Event)}.
@@ -391,40 +396,40 @@ public class DBQuesterTest extends
         List<Event> events = new ArrayList<Event>();
         events.add(event1Course2);
         events.add(event2Course2);
-        
+
         mListCourses.get(1).setEvents(events);
-        
+
         mDBQuester.storeEventsFromCourse(mListCourses.get(1));
 
         waitOnInsertionInDB();
 
         events = mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName());
-        
+
         assertEquals(2, events.size());
-        
+
         mDBQuester.deleteBlock(events.get(0));
-        
+
         assertEquals(new ArrayList<Event>(), mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName()));
-        
+
         //Test with more events
         events = new ArrayList<Event>();
         events.add(event1Course2);
         events.add(event2Course2);
         events.add(event3Course2);
         events.add(event4Course2);
-        
+        int nbEvents = events.size();
         mListCourses.get(1).setEvents(events);
-        
+
         mDBQuester.storeEventsFromCourse(mListCourses.get(1));
 
         waitOnInsertionInDB();
 
         events = mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName());
-        
-        assertEquals(4, events.size());
-        
+
+        assertEquals(nbEvents, events.size());
+
         mDBQuester.deleteBlock(events.get(0));
-        
+
         assertEquals(2, mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName()).size());
     }
 
@@ -509,7 +514,7 @@ public class DBQuesterTest extends
         eventsCourse1.add(event1Course1);
         eventsCourse1.add(event2Course1);
         Course course1 = new Course("TestCourse1", periodsCourse1,
-                "Pr. Testpr1", 200, "CS-321", "awesome course", eventsCourse1);
+                "Pr. Testpr1", NB_CREDITS_200, "CS-321", "awesome course", eventsCourse1);
 
         List<String> period1Course2Rooms = new ArrayList<String>();
         List<String> period2Course2Rooms = new ArrayList<String>();
@@ -525,7 +530,7 @@ public class DBQuesterTest extends
         periodsCourse2.add(period1Course2);
         periodsCourse2.add(period2Course2);
         Course course2 = new Course("TestCourse2", periodsCourse2,
-                "Pr. Testpr2", 5, "CS-000", "cool course", null);
+                "Pr. Testpr2", NB_CREDITS_5, "CS-000", "cool course", null);
 
         mListCourses = new ArrayList<Course>();
         mListCourses.add(course1);

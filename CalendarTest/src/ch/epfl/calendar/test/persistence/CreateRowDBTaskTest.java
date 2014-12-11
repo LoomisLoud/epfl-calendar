@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.persistence;
 
@@ -19,11 +19,12 @@ import ch.epfl.calendar.test.utils.MockActivity;
 
 /**
  * @author AblionGE
- * 
+ *
  */
 public class CreateRowDBTaskTest extends
         ActivityInstrumentationTestCase2<MockActivity> {
 
+	private static final int NB_TASKS = 6;
     private MockActivity mActivity;
     private Event mEvent = null;
     private DBQuester mDBQuester;
@@ -37,7 +38,8 @@ public class CreateRowDBTaskTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
 
         // When the activity is MainActivity, it is important
@@ -70,7 +72,8 @@ public class CreateRowDBTaskTest extends
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         super.tearDown();
 
         getInstrumentation().getTargetContext().deleteDatabase(
@@ -82,7 +85,7 @@ public class CreateRowDBTaskTest extends
      * Test method for
      * {@link ch.epfl.calendar.persistence.CreateRowDBTask#doInBackground(ch.epfl.calendar.persistence.CreateObject[])}
      * .
-     * 
+     *
      * @throws NoSuchMethodException
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
@@ -96,7 +99,7 @@ public class CreateRowDBTaskTest extends
         doInBackground = (CreateRowDBTask.class).getDeclaredMethod(
                 "doInBackground", CreateObject[].class);
         doInBackground.setAccessible(true);
-        App.getActionBar().addTask(6);
+        App.getActionBar().addTask(NB_TASKS);
         doInBackground
                 .invoke(instance,
                         new Object[] {new CreateObject[] {createObjectToStore(mEvent) } });
