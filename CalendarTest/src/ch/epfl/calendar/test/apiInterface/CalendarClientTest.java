@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
-import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.test.utils.MockTestCase;

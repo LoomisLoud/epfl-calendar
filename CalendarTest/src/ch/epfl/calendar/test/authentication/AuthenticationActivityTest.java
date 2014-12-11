@@ -16,10 +16,8 @@ import org.hamcrest.TypeSafeMatcher;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.EditText;
-import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.test.utils.Utils;
 
 /**

@@ -53,7 +53,7 @@ public class AppEngineTaskTest extends MockTestCase {
                 "doInBackground", String[].class);
         doInBackground.setAccessible(true);
         returnedCourse = (Course) doInBackground.invoke(instance,
-                new Object[] { new String[] { COURSE_NAME } });
+                new Object[] {new String[] {COURSE_NAME}});
 
         assertEquals(COURSE_NAME, returnedCourse.getName());
         assertEquals(COURSE_CODE, returnedCourse.getCode());

@@ -205,8 +205,7 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
         .atPosition(0).perform(click());
 
         // Wait for the ActivityMonitor to be hit, Instrumentation will then return the mock ActivityResult:
-        AddEventBlockActivity childActivity = (AddEventBlockActivity) getInstrumentation()
-        		  .waitForMonitorWithTimeout(activityMonitor, 5);
+        getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5);
 
         // How do I check that StartActivityForResult correctly handles the returned result?
 		adapter =  (HashMap<String, String>) mList.getAdapter().getItem(0);

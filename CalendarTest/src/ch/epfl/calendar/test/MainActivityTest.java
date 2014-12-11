@@ -86,7 +86,8 @@ public class MainActivityTest extends
 
     /**
      * Test method for
-     * {@link ch.epfl.calendar.MainActivity#onEventClick(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent, android.graphics.RectF)}
+     * {@link ch.epfl.calendar.MainActivity#onEventClick(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent, 
+     * android.graphics.RectF)}
      * .
      */
     public final void testOnEventClick() {
@@ -97,7 +98,8 @@ public class MainActivityTest extends
 
     /**
      * Test method for
-     * {@link ch.epfl.calendar.MainActivity#onEventLongPress(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent, android.graphics.RectF)}
+     * {@link ch.epfl.calendar.MainActivity#onEventLongPress(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent, 
+     * android.graphics.RectF)}
      * .
      */
     public final void testOnEventLongPress() {
@@ -184,12 +186,14 @@ public class MainActivityTest extends
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-            activity[0] = Iterables.getOnlyElement(activites);
-        }});
+            @Override
+            public void run() {
+                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance()
+                    .getActivitiesInStage(Stage.RESUMED);
+                activity[0] = Iterables.getOnlyElement(activites);
+            }
+        });
         return activity[0];
-      }
+    }
 
 }

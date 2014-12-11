@@ -290,13 +290,13 @@ public class EventListActivityTest extends
         Method eventToEventForList;
         eventToEventForList = (EventListActivity.class).getDeclaredMethod(
                 "eventToEventForList", new Class[] {
-                        List.class, List.class
+                    List.class, List.class
                 });
         eventToEventForList.setAccessible(true);
 
         List<ListViewItem> listViewEvents = (List<ListViewItem>) eventToEventForList
                 .invoke(mActivity, new Object[] {
-                        mCourses, mEvents
+                    mCourses, mEvents
                 });
         // One event and one period are deleted because they are in the past
         assertEquals(5, listViewEvents.size());
@@ -309,7 +309,7 @@ public class EventListActivityTest extends
         Method createAdapter;
         createAdapter = (EventListActivity.class).getDeclaredMethod(
                 "createAdapter", new Class[] {
-                        List.class, CustomAdapter.class
+                    List.class, CustomAdapter.class
                 });
         createAdapter.setAccessible(true);
 
@@ -317,7 +317,7 @@ public class EventListActivityTest extends
 
         CustomAdapter adapter = (CustomAdapter) createAdapter.invoke(mActivity,
                 new Object[] {
-                        eventForList, new CustomAdapter(mActivity)
+                    eventForList, new CustomAdapter(mActivity)
                 });
         // We have 5 eventForList :
         // 1 Header Item per day : 3

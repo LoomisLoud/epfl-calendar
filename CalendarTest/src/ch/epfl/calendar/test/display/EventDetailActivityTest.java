@@ -77,12 +77,14 @@ public class EventDetailActivityTest extends
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-            activity[0] = Iterables.getOnlyElement(activites);
-        }});
+            @Override
+            public void run() {
+                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance()
+                        .getActivitiesInStage(Stage.RESUMED);
+                activity[0] = Iterables.getOnlyElement(activites);
+            }
+        });
         return activity[0];
-      }
+    }
 
 }
