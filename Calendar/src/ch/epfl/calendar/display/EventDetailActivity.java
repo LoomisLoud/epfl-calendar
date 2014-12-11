@@ -13,8 +13,10 @@ import android.widget.TextView;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
+import ch.epfl.calendar.data.Event;
 
 /**
+ * This activity shows the details of an {@link Event}
  * @author Maxime
  * 
  */
@@ -44,6 +46,11 @@ public class EventDetailActivity extends DefaultActionBarActivity implements
 
     }
     
+    @Override
+    public void updateData() {
+        // Do nothing
+    }
+    
     private void eventDetailsActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("Event Details");
@@ -68,10 +75,5 @@ public class EventDetailActivity extends DefaultActionBarActivity implements
         sb.setSpan(bss, 0, bodyBold.length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return sb;
-    }
-
-    @Override
-    public void updateData() {
-        // Do nothing
     }
 }

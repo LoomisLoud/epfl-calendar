@@ -20,17 +20,23 @@ import android.widget.SimpleAdapter;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Period;
 
 /**
+ * This activity shows the list of {@link Course} a student is enrolled into.
  * @author Maxime
  * 
  */
 public class CoursesListActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
+    /**
+     * The identifier of the {@link AuthenticationActivity}
+     */
     public static final int AUTH_ACTIVITY_CODE = 1;
+    
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
     private static final int ONE = 1;
@@ -61,19 +67,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
         updateData();
 
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        super.setUdpateData(this);
-        updateData();
-    }
-
-    private void coursesListActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setTitle("My Courses");
-    }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean retour = super.onCreateOptionsMenu(menu);
@@ -83,22 +77,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
         this.invalidateOptionsMenu();
         return retour;
     }
-
-    /**
-     * Launches the CourseDetailsActivity of a specific courseName
-     * 
-     * @param courseName
-     *            the name of the course from which we want the details
-     */
-    private void openCourseDetails(String courseName) {
-
-        Intent courseDetailsActivityIntent = new Intent(this,
-                CourseDetailsActivity.class);
-
-        courseDetailsActivityIntent.putExtra("course", courseName);
-        startActivity(courseDetailsActivityIntent);
-    }
-
+    
     @Override
     public void updateData() {
         mCourses = getDBQuester().getAllCourses();
@@ -150,6 +129,33 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
             }
 
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        super.setUdpateData(this);
+        updateData();
+    }
+
+    private void coursesListActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("My Courses");
+    }
+
+    /**
+     * Launches the CourseDetailsActivity of a specific courseName
+     * 
+     * @param courseName
+     *            the name of the course from which we want the details
+     */
+    private void openCourseDetails(String courseName) {
+
+        Intent courseDetailsActivityIntent = new Intent(this,
+                CourseDetailsActivity.class);
+
+        courseDetailsActivityIntent.putExtra("course", courseName);
+        startActivity(courseDetailsActivityIntent);
     }
 
     private int getCreditImage(Course cours) {

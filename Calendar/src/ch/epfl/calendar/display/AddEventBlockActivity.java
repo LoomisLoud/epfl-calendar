@@ -44,10 +44,77 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
     private int mPosition;
     private Intent mIntent;
     private static final boolean IS_BLOCK = true;
+    
+    /**
+     * The number of days in a wekk
+     */
     public final static int NUMBER_OF_DAYS = 7;
+    
+    /**
+     * 23
+     */
     public static final int ELEVEN_O_CLOCK = 23;
+    
+    /**
+     * 59
+     */
     public static final int LAST_MINUTE = 59;
+    
+    /**
+     * The format used to display hours on screen. aa parses to AM or PM
+     */
     public static final String TIME_FORMAT = "hh:mm aa";
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
+        setContentView(R.layout.activity_add_event_block);
+
+        addEventActionBar();
+
+        mIntent = getIntent();
+        mCourseName = "";
+        if (mIntent.hasExtra("courseName")) {
+            mCourseName = mIntent.getStringExtra("courseName");
+        }
+        mPosition = -1;
+        if (mIntent.hasExtra("position")) {
+            mPosition = mIntent.getIntExtra("position", -1);
+        }
+
+        mSpinnerDays = (Spinner) findViewById(R.id.spinner_week_days);
+        mButtonStartHour = (Button) findViewById(R.id.start_event_dialog_hour);
+        mButtonEndHour = (Button) findViewById(R.id.end_event_dialog_hour);
+
+        initializePickerDialog();
+        initializeButton();
+
+        setView();
+    }
+
+    /**
+     * Finishes the activity and stores the data in the DB
+     * 
+     * @param v
+     */
+    public void finishActivity(View v) {
+        try {
+            transferAndStoreData();
+        } catch (ReversedDatesException e) {
+            Toast.makeText(AddEventBlockActivity.this.getBaseContext(),
+                    AddEventBlockActivity.this.getString(R.string.reversed_dates),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        finish();
+    }
+
+    // This method has to be defined, even if it does nothing !
+    @Override
+    public void updateData() {
+        // Do nothing
+    }
 
     private void initializePickerDialog() {
         createPickerListener();
@@ -197,55 +264,5 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
         i.putExtra("position", mPosition);
 
         setResult(RESULT_OK, i);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        super.setUdpateData(this);
-        setContentView(R.layout.activity_add_event_block);
-
-        addEventActionBar();
-
-        mIntent = getIntent();
-        mCourseName = "";
-        if (mIntent.hasExtra("courseName")) {
-            mCourseName = mIntent.getStringExtra("courseName");
-        }
-        mPosition = -1;
-        if (mIntent.hasExtra("position")) {
-        	mPosition = mIntent.getIntExtra("position", -1);
-        }
-
-        mSpinnerDays = (Spinner) findViewById(R.id.spinner_week_days);
-        mButtonStartHour = (Button) findViewById(R.id.start_event_dialog_hour);
-        mButtonEndHour = (Button) findViewById(R.id.end_event_dialog_hour);
-
-        initializePickerDialog();
-        initializeButton();
-
-        setView();
-    }
-
-    /**
-     * Finishes the activity and stores the data in the DB
-     * 
-     * @param v
-     */
-    public void finishActivity(View v) {
-        try {
-            transferAndStoreData();
-        } catch (ReversedDatesException e) {
-            Toast.makeText(AddEventBlockActivity.this.getBaseContext(),
-                    AddEventBlockActivity.this.getString(R.string.reversed_dates),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        finish();
-    }
-
-    @Override
-    public void updateData() {
-        
     }
 }

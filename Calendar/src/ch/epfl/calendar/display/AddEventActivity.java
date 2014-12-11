@@ -28,6 +28,7 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.persistence.DBQuester;
@@ -38,9 +39,13 @@ import ch.epfl.calendar.persistence.DBQuester;
  */
 public class AddEventActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
-
-    private static final boolean IS_BLOCK = false;
+    
+    /**
+     * The identifier of the {@link AuthenticationActivity}
+     */
     public static final int AUTH_ACTIVITY_CODE = 1;
+    
+    private static final boolean IS_BLOCK = false;
 
     private EditText mNameEvent;
     private EditText mDescriptionEvent;
@@ -95,6 +100,36 @@ public class AddEventActivity extends DefaultActionBarActivity implements
 
         setView();
         initializeValue(startingIntent);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean retour = super.onCreateOptionsMenu(menu);
+        MenuItem addEventItem = (MenuItem) menu.findItem(R.id.add_event);
+        addEventItem.setVisible(false);
+        this.invalidateOptionsMenu();
+        return retour;
+    }
+
+    /**
+     * Ends this activity
+     * @param v
+     */
+    public void finishActivity(View v) {
+        try {
+            transferData();
+        } catch (ReversedDatesException e) {
+            Toast.makeText(AddEventActivity.this.getBaseContext(),
+                    AddEventActivity.this.getString(R.string.reversed_dates),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        finish();
+    }
+
+    @Override
+    public void updateData() {
+        mCoursesNames = getDBQuester().getAllCoursesNames();
     }
 
     private void initializePickerDialog() {
@@ -318,31 +353,5 @@ public class AddEventActivity extends DefaultActionBarActivity implements
                         .getText().toString(), IS_BLOCK, eventId);
         DBQuester dbQuester = new DBQuester();
         dbQuester.storeEvent(e);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        boolean retour = super.onCreateOptionsMenu(menu);
-        MenuItem addEventItem = (MenuItem) menu.findItem(R.id.add_event);
-        addEventItem.setVisible(false);
-        this.invalidateOptionsMenu();
-        return retour;
-    }
-
-    public void finishActivity(View v) {
-        try {
-            transferData();
-        } catch (ReversedDatesException e) {
-            Toast.makeText(AddEventActivity.this.getBaseContext(),
-                    AddEventActivity.this.getString(R.string.reversed_dates),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        finish();
-    }
-
-    @Override
-    public void updateData() {
-        mCoursesNames = getDBQuester().getAllCoursesNames();
     }
 }

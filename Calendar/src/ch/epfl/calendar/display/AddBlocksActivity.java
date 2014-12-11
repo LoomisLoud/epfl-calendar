@@ -20,6 +20,7 @@ import android.widget.TextView;
 import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.data.Block;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
@@ -32,8 +33,16 @@ import ch.epfl.calendar.data.Period;
 public class AddBlocksActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
+    /**
+     * The identifier of the {@link AuthenticationActivity}
+     */
     public static final int AUTH_ACTIVITY_CODE = 1;
+    
+    /**
+     * The identifier of the {@link AddEventBlockActivity}
+     */
     public static final int BLOCK_ACTIVITY_CODE = 2;
+    
     private static final int NUMBER_OF_DAYS = 7;
     private ListView mListView;
     private List<Course> mCourses = new ArrayList<Course>();
@@ -43,6 +52,49 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
     private Intent intentToEventCreation;
     private SimpleAdapter simpleAdapter;
     private final ArrayList<Map<String, String>> blockListAdapter = new ArrayList<Map<String, String>>();
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        super.setUdpateData(this);
+
+        setContentView(R.layout.activity_add_blocks);
+        addEventActionBar();
+
+        intentToEventCreation = new Intent(this, AddEventBlockActivity.class);
+
+        mGreeter = (TextView) findViewById(R.id.greeter);
+        mListView = (ListView) findViewById(R.id.credits_blocks_list);
+
+        updateData();
+    }
+    
+    @Override
+    public void updateData() {
+        mCourses = getDBQuester().getAllCourses();
+        blockList = constructBlockList(mCourses);
+        createAdapterAndListView();
+        updateCredits();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean retour = super.onCreateOptionsMenu(menu);
+        MenuItem addEventBlockItem = (MenuItem) menu
+                .findItem(R.id.add_event_block);
+        addEventBlockItem.setVisible(false);
+        this.invalidateOptionsMenu();
+        return retour;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == BLOCK_ACTIVITY_CODE && resultCode == RESULT_OK) {
+            updateCredits(data);
+        }
+    }
 
     private void addEventActionBar() {
         ActionBar actionBar = getActionBar();
@@ -172,48 +224,5 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         }
         updateDataSet();
         simpleAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        super.setUdpateData(this);
-
-        setContentView(R.layout.activity_add_blocks);
-        addEventActionBar();
-
-        intentToEventCreation = new Intent(this, AddEventBlockActivity.class);
-
-        mGreeter = (TextView) findViewById(R.id.greeter);
-        mListView = (ListView) findViewById(R.id.credits_blocks_list);
-
-        updateData();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == BLOCK_ACTIVITY_CODE && resultCode == RESULT_OK) {
-            updateCredits(data);
-        }
-    }
-
-    @Override
-    public void updateData() {
-        mCourses = getDBQuester().getAllCourses();
-        blockList = constructBlockList(mCourses);
-        createAdapterAndListView();
-        updateCredits();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        boolean retour = super.onCreateOptionsMenu(menu);
-        MenuItem addEventBlockItem = (MenuItem) menu
-                .findItem(R.id.add_event_block);
-        addEventBlockItem.setVisible(false);
-        this.invalidateOptionsMenu();
-        return retour;
     }
 }
