@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.display.AddBlocksActivity;
+import ch.epfl.calendar.display.AddEventBlockActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.LocalDatabaseInterface;
 import ch.epfl.calendar.testing.utils.MockActivity;
@@ -152,13 +155,61 @@ public class AddBlocksActivityTest extends ActivityInstrumentationTestCase2<AddB
 
         getActivityOnTest();
         
-        HashMap<String, String> adapter = (HashMap<String, String>) mList.getAdapter().getItem(0);
+        @SuppressWarnings("unchecked")
+		HashMap<String, String> adapter =  (HashMap<String, String>) mList.getAdapter().getItem(0);
         String credits = adapter.get("Remaining credits");
         
         assertEquals("Remaining credits: 2", credits);
         onData(is(instanceOf(HashMap.class)))
         .inAdapterView(withId(getIdByName("credits_blocks_list")))
-        .atPosition(0).perform(); 
+        .atPosition(0).perform();
+    }
+    
+    @SuppressWarnings("unchecked")
+	public void testOnResult() {
+    	getActivityOnTest();
+    	
+    	//Initial conditions
+		HashMap<String, String> adapter =  (HashMap<String, String>) mList.getAdapter().getItem(0);
+        String credits = adapter.get("Remaining credits");
+        assertEquals("Remaining credits: 2", credits);
+        
+        //Mocking up an activityResult
+        Intent intent = new Intent();
+        intent.putExtra("courseName", "TestCourse1");
+        intent.putExtra("position", 0);
+        
+        Calendar startEvent = Calendar.getInstance();
+    	Calendar endEvent = Calendar.getInstance();
+    	endEvent.add(Calendar.HOUR_OF_DAY, 1);
+    	
+    	Event e = new Event("Do " + mCourses.get(0).getName() + " homework",
+                App.calendarToBasicFormatString(startEvent),
+                App.calendarToBasicFormatString(endEvent),
+                PeriodType.DEFAULT.toString(), mCourses.get(0).getName(),
+                "You have to work on " + mCourses.get(0).getName() + " now", true,
+                DBQuester.NO_ID);
+    	        
+    	mDB.storeEvent(e);
+        waitOnInsertionInDB();
+        getActivityOnTest();
+        
+        Instrumentation.ActivityResult activityResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
+
+        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation()
+        		  .addMonitor(AddEventBlockActivity.class.getName(), activityResult , true);
+        
+        onData(is(instanceOf(HashMap.class))).inAdapterView(withId(getIdByName("credits_blocks_list")))
+        .atPosition(0).perform(click());
+
+        // Wait for the ActivityMonitor to be hit, Instrumentation will then return the mock ActivityResult:
+        AddEventBlockActivity childActivity = (AddEventBlockActivity) getInstrumentation()
+        		  .waitForMonitorWithTimeout(activityMonitor, 5);
+
+        // How do I check that StartActivityForResult correctly handles the returned result?
+		adapter =  (HashMap<String, String>) mList.getAdapter().getItem(0);
+        credits = adapter.get("Remaining credits");
+        assertEquals("Remaining credits: 1", credits);
     }
     
     private int getIdByName(String name) {
