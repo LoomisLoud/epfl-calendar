@@ -901,7 +901,7 @@ public class WeekView extends View {
             for (List<EventRect> column : columns) {
                 if (column.size() >= i + 1) {
                     EventRect eventRect = column.get(i);
-                    if (i != column.size() - 1) {
+                    if (index == columns.size() - 1) {
                         eventRect.width = 1f - index * (1f / columns.size());
                     } else {
                         eventRect.width = 1f / columns.size();
