@@ -63,11 +63,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         actionBar.setTitle("Course Details");
     }
     
-    public void switchToEditActivity(Event event) {
-        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
-        editActivityIntent.putExtra("Id", event.getId());
-        startActivity(editActivityIntent);
-    }
 
     private void setTextViewsFromCourse() {
         String courseProfessor = mCourse.getTeacher();
@@ -91,25 +86,37 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
             textView = (TextView) findViewById(R.id.courseDescription);
             textView.setText(bodyToSpannableConcatAndBold("Description: ",
                     courseDescription));
-            textView.setMovementMethod(new ScrollingMovementMethod());
+            //textView.setMovementMethod(new ScrollingMovementMethod());
         }
         
         textView = (TextView) findViewById(R.id.coursePeriod);
         textView.setText(mCourse.toDisplayPeriod());
         if (!linkedEvents.isEmpty()) {
+            System.out.println("Linked event num : " + String.valueOf(linkedEvents.size()));
             TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
             textView2.setText(bodyToSpannableConcatAndBold("Event related:", ""));
+            //set view as visible
+            textView2.setVisibility(View.VISIBLE);
             // find the layout of activity to add view at the end
             RelativeLayout relativeLayout = (RelativeLayout) this.findViewById(R.id.courseDetailsLayout);
             ArrayList<TextView> myTextViews = new ArrayList<TextView>();
             //ArrayList mIDEvents = new ArrayList<Integer>();
             int precedantEvents = 0;
             for (int i=0; i<linkedEvents.size(); i++) {
-                
                 Event event = linkedEvents.get(i);
                 
-                TextView eventTextView = new TextView(this);
-
+                // check if event already exist
+                TextView eventTextView;
+                View view = findViewById(event.getId());
+                if (view == null) {
+                    eventTextView = new TextView(this);
+                } else {
+                    //text view already exist, update data and break
+                    eventTextView = (TextView) view;
+                    eventTextView.setText(titleBoldEventToDisplay(event.toDisplay()));
+                    break;
+                }
+                
                 // set some properties
                 eventTextView.setText(titleBoldEventToDisplay(event.toDisplay()));
                 eventTextView.setId(event.getId());

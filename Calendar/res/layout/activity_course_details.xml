@@ -49,6 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/courseDescription"
+        android:visibility="invisible"
         android:layout_marginTop="@dimen/activity_top_margin_medium"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
