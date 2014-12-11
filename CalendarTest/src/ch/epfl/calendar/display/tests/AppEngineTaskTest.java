@@ -15,8 +15,9 @@ import ch.epfl.calendar.testing.utils.MockTestCase;
 
 /**
  * AppEngineTaskTest
+ * 
  * @author AblionGE
- *
+ * 
  */
 public class AppEngineTaskTest extends MockTestCase {
     private static final String COURSE_NAME = "Modélisation mathématique et computationnelle en biologie";
@@ -65,7 +66,8 @@ public class AppEngineTaskTest extends MockTestCase {
     }
 
     public void testRetrieveCourse() throws NoSuchMethodException,
-            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
         Course returnedCourse = null;
 
         Method retrieveCourse;
@@ -82,7 +84,7 @@ public class AppEngineTaskTest extends MockTestCase {
         assertEquals(COURSE_DESCRIPTION, returnedCourse.getDescription());
         assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
     }
-    
+
     public void testRetrieveCourseWithException() throws NoSuchMethodException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, CalendarClientException {
@@ -101,5 +103,62 @@ public class AppEngineTaskTest extends MockTestCase {
                 .getCourseByName(COURSE_NAME);
         returnedCourse = (Course) retrieveCourse.invoke(instance, COURSE_NAME);
         assertNull(returnedCourse);
+    }
+
+    public void testOnPostExecuteWhenError() throws NoSuchMethodException,
+            CalendarClientException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        Method retrieveCourse;
+        retrieveCourse = (AppEngineTask.class).getDeclaredMethod(
+                "retrieveCourse", new Class[] {
+                    String.class
+                });
+        retrieveCourse.setAccessible(true);
+        Mockito.doReturn(appEngineInterface).when(instance)
+                .getAppEngineClient();
+        Mockito.doThrow(new CalendarClientException()).when(appEngineInterface)
+                .getCourseByName(COURSE_NAME);
+        Course returnedCourse = (Course) retrieveCourse.invoke(instance,
+                COURSE_NAME);
+
+        Method onPostExecute;
+        onPostExecute = (AppEngineTask.class).getDeclaredMethod(
+                "onPostExecute", new Class[] {
+                    Course.class
+                });
+        onPostExecute.setAccessible(true);
+
+        Mockito.doNothing()
+                .when(listener)
+                .onError(context,
+                        "Can't retrieve : " + returnedCourse.getName());
+
+        onPostExecute.invoke(instance, returnedCourse);
+    }
+
+    public void testOnPostExecuteWhenSuccess() throws NoSuchMethodException,
+            CalendarClientException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        Method retrieveCourse;
+        retrieveCourse = (AppEngineTask.class).getDeclaredMethod(
+                "retrieveCourse", new Class[] {
+                    String.class
+                });
+        retrieveCourse.setAccessible(true);
+        Course returnedCourse = (Course) retrieveCourse.invoke(instance,
+                COURSE_NAME);
+
+        Method onPostExecute;
+        onPostExecute = (AppEngineTask.class).getDeclaredMethod(
+                "onPostExecute", new Class[] {
+                    Course.class
+                });
+        onPostExecute.setAccessible(true);
+
+        Mockito.doNothing()
+                .when(listener)
+                .onSuccess();
+
+        onPostExecute.invoke(instance, returnedCourse);
     }
 }

@@ -14,7 +14,6 @@ import ch.epfl.calendar.data.Course;
  */
 public class AppEngineTask extends AsyncTask<String, Void, Course> {
     private Course mCourse;
-    private ProgressDialog mDialog;
     private Context mContext;
     private AppEngineListener mListener = null;
     private AppEngineDatabaseInterface mAppEngineClient;
@@ -45,7 +44,7 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     }
 
     private Course retrieveCourse(String courseName) {
-        Course result = null;
+        Course result = new Course(courseName);
 
         try {
             mAppEngineClient = new AppEngineClient(
@@ -63,10 +62,6 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
 
     @Override
     protected void onPostExecute(Course result) {
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
-
         if (mExceptionOccured) {
             mListener.onError(mContext, "Can't retrieve : " + result.getName());
         } else {
@@ -78,7 +73,4 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     public AppEngineDatabaseInterface getAppEngineClient() {
         return mAppEngineClient;
     }
-    
-    
-
 }
