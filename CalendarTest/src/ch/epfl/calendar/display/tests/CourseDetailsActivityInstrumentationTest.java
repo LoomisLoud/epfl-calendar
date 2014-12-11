@@ -1,36 +1,28 @@
-/**
- * 
- */
 package ch.epfl.calendar.display.tests;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.display.AddEventBlockActivity;
+import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.persistence.LocalDatabaseInterface;
 import ch.epfl.calendar.testing.utils.MockActivity;
 import ch.epfl.calendar.testing.utils.Utils;
 
@@ -39,32 +31,29 @@ import com.google.android.apps.common.testing.testrunner.Stage;
 import com.google.common.collect.Iterables;
 
 /**
- * @author AblionGE
+ * 
+ * @author Enea Bell
  * 
  */
-public class AddEventBlockActivityTest extends
-        ActivityInstrumentationTestCase2<AddEventBlockActivity> {
+public class CourseDetailsActivityInstrumentationTest extends
+        ActivityInstrumentationTestCase2<CourseDetailsActivity> {
 
-    private DBQuester mDB;
-    private AddEventBlockActivity mActivity;
+    private CourseDetailsActivity mActivity;
     private MockActivity mMockActivity;
+    private LocalDatabaseInterface mDB;
     private List<Course> mCourses;
     private List<Event> mEvents;
-    private Spinner mSpinner;
-    private TextView mFrom;
-    private TextView mTo;
-    private Button mButtonEndHour;
-    private Button mButtonStartHour;
-    private Button mSaveButton;
-
+    private ArrayList<Event> mEvents2;
     private static final int SLEEP_TIME = 250;
+    public static final String TEST = "test";
 
-    public AddEventBlockActivityTest() {
-        super(AddEventBlockActivity.class);
+    public CourseDetailsActivityInstrumentationTest() {
+        super(CourseDetailsActivity.class);
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
@@ -88,17 +77,15 @@ public class AddEventBlockActivityTest extends
         App.setActionBar(mMockActivity);
         mMockActivity.setUdpateData(mMockActivity);
         mDB.storeCourses(mCourses);
-        for (Event event : mEvents) {
-            mDB.storeEvent(event);
-        }
         waitOnInsertionInDB();
         DBQuester.close();
 
-        mActivity = new AddEventBlockActivity();
+        // mActivity = new CourseDetailsActivity();
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see junit.framework.TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
@@ -110,6 +97,79 @@ public class AddEventBlockActivityTest extends
         super.tearDown();
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
+    }
+
+    public void testLaunchActivityNothingInIntent() {
+        setActivity();
+        assertNotNull(mActivity);
+    }
+
+    public void testLaunchActivityWithIntentCourseNotInDB() {
+        setIntentActivityWithExtra("DAWG");
+        onView(withId(R.id.courseName)).check(
+                matches(withText("DAWG" + " not found in data base.")));
+    }
+
+    public void testLaunchActivityWithIntentCorrectCourseRetrievenFromDBAndShown() {
+        setIntentActivityWithExtra(mCourses.get(0).getName());
+        // test the course shown is the same as asked
+        onView(withId(R.id.courseName)).check(
+                matches(withText(mCourses.get(0).getName())));
+    }
+
+    public void testAllMainTextViewVisible() {
+        setIntentActivityWithExtra(mCourses.get(0).getName());
+        onView(withId(R.id.courseName)).check(matches(isDisplayed()));
+        onView(withId(R.id.courseProfessor)).check(matches(isDisplayed()));
+        onView(withId(R.id.courseCredits)).check(matches(isDisplayed()));
+        onView(withId(R.id.coursePeriod)).check(matches(isDisplayed()));
+        onView(withId(R.id.courseDescription)).check(matches(isDisplayed()));
+    }
+
+    public void testCourseWithNoDescription() {
+        setIntentActivityWithExtra(mCourses.get(2).getName());
+        // no text should be shown
+        onView(withId(R.id.courseDescription)).check(matches(withText("")));
+    }
+
+    public void testSwitchActivityEvent() throws Throwable {
+        setIntentActivityWithExtra(mCourses.get(0).getName());
+        // current activity name
+        Class<? extends Activity> oldActivity = getCurrentActivity().getClass();
+        // click on event and see if we switched activity
+        onView(withText(containsString(mEvents.get(0).getName()))).perform(
+                click());
+        // we should end on AddEventActivity so we check they're not the same if
+        // it was successful
+        assertNotSame(oldActivity, getCurrentActivity().getClass());
+    }
+
+    public void testCourseWithNoEventRelated() {
+        setIntentActivityWithExtra(mCourses.get(1).getName());
+        // check if eventRelated is displayed (shouldn't since no event are
+        // inside)
+        onView(withId(R.id.linkedEvents)).check(matches(not(isDisplayed())));
+    }
+    
+    public void testCourseWithMultipleEvent() {
+        setIntentActivityWithExtra(mCourses.get(3).getName());
+        for (Event event : mEvents2) {
+            onView(withText(containsString(event.getName()))).check(matches(isDisplayed()));
+        }
+    }
+
+    /**
+     * SetActivity with extra of courseName to be retrieved
+     * 
+     * @param courseName
+     */
+    private void setIntentActivityWithExtra(String courseName) {
+        // set intent to start activity
+        Intent intent = new Intent();
+        intent.putExtra("course", courseName);
+        setActivityIntent(intent);
+        // setActivity
+        setActivity();
     }
 
     private void createCourses() throws Exception {
@@ -130,7 +190,7 @@ public class AddEventBlockActivityTest extends
         periodsCourse1.add(period2Course1);
         periodsCourse1.add(period3Course1);
         Course course1 = new Course("TestCourse1", periodsCourse1,
-                "Pr. Testpr1", 4, "CS-321", "awesome course", null);
+                "Pr. Testpr1", 200, "CS-321", "awesome course", null);
 
         List<String> period1Course2Rooms = new ArrayList<String>();
         List<String> period2Course2Rooms = new ArrayList<String>();
@@ -148,21 +208,35 @@ public class AddEventBlockActivityTest extends
         Course course2 = new Course("TestCourse2", periodsCourse2,
                 "Pr. Testpr2", 5, "CS-000", "cool course", null);
 
-        mCourses = new ArrayList<Course>();
-        mCourses.add(course1);
-        mCourses.add(course2);
-
+        Course course3 = new Course("TestCourse3", periodsCourse2,
+                "Pr. Testpr3", 5, "CS-000", "", null);
+        
+        Course course4 = new Course("TestCourse4", periodsCourse2,
+                "Pr. Testpr4", 5, "CS-000", "cool course", null);
         // Add events
         Event event1 = new Event("event1", "27.11.2034 08:00",
-                "27.11.2034 18:00", "exercises", App.NO_COURSE, "Event 1",
-                false, DBQuester.NO_ID);
-        Event event2 = new Event("event2", "28.11.2014 08:00",
-                "28.11.2014 18:00", "project", App.NO_COURSE, "Event 2", false,
-                DBQuester.NO_ID);
-
+                "27.11.2034 18:00", "exercises", course1.getName(),
+                "Description of event", false, 1082838);
+        Event event2 = new Event("event2", "27.11.2034 08:00",
+                "27.11.2034 18:00", "exercises", course4.getName(),
+                "Description of event", false, 1082838);
+        Event event3 = new Event("event3", "27.11.2034 08:00",
+                "27.11.2034 18:00", "exercises", course4.getName(),
+                "Description of event", false, 1082838);
         mEvents = new ArrayList<Event>();
         mEvents.add(event1);
-        mEvents.add(event2);
+        course1.setEvents(new ArrayList<Event>(mEvents));
+        mEvents2 = new ArrayList<Event>();
+        mEvents2.add(event2);
+        mEvents2.add(event3);
+        course4.setEvents(mEvents2);
+
+        mCourses = new ArrayList<Course>();
+
+        mCourses.add(course1);
+        mCourses.add(course2);
+        mCourses.add(course3);
+        mCourses.add(course4);
     }
 
     private void waitOnInsertionInDB() {
@@ -177,24 +251,7 @@ public class AddEventBlockActivityTest extends
     }
 
     private void setActivity() {
-        // Here is creation of the intent used in onCreate.
-        // If the Id's value needs to be changed, just move the 3 following
-        // lines directly in the tests method BEFORE calling setActivity()
-        Intent intent = new Intent();
-        // TODO : Change values
-        intent.putExtra("courseName", mCourses.get(0));
-        intent.putExtra("position", 1);
-        setActivityIntent(intent);
-
         mActivity = getActivity();
-        mSpinner = (Spinner) mActivity.findViewById(R.id.spinner_week_days);
-        mFrom = (TextView) mActivity.findViewById(R.id.start_event_text_date);
-        mTo = (TextView) mActivity.findViewById(R.id.end_event_text_date);
-        mButtonEndHour = (Button) mActivity
-                .findViewById(R.id.end_event_dialog_hour);
-        mButtonStartHour = (Button) mActivity
-                .findViewById(R.id.start_event_dialog_hour);
-        mSaveButton = (Button) mActivity.findViewById(R.id.valid_block_event);
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
@@ -202,7 +259,7 @@ public class AddEventBlockActivityTest extends
         mActivity.setUdpateData(mActivity);
     }
 
-    public Activity getCurrentActivity() throws Throwable {
+    private Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {
@@ -213,78 +270,7 @@ public class AddEventBlockActivityTest extends
                 activity[0] = Iterables.getOnlyElement(activites);
             }
         });
+        System.out.println("ACTIVITY " + activity[0].toString());
         return activity[0];
-    }
-
-    /**
-     * Test method for
-     * {@link ch.epfl.calendar.display.AddEventBlockActivity#finishActivity(android.view.View)}
-     * .
-     */
-    public final void testFinishActivityView() {
-        setActivity();
-    }
-
-    /**
-     * Test method for
-     * {@link ch.epfl.calendar.display.AddEventBlockActivity#updateData()}.
-     */
-    public final void testUpdateData() {
-    }
-
-    public void testSpinner() {
-        setActivity();
-
-        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) mSpinner
-                .getAdapter();
-
-        assertEquals(7, mSpinner.getCount());
-        assertEquals("Monday", adapter.getItem(0).toString());
-        assertEquals("Tuesday", adapter.getItem(1).toString());
-        assertEquals("Wednesday", adapter.getItem(2).toString());
-        assertEquals("Thursday", adapter.getItem(3).toString());
-        assertEquals("Friday", adapter.getItem(4).toString());
-        assertEquals("Saturday", adapter.getItem(5).toString());
-        assertEquals("Sunday", adapter.getItem(6).toString());
-    }
-
-    public void testTextView() {
-        setActivity();
-
-        assertEquals("From", mFrom.getText().toString());
-        assertEquals("To", mTo.getText().toString());
-    }
-
-    public void testButtons() {
-        setActivity();
-        Calendar start = Calendar.getInstance();
-        Calendar end = Calendar.getInstance();
-        end.add(Calendar.HOUR_OF_DAY, 1);
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.US);
-
-        assertEquals(sdf.format(start.getTime()), mButtonStartHour.getText()
-                .toString());
-        assertEquals(sdf.format(end.getTime()), mButtonEndHour.getText()
-                .toString());
-        assertEquals("Save the event", mSaveButton.getText().toString());
-
-        onView(withId(mButtonStartHour.getId())).check(matches(isDisplayed()));
-        onView(withId(mButtonStartHour.getId())).check(matches(isEnabled()));
-        onView(withId(mButtonStartHour.getId())).perform(click());
-        onView(withText("Done")).perform(click());
-
-        onView(withId(mButtonEndHour.getId())).check(matches(isDisplayed()));
-        onView(withId(mButtonEndHour.getId())).check(matches(isEnabled()));
-        onView(withId(mButtonEndHour.getId())).perform(click());
-        onView(withText("Done")).perform(click());
-
-        onView(withId(mSaveButton.getId())).check(matches(isDisplayed()));
-        onView(withId(mSaveButton.getId())).check(matches(isEnabled()));
-        try {
-            onView(withId(mSaveButton.getId())).perform(click());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        assertNotNull(mDB.getAllEventsFromCourseBlock("TestCourse1"));
     }
 }

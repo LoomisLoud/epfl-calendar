@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 
 import ch.epfl.calendar.apiInterface.CalendarClient;
 import ch.epfl.calendar.apiInterface.CalendarClientDownloadInterface;
+import ch.epfl.calendar.authentication.AuthenticationActivity;
 import ch.epfl.calendar.authentication.TequilaAuthenticationTask;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.testing.utils.MockTestCase;
@@ -81,21 +82,43 @@ public class CalendarClientTest extends MockTestCase {
     }
     
     public final void testCallbackWhenNoSuccess() throws NoSuchMethodException, IllegalAccessException, 
-    IllegalArgumentException, InvocationTargetException {
-    CalendarClientDownloadInterface downloadInterface = Mockito.mock(CalendarClientDownloadInterface.class);
-    Mockito.doNothing().when(downloadInterface).callbackDownload(Mockito.any(Boolean.class), 
-        Mockito.any(List.class));
-    calendarClient = Mockito.spy(new CalendarClient(null, downloadInterface));
-    Mockito.doReturn(task).when(calendarClient).getTask();
-    
-    Method callback;
-    callback = (CalendarClient.class).getDeclaredMethod("callback",
-            boolean.class);
-    callback.setAccessible(true);
-    callback.invoke(calendarClient, new Object[] {false});
-    
-    List<Course> constructedList = calendarClient.getCourseListForTests();
-    assertEquals(0, constructedList.size());
-}
+        IllegalArgumentException, InvocationTargetException {
+        CalendarClientDownloadInterface downloadInterface = Mockito.mock(CalendarClientDownloadInterface.class);
+        Mockito.doNothing().when(downloadInterface).callbackDownload(Mockito.any(Boolean.class), 
+            Mockito.any(List.class));
+        calendarClient = Mockito.spy(new CalendarClient(null, downloadInterface));
+        Mockito.doReturn(task).when(calendarClient).getTask();
+        
+        Method callback;
+        callback = (CalendarClient.class).getDeclaredMethod("callback",
+                boolean.class);
+        callback.setAccessible(true);
+        callback.invoke(calendarClient, new Object[] {false});
+        
+        List<Course> constructedList = calendarClient.getCourseListForTests();
+        assertEquals(0, constructedList.size());
+    }
 
+    public void testTequilaAuthenticationHandler() {
+        CalendarClientDownloadInterface downloadInterface = Mockito.mock(CalendarClientDownloadInterface.class);
+        Mockito.doNothing().when(downloadInterface).callbackDownload(Mockito.any(Boolean.class), 
+            Mockito.any(List.class));
+        Mockito.doReturn(COURSE_XML).when(task).getResult();
+        calendarClient = Mockito.spy(new CalendarClient(null, downloadInterface));
+        Mockito.doReturn(task).when(calendarClient).getTask();
+        
+        calendarClient.tequilaAuthenticationHandlerOnError("Error");
+        List<Course> constructedList = calendarClient.getCourseListForTests();
+        assertEquals(0, constructedList.size());
+        
+        calendarClient.tequilaAuthenticationHandlerOnSuccess("123");
+        constructedList = calendarClient.getCourseListForTests();
+        assertEquals(NUMBER_OF_COURSES, constructedList.size());
+        int i = 0;
+        for (Course course : constructedList) {
+            assertEquals(COURSE_NAMES[i], course.getName());
+            assertEquals(NUMBER_OF_PERIODS_BY_COURSES[i], course.getPeriods().size());
+            i++;
+        }
+    }
 }
