@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ch.epfl.calendar.test.utils;
 
@@ -26,20 +26,26 @@ import ch.epfl.calendar.utils.HttpUtils;
 public class HttpUtilsTest extends MockTestCase {
     //private Context mContext;
     private HttpUtils mHttpUtils;
-    
+
     private static final String COOKIE_TO_FIND_NAME = "cookie_to_find";
     private static final String LOCATION_VALUE = "location=123456";
     private static final String MALFORMED_LOCATION_VALUE = "location123456";
     private static final String TOKEN_HEADER = "123456";
     private static final String EXCEPTION_SHOULD_BE_RAISED = "An exception should have been raised";
     private static final String EXCEPTION_SHOULD_NOT_BE_RAISED = "The exception should not have been raised";
-    
-    public void setUp() throws Exception {
+    private static final int CODE_200 = 200;
+    private static final int CODE_302 = 302;
+    private static final int CODE_404 = 404;
+    private static final int CODE_500 = 500;
+    private static final int CODE_503 = 503;
+
+    @Override
+	public void setUp() throws Exception {
         super.setUp();
         //mContext = getInstrumentation().getTargetContext();
         mHttpUtils = new HttpUtils();
     }
-    
+
     public void testIsNetworkWorking() {
         Context localContext = Mockito.mock(Context.class);
         ConnectivityManager connMgr = Mockito.mock(ConnectivityManager.class);
@@ -48,20 +54,20 @@ public class HttpUtilsTest extends MockTestCase {
         Mockito.doReturn(netInfo).when(connMgr).getActiveNetworkInfo();
         Mockito.doReturn(connMgr).when(localContext).getSystemService(Mockito.any(String.class));
         boolean testIsConnected = HttpUtils.isNetworkWorking(localContext);
-        
+
         assertEquals(true, testIsConnected);
     }
-    
+
     public void testIsNetworkWorkingWhenNetInfoNull() {
         Context localContext = Mockito.mock(Context.class);
         ConnectivityManager connMgr = Mockito.mock(ConnectivityManager.class);
         Mockito.doReturn(null).when(connMgr).getActiveNetworkInfo();
         Mockito.doReturn(connMgr).when(localContext).getSystemService(Mockito.any(String.class));
         boolean testIsConnected = HttpUtils.isNetworkWorking(localContext);
-        
+
         assertEquals(false, testIsConnected);
     }
-    
+
     public void testIsNetworkWorkingWhenNoConnection() {
         Context localContext = Mockito.mock(Context.class);
         ConnectivityManager connMgr = Mockito.mock(ConnectivityManager.class);
@@ -70,10 +76,10 @@ public class HttpUtilsTest extends MockTestCase {
         Mockito.doReturn(netInfo).when(connMgr).getActiveNetworkInfo();
         Mockito.doReturn(connMgr).when(localContext).getSystemService(Mockito.any(String.class));
         boolean testIsConnected = HttpUtils.isNetworkWorking(localContext);
-        
+
         assertEquals(false, testIsConnected);
     }
-    
+
     public List<Cookie> fillMockList() {
         List<Cookie> cookieList = new ArrayList<Cookie>();
         Cookie c1 = Mockito.mock(Cookie.class);
@@ -85,10 +91,10 @@ public class HttpUtilsTest extends MockTestCase {
         Cookie c3 = Mockito.mock(Cookie.class);
         Mockito.doReturn("cookie_test").when(c3).getName();
         cookieList.add(c3);
-        
+
         return cookieList;
     }
-    
+
     public void testGetCookieWhenCookieThere() {
         AbstractHttpClient abstractClient = Mockito.mock(AbstractHttpClient.class);
         List<Cookie> cookieList = fillMockList();
@@ -98,22 +104,22 @@ public class HttpUtilsTest extends MockTestCase {
         Mockito.doReturn(cookieStore).when(abstractClient).getCookieStore();
         Mockito.doReturn(COOKIE_TO_FIND_NAME).when(c).getName();
         cookieList.add(c);
-        
+
         Cookie returned = mHttpUtils.getCookie(abstractClient, COOKIE_TO_FIND_NAME);
         assertEquals(c.getName(), returned.getName());
     }
-    
+
     public void testGetCookieWhenCookieNoThere() {
         AbstractHttpClient abstractClient = Mockito.mock(AbstractHttpClient.class);
         List<Cookie> cookieList = fillMockList();
         CookieStore cookieStore = Mockito.mock(CookieStore.class);
         Mockito.doReturn(cookieList).when(cookieStore).getCookies();
         Mockito.doReturn(cookieStore).when(abstractClient).getCookieStore();
-        
+
         Cookie returned = mHttpUtils.getCookie(abstractClient, COOKIE_TO_FIND_NAME);
         assertEquals(null, returned);
     }
-    
+
     public void testGetCookieWhenFieldNameEmpty() {
         AbstractHttpClient abstractClient = Mockito.mock(AbstractHttpClient.class);
         List<Cookie> cookieList = fillMockList();
@@ -123,20 +129,20 @@ public class HttpUtilsTest extends MockTestCase {
         Mockito.doReturn(cookieStore).when(abstractClient).getCookieStore();
         Mockito.doReturn(COOKIE_TO_FIND_NAME).when(c).getName();
         cookieList.add(c);
-        
+
         Cookie returned = mHttpUtils.getCookie(abstractClient, "");
         assertEquals(null, returned);
     }
-    
+
     public void testGetCookieWhenClientNull() {
         Cookie returned = mHttpUtils.getCookie(null, "test");
         assertEquals(null, returned);
     }
-    
+
     public void testGetTokenFromHeader() {
         Header location = Mockito.mock(Header.class);
         Mockito.doReturn(LOCATION_VALUE).when(location).getValue();
-        
+
         String returned = null;
         try {
             returned = mHttpUtils.getTokenFromHeader(location);
@@ -144,10 +150,10 @@ public class HttpUtilsTest extends MockTestCase {
             e.printStackTrace();
             fail();
         }
-        
+
         assertEquals(TOKEN_HEADER, returned);
     }
-    
+
     public void testGetTokenFromHeaderWhenLocationNull() {
         try {
             mHttpUtils.getTokenFromHeader(null);
@@ -156,7 +162,7 @@ public class HttpUtilsTest extends MockTestCase {
             e.printStackTrace();
         }
     }
-    
+
     public void testGetTokenFromHeaderWhenLocationNotWellFormated() {
         Header location = Mockito.mock(Header.class);
         Mockito.doReturn(MALFORMED_LOCATION_VALUE).when(location).getValue();
@@ -167,40 +173,40 @@ public class HttpUtilsTest extends MockTestCase {
             e.printStackTrace();
         }
     }
-    
+
     public void testHandleResponse() {
         try {
-            HttpUtils.handleResponse(200);
+            HttpUtils.handleResponse(CODE_200);
         } catch (CalendarClientException e) {
             e.printStackTrace();
             fail(EXCEPTION_SHOULD_NOT_BE_RAISED);
         }
     }
-    
+
     public void testHandleResponseWhenNot200() {
         try {
-            HttpUtils.handleResponse(404);
+            HttpUtils.handleResponse(CODE_404);
             fail(EXCEPTION_SHOULD_BE_RAISED);
         } catch (CalendarClientException e) {
             e.printStackTrace();
         }
-        
+
         try {
-            HttpUtils.handleResponse(302);
+            HttpUtils.handleResponse(CODE_302);
             fail(EXCEPTION_SHOULD_BE_RAISED);
         } catch (CalendarClientException e) {
             e.printStackTrace();
         }
-        
+
         try {
-            HttpUtils.handleResponse(500);
+            HttpUtils.handleResponse(CODE_500);
             fail(EXCEPTION_SHOULD_BE_RAISED);
         } catch (CalendarClientException e) {
             e.printStackTrace();
         }
-        
+
         try {
-            HttpUtils.handleResponse(503);
+            HttpUtils.handleResponse(CODE_503);
             fail(EXCEPTION_SHOULD_BE_RAISED);
         } catch (CalendarClientException e) {
             e.printStackTrace();
