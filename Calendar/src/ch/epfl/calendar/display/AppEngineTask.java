@@ -93,5 +93,9 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
             mListener.onSuccess();
         }
     }
+    
+    private void setCourse(Course course) {
+        mCourse = course;
+    }
 
 }

@@ -20,12 +20,13 @@ import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
  */
 public final class ConstructListCourse {
 
-    private static ConstructListCourse constructCourse;
+    private static ConstructListCourse mConstructCourse;
+    private AppEngineTask mTask;
     private ArrayList<AppEngineTask> mTasks;
     private AppEngineDownloadInterface mObjectActivity = null;
     private List<Course> mCourses;
-    private int countOfCallbackCalls = 0;
-    private int numberOfCourse = 0;
+    private int mCountOfCallbackCalls = 0;
+    private int mNumberOfCourse = 0;
     
     /**
      * @param objectActivity a class implementing {@link AppEngineDownloadInterface}
@@ -33,10 +34,10 @@ public final class ConstructListCourse {
      */
     public static ConstructListCourse getInstance(
             AppEngineDownloadInterface objectActivity) {
-        if (constructCourse == null) {
+        if (mConstructCourse == null) {
             return new ConstructListCourse(objectActivity);
         }
-        return constructCourse;
+        return mConstructCourse;
     }
 
     /**
@@ -46,14 +47,29 @@ public final class ConstructListCourse {
      */
     public void completeCourse(List<Course> courses, Context context) {
         mCourses = new ArrayList<Course>();
-        numberOfCourse = courses.size();
+        mNumberOfCourse = courses.size();
         for (Course course : courses) {
             mCourses.add(course);
-            AppEngineTask task;
-            task = new AppEngineTask(context, new AppEngineHandler());
-            task.execute(course.getName());
-            mTasks.add(task);
+            mTask = new AppEngineTask(context, new AppEngineHandler());
+            mTask.execute(course.getName());
+            mTasks.add(mTask);
         }
+    }
+    
+    public List<Course> getCourses() {
+        return mCourses;
+    }
+    
+    public List<AppEngineTask> getTasks() {
+        return mTasks;
+    }
+    
+    private void setTasks(ArrayList<AppEngineTask> tasks) {
+        mTasks = tasks;
+    }
+    
+    private void setCourses(ArrayList<Course> courses) {
+        mCourses = courses;
     }
 
     private ConstructListCourse(AppEngineDownloadInterface objectActivity) {
@@ -63,7 +79,7 @@ public final class ConstructListCourse {
     }
 
     private void callback() {
-        countOfCallbackCalls = countOfCallbackCalls + 1;
+        mCountOfCallbackCalls = mCountOfCallbackCalls + 1;
         int countOfTask = 0;
         for (AppEngineTask task : mTasks) {
             countOfTask = countOfTask + 1;
@@ -82,7 +98,7 @@ public final class ConstructListCourse {
                 mCourses.get(mTasks.indexOf(task)).setDescription(
                         "No description");
             }
-            if (numberOfCourse == countOfCallbackCalls
+            if (mNumberOfCourse == mCountOfCallbackCalls
                     && countOfTask == mTasks.size()) {
                 mObjectActivity.callbackAppEngine(mCourses);
             }
