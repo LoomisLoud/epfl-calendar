@@ -256,7 +256,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
         });
     }
 
-   /* private PeriodType stringToPeriodType(String type) {
+    private PeriodType stringToPeriodType(String type) {
         if (type.equalsIgnoreCase("exercices")
                 || type.equalsIgnoreCase("exercises")) {
             return PeriodType.EXERCISES;
@@ -269,7 +269,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
         } else {
             return PeriodType.DEFAULT;
         }
-    }*/
+    }
 
     private List<ListViewItem> removePastEvents(List<EventForList> list) {
         List<ListViewItem> result = new ArrayList<ListViewItem>();

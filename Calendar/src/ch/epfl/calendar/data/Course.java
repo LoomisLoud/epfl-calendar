@@ -258,6 +258,7 @@ public class Course implements Parcelable {
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
@@ -282,8 +283,7 @@ public class Course implements Parcelable {
      * @throws JSONException
      *             if the JSON is badly formated
      */
-    public static Course parseFromJSON(JSONObject jsonObject)
-            throws JSONException {
+    public static Course parseFromJSON(JSONObject jsonObject) throws JSONException {
 
         String code = jsonObject.getString("code");
         String name = jsonObject.getString("name");
