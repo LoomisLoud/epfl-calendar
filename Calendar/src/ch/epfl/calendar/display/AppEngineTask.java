@@ -17,6 +17,7 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     private ProgressDialog mDialog;
     private Context mContext;
     private AppEngineListener mListener = null;
+    private AppEngineDatabaseInterface mAppEngineClient;
     private boolean mExceptionOccured = false;
     
     /**
@@ -44,14 +45,13 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     }
 
     private Course retrieveCourse(String courseName) {
-        AppEngineDatabaseInterface appEngineClient;
         Course result = null;
 
         try {
-            appEngineClient = new AppEngineClient(
+            mAppEngineClient = new AppEngineClient(
                     "http://versatile-hull-742.appspot.com");
 
-            result = appEngineClient.getCourseByName(courseName);
+            result = getAppEngineClient().getCourseByName(courseName);
 
         } catch (CalendarClientException e) {
             mExceptionOccured = true;
@@ -74,5 +74,11 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
             mListener.onSuccess();
         }
     }
+
+    public AppEngineDatabaseInterface getAppEngineClient() {
+        return mAppEngineClient;
+    }
+    
+    
 
 }

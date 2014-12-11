@@ -6,12 +6,18 @@ import java.lang.reflect.Method;
 import org.mockito.Mockito;
 
 import android.content.Context;
+import ch.epfl.calendar.apiInterface.AppEngineDatabaseInterface;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.display.AppEngineTask;
 import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
 import ch.epfl.calendar.testing.utils.MockTestCase;
 
+/**
+ * AppEngineTaskTest
+ * @author AblionGE
+ *
+ */
 public class AppEngineTaskTest extends MockTestCase {
     private static final String COURSE_NAME = "Modélisation mathématique et computationnelle en biologie";
     private static final String COURSE_CODE = "BIO-341";
@@ -25,12 +31,14 @@ public class AppEngineTaskTest extends MockTestCase {
     private AppEngineListener listener = null;
     private Context context = null;
     private AppEngineTask instance = null;
+    private AppEngineDatabaseInterface appEngineInterface;
 
     public void setUp() throws CalendarClientException {
 
         listener = Mockito.mock(AppEngineListener.class);
         context = getInstrumentation().getTargetContext();
         instance = Mockito.spy(new AppEngineTask(context, listener));
+        appEngineInterface = Mockito.mock(AppEngineDatabaseInterface.class);
 
     }
 
@@ -43,8 +51,12 @@ public class AppEngineTaskTest extends MockTestCase {
         doInBackground = (AppEngineTask.class).getDeclaredMethod(
                 "doInBackground", String[].class);
         doInBackground.setAccessible(true);
-        returnedCourse = (Course) doInBackground.invoke(instance, new Object[]{new String[]{COURSE_NAME}});
-        
+        returnedCourse = (Course) doInBackground.invoke(instance, new Object[] {
+            new String[] {
+                COURSE_NAME
+            }
+        });
+
         assertEquals(COURSE_NAME, returnedCourse.getName());
         assertEquals(COURSE_CODE, returnedCourse.getCode());
         assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
@@ -53,31 +65,15 @@ public class AppEngineTaskTest extends MockTestCase {
     }
 
     public void testRetrieveCourse() throws NoSuchMethodException,
-            IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, CalendarClientException {
-
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Course returnedCourse = null;
 
         Method retrieveCourse;
         retrieveCourse = (AppEngineTask.class).getDeclaredMethod(
-                "retrieveCourse", new Class[] { String.class });
+                "retrieveCourse", new Class[] {
+                    String.class
+                });
         retrieveCourse.setAccessible(true);
-        try {
-            returnedCourse = (Course) retrieveCourse.invoke(instance, COURSE_NAME);
-        }
-            catch (InvocationTargetException e) {
-                if (e.getTargetException() instanceof CalendarClientException) {
-                    if (e.getTargetException().getMessage().equals("errorWaited")) {
-                        //Waited
-                    } else {
-                        e.printStackTrace();
-                        System.out.println(e.getMessage());
-                        fail();
-                    }
-                } else {
-                    fail();
-                }
-            }
         returnedCourse = (Course) retrieveCourse.invoke(instance, COURSE_NAME);
 
         assertEquals(COURSE_NAME, returnedCourse.getName());
@@ -85,7 +81,25 @@ public class AppEngineTaskTest extends MockTestCase {
         assertEquals(COURSE_CREDITS, returnedCourse.getCredits());
         assertEquals(COURSE_DESCRIPTION, returnedCourse.getDescription());
         assertEquals(COURSE_TEACHER, returnedCourse.getTeacher());
-        
-        
+    }
+    
+    public void testRetrieveCourseWithException() throws NoSuchMethodException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, CalendarClientException {
+
+        Course returnedCourse = null;
+
+        Method retrieveCourse;
+        retrieveCourse = (AppEngineTask.class).getDeclaredMethod(
+                "retrieveCourse", new Class[] {
+                    String.class
+                });
+        retrieveCourse.setAccessible(true);
+        Mockito.doReturn(appEngineInterface).when(instance)
+                .getAppEngineClient();
+        Mockito.doThrow(new CalendarClientException()).when(appEngineInterface)
+                .getCourseByName(COURSE_NAME);
+        returnedCourse = (Course) retrieveCourse.invoke(instance, COURSE_NAME);
+        assertNull(returnedCourse);
     }
 }
