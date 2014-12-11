@@ -9,19 +9,18 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import junit.framework.TestCase;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.mockito.Mockito;
 
-
 import ch.epfl.calendar.apiInterface.AppEngineClient;
 import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.testing.utils.MockHttpClient;
-
-import junit.framework.TestCase;
 
 /**
  * Test class for {@link ch.epfl.calendar.apiInterface.AppEngineClient}

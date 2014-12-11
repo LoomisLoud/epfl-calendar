@@ -15,6 +15,8 @@ import android.content.Context;
 import ch.epfl.calendar.persistence.DBHelper;
 
 /**
+ * This class contains methods and static values used in all the app.
+ * 
  * @author lweingart
  * 
  */
@@ -39,7 +41,7 @@ public class App extends Application {
     public static final int DATABASE_VERSION = 2;
 
     /**
-     * Index 0.
+     * Index 0 (constant created to be checkstyle compliant).
      */
     public static final int ZERO_INDEX = 0;
 
@@ -118,11 +120,12 @@ public class App extends Application {
      * Last minute in an hour.
      */
     private static final int MINUTE_MAX = 59;
+    
+    private static final String DATE_FORMAT = "dd.MM.yyyy";
+    
+    private static final String HOUR_12_FORMAT = "hh:mm aa";
 
-    /**
-     * 10 in a constant.
-     */
-    private static final int NUMERIC_TEN = 10;
+    private static final String HOUR_24_FORMAT = "HH:mm";
 
     /**
      * Database helper.
@@ -151,14 +154,26 @@ public class App extends Application {
         App.mDBHelper = new DBHelper(App.mContext, App.DATABASE_NAME);
     }
 
+    /**
+     * 
+     * @return The {@link DBHelper} of the application.
+     */
     public static DBHelper getDBHelper() {
         return App.mDBHelper;
     }
 
+    /**
+     * Creates a new {@link DBHelper} with the new database name databaseName.
+     * @param databaseName
+     */
     public static void setDBHelper(String databaseName) {
         mDBHelper = new DBHelper(App.mContext, databaseName);
     }
 
+    /**
+     * 
+     * @return the context of this class.
+     */
     public static Context getAppContext() {
         return App.mContext;
     }
@@ -167,7 +182,7 @@ public class App extends Application {
      * Parse a csv string into an array list of strings.
      * 
      * @param csv
-     * @return
+     * @return an {@link ArrayList} of {@link String} containing the elements parsed from the csv.
      */
     public static ArrayList<String> parseFromCSVString(String csv) {
         String[] ary = csv.split(",");
@@ -182,7 +197,7 @@ public class App extends Application {
      * Transform an array list of string into a csv string.
      * 
      * @param array
-     * @return
+     * @return a csv {@link String} constructed from the {@link List} given as parameter.
      */
     public static String csvStringFromList(List<String> list) {
         ArrayList<String> array = new ArrayList<String>(list);
@@ -194,9 +209,9 @@ public class App extends Application {
      * Create a calendar object from two strings. date must be of format
      * dd.mm.yyy hourArg must be of format hh:mm
      * 
-     * @param date
-     * @param hourArg
-     * @return
+     * @param date format : dd.mm.yy
+     * @param hourArg format : hh:mm
+     * @return a {@link Calendar} object corresponding to the date define by the two parameters.
      */
     public static Calendar createCalendar(String date, String hourArg) {
         if (date != null && hourArg != null) {
@@ -241,44 +256,17 @@ public class App extends Application {
     }
 
     /**
-     * Method to write a calendar in the form 'dd.mm.yyy hh:mm'
+     * Method to create a {@link String} of the form 'dd.mm.yyy hh:mm' from a {@link Calendar}
      * 
      * @param date
-     * @return
+     * @return a {@link String} of the form 'dd.mm.yyy hh:mm' create from the {@link Calendar} object date.
      */
-    public static String calendarToBasicFormatString(Calendar date) {
-        String dd;
-        String mm;
-        String yyyy = Integer.toString(date.get(Calendar.YEAR));
-        String hh;
-        String min;
-
-        int day = date.get(Calendar.DAY_OF_MONTH);
-        dd = Integer.toString(day);
-        if (day < NUMERIC_TEN) {
-            dd = "0".concat(dd);
+    public static String calendarToBasicFormatString(Calendar date) {        
+        if (date == null) {
+            return null;
         }
-
-        int month = date.get(Calendar.MONTH);
-        month = month + 1;
-        mm = Integer.toString(month);
-        if (month < NUMERIC_TEN) {
-            mm = "0".concat(mm);
-        }
-
-        int hour = date.get(Calendar.HOUR_OF_DAY);
-        hh = Integer.toString(hour);
-        if (hour < NUMERIC_TEN) {
-            hh = "0".concat(hh);
-        }
-
-        int minutes = date.get(Calendar.MINUTE);
-        min = Integer.toString(minutes);
-        if (minutes < NUMERIC_TEN) {
-            min = "0".concat(min);
-        }
-
-        return dd + "." + mm + "." + yyyy + " " + hh + ":" + min;
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT + " " + HOUR_24_FORMAT);        
+        return sdf.format(date.getTime());
     }
     
     /**
@@ -288,108 +276,59 @@ public class App extends Application {
      * @return
      */
     public static String[] calendarToBasicFormatStringSameDaySpecialFormat(Calendar date, Calendar date2) {
-        String dd;
-        String mm;
-        String yyyy;
-        String hh;
-        String min;
-        
-
-        String hh2;
-        String min2;
-        
-        String ddmmyyyy;
-        String hhminhhmin;
-        
-        int day = date.get(Calendar.DAY_OF_MONTH);
-        dd = Integer.toString(day);
-        if (day < NUMERIC_TEN) {
-            dd = "0".concat(dd);
+        if (date == null || date2 == null) {
+            return null;
         }
-
-        int month = date.get(Calendar.MONTH);
-        month = month + 1;
-        mm = Integer.toString(month);
-        if (month < NUMERIC_TEN) {
-            mm = "0".concat(mm);
-        }
+        String stringDateFormat = DATE_FORMAT;
+        String stringHourFormat = HOUR_12_FORMAT;
+        SimpleDateFormat sdfDate = new SimpleDateFormat(stringDateFormat, Locale.US);
+        SimpleDateFormat sdfTime = new SimpleDateFormat(stringHourFormat, Locale.US);
         
+        String datesToReturn = null;
         // compare to see if both date are on the same days
         if (date.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
                 && date.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)) {
-            yyyy = Integer.toString(date.get(Calendar.YEAR));
-            ddmmyyyy = dd + "." + mm + "." + yyyy;
+            datesToReturn = sdfDate.format(date.getTime());
         } else {
-            int day2 = date2.get(Calendar.DAY_OF_MONTH);
-            String dd2 = Integer.toString(day2);
-            if (day2 < NUMERIC_TEN) {
-                dd2 = "0".concat(dd2);
-            }
-
-            int month2 = date2.get(Calendar.MONTH);
-            month2 = month2 + 1;
-            String mm2 = Integer.toString(month2);
-            if (month2 < NUMERIC_TEN) {
-                mm2 = "0".concat(mm2);
-            }
-            ddmmyyyy = dd + "." + mm + "." + Integer.toString(date.get(Calendar.YEAR)) +  "-"
-                    + dd2 + "." + mm2 + "." + Integer.toString(date2.get(Calendar.YEAR));
+            datesToReturn = sdfDate.format(date.getTime()) + "-" + sdfDate.format(date2.getTime());
         }
 
-        int hour = date.get(Calendar.HOUR_OF_DAY);
-        hh = Integer.toString(hour);
-        if (hour < NUMERIC_TEN) {
-            hh = "0".concat(hh);
-        }
+        String hoursToReturn = sdfTime.format(date.getTime()) + "-" + sdfTime.format(date2.getTime());
         
-        int minutes = date.get(Calendar.MINUTE);
-        min = Integer.toString(minutes);
-        if (minutes < NUMERIC_TEN) {
-            min = "0".concat(min);
-        }
-        int hour2 = date2.get(Calendar.HOUR_OF_DAY);
-        hh2 = Integer.toString(hour2);
-        if (hour2 < NUMERIC_TEN) {
-            hh2 = "0".concat(hh2);
-        }
-
-        int minutes2 = date2.get(Calendar.MINUTE);
-        min2 = Integer.toString(minutes2);
-        if (minutes2 < NUMERIC_TEN) {
-            min2 = "0".concat(min2);
-        }
-        
-        hhminhhmin = hh + ":" + min + "-" + hh2 + ":" + min2;
-        
-        return new String[] {ddmmyyyy, hhminhhmin};
+        return new String[] {datesToReturn, hoursToReturn};
     }
 
+    /**
+     * 
+     * @param date
+     * @return a String representing the calendar in  format "hh:mm"
+     */
     public static String calendarHourToBasicFormatString(Calendar date) {
-        String hh;
-        String min;
-        
-        int hour = date.get(Calendar.HOUR_OF_DAY);
-        hh = Integer.toString(hour);
-        if (hour < NUMERIC_TEN) {
-            hh = "0".concat(hh);
+        if (date == null) {
+            return null;
         }
-
-        int minutes = date.get(Calendar.MINUTE);
-        min = Integer.toString(minutes);
-        if (minutes < NUMERIC_TEN) {
-            min = "0".concat(min);
-        }
-        
-        return hh + ":" + min;
-        
+        SimpleDateFormat sdf = new SimpleDateFormat(HOUR_24_FORMAT);
+        return sdf.format(date.getTime());
     }
     
+    /**
+     * @param date
+     * @return the hour contained in the Calendar in a String formated "hh:mm aa" where aa parses to AM/PM.
+     */
     public static String calendarTo12HoursString(Calendar date) {
-        String format = "hh:mm aa";
+        if (date == null) {
+            return null;
+        }
+        String format = HOUR_12_FORMAT;
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         return sdf.format(date.getTime());
     }
 
+    /**
+     * 
+     * @param bool
+     * @return "true" if bool == true, "false" otherwise.
+     */
     public static String boolToString(boolean bool) {
         if (bool) {
             return App.TRUE;
@@ -397,23 +336,47 @@ public class App extends Application {
             return App.FALSE;
         }
     }
-
+    
+    /**
+     * 
+     * @param strBool
+     * @return true if strBool.equals("true"), false otherwise.
+     */
     public static boolean stringToBool(String strBool) {
+        if (strBool == null) {
+            return false;
+        }
         return strBool.equals(App.TRUE);
     }
 
+    /**
+     * 
+     * @return The action bar corresponding to the application.
+     */
     public static DefaultActionBarActivity getActionBar() {
         return mActionBar;
     }
 
+    /**
+     * Sets the {@link DefaultActionBarActivity} of the application.
+     * @param actionBar
+     */
     public static void setActionBar(DefaultActionBarActivity actionBar) {
         App.mActionBar = actionBar;
     }
 
+    /**
+     * 
+     * @return the username of the currently connected user
+     */
     public static String getCurrentUsername() {
         return mCurrentUsername;
     }
 
+    /**
+     * changes the current username.
+     * @param currentUsername
+     */
     public static void setCurrentUsername(String currentUsername) {
         App.mCurrentUsername = currentUsername;
     }

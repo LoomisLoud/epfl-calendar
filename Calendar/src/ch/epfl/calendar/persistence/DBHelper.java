@@ -19,7 +19,8 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * Construct a new DBPoint entry.
      * 
-     * @param context
+     * @param context the context of the {@link Activity} actually using the {@link DBHelper}
+     * @param databaseName the name of the database to use.
      */
     public DBHelper(Context context, String databaseName) {
         super(context, databaseName, null, App.DATABASE_VERSION);

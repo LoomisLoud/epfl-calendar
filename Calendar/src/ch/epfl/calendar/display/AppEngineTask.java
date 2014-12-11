@@ -9,6 +9,7 @@ import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.data.Course;
 
 /**
+ * Extends {@link AsyncTask} and fetches data on the AppEngine.
  * @author Maxime
  * 
  */
@@ -20,20 +21,38 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     private boolean mExceptionOccured = false;
     
     /**
+     * A listener which will be triggered at the end of a download from the App Engine.
      * @author Maxime
      * 
      */
     public interface AppEngineListener {
+        /**
+         * The method to call when an error occured during download
+         * @param context the context of the {@link Activity} using this Task
+         * @param msg the error message
+         */
         void onError(Context context, String msg);
 
+        /**
+         * The method to call when everything went well
+         */
         void onSuccess();
     }
 
+    /**
+     * The constructor of this class
+     * @param context the context of the {@link Activity} using this task
+     * @param listener the {@link AppEngineListener} implementation to use
+     */
     public AppEngineTask(Context context, AppEngineListener listener) {
         mContext = context;
         mListener = listener;
     }
 
+    /**
+     * 
+     * @return the fetched course
+     */
     public Course getCourse() {
         return mCourse;
     }

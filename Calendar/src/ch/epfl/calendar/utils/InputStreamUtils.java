@@ -16,6 +16,13 @@ public final class InputStreamUtils {
     private InputStreamUtils() {
     }
 
+    /**
+     * Reads an input stream and returns a String containing the content of the {@link InputStream}
+     * @param is the {@link InputStream} to read
+     * @param encoding the encoding of the bytes in the {@link InputStream}
+     * @return a String containing the content of the {@link InputStream}
+     * @throws IOException
+     */
     public static String readInputStream(InputStream is, String encoding)
         throws IOException {
         if (is == null) {

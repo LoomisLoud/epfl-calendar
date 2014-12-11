@@ -9,12 +9,11 @@ import java.util.List;
 import android.database.sqlite.SQLiteException;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.MainActivity;
-import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.testing.utils.MockActivity;
 
 /**
  * Test of the DBQuester This test class extends
@@ -25,16 +24,16 @@ import ch.epfl.calendar.persistence.DBQuester;
  * 
  */
 public class DBQuesterTest extends
-        ActivityInstrumentationTestCase2<MainActivity> {
+        ActivityInstrumentationTestCase2<MockActivity> {
 
     private List<Course> mListCourses = null;
     private DBQuester mDBQuester;
-    private MainActivity mActivity;
+    private MockActivity mActivity;
 
     private static final int SLEEP_TIME = 250;
 
     public DBQuesterTest() {
-        super(MainActivity.class);
+        super(MockActivity.class);
     }
 
     /*
@@ -48,21 +47,10 @@ public class DBQuesterTest extends
         // to get the activity before call "setDBHelper"
         // because in MainActivity, the name of database
         // is changed in "onCreate()"
-        mActivity = getActivity();
+        mActivity = new MockActivity();
 
         App.setCurrentUsername("testUsername");
-        // store the sessionID in the preferences
-        TequilaAuthenticationAPI.getInstance().setSessionID(
-                mActivity.getApplicationContext(), "sessionID");
-        TequilaAuthenticationAPI.getInstance().setUsername(
-                mActivity.getApplicationContext(),
-                "testUsername");
-
-        mActivity = getActivity();
-
         App.setDBHelper("calendar_test.db");
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
 
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
@@ -84,8 +72,6 @@ public class DBQuesterTest extends
     protected void tearDown() throws Exception {
         super.tearDown();
 
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
         mDBQuester = null;
         mListCourses = null;
     }
@@ -345,7 +331,6 @@ public class DBQuesterTest extends
         for (Event event : events) {
             event.setDescription("new description");
             newEvents.add(event);
-            System.out.println("EVENT :::::::::::::::: " + event.getId());
         }
         course.setEvents(newEvents);
         mDBQuester.storeEventsFromCourse(course);
@@ -382,6 +367,65 @@ public class DBQuesterTest extends
         List<Period> periodsAfterDelete = mDBQuester
                 .getAllPeriodsFromCourse(course.getName());
         assertEquals(1, periodsAfterDelete.size());
+    }
+    
+    /**
+     * Test method for
+     * {@link ch.epfl.calendar.persistence.DBQuester#deleteBlock(ch.epfl.calendar.data.Event)}.
+     */
+    public final void testDeleteBlock() {
+        //Course2 has no events
+        Event event1Course2 = new Event("event1", "01.11.2014 08:00",
+                "01.11.2014 18:00", null, "TestCourse2", "Event 1", true,
+                DBQuester.NO_ID);
+        Event event2Course2 = new Event("event2", "08.11.2014 08:00",
+                "08.11.2014 18:00", null, "TestCourse2", "Event 2", true,
+                DBQuester.NO_ID);
+        Event event3Course2 = new Event("event2", "09.11.2014 08:00",
+                "09.11.2014 18:00", null, "TestCourse2", "Event 2", true,
+                DBQuester.NO_ID);
+        //Not a block
+        Event event4Course2 = new Event("event2", "08.11.2014 08:00",
+                "08.11.2014 18:00", null, "TestCourse2", "Event 2", false,
+                DBQuester.NO_ID);
+        List<Event> events = new ArrayList<Event>();
+        events.add(event1Course2);
+        events.add(event2Course2);
+        
+        mListCourses.get(1).setEvents(events);
+        
+        mDBQuester.storeEventsFromCourse(mListCourses.get(1));
+
+        waitOnInsertionInDB();
+
+        events = mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName());
+        
+        assertEquals(2, events.size());
+        
+        mDBQuester.deleteBlock(events.get(0));
+        
+        assertEquals(new ArrayList<Event>(), mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName()));
+        
+        //Test with more events
+        events = new ArrayList<Event>();
+        events.add(event1Course2);
+        events.add(event2Course2);
+        events.add(event3Course2);
+        events.add(event4Course2);
+        
+        mListCourses.get(1).setEvents(events);
+        
+        mDBQuester.storeEventsFromCourse(mListCourses.get(1));
+
+        waitOnInsertionInDB();
+
+        events = mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName());
+        
+        assertEquals(4, events.size());
+        
+        mDBQuester.deleteBlock(events.get(0));
+        
+        assertEquals(2, mDBQuester.getAllEventsFromCourse(mListCourses.get(1).getName()).size());
     }
 
     /**

@@ -24,6 +24,10 @@ public class TequilaResponseHandler implements ResponseHandler<String> {
 
     private final int mStatusCodeExpected;
 
+    /**
+     * The constructor of this class
+     * @param statusCodeExpected the HTTP status code expected.
+     */
     public TequilaResponseHandler(int statusCodeExpected) {
         this.mStatusCodeExpected = statusCodeExpected;
     }
