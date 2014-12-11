@@ -1,7 +1,7 @@
 /**
  *
  */
-package ch.epfl.calendar.tests;
+package ch.epfl.calendar.test;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.openContextualActionModeOverflowMenu;
