@@ -143,7 +143,7 @@ public class EventListActivityTest extends
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
                 .perform(longClick());
         onView(withText("Description")).perform(click()).check(doesNotExist());
-        
+
     }
 
     public final void testClickOnEvent() {
@@ -411,17 +411,19 @@ public class EventListActivityTest extends
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
     }
-    
-    Activity getCurrentActivity() throws Throwable {
+
+    public Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-            activity[0] = Iterables.getOnlyElement(activites);
-        }});
+            @Override
+            public void run() {
+                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry
+                        .getInstance().getActivitiesInStage(Stage.RESUMED);
+                activity[0] = Iterables.getOnlyElement(activites);
+            }
+        });
         return activity[0];
-      }
+    }
 
 }

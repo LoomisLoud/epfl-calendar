@@ -8,7 +8,7 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.utils.Logger;
 
 /**
- * 
+ * Allows to update rows in the database in an asynchronous way
  * @author AblionGE
  * 
  */

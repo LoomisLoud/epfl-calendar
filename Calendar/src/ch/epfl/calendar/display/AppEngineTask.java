@@ -1,6 +1,5 @@
 package ch.epfl.calendar.display;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import ch.epfl.calendar.apiInterface.AppEngineClient;
@@ -9,31 +8,50 @@ import ch.epfl.calendar.apiInterface.CalendarClientException;
 import ch.epfl.calendar.data.Course;
 
 /**
+ * Extends {@link AsyncTask} and fetches data on the AppEngine.
  * @author Maxime
  * 
  */
 public class AppEngineTask extends AsyncTask<String, Void, Course> {
     private Course mCourse;
-    private ProgressDialog mDialog;
     private Context mContext;
     private AppEngineListener mListener = null;
+    private AppEngineDatabaseInterface mAppEngineClient;
     private boolean mExceptionOccured = false;
     
     /**
+     * A listener which will be triggered at the end of a download from the App Engine.
      * @author Maxime
      * 
      */
     public interface AppEngineListener {
+        /**
+         * The method to call when an error occured during download
+         * @param context the context of the {@link Activity} using this Task
+         * @param msg the error message
+         */
         void onError(Context context, String msg);
 
+        /**
+         * The method to call when everything went well
+         */
         void onSuccess();
     }
 
+    /**
+     * The constructor of this class
+     * @param context the context of the {@link Activity} using this task
+     * @param listener the {@link AppEngineListener} implementation to use
+     */
     public AppEngineTask(Context context, AppEngineListener listener) {
         mContext = context;
         mListener = listener;
     }
 
+    /**
+     * 
+     * @return the fetched course
+     */
     public Course getCourse() {
         return mCourse;
     }
@@ -44,14 +62,13 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     }
 
     private Course retrieveCourse(String courseName) {
-        AppEngineDatabaseInterface appEngineClient;
-        Course result = null;
+        Course result = new Course(courseName);
 
         try {
-            appEngineClient = new AppEngineClient(
+            mAppEngineClient = new AppEngineClient(
                     "http://versatile-hull-742.appspot.com");
 
-            result = appEngineClient.getCourseByName(courseName);
+            result = getAppEngineClient().getCourseByName(courseName);
 
         } catch (CalendarClientException e) {
             mExceptionOccured = true;
@@ -63,10 +80,6 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
 
     @Override
     protected void onPostExecute(Course result) {
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
-
         if (mExceptionOccured) {
             mListener.onError(mContext, "Can't retrieve : " + result.getName());
         } else {
@@ -75,4 +88,7 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
         }
     }
 
+    public AppEngineDatabaseInterface getAppEngineClient() {
+        return mAppEngineClient;
+    }
 }

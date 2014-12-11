@@ -8,15 +8,12 @@ import ch.epfl.calendar.App;
 import ch.epfl.calendar.utils.Logger;
 
 /**
- * This AsyncTask allows to access to the DB in an asynchronous way
+ * This AsyncTask allows to create rows the DB in an asynchronous way
  * 
  * @author AblionGE
  * 
  */
 public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
-
-    private static final String ERROR_CREATE = "Unable to create a new row!";
-    private static final String SUCCESS_CREATE = "Row Successfully created!";
 
     @Override
     protected Long doInBackground(CreateObject... params) {
@@ -32,10 +29,10 @@ public class CreateRowDBTask extends AsyncTask<CreateObject, Void, Long> {
         rowId = db.insert(table, nullCollumnHack, values);
 
         if (rowId == -1) {
-            Log.e(Logger.CALENDAR_SQL_ERROR, ERROR_CREATE);
+            Log.e(Logger.CALENDAR_SQL_ERROR, Logger.CALENDAR_SQL_ERROR);
         }
 
-        Log.i(Logger.CALENDAR_SQL_SUCCES, SUCCESS_CREATE);
+        Log.i(Logger.CALENDAR_SQL_SUCCES, Logger.CALENDAR_SQL_SUCCES);
 
         return rowId;
     }

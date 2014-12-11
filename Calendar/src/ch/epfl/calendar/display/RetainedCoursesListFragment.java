@@ -8,7 +8,7 @@ import android.os.Bundle;
 import ch.epfl.calendar.data.Course;
 
 /**
- * Class to holds the courses list to retain for recreation of activity handling (rotation etc.)
+ * Class to hold the courses list to retain for recreation of activity handling (rotation etc.)
  * @author Enea Bell
  *
  */
@@ -25,10 +25,18 @@ public class RetainedCoursesListFragment extends Fragment{
         setRetainInstance(true);
     }
 
+    /**
+     * Sets the list of {@link Course} to retain
+     * @param courses the list to set
+     */
     public void setCourses(List<Course> courses) {
         this.mCourses = new ArrayList<Course>(courses);
     }
 
+    /**
+     * 
+     * @return the retained list of {@link Course}
+     */
     public List<Course> getCourses() {
         return new ArrayList<Course>(mCourses);
     }

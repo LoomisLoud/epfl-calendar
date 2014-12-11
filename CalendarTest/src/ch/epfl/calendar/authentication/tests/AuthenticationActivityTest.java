@@ -16,17 +16,20 @@ import org.hamcrest.TypeSafeMatcher;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.EditText;
+import ch.epfl.calendar.App;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.AuthenticationActivity;
+import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.testing.utils.Utils;
 
 /**
  * This class tests the AuthenticationActivity
+ * 
  * @author AblionGE
- *
+ * 
  */
-public class AuthenticationActivityTest
-    extends ActivityInstrumentationTestCase2<AuthenticationActivity> {
+public class AuthenticationActivityTest extends
+        ActivityInstrumentationTestCase2<AuthenticationActivity> {
 
     private AuthenticationActivity mAuthActivity;
 
@@ -39,7 +42,7 @@ public class AuthenticationActivityTest
         super.setUp();
         mAuthActivity = getActivity();
     }
-    
+
     @Override
     public void tearDown() throws Exception {
         Utils.pressBack(mAuthActivity);
@@ -59,16 +62,38 @@ public class AuthenticationActivityTest
     }
 
     public void testValueAtInit() {
-        onView(withText(mAuthActivity.getString(R.string.login_submit_text))).check(matches(isDisplayed()));
-        onView(withHint(mAuthActivity.getString(R.string.login_password_hint))).check(matches(isDisplayed()));
-        onView(withHint(mAuthActivity.getString(R.string.login_username_hint))).check(matches(isDisplayed()));
+        onView(withText(mAuthActivity.getString(R.string.login_submit_text)))
+                .check(matches(isDisplayed()));
+        onView(withHint(mAuthActivity.getString(R.string.login_password_hint)))
+                .check(matches(isDisplayed()));
+        onView(withHint(mAuthActivity.getString(R.string.login_username_hint)))
+                .check(matches(isDisplayed()));
     }
 
     public void testFillFields() {
         onView(withId(R.id.txtUsername)).perform(typeText("test_username"));
         onView(withId(R.id.txtPassword)).perform(typeText("test_password"));
-        onView(withId(R.id.txtUsername)).check(matches(withText("test_username")));
-        onView(withId(R.id.txtPassword)).check(matches(withText("test_password")));
+        onView(withId(R.id.txtUsername)).check(
+                matches(withText("test_username")));
+        onView(withId(R.id.txtPassword)).check(
+                matches(withText("test_password")));
+    }
+
+    public void testTequilaAuthenticationHandler() {
+        onView(withId(R.id.txtUsername)).perform(typeText("test_username"));
+        onView(withId(R.id.txtPassword)).perform(typeText("test_password"));
+        onView(withId(R.id.txtUsername)).check(
+                matches(withText("test_username")));
+        onView(withId(R.id.txtPassword)).check(
+                matches(withText("test_password")));
+
+        mAuthActivity.tequilaAuthenticationHandlerOnError("Error");
+        onView(withId(R.id.txtUsername)).check(matches(withText("")));
+        onView(withId(R.id.txtPassword)).check(matches(withText("")));
+
+        onView(withId(R.id.txtUsername)).perform(typeText("test_username"));
+        onView(withId(R.id.txtPassword)).perform(typeText("test_password"));
+        mAuthActivity.tequilaAuthenticationHandlerOnSuccess("123");
     }
 
     private static Matcher<View> withHint(final String expectedHint) {

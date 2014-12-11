@@ -34,7 +34,7 @@ public class CourseDataSource implements DAO {
 
     /**
      *
-     * @return
+     * @return the instance of this class
      */
     public static CourseDataSource getInstance() {
         if (CourseDataSource.mCourseDataSource == null) {
@@ -44,7 +44,7 @@ public class CourseDataSource implements DAO {
     }
 
     /**
-     * Create a course.
+     * Create a course in database.
      *
      * @param obj
      * @throws SQLiteCalendarException
@@ -79,7 +79,7 @@ public class CourseDataSource implements DAO {
     }
 
     /**
-     * Update a course.
+     * Update a course in database.
      *
      * @param obj
      * @throws SQLiteCalendarException
@@ -115,7 +115,7 @@ public class CourseDataSource implements DAO {
     }
 
     /**
-     * Delete a course.
+     * Delete a course in database.
      *
      * @param obj
      * @throws SQLiteCalendarException
@@ -137,7 +137,7 @@ public class CourseDataSource implements DAO {
     }
 
     /**
-     * Delete all courses.
+     * Delete all courses in database.
      */
     @Override
     public void deleteAll() {

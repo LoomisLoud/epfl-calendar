@@ -15,6 +15,7 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 
 /**
+ * This activity shows the details of an {@link Event}
  * @author Maxime
  * 
  */
@@ -44,6 +45,11 @@ public class EventDetailActivity extends DefaultActionBarActivity implements
 
     }
     
+    @Override
+    public void updateData() {
+        // Do nothing
+    }
+    
     private void eventDetailsActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("Event Details");
@@ -68,10 +74,5 @@ public class EventDetailActivity extends DefaultActionBarActivity implements
         sb.setSpan(bss, 0, bodyBold.length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return sb;
-    }
-
-    @Override
-    public void updateData() {
-        // Do nothing
     }
 }
