@@ -6,7 +6,7 @@ package ch.epfl.calendar.data;
 import java.text.DecimalFormat;
 
 /**
- * A Block is an event in the database which corresponds to a Course and its duration corresponds to a certain amount
+ * A block is an event in the database which corresponds to a Course and its duration corresponds to a certain amount
  * of credits. Exemple : for a course giving 6 credits, there should be 3 Block of 2 hours in a week.
  * @author LoomisLoud
  *
