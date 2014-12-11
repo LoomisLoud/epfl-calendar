@@ -23,6 +23,10 @@ public class PeriodDataSource implements DAO {
 
     private static PeriodDataSource mPeriodDataSource;
 
+    /**
+     * 
+     * @return the instance if this class.
+     */
     public static PeriodDataSource getInstance() {
         if (PeriodDataSource.mPeriodDataSource == null) {
             PeriodDataSource.mPeriodDataSource = new PeriodDataSource();
@@ -33,7 +37,7 @@ public class PeriodDataSource implements DAO {
     /**
      * Create a period.
      * 
-     * @param obj
+     * @param obj the period to create in database
      * @throws SQLiteCalendarException
      */
     @Override

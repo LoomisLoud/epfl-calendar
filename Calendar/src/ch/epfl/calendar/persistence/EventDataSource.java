@@ -19,6 +19,10 @@ public class EventDataSource implements DAO {
     private static final String SUCCESS_DELETE = "Event successfully deleted";
     private static EventDataSource mEventDataSource;
 
+    /**
+     * 
+     * @return an instance of this class.
+     */
     public static EventDataSource getInstance() {
         if (EventDataSource.mEventDataSource == null) {
             EventDataSource.mEventDataSource = new EventDataSource();
@@ -26,10 +30,12 @@ public class EventDataSource implements DAO {
         return EventDataSource.mEventDataSource;
     }
 
-    /**
+    /*
      * Create an event. If no specific, then use null
      * 
-     * @param obj
+     * @param obj the object to add in database.
+     * @param key the key of the course in database to which the event is related
+     *  (if the event is related to a course)
      * @throws SQLiteCalendarException
      */
     @Override
@@ -58,7 +64,7 @@ public class EventDataSource implements DAO {
         task.execute(object);
     }
 
-    /**
+    /*
      * Update an event. If no specific key, then use null
      * 
      * @param obj
@@ -92,7 +98,7 @@ public class EventDataSource implements DAO {
         task.execute(object);
     }
 
-    /**
+    /*
      * Delete an event.
      * 
      * @param obj
@@ -113,7 +119,7 @@ public class EventDataSource implements DAO {
         Log.i(Logger.CALENDAR_SQL_SUCCES, EventDataSource.SUCCESS_DELETE);
     }
 
-    /**
+    /*
      * Delete all events.
      */
     @Override
