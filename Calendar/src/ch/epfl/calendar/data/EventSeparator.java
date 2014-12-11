@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
+ * This class is used to sort an event according to its dates in categories : today, tommoray, ...
  * @author MatthiasLeroyEPFL
  * 
  */
@@ -12,11 +13,17 @@ public class EventSeparator extends ListViewItem {
     private static final int NUMBER_OF_DAY_IN_WEEK = 7;
     private static final int NUMBER_ONE = 1;
 
+    /**
+     * Creates a new {@link EventSeparator} with a date
+     * @param date the date is given to super().
+     */
     public EventSeparator(Calendar date) {
         super(date);
-
     }
 
+    /**
+     * @return Either today, tomorrow or the date of the event to sort.
+     */
     public String toString() {
         Calendar today = Calendar.getInstance();
         int difDay = super.getmStart().get(Calendar.DAY_OF_MONTH)

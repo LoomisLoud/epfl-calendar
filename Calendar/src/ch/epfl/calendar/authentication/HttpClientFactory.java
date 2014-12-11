@@ -32,6 +32,10 @@ public class HttpClientFactory {
     private static final int HTTPS_PORT = 443;
     private static final String DEBUG = "Debug";
 
+    /**
+     * 
+     * @return the unique instance of {@link AbstractHttpClient} httpClient
+     */
     public static synchronized AbstractHttpClient getInstance() {
         if (httpClient == null) {
             //create() is used instead of create an instance of do a 
@@ -42,6 +46,10 @@ public class HttpClientFactory {
         return httpClient;
     }
 
+    /**
+     * Allows to replace the existing instance by another one (useful for tests purposes)
+     * @param instance
+     */
     public static synchronized void setInstance(AbstractHttpClient instance) {
         if (instance == null) {
             Log.d(DEBUG, "Argument of setInstance is null");

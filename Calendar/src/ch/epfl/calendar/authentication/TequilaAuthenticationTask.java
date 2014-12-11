@@ -31,7 +31,7 @@ import ch.epfl.calendar.utils.InputStreamUtils;
 import ch.epfl.calendar.utils.NetworkException;
 
 /**
- * The main class that connects with the Tequila server and authenticates user
+ * The main class of authentication that connects with the Tequila server and authenticates user
  * credentials
  * 
  * @author lweingart
@@ -39,6 +39,9 @@ import ch.epfl.calendar.utils.NetworkException;
  */
 public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
 
+    /**
+     * Used for Logs, the identifier of this class to spot it easily.
+     */
     public static final String TAG = "AuthenticationTas Class::";
 
     private Context mContext = null;
@@ -72,6 +75,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
     private static final String TEQUILA_ENCODING = "ISO-8859-1";
 
     /**
+     * An interface for a listener called when the authentication ends (in sucess or in failure).
      * @author lweingart
      * 
      */
@@ -81,6 +85,13 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         void onSuccess(String sessionID);
     }
 
+    /**
+     * The constructor of this class
+     * @param context the context of the {@link Activity} creating this object
+     * @param listener the listener {@link TequilaAuthenticationListener} implementation to use
+     * @param username the username of the user
+     * @param password the password of the user
+     */
     public TequilaAuthenticationTask(Context context,
             TequilaAuthenticationListener listener, String username,
             String password) {
@@ -96,8 +107,69 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         mAuthUtils = new AuthenticationUtils();
     }
 
+    /**
+     * 
+     * @return the result of the Authentication.
+     */
     public String getResult() {
         return mResult;
+    }
+    
+    /**
+     * {@see HttpUtils.isNetworkWorking(Context)}
+     * @param context the context of the {@link Activity} calling this method
+     * @return true if there is a network connection on the android device, false otherwise.
+     */
+    public boolean isNetworkWorking(Context context) {
+        return HttpUtils.isNetworkWorking(context);
+    }
+
+    /**
+     * 
+     * @return the {@link TequilaAuthenticationAPI} used by this instance.
+     */
+    public TequilaAuthenticationAPI getTequilaApi() {
+        return mTequilaApi;
+    }
+
+    /**
+     * 
+     * @return the {@link AbstractHttpClient} used by this instance.
+     */
+    public AbstractHttpClient getClient() {
+        return mClient;
+    }
+
+    /**
+     * 
+     * @return the {@link GlobalPreferences} instance used by this instance.
+     */
+    public GlobalPreferences getGlobalPrefs() {
+        return mGlobalPrefs;
+    }
+
+    /**
+     * 
+     * @return the {@link AuthenticationUtils} used by this instance.
+     */
+    public AuthenticationUtils getAuthUtils() {
+        return mAuthUtils;
+    }
+
+    /**
+     * 
+     * @return the {@link HttpUtils} used by this instance.
+     */
+    public HttpUtils getHttpUtils() {
+        return mHttpUtils;
+    }
+
+    /**
+     * 
+     * @return the {@link HttpResponse} containing the fetched timetable.
+     */
+    public HttpResponse getRespGetTimetable() {
+        return mRespGetTimetable;
     }
 
     @Override
@@ -420,33 +492,4 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
         getGlobalPrefs().setTequilaKeyCookie(
                 getHttpUtils().getCookie(getClient(), TEQUILA_KEY));
     }
-
-    public boolean isNetworkWorking(Context context) {
-        return HttpUtils.isNetworkWorking(context);
-    }
-
-    public TequilaAuthenticationAPI getTequilaApi() {
-        return mTequilaApi;
-    }
-
-    public AbstractHttpClient getClient() {
-        return mClient;
-    }
-
-    public GlobalPreferences getGlobalPrefs() {
-        return mGlobalPrefs;
-    }
-
-    public AuthenticationUtils getAuthUtils() {
-        return mAuthUtils;
-    }
-
-    public HttpUtils getHttpUtils() {
-        return mHttpUtils;
-    }
-
-    public HttpResponse getRespGetTimetable() {
-        return mRespGetTimetable;
-    }
-
 }
