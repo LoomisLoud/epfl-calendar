@@ -10,7 +10,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import android.app.ActionBar;
 import android.app.Application;
 import android.content.Context;
 import ch.epfl.calendar.persistence.DBHelper;

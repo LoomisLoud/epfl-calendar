@@ -2,14 +2,15 @@ package ch.epfl.calendar.apiInterface;
 
 /**
  * This interface is used to update data in an activity after
- * fetching informations online
+ * storing informations online
+ * A class storing or updating the database must implement this interface.
  * @author AblionGE
  *
  */
 public interface UpdateDataFromDBInterface {
     
     /**
-     * This function needs to be implemented to fetch data from local database.
+     * Method to call when all the storage or update of local database has finished.
      */
     void updateData();
 }
