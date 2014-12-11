@@ -1,4 +1,4 @@
-package ch.epfl.calendar.display.tests;
+package ch.epfl.calendar.test.display;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
@@ -23,17 +23,17 @@ import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.display.CourseDetailsActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.persistence.LocalDatabaseInterface;
-import ch.epfl.calendar.testing.utils.MockActivity;
-import ch.epfl.calendar.testing.utils.Utils;
+import ch.epfl.calendar.test.utils.MockActivity;
+import ch.epfl.calendar.test.utils.Utils;
 
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
 import com.google.android.apps.common.testing.testrunner.Stage;
 import com.google.common.collect.Iterables;
 
 /**
- * 
+ *
  * @author Enea Bell
- * 
+ *
  */
 public class CourseDetailsActivityInstrumentationTest extends
         ActivityInstrumentationTestCase2<CourseDetailsActivity> {
@@ -53,10 +53,11 @@ public class CourseDetailsActivityInstrumentationTest extends
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
 
         /*
@@ -85,10 +86,11 @@ public class CourseDetailsActivityInstrumentationTest extends
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see junit.framework.TestCase#tearDown()
      */
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
@@ -150,7 +152,7 @@ public class CourseDetailsActivityInstrumentationTest extends
         // inside)
         onView(withId(R.id.linkedEvents)).check(matches(not(isDisplayed())));
     }
-    
+
     public void testCourseWithMultipleEvent() {
         setIntentActivityWithExtra(mCourses.get(3).getName());
         for (Event event : mEvents2) {
@@ -160,7 +162,7 @@ public class CourseDetailsActivityInstrumentationTest extends
 
     /**
      * SetActivity with extra of courseName to be retrieved
-     * 
+     *
      * @param courseName
      */
     private void setIntentActivityWithExtra(String courseName) {
@@ -210,7 +212,7 @@ public class CourseDetailsActivityInstrumentationTest extends
 
         Course course3 = new Course("TestCourse3", periodsCourse2,
                 "Pr. Testpr3", 5, "CS-000", "", null);
-        
+
         Course course4 = new Course("TestCourse4", periodsCourse2,
                 "Pr. Testpr4", 5, "CS-000", "cool course", null);
         // Add events
