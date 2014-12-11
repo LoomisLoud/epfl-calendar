@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
+ * An adapter used for the spinners in this application.
+ * 
  * @author fouchepi
  *
  * @param <T>

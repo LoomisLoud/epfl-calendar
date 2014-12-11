@@ -21,13 +21,16 @@ import ch.epfl.calendar.utils.isaparser.ISAXMLParser;
 import ch.epfl.calendar.utils.isaparser.ParsingException;
 
 /**
- * For now uses a pre-built xml string and parses it.
+ * This class makes the interface with ISA services.
  *
  * @author gilbrechbuhler
  *
  */
 public class CalendarClient implements CalendarClientInterface {
 
+    /**
+     * The name of the class for the LOGs.
+     */
 	public static final String TAG = "CalendarClient Class::";
 	private static final String ENCODING = "UTF-8";
 
@@ -36,6 +39,11 @@ public class CalendarClient implements CalendarClientInterface {
     private TequilaAuthenticationTask mTask = null;
     private List<Course> mCourseListForTests = null;
 
+    /**
+     * The constructor of {@link CalendarClient}
+     * @param activity the activity in which the instance of this class was created.
+     * @param downloadInterface the {@link CalendarClientDownloadInterface} to use in this instance.
+     */
     public CalendarClient(Activity activity, CalendarClientDownloadInterface downloadInterface) {
         this.mParentActivity = activity;
         this.mDownloadInterface = downloadInterface;
@@ -53,6 +61,22 @@ public class CalendarClient implements CalendarClientInterface {
                 null);
         mParentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mTask.execute(null, null);
+    }
+    
+    /**
+     * 
+     * @return the {@link TequilaAuthenticationTask} of this class.
+     */
+    public TequilaAuthenticationTask getTask() {
+        return mTask;
+    }
+    
+    /**
+     * 
+     * @return the list of courses of this object, needed for tests.
+     */
+    public List<Course> getCourseListForTests() {
+        return mCourseListForTests;
     }
 
     private void callback(boolean success) throws TequilaAuthenticationException, CalendarClientException {
@@ -74,14 +98,6 @@ public class CalendarClient implements CalendarClientInterface {
         }
         mCourseListForTests = new ArrayList<Course>(coursesList);
         mDownloadInterface.callbackDownload(success, coursesList);
-    }
-    
-    public TequilaAuthenticationTask getTask() {
-        return mTask;
-    }
-    
-    public List<Course> getCourseListForTests() {
-        return mCourseListForTests;
     }
     
     /**
@@ -106,6 +122,7 @@ public class CalendarClient implements CalendarClientInterface {
                 Log.i("Unexpected error : ", errMessage);
             }
         }
+        
         @Override
         public void onSuccess(String sessionID) {
             // store the sessionID in the preferences

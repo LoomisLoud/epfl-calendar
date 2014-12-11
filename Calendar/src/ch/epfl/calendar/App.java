@@ -15,6 +15,8 @@ import android.content.Context;
 import ch.epfl.calendar.persistence.DBHelper;
 
 /**
+ * This class contains methods and static values used in all the app.
+ * 
  * @author lweingart
  * 
  */
@@ -39,7 +41,7 @@ public class App extends Application {
     public static final int DATABASE_VERSION = 2;
 
     /**
-     * Index 0.
+     * Index 0 (constant created to be checkstyle compliant).
      */
     public static final int ZERO_INDEX = 0;
 
@@ -152,14 +154,26 @@ public class App extends Application {
         App.mDBHelper = new DBHelper(App.mContext, App.DATABASE_NAME);
     }
 
+    /**
+     * 
+     * @return The {@link DBHelper} of the application.
+     */
     public static DBHelper getDBHelper() {
         return App.mDBHelper;
     }
 
+    /**
+     * Creates a new {@link DBHelper} with the new database name databaseName.
+     * @param databaseName
+     */
     public static void setDBHelper(String databaseName) {
         mDBHelper = new DBHelper(App.mContext, databaseName);
     }
 
+    /**
+     * 
+     * @return the context of this class.
+     */
     public static Context getAppContext() {
         return App.mContext;
     }
@@ -168,7 +182,7 @@ public class App extends Application {
      * Parse a csv string into an array list of strings.
      * 
      * @param csv
-     * @return
+     * @return an {@link ArrayList} of {@link String} containing the elements parsed from the csv.
      */
     public static ArrayList<String> parseFromCSVString(String csv) {
         String[] ary = csv.split(",");
@@ -183,7 +197,7 @@ public class App extends Application {
      * Transform an array list of string into a csv string.
      * 
      * @param array
-     * @return
+     * @return a csv {@link String} constructed from the {@link List} given as parameter.
      */
     public static String csvStringFromList(List<String> list) {
         ArrayList<String> array = new ArrayList<String>(list);
@@ -195,9 +209,9 @@ public class App extends Application {
      * Create a calendar object from two strings. date must be of format
      * dd.mm.yyy hourArg must be of format hh:mm
      * 
-     * @param date
-     * @param hourArg
-     * @return
+     * @param date format : dd.mm.yy
+     * @param hourArg format : hh:mm
+     * @return a {@link Calendar} object corresponding to the date define by the two parameters.
      */
     public static Calendar createCalendar(String date, String hourArg) {
         if (date != null && hourArg != null) {
@@ -242,10 +256,10 @@ public class App extends Application {
     }
 
     /**
-     * Method to write a calendar in the form 'dd.mm.yyy hh:mm'
+     * Method to create a {@link String} of the form 'dd.mm.yyy hh:mm' from a {@link Calendar}
      * 
      * @param date
-     * @return
+     * @return a {@link String} of the form 'dd.mm.yyy hh:mm' create from the {@link Calendar} object date.
      */
     public static String calendarToBasicFormatString(Calendar date) {        
         if (date == null) {
@@ -298,7 +312,6 @@ public class App extends Application {
     }
     
     /**
-     * 
      * @param date
      * @return the hour contained in the Calendar in a String formated "hh:mm aa" where aa parses to AM/PM.
      */
@@ -311,6 +324,11 @@ public class App extends Application {
         return sdf.format(date.getTime());
     }
 
+    /**
+     * 
+     * @param bool
+     * @return "true" if bool == true, "false" otherwise.
+     */
     public static String boolToString(boolean bool) {
         if (bool) {
             return App.TRUE;
@@ -318,7 +336,12 @@ public class App extends Application {
             return App.FALSE;
         }
     }
-
+    
+    /**
+     * 
+     * @param strBool
+     * @return true if strBool.equals("true"), false otherwise.
+     */
     public static boolean stringToBool(String strBool) {
         if (strBool == null) {
             return false;
@@ -326,18 +349,34 @@ public class App extends Application {
         return strBool.equals(App.TRUE);
     }
 
+    /**
+     * 
+     * @return The action bar corresponding to the application.
+     */
     public static DefaultActionBarActivity getActionBar() {
         return mActionBar;
     }
 
+    /**
+     * Sets the {@link DefaultActionBarActivity} of the application.
+     * @param actionBar
+     */
     public static void setActionBar(DefaultActionBarActivity actionBar) {
         App.mActionBar = actionBar;
     }
 
+    /**
+     * 
+     * @return the username of the currently connected user
+     */
     public static String getCurrentUsername() {
         return mCurrentUsername;
     }
 
+    /**
+     * changes the current username.
+     * @param currentUsername
+     */
     public static void setCurrentUsername(String currentUsername) {
         App.mCurrentUsername = currentUsername;
     }

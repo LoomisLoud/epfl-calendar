@@ -8,6 +8,7 @@ import java.util.Calendar;
 import ch.epfl.calendar.App;
 
 /**
+ * An event in the calendar, added by the user (different from {@link Course} and {@link Period})
  * @author gilbrechbuhler
  * 
  */
@@ -27,14 +28,14 @@ public class Event {
      * Construct the event object. date format must be of format dd.mm.yyyy
      * startTime and endTime must be of format hh:mm
      * 
-     * @param date
-     * @param name
-     * @param startTime
-     * @param endTime
-     * @param type
-     * @param linkedCourse
-     * @param description
-     * @param isBlock
+     * @param date the date of the event
+     * @param name the title of the event
+     * @param startTime the stating time of the event
+     * @param endTime the ending time of the event
+     * @param type the type of the event
+     * @param linkedCourse the {@link Course} to which the event is linked (if it is linked to a {@link Course})
+     * @param description the description of the {@link Course}
+     * @param isBlock true if the {@link Event} is a block of a course
      */
     public Event(String startDate, String endDate, String name,
             String startTime, String endTime, String type, String linkedCourse,
@@ -62,13 +63,13 @@ public class Event {
      * Construct the event object. startTime and endTime must be of format
      * 'dd.mm.yyy hh:mm'
      * 
-     * @param name
-     * @param startTime
-     * @param endTime
-     * @param type
-     * @param linkedCourse
-     * @param description
-     * @param isBlock
+     * @param name the title of the event
+     * @param startTime the starting time of the event
+     * @param endTime the ending time of the event
+     * @param type the type of the event
+     * @param linkedCourse the course to which the event is related
+     * @param description the description of the event
+     * @param isBlock true if the {@link Event} is a block (a credit work time block)
      * @param id
      */
     public Event(String name, String startTime, String endTime, String type,
@@ -91,9 +92,10 @@ public class Event {
         return name.concat(" from ").concat(startDate).concat(" to ")
                 .concat(endDate).concat(" : ").concat(description).concat("\n");
     }
+    
     /**
-     * Same as toString but formatted to nice display of contents from human point of view
-     * @return the content of Object in a format to be displayed on screen.
+     * Same as toString but nicely formatted to display of contents from human point of view
+     * @return the content of the {@link Event} in a format to be displayed on screen.
      */
     public String toDisplay() {
         String name = this.mName;
@@ -106,12 +108,15 @@ public class Event {
     
 
     /**
-     * @return the mName
+     * @return the name of the event
      */
     public String getName() {
         return mName;
     }
     
+    /**
+     * @return the title of the event
+     */
     public String getTitle() {
         String startHour = App.calendarTo12HoursString(mStartDate);
         String endHour = App.calendarTo12HoursString(mEndDate);
@@ -122,91 +127,106 @@ public class Event {
     }
 
     /**
-     * @param name
-     *            the mName to set
+     * Allows to set the name of the event
+     * @param name the new name of the event
      */
     public void setName(String name) {
         this.mName = name;
     }
 
     /**
-     * @return the mStartDate
+     * @return the starting date of the event
      */
     public Calendar getStartDate() {
         return (Calendar) mStartDate.clone();
     }
 
     /**
-     * @param mStartDate
-     *            the mStartDate to set
+     * Sets the starting date of the event
+     * @param mStartDate the new start date of the event
      */
     public void setStartDate(Calendar startDate) {
         this.mStartDate = (Calendar) startDate.clone();
     }
 
     /**
-     * @return the mEndDate
+     * @return the ending date of the event
      */
     public Calendar getEndDate() {
         return (Calendar) mEndDate.clone();
     }
 
     /**
-     * @param mEndDate
-     *            the mEndDate to set
+     * Sets the end date of the event
+     * @param mEndDate the new end date of the event
      */
     public void setEndDate(Calendar endDate) {
         this.mEndDate = (Calendar) endDate.clone();
     }
 
     /**
-     * @return the mType
+     * @return the type of the event
      */
     public String getType() {
         return mType;
     }
 
     /**
-     * @param type
-     *            the mType to set
+     * Sets the type of the event
+     * @param type the new type to set
      */
     public void setType(String type) {
         this.mType = type;
     }
 
     /**
-     * @return the mLinkedCourse
+     * @return the name of the {@link Course} to which the event is related (if there is one).
+     * Empty String otherwise.
      */
     public String getLinkedCourse() {
         return mLinkedCourse;
     }
 
     /**
-     * @param linkedCourse
-     *            the mLinkedCourse to set
+     * Set the name of the {@link Course} to which this event is related
+     * @param linkedCourse the name of the new {@link Course} linked to this event.
      */
     public void setLinkedCourse(String linkedCourse) {
         this.mLinkedCourse = linkedCourse;
     }
-
+    
+    /**
+     * @return the description of the event
+     */
     public String getDescription() {
         return mDescription;
     }
 
+    /**
+     * Set the description of the event
+     * @param description the new description of the event
+     */
     public void setDescription(String description) {
         this.mDescription = description;
     }
 
+    /**
+     * @return the ID (in local database) of the event
+     */
     public int getId() {
         return mId;
     }
 
+    /**
+     * Set the ID (related to local database) of the event
+     * @param id the new ID of the event
+     */
     public void setId(int id) {
         this.mId = id;
     }
 
     /**
-     * Method to retrieve the hours of the event in form of a double
+     * Method to retrieve the hours of the event in the form of a double
      * 
      * @return hours of the event in double
      */

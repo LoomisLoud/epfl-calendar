@@ -13,6 +13,7 @@ import ch.epfl.calendar.R;
 import ch.epfl.calendar.data.ListViewItem;
 
 /**
+ * An adapter for the planning view.
  * @author MatthiasLeroyEPFL
  * 
  */
@@ -32,6 +33,10 @@ public class CustomAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
 
+    /**
+     * Creates a custom adapter.
+     * @param context the context of the {@link Activity} using this adapter.
+     */
     public CustomAdapter(Context context) {
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -41,11 +46,19 @@ public class CustomAdapter extends BaseAdapter {
         colorOrange = context.getResources().getColor(R.color.orange10);
     }
 
+    /**
+     * Add an item to the list on screen
+     * @param item the item to add
+     */
     public void addItem(final ListViewItem item) {
         mData.add(item);
         notifyDataSetChanged();
     }
 
+    /**
+     * Adds an header to separate the list in multiple sections on screen
+     * @param item
+     */
     public void addSectionHeaderItem(final ListViewItem item) {
         mData.add(item);
         sectionHeader.add(mData.size() - 1);
@@ -77,6 +90,9 @@ public class CustomAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * returns a view converted to be used by this adapter.
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         int rowType = getItemViewType(position);
@@ -126,6 +142,7 @@ public class CustomAdapter extends BaseAdapter {
     }
 
     /**
+     * A holder for a {@link TextView}
      * @author MatthiasLeroyEPFL
      * 
      */
