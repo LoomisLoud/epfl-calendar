@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -31,6 +32,7 @@ import ch.epfl.calendar.data.ListViewItem;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.persistence.DBQuester;
+import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 
 /**
  * The list of the events and periods (planning view)
@@ -44,6 +46,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
     private static final int SEPARATOR_ID = -2;
     private static final int HOUR_23 = 23;
     private static final int MINUTE_59 = 59;
+    private static final int NB_DAY_IN_ONE_MONTH = 31;
 
     private ListView mListView;
     private Context context = this;
@@ -122,6 +125,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                                 context);
                                         createAdapter(list, adap);
                                         mListView.setAdapter(adap);
+                                        updateData();
 
                                         dialog.cancel();
 
@@ -214,7 +218,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (editEvent) {
             mEventForList = eventToEventForList(getDBQuester().getAllCourses(),
@@ -260,7 +264,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
         List<ListViewItem> result = new ArrayList<ListViewItem>();
         Calendar today = Calendar.getInstance();
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getmStart().getTimeInMillis() > today
+            if (list.get(i).getEnd().getTimeInMillis() > today
                     .getTimeInMillis()) {
                 result.add(list.get(i));
 
@@ -318,15 +322,26 @@ public class EventListActivity extends DefaultActionBarActivity implements
     private void addEvent(Event event, List<EventForList> list) {
         int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
                 - event.getStartDate().get(Calendar.DAY_OF_MONTH);
-        int monthDuaration = event.getEndDate().get(Calendar.MONTH)
+        int monthDuration = event.getEndDate().get(Calendar.MONTH)
                 - event.getStartDate().get(Calendar.MONTH);
         int yearDuration = event.getEndDate().get(Calendar.YEAR)
                 - event.getStartDate().get(Calendar.YEAR);
 
-        if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
+        if (dayDuration != 0
+                && ((monthDuration >= 0 && yearDuration == 0) || (monthDuration <= 0 && yearDuration == 1))) {
             List<Calendar> startList = new ArrayList<Calendar>();
             Calendar start = (Calendar) event.getStartDate().clone();
             startList.add(start);
+            if (yearDuration == 1) {
+                Calendar cal = new GregorianCalendar();
+                cal.set(cal.get(Calendar.YEAR), Calendar.DECEMBER,
+                        NB_DAY_IN_ONE_MONTH);
+                int nbDaysCurrentYear = cal.get(Calendar.DAY_OF_YEAR)
+                        - event.getStartDate().get(Calendar.DAY_OF_YEAR);
+                int nbDaysNextYear = event.getEndDate().get(
+                        Calendar.DAY_OF_YEAR);
+                dayDuration = nbDaysCurrentYear + nbDaysNextYear;
+            }
             for (int i = 0; i <= dayDuration; i++) {
                 Calendar end = event.getEndDate();
                 if (i != dayDuration) {
@@ -339,8 +354,9 @@ public class EventListActivity extends DefaultActionBarActivity implements
                         end, PeriodType.DEFAULT, event.getId(), event
                                 .getLinkedCourse(), event.getDescription()));
 
+
                 Calendar newStart = (Calendar) startList.get(i).clone();
-                newStart.add(Calendar.DAY_OF_MONTH, 1);
+                newStart.add(Calendar.DAY_OF_YEAR, 1);
                 newStart.set(Calendar.HOUR_OF_DAY, 0);
                 newStart.set(Calendar.MINUTE, 0);
                 startList.add(newStart);
