@@ -9,10 +9,15 @@ import static com.google.android.apps.common.testing.ui.espresso.action.ViewActi
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
-import ch.epfl.calendar.MainActivity;
+import ch.epfl.calendar.DefaultActionBarActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Event;
@@ -34,6 +39,8 @@ public class DefaultActionBarActivityTest extends
     private CourseDetailsActivity mActivity;
     private DBQuester mDB;
     private static final int SLEEP_TIME = 250;
+    private static final int AUTH_ACTIVITY_CODE = 1;
+    private static final int RESULT_OK = 1;
 
     public DefaultActionBarActivityTest() {
         super(CourseDetailsActivity.class);
@@ -46,14 +53,14 @@ public class DefaultActionBarActivityTest extends
         App.setDBHelper("calendar_test.db");
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
-        
+
         mDB = new DBQuester();
 
         mDB.deleteAllTables();
         mDB.createTables();
 
         mActivity = getActivity();
-        
+
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
     }
@@ -122,14 +129,32 @@ public class DefaultActionBarActivityTest extends
         onView(withId(R.id.action_calendar)).perform(click()).check(
                 doesNotExist());
     }
-    
+
     public void testSwitchToEventDetail() throws Throwable {
         Class<? extends CourseDetailsActivity> oldActivity = mActivity
                 .getClass();
         mActivity.switchToEventDetail("event", "description");
         assertNotSame(oldActivity, getCurrentActivity().getClass());
     }
-    
+
+    public void testCallbackISAcademia() throws Throwable {
+        Class<? extends CourseDetailsActivity> oldActivity = mActivity
+                .getClass();
+        mActivity.callbackISAcademia(false, null);
+        assertNotSame(oldActivity, getCurrentActivity().getClass());
+    }
+
+    public final void testOnActivityResult() throws Throwable {
+        Method onActivityResult;
+        onActivityResult = (DefaultActionBarActivity.class).getDeclaredMethod(
+                "onActivityResult", new Class[] {
+                    int.class, int.class, Intent.class
+                });
+        onActivityResult.setAccessible(true);
+        
+        onActivityResult.invoke(mActivity, new Object[] {AUTH_ACTIVITY_CODE, RESULT_OK, null});
+//        assertNotSame(mActivity.getClass(), getCurrentActivity().getClass());
+    }
 
     @Override
     protected void tearDown() throws Exception {
