@@ -228,7 +228,7 @@ public class AddEventBlockActivityTest extends
 
     /**
      * Test method for
-     * {@link ch.epfl.calendar.display.AddEventBlockActivity#updateData()}.
+     * {@link ch.epfl.calendar.display.AddEventBlockActivity#updateFromDatabase()}.
      */
     public final void testUpdateData() {
     }

@@ -12,7 +12,7 @@ public class MockActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         // Do Nothing
         
     }

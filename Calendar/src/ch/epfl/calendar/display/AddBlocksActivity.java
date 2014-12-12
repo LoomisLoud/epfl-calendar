@@ -65,11 +65,11 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         mGreeter = (TextView) findViewById(R.id.greeter);
         mListView = (ListView) findViewById(R.id.credits_blocks_list);
 
-        updateData();
+        updateFromDatabase();
     }
     
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         mCourses = getDBQuester().getAllCourses();
         blockList = constructBlockList(mCourses);
         createAdapterAndListView();

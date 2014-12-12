@@ -32,7 +32,6 @@ import ch.epfl.calendar.data.ListViewItem;
 import ch.epfl.calendar.data.Period;
 import ch.epfl.calendar.data.PeriodType;
 import ch.epfl.calendar.persistence.DBQuester;
-import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 
 /**
  * The list of the events and periods (planning view)
@@ -125,7 +124,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                                 context);
                                         createAdapter(list, adap);
                                         mListView.setAdapter(adap);
-                                        updateData();
+                                        updateFromDatabase();
 
                                         dialog.cancel();
 
@@ -233,7 +232,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         editEvent = true;
         onResume();
     }

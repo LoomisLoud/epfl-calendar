@@ -63,7 +63,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
 
         super.setUdpateData(this);
 
-        updateData();
+        updateFromDatabase();
 
     }
     
@@ -78,7 +78,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
     }
     
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         mCourses = getDBQuester().getAllCourses();
 
         ArrayList<Map<String, String>> coursesName = new ArrayList<Map<String, String>>();
@@ -134,7 +134,7 @@ public class CoursesListActivity extends DefaultActionBarActivity implements
     protected void onResume() {
         super.onResume();
         super.setUdpateData(this);
-        updateData();
+        updateFromDatabase();
     }
 
     private void coursesListActionBar() {

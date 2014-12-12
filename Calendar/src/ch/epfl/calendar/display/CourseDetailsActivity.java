@@ -48,11 +48,11 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
         mCourseName = startingIntent.getStringExtra("course");
 
-        updateData();
+        updateFromDatabase();
     }
     
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         mCourse = getDBQuester().getCourse(mCourseName);
         if (mCourse == null) {
             TextView textView = (TextView) findViewById(R.id.courseName);
@@ -65,7 +65,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        updateData();
+        updateFromDatabase();
     }
 
     private void courseDetailsActionBar() {

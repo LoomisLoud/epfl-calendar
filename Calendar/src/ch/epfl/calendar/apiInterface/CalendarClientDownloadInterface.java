@@ -19,7 +19,7 @@ public interface CalendarClientDownloadInterface {
      * @param success true if the download on ISA was successfull, false otherwise.
      * @param courses The list of Course returned by ISA.
      */
-    void callbackDownload(boolean success, List<Course> courses);
+    void callbackISAcademia(boolean success, List<Course> courses);
     
     /**
      * This function allows to logout the current user

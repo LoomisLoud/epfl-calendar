@@ -14,5 +14,5 @@ public interface DatabaseUploadInterface {
     /**
      * The callback method to be called after creating/updating data in the database.
      */
-    void callbackDBUpload(); 
+    void callbackUploadDatabase(); 
 }

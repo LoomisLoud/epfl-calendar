@@ -96,7 +96,6 @@ public class DefaultActionBarActivityTest extends
 
         Class<? extends CourseDetailsActivity> oldActivity = mActivity
                 .getClass();
-        System.out.println(mDB.getAllEvents().size());
         mActivity.switchToEditActivity(mDB.getAllEvents().get(0));
         assertNotSame(oldActivity, getCurrentActivity().getClass());
     }
@@ -123,6 +122,14 @@ public class DefaultActionBarActivityTest extends
         onView(withId(R.id.action_calendar)).perform(click()).check(
                 doesNotExist());
     }
+    
+    public void testSwitchToEventDetail() throws Throwable {
+        Class<? extends CourseDetailsActivity> oldActivity = mActivity
+                .getClass();
+        mActivity.switchToEventDetail("event", "description");
+        assertNotSame(oldActivity, getCurrentActivity().getClass());
+    }
+    
 
     @Override
     protected void tearDown() throws Exception {

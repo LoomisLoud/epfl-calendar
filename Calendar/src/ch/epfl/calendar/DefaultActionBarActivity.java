@@ -197,7 +197,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     @Override
-    public void callbackDownload(boolean success, List<Course> courses) {
+    public void callbackISAcademia(boolean success, List<Course> courses) {
         if (success) {
             completeCalendarFromAppEngine(courses);
         } else {
@@ -254,7 +254,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mNbOfAsyncTaskDB = mNbOfAsyncTaskDB - 1;
         if (mNbOfAsyncTaskDB <= 0) {
             DBQuester.close();
-            mUdpateData.updateData();
+            mUdpateData.updateFromDatabase();
             if (mDialog != null) {
                 mDialog.dismiss();
             }
@@ -272,8 +272,8 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     @Override
-    public void callbackDBUpload() {
-        mUdpateData.updateData();
+    public void callbackUploadDatabase() {
+        mUdpateData.updateFromDatabase();
     }
 
     /**

@@ -63,7 +63,7 @@ public class EventDetailActivityTest extends
 
     /**
      * Test method for
-     * {@link ch.epfl.calendar.display.EventDetailActivity#updateData()}.
+     * {@link ch.epfl.calendar.display.EventDetailActivity#updateFromDatabase()}.
      */
     public final void testFields() {
         onView(withId(R.id.eventName)).check(matches(withText(NAME)));
@@ -71,7 +71,7 @@ public class EventDetailActivityTest extends
                 matches(withText("Description: " + DESCRIPTION)));
 
         // Just for code coverage...
-        mActivity.updateData();
+        mActivity.updateFromDatabase();
     }
 
     Activity getCurrentActivity() throws Throwable {

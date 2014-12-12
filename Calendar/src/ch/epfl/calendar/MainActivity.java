@@ -206,7 +206,7 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     } else {
                                         getDBQuester().deleteEvent(eventFromDB);
                                     }
-                                    updateData();
+                                    updateFromDatabase();
                                     dialog.cancel();
                                     break;
                                 case 2:
@@ -249,7 +249,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         updateListsFromDB();
         mWeekView.notifyDatasetChanged();
     }

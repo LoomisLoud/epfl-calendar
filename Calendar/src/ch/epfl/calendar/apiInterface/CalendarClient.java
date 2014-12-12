@@ -121,7 +121,7 @@ public class CalendarClient implements CalendarClientInterface {
             }
         }
         mCourseListForTests = new ArrayList<Course>(coursesList);
-        mDownloadInterface.callbackDownload(success, coursesList);
+        mDownloadInterface.callbackISAcademia(success, coursesList);
     }
     
     /**

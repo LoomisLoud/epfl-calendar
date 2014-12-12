@@ -67,7 +67,7 @@ public class CalendarClientTest extends MockTestCase {
                 .mock(CalendarClientDownloadInterface.class);
         Mockito.doNothing()
                 .when(downloadInterface)
-                .callbackDownload(Mockito.any(Boolean.class),
+                .callbackISAcademia(Mockito.any(Boolean.class),
                         Mockito.any(List.class));
         Mockito.doReturn(COURSE_XML).when(task).getResult();
         calendarClient = Mockito
@@ -101,7 +101,7 @@ public class CalendarClientTest extends MockTestCase {
                 .mock(CalendarClientDownloadInterface.class);
         Mockito.doNothing()
                 .when(downloadInterface)
-                .callbackDownload(Mockito.any(Boolean.class),
+                .callbackISAcademia(Mockito.any(Boolean.class),
                         Mockito.any(List.class));
         calendarClient = Mockito
                 .spy(new CalendarClient(null, downloadInterface));
@@ -125,7 +125,7 @@ public class CalendarClientTest extends MockTestCase {
                 .mock(CalendarClientDownloadInterface.class);
         Mockito.doNothing()
                 .when(downloadInterface)
-                .callbackDownload(Mockito.any(Boolean.class),
+                .callbackISAcademia(Mockito.any(Boolean.class),
                         Mockito.any(List.class));
         Mockito.doReturn(COURSE_XML).when(task).getResult();
         calendarClient = Mockito
