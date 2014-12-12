@@ -10,7 +10,6 @@ import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewA
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import android.app.Activity;
@@ -31,7 +30,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author fouchepi
- * 
+ *
  */
 public class DefaultActionBarActivityTest extends
         ActivityInstrumentationTestCase2<CourseDetailsActivity> {
@@ -151,7 +150,7 @@ public class DefaultActionBarActivityTest extends
                     int.class, int.class, Intent.class
                 });
         onActivityResult.setAccessible(true);
-        
+
         onActivityResult.invoke(mActivity, new Object[] {AUTH_ACTIVITY_CODE, RESULT_OK, null});
         assertNotSame(mActivity.getClass(), getCurrentActivity().getClass());
     }

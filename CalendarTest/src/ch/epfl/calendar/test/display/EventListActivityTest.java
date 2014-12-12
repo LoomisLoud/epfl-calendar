@@ -162,7 +162,7 @@ public class EventListActivityTest extends
 
         onData(is(instanceOf(ListViewItem.class)))
                 // Every entry in the ListView is a HashMap
-                .inAdapterView(withId(R.id.list_event_view)).atPosition(6)
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
                 .perform(longClick());
         onView(withText("Edit")).perform(click()).check(doesNotExist());
     }
@@ -172,7 +172,7 @@ public class EventListActivityTest extends
 
         onData(is(instanceOf(ListViewItem.class)))
                 // Every entry in the ListView is a HashMap
-                .inAdapterView(withId(R.id.list_event_view)).atPosition(6)
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(1)
                 .perform(longClick());
         onView(withText("Delete")).perform(click());
         onData(is(instanceOf(ListViewItem.class)))
@@ -252,7 +252,7 @@ public class EventListActivityTest extends
                         mCourses, mEvents
                 });
         // One event and one period are deleted because they are in the past
-        assertEquals(47, listViewEvents.size());
+        assertEquals(49, listViewEvents.size());
     }
 
     public final void testCreateAdapter() throws IllegalAccessException,
@@ -294,9 +294,11 @@ public class EventListActivityTest extends
 
     private void createCourses() throws Exception {
         Calendar calendar1 = new GregorianCalendar();
+        calendar1.add(Calendar.DAY_OF_YEAR, 1);
         calendar1.set(Calendar.MINUTE, 0);
         calendar1.set(Calendar.HOUR_OF_DAY, 8);
         Calendar calendar2 = new GregorianCalendar();
+        calendar1.add(Calendar.DAY_OF_YEAR, 1);
         calendar2.set(Calendar.MINUTE, 0);
         calendar2.set(Calendar.HOUR_OF_DAY, 9);
         Calendar calendar3 = new GregorianCalendar();
@@ -328,9 +330,9 @@ public class EventListActivityTest extends
         calendar9.set(Calendar.MINUTE, 0);
         calendar9.set(Calendar.HOUR_OF_DAY, 8);
         Calendar calendar10 = new GregorianCalendar();
+        calendar10.add(Calendar.DAY_OF_YEAR, 41);
         calendar10.set(Calendar.MINUTE, 0);
         calendar10.set(Calendar.HOUR_OF_DAY, 9);
-        calendar10.add(Calendar.DAY_OF_YEAR, 41);
 
         List<String> period1Course1Rooms = new ArrayList<String>();
         List<String> period2Course1Rooms = new ArrayList<String>();
