@@ -20,6 +20,7 @@ import java.util.Locale;
 import android.app.Activity;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -40,7 +41,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author AblionGE
- *
+ * 
  */
 public class AddEventActivityTest extends
         ActivityInstrumentationTestCase2<AddEventActivity> {
@@ -49,7 +50,6 @@ public class AddEventActivityTest extends
     private AddEventActivity mActivity;
     private MockActivity mMockActivity;
     private List<Course> mCourses;
-    private List<String> mCoursesNames;
     private List<Event> mEvents;
 
     private EditText mNameEvent;
@@ -78,7 +78,7 @@ public class AddEventActivityTest extends
      * @see junit.framework.TestCase#setUp()
      */
     @Override
-	protected void setUp() throws Exception {
+    protected void setUp() throws Exception {
         super.setUp();
 
         /*
@@ -114,7 +114,7 @@ public class AddEventActivityTest extends
      * @see junit.framework.TestCase#tearDown()
      */
     @Override
-	protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception {
         super.tearDown();
         try {
             Utils.pressBack(getCurrentActivity());
@@ -131,7 +131,7 @@ public class AddEventActivityTest extends
      * {@link ch.epfl.calendar.display.AddEventActivity#finishActivity(android.view.View)}
      * .
      */
-    public final void testAddEvent() {
+    public final void testEditEvent() {
 
         // Here is creation of the intent used in onCreate.
         // If the Id's value needs to be changed, just move the 3 following
@@ -141,8 +141,34 @@ public class AddEventActivityTest extends
         setActivityIntent(intent);
 
         setActivity();
+
+        int eventId = intent.getIntExtra("Id", DBQuester.NO_ID);
+        Event event = new DBQuester().getEvent(eventId);
+
+        onView(withId(mNameEvent.getId())).check(
+                matches(withText(event.getName())));
+        onView(withId(mDescriptionEvent.getId())).check(
+                matches(withText(event.getDescription())));
+        int currentPosition = mSpinnerCourses.getSelectedItemPosition();
+        String spinnerItem = mSpinnerCourses.getItemAtPosition(currentPosition).toString();
+        if (currentPosition == 0) {
+            spinnerItem = "NoCourse";
+        }
+        assertEquals(spinnerItem, event.getLinkedCourse());
+
+        SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yy", Locale.US);
+        SimpleDateFormat sdfHour = new SimpleDateFormat("hh:mm aa", Locale.US);
+
+        assertEquals(mButtonStartDate.getText().toString(), sdfDate.format(event.getStartDate()
+                        .getTime()));
+        assertEquals(mButtonStartHour.getText().toString(), sdfHour.format(event.getStartDate()
+                .getTime()));
+        assertEquals(mButtonEndDate.getText().toString(), sdfDate.format(event.getEndDate()
+                .getTime()));
+        assertEquals(mButtonEndHour.getText().toString(), sdfHour.format(event.getEndDate()
+                .getTime()));
     }
-    
+
     public final void testButtons() {
         setActivity();
 
@@ -152,10 +178,10 @@ public class AddEventActivityTest extends
         SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yy", Locale.US);
         SimpleDateFormat sdfHour = new SimpleDateFormat("hh:mm aa", Locale.US);
 
-        assertEquals(sdfDate.format(start.getTime()), mButtonStartDate.getText()
-                .toString());
-        assertEquals(sdfHour.format(start.getTime()), mButtonStartHour.getText()
-                .toString());
+        assertEquals(sdfDate.format(start.getTime()), mButtonStartDate
+                .getText().toString());
+        assertEquals(sdfHour.format(start.getTime()), mButtonStartHour
+                .getText().toString());
         assertEquals(sdfDate.format(end.getTime()), mButtonEndDate.getText()
                 .toString());
         assertEquals(sdfHour.format(end.getTime()), mButtonEndHour.getText()
@@ -166,12 +192,12 @@ public class AddEventActivityTest extends
         onView(withId(mButtonStartDate.getId())).check(matches(isEnabled()));
         onView(withId(mButtonStartDate.getId())).perform(click());
         onView(withText("Done")).perform(click());
-        
+
         onView(withId(mButtonStartHour.getId())).check(matches(isDisplayed()));
         onView(withId(mButtonStartHour.getId())).check(matches(isEnabled()));
         onView(withId(mButtonStartHour.getId())).perform(click());
         onView(withText("Done")).perform(click());
-        
+
         onView(withId(mButtonEndDate.getId())).check(matches(isDisplayed()));
         onView(withId(mButtonEndDate.getId())).check(matches(isEnabled()));
         onView(withId(mButtonEndDate.getId())).perform(click());
@@ -190,6 +216,30 @@ public class AddEventActivityTest extends
             e.printStackTrace();
         }
         assertNotNull(mDB.getAllEventsFromCourseBlock("TestCourse1"));
+    }
+
+    public final void testSpinner() {
+        setActivity();
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) mSpinnerCourses
+                .getAdapter();
+
+        assertEquals(3, mSpinnerCourses.getCount());
+        assertEquals("No connection with courses", adapter.getItem(0)
+                .toString());
+        assertEquals("TestCourse2", adapter.getItem(1).toString());
+        assertEquals("TestCourse1", adapter.getItem(2).toString());
+    }
+
+    public final void testTextView() {
+        setActivity();
+        onView(withId(mFrom.getId())).check(matches(isDisplayed()));
+        onView(withId(mTo.getId())).check(matches(isDisplayed()));
+    }
+
+    public final void testEditText() {
+        setActivity();
+        onView(withId(mNameEvent.getId())).check(matches(isDisplayed()));
+        onView(withId(mDescriptionEvent.getId())).check(matches(isDisplayed()));
     }
 
     /**
@@ -283,7 +333,7 @@ public class AddEventActivityTest extends
         mButtonEndHour = (Button) mActivity
                 .findViewById(R.id.end_event_dialog_hour);
         mSaveButton = (Button) mActivity.findViewById(R.id.valid_event);
-        
+
         // We need to set up which activity is the current one (needed by
         // AsyncTask to be able to use callback functions
         App.setActionBar(mActivity);
