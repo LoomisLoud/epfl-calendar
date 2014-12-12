@@ -51,15 +51,6 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         updateData();
     }
     
-    /**
-     * Switch to {@link AddEventActivity} in edit mode.
-     */
-    public void switchToEditActivity(Event event) {
-        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
-        editActivityIntent.putExtra("Id", event.getId());
-        startActivity(editActivityIntent);
-    }
-    
     @Override
     public void updateData() {
         mCourse = getDBQuester().getCourse(mCourseName);
