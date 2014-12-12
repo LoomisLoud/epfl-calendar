@@ -96,7 +96,7 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
         if (mExceptionOccured) {
             mListener.onError(mContext, "Can't retrieve : " + result.getName());
         } else {
-            mCourse = result;
+            setCourse(result);
             mListener.onSuccess();
         }
     }

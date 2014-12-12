@@ -50,7 +50,8 @@ public class ConstructListCourse {
      *            the context of the {@link Activity} calling this method
      */
     public void completeCourse(List<Course> courses, Context context) {
-        mCourses = new ArrayList<Course>();
+        setCourses(new ArrayList<Course>());
+        setTasks(new ArrayList<AppEngineTask>());
         mNumberOfCourse = courses.size();
         for (Course course : courses) {
             mCourses.add(course);
@@ -86,7 +87,7 @@ public class ConstructListCourse {
         mCourses = courses;
     }
 
-    private ConstructListCourse(AppEngineDownloadInterface objectActivity) {
+    public ConstructListCourse(AppEngineDownloadInterface objectActivity) {
         mObjectActivity = objectActivity;
         mTasks = new ArrayList<AppEngineTask>();
         mCourses = new ArrayList<Course>();
