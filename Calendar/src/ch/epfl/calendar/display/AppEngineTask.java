@@ -9,6 +9,7 @@ import ch.epfl.calendar.data.Course;
 
 /**
  * Extends {@link AsyncTask} and fetches data on the AppEngine.
+ * 
  * @author Maxime
  * 
  */
@@ -18,17 +19,22 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
     private AppEngineListener mListener = null;
     private AppEngineDatabaseInterface mAppEngineClient;
     private boolean mExceptionOccured = false;
-    
+
     /**
-     * A listener which will be triggered at the end of a download from the App Engine.
+     * A listener which will be triggered at the end of a download from the App
+     * Engine.
+     * 
      * @author Maxime
      * 
      */
     public interface AppEngineListener {
         /**
          * The method to call when an error occured during download
-         * @param context the context of the {@link Activity} using this Task
-         * @param msg the error message
+         * 
+         * @param context
+         *            the context of the {@link Activity} using this Task
+         * @param msg
+         *            the error message
          */
         void onError(Context context, String msg);
 
@@ -40,8 +46,11 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
 
     /**
      * The constructor of this class
-     * @param context the context of the {@link Activity} using this task
-     * @param listener the {@link AppEngineListener} implementation to use
+     * 
+     * @param context
+     *            the context of the {@link Activity} using this task
+     * @param listener
+     *            the {@link AppEngineListener} implementation to use
      */
     public AppEngineTask(Context context, AppEngineListener listener) {
         mContext = context;
@@ -86,10 +95,6 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
             mCourse = result;
             mListener.onSuccess();
         }
-    }
-    
-    private void setCourse(Course course) {
-        mCourse = course;
     }
 
     public AppEngineDatabaseInterface getAppEngineClient() {

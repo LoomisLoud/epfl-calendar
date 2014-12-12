@@ -63,14 +63,6 @@ public class ConstructListCourse {
     public List<AppEngineTask> getTasks() {
         return mTasks;
     }
-    
-    private void setTasks(ArrayList<AppEngineTask> tasks) {
-        mTasks = tasks;
-    }
-    
-    private void setCourses(ArrayList<Course> courses) {
-        mCourses = courses;
-    }
 
     private ConstructListCourse(AppEngineDownloadInterface objectActivity) {
         mObjectActivity = objectActivity;

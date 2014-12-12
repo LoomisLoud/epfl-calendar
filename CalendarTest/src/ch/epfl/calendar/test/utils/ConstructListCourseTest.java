@@ -1,4 +1,4 @@
-package ch.epfl.calendar.utils.tests;
+package ch.epfl.calendar.test.utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -6,17 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Null;
 
 import android.content.Context;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.display.AppEngineDownloadInterface;
 import ch.epfl.calendar.display.AppEngineTask;
 import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
-import ch.epfl.calendar.testing.utils.MockTestCase;
 import ch.epfl.calendar.utils.ConstructListCourse;
 
-public class ConstructListCourseTest extends MockTestCase {
+/**
+ * 
+ * @author AblionGE
+ *
+ */
+public class ConstructListCourseTest extends ch.epfl.calendar.test.utils.MockTestCase {
 
     private static final String COURSE_NAME = "Modélisation mathématique et computationnelle en biologie";
     private static final String COURSE_CODE = "BIO-341";
