@@ -35,7 +35,7 @@ import ch.epfl.calendar.persistence.DBQuester;
 
 /**
  * The list of the events and periods (planning view)
- * 
+ *
  * @author MatthiasLeroyEPFL
  */
 public class EventListActivity extends DefaultActionBarActivity implements
@@ -148,7 +148,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
 
                                 /*
                                  * (non-Javadoc)
-                                 * 
+                                 *
                                  * @see
                                  * android.content.DialogInterface.OnClickListener
                                  * #onClick (android.content.DialogInterface,
@@ -210,7 +210,8 @@ public class EventListActivity extends DefaultActionBarActivity implements
     /**
      * Switch to {@link AddEventBlockActivity}
      */
-    public void switchToAddBlockActivity() {
+    @Override
+	public void switchToAddBlockActivity() {
         editEvent = true;
         Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
         startActivity(blockActivityIntent);
