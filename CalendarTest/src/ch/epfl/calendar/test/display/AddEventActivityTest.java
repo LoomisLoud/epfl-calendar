@@ -108,23 +108,6 @@ public class AddEventActivityTest extends
         mActivity = new AddEventActivity();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#tearDown()
-     */
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        try {
-            Utils.pressBack(getCurrentActivity());
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        super.tearDown();
-        getInstrumentation().getTargetContext().deleteDatabase(
-                App.getDBHelper().getDatabaseName());
-    }
 
     /**
      * Test method for
@@ -242,6 +225,20 @@ public class AddEventActivityTest extends
         onView(withId(mDescriptionEvent.getId())).check(matches(isDisplayed()));
     }
 
+    public Activity getCurrentActivity() throws Throwable {
+        getInstrumentation().waitForIdleSync();
+        final Activity[] activity = new Activity[1];
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry
+                        .getInstance().getActivitiesInStage(Stage.RESUMED);
+                activity[0] = Iterables.getOnlyElement(activites);
+            }
+        });
+        return activity[0];
+    }
+    
     /**
      * Test method for
      * {@link ch.epfl.calendar.display.AddEventActivity#updateData()}.
@@ -249,6 +246,24 @@ public class AddEventActivityTest extends
     public final void testUpdateData() {
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see junit.framework.TestCase#tearDown()
+     */
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        try {
+            Utils.pressBack(getCurrentActivity());
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        super.tearDown();
+        getInstrumentation().getTargetContext().deleteDatabase(
+                App.getDBHelper().getDatabaseName());
+    }
+    
     private void createCourses() throws Exception {
         List<String> period1Course1Rooms = new ArrayList<String>();
         List<String> period2Course1Rooms = new ArrayList<String>();
@@ -338,20 +353,6 @@ public class AddEventActivityTest extends
         // AsyncTask to be able to use callback functions
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
-    }
-
-    public Activity getCurrentActivity() throws Throwable {
-        getInstrumentation().waitForIdleSync();
-        final Activity[] activity = new Activity[1];
-        runTestOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry
-                        .getInstance().getActivitiesInStage(Stage.RESUMED);
-                activity[0] = Iterables.getOnlyElement(activites);
-            }
-        });
-        return activity[0];
     }
 
 }
