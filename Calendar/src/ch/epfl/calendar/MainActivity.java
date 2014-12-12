@@ -2,6 +2,7 @@ package ch.epfl.calendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -42,6 +43,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     private static final int TYPE_WEEK_VIEW = 3;
     private static final int HOUR_23 = 23;
     private static final int MINUTE_59 = 59;
+    private static final int NB_DAY_IN_ONE_MONTH = 31;
 
     private static final int SIZE_COLUMN_GAP_DAY = 8;
     private static final int SIZE_FRONT_DAY = 12;
@@ -59,7 +61,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
-    private List<WeekViewEvent> mMListEvents = new ArrayList<WeekViewEvent>();
+    private List<WeekViewEvent> mListEvents = new ArrayList<WeekViewEvent>();
     private long mIdEvent = 0;
     private List<Course> mListCourses = new ArrayList<Course>();
     private List<Event> mListEventWithoutCourse = new ArrayList<Event>();
@@ -141,11 +143,11 @@ public class MainActivity extends DefaultActionBarActivity implements
     public List<WeekViewEvent> onMonthChange() {
 
         // Populate the week view with some events.
-        mMListEvents = new ArrayList<WeekViewEvent>();
+        mListEvents = new ArrayList<WeekViewEvent>();
 
         for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
-                mMListEvents.add(new WeekViewEvent(mIdEvent++, c.getName(), p
+                mListEvents.add(new WeekViewEvent(mIdEvent++, c.getName(), p
                         .getStartDate(), p.getEndDate(), p.getType(), c
                         .getDescription()));
             }
@@ -158,7 +160,7 @@ public class MainActivity extends DefaultActionBarActivity implements
             addEvent(event);
         }
 
-        return mMListEvents;
+        return mListEvents;
     }
 
     @Override
@@ -208,7 +210,8 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     dialog.cancel();
                                     break;
                                 case 2:
-                                    if (event.getmType().equals(PeriodType.LECTURE)
+                                    if (event.getmType().equals(
+                                            PeriodType.LECTURE)
                                             || event.getmType().equals(
                                                     PeriodType.PROJECT)
                                             || event.getmType().equals(
@@ -216,19 +219,20 @@ public class MainActivity extends DefaultActionBarActivity implements
                                         String cours = event.getName();
                                         switchToCourseDetails(cours);
                                     } else {
-    
-                                        if (eventFromDB.getLinkedCourse().equals(
-                                                App.NO_COURSE)) {
+
+                                        if (eventFromDB.getLinkedCourse()
+                                                .equals(App.NO_COURSE)) {
                                             String description = event
                                                     .getmDescription();
-                                            switchToEventDetail(event.getName(),
+                                            switchToEventDetail(
+                                                    event.getName(),
                                                     description);
                                         } else {
                                             String coursName = eventFromDB
                                                     .getLinkedCourse();
                                             switchToCourseDetails(coursName);
                                         }
-    
+
                                     }
                                     dialog.cancel();
                                     break;
@@ -256,17 +260,28 @@ public class MainActivity extends DefaultActionBarActivity implements
     }
 
     private void addEvent(Event event) {
-        int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
-                - event.getStartDate().get(Calendar.DAY_OF_MONTH);
-        int monthDuaration = event.getEndDate().get(Calendar.MONTH)
+        int dayDuration = event.getEndDate().get(Calendar.DAY_OF_YEAR)
+                - event.getStartDate().get(Calendar.DAY_OF_YEAR);
+        int monthDuration = event.getEndDate().get(Calendar.MONTH)
                 - event.getStartDate().get(Calendar.MONTH);
         int yearDuration = event.getEndDate().get(Calendar.YEAR)
                 - event.getStartDate().get(Calendar.YEAR);
 
-        if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
+        if (dayDuration != 0
+                && ((monthDuration >= 0 && yearDuration == 0) || (monthDuration <= 0 && yearDuration == 1))) {
             List<Calendar> startList = new ArrayList<Calendar>();
             Calendar start = (Calendar) event.getStartDate().clone();
             startList.add(start);
+            if (yearDuration == 1) {
+                Calendar cal = new GregorianCalendar();
+                cal.set(cal.get(Calendar.YEAR), Calendar.DECEMBER,
+                        NB_DAY_IN_ONE_MONTH);
+                int nbDaysCurrentYear = cal.get(Calendar.DAY_OF_YEAR)
+                        - event.getStartDate().get(Calendar.DAY_OF_YEAR);
+                int nbDaysNextYear = event.getEndDate().get(
+                        Calendar.DAY_OF_YEAR);
+                dayDuration = nbDaysCurrentYear + nbDaysNextYear;
+            }
             for (int i = 0; i <= dayDuration; i++) {
                 Calendar end = event.getEndDate();
                 if (i != dayDuration) {
@@ -275,18 +290,18 @@ public class MainActivity extends DefaultActionBarActivity implements
                     end.set(Calendar.MINUTE, MINUTE_59);
                 }
 
-                mMListEvents.add(new WeekViewEvent(event.getId(), event
+                mListEvents.add(new WeekViewEvent(event.getId(), event
                         .getName(), startList.get(i), end, PeriodType.DEFAULT,
                         event.getDescription()));
 
                 Calendar newStart = (Calendar) startList.get(i).clone();
-                newStart.add(Calendar.DAY_OF_MONTH, 1);
+                newStart.add(Calendar.DAY_OF_YEAR, 1);
                 newStart.set(Calendar.HOUR_OF_DAY, 0);
                 newStart.set(Calendar.MINUTE, 0);
                 startList.add(newStart);
             }
         } else {
-            mMListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
+            mListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
                     event.getStartDate(), event.getEndDate(),
                     PeriodType.DEFAULT, event.getDescription()));
         }
@@ -372,7 +387,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         super.setUdpateData(this);
