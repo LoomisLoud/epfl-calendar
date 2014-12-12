@@ -19,6 +19,8 @@ import static org.hamcrest.Matchers.is;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.Activity;
@@ -42,7 +44,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author AblionGE
- *
+ * 
  */
 public class EventListActivityTest extends
         ActivityInstrumentationTestCase2<EventListActivity> {
@@ -64,7 +66,7 @@ public class EventListActivityTest extends
      * @see junit.framework.TestCase#setUp()
      */
     @Override
-	protected void setUp() throws Exception {
+    protected void setUp() throws Exception {
         super.setUp();
 
         /*
@@ -99,7 +101,7 @@ public class EventListActivityTest extends
      * @see junit.framework.TestCase#tearDown()
      */
     @Override
-	protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
@@ -230,7 +232,7 @@ public class EventListActivityTest extends
                     eventForList
                 });
 
-        assertEquals(4, ((List<ListViewItem>) listViewEvents).size());
+        assertEquals(2, ((List<ListViewItem>) listViewEvents).size());
     }
 
     @SuppressWarnings("unchecked")
@@ -241,16 +243,16 @@ public class EventListActivityTest extends
         Method eventToEventForList;
         eventToEventForList = (EventListActivity.class).getDeclaredMethod(
                 "eventToEventForList", new Class[] {
-                    List.class, List.class
+                        List.class, List.class
                 });
         eventToEventForList.setAccessible(true);
 
         List<ListViewItem> listViewEvents = (List<ListViewItem>) eventToEventForList
                 .invoke(mActivity, new Object[] {
-                    mCourses, mEvents
+                        mCourses, mEvents
                 });
         // One event and one period are deleted because they are in the past
-        assertEquals(5, listViewEvents.size());
+        assertEquals(44, listViewEvents.size());
     }
 
     public final void testCreateAdapter() throws IllegalAccessException,
@@ -260,7 +262,7 @@ public class EventListActivityTest extends
         Method createAdapter;
         createAdapter = (EventListActivity.class).getDeclaredMethod(
                 "createAdapter", new Class[] {
-                    List.class, CustomAdapter.class
+                        List.class, CustomAdapter.class
                 });
         createAdapter.setAccessible(true);
 
@@ -268,7 +270,7 @@ public class EventListActivityTest extends
 
         CustomAdapter adapter = (CustomAdapter) createAdapter.invoke(mActivity,
                 new Object[] {
-                    eventForList, new CustomAdapter(mActivity)
+                        eventForList, new CustomAdapter(mActivity)
                 });
         // We have 5 eventForList :
         // 1 Header Item per day : 3
@@ -276,19 +278,76 @@ public class EventListActivityTest extends
         assertEquals(10, adapter.getCount());
     }
 
+    public final void testSwitchToAddEvent() throws Throwable {
+        setActivity();
+        mActivity.switchToAddEventsActivity();
+        assertFalse(getCurrentActivity().getClass()
+                .equals(mActivity.getClass()));
+    }
+
+    public final void testSwitchToAddBlock() throws Throwable {
+        setActivity();
+        mActivity.switchToAddBlockActivity();
+        assertFalse(getCurrentActivity().getClass()
+                .equals(mActivity.getClass()));
+    }
+
     private void createCourses() throws Exception {
+        Calendar calendar1 = new GregorianCalendar();
+        calendar1.set(Calendar.MINUTE, 0);
+        calendar1.set(Calendar.HOUR_OF_DAY, 8);
+        Calendar calendar2 = new GregorianCalendar();
+        calendar2.set(Calendar.MINUTE, 0);
+        calendar2.set(Calendar.HOUR_OF_DAY, 9);
+        Calendar calendar3 = new GregorianCalendar();
+        calendar3.add(Calendar.DAY_OF_YEAR, 1);
+        calendar3.set(Calendar.MINUTE, 0);
+        calendar3.set(Calendar.HOUR_OF_DAY, 8);
+        Calendar calendar4 = new GregorianCalendar();
+        calendar4.add(Calendar.DAY_OF_YEAR, 1);
+        calendar4.set(Calendar.MINUTE, 0);
+        calendar4.set(Calendar.HOUR_OF_DAY, 9);
+        Calendar calendar5 = new GregorianCalendar();
+        calendar5.add(Calendar.DAY_OF_YEAR, 2);
+        calendar5.set(Calendar.MINUTE, 0);
+        calendar5.set(Calendar.HOUR_OF_DAY, 14);
+        Calendar calendar6 = new GregorianCalendar();
+        calendar6.add(Calendar.DAY_OF_YEAR, 2);
+        calendar6.set(Calendar.MINUTE, 0);
+        calendar6.set(Calendar.HOUR_OF_DAY, 15);
+        Calendar calendar7 = new GregorianCalendar();
+        calendar7.add(Calendar.DAY_OF_YEAR, 10);
+        calendar7.set(Calendar.MINUTE, 0);
+        calendar7.set(Calendar.HOUR_OF_DAY, 14);
+        Calendar calendar8 = new GregorianCalendar();
+        calendar8.add(Calendar.DAY_OF_YEAR, 10);
+        calendar8.set(Calendar.MINUTE, 0);
+        calendar8.set(Calendar.HOUR_OF_DAY, 15);
+        Calendar calendar9 = new GregorianCalendar();
+        calendar9.add(Calendar.DAY_OF_YEAR, 1);
+        calendar9.set(Calendar.MINUTE, 0);
+        calendar9.set(Calendar.HOUR_OF_DAY, 8);
+        Calendar calendar10 = new GregorianCalendar();
+        calendar10.set(Calendar.MINUTE, 0);
+        calendar10.set(Calendar.HOUR_OF_DAY, 9);
+        calendar10.add(Calendar.DAY_OF_YEAR, 41);
+
         List<String> period1Course1Rooms = new ArrayList<String>();
         List<String> period2Course1Rooms = new ArrayList<String>();
         period1Course1Rooms.add("GCA 331");
         period1Course1Rooms.add("CO2");
         period2Course1Rooms.add("INF1");
         period2Course1Rooms.add("INF2");
-        Period period1Course1 = new Period("Lecture", "27.11.2034 08:00",
-                "27.11.2034 10:00", period1Course1Rooms, "1");
-        Period period2Course1 = new Period("Exercise", "28.11.2034 08:00",
-                "28.11.2034 10:00", period2Course1Rooms, "2");
+        Period period1Course1 = new Period("Lecture",
+                App.calendarToBasicFormatString(calendar1),
+                App.calendarToBasicFormatString(calendar2),
+                period1Course1Rooms, "1");
+        Period period2Course1 = new Period("Exercise",
+                App.calendarToBasicFormatString(calendar3),
+                App.calendarToBasicFormatString(calendar4),
+                period2Course1Rooms, "2");
         Period period3Course1 = new Period("Project", "29.11.2010 08:00",
-                "29.11.2010 10:00", period2Course1Rooms, "3");
+                "29.11.2010 18:00", period2Course1Rooms, "3");
         ArrayList<Period> periodsCourse1 = new ArrayList<Period>();
         periodsCourse1.add(period1Course1);
         periodsCourse1.add(period2Course1);
@@ -302,10 +361,14 @@ public class EventListActivityTest extends
         period1Course2Rooms.add("INF119");
         period2Course2Rooms.add("INM202");
         period2Course2Rooms.add("INM203");
-        Period period1Course2 = new Period("Lecture", "27.11.2034 08:00",
-                "27.11.2034 17:00", period1Course2Rooms, "4");
-        Period period2Course2 = new Period("Exercise", "02.11.2034 08:00",
-                "02.11.2034 10:00", period2Course2Rooms, "5");
+        Period period1Course2 = new Period("Lecture",
+                App.calendarToBasicFormatString(calendar1),
+                App.calendarToBasicFormatString(calendar2),
+                period1Course2Rooms, "4");
+        Period period2Course2 = new Period("Exercise",
+                App.calendarToBasicFormatString(calendar7),
+                App.calendarToBasicFormatString(calendar8),
+                period2Course2Rooms, "5");
         ArrayList<Period> periodsCourse2 = new ArrayList<Period>();
         periodsCourse2.add(period1Course2);
         periodsCourse2.add(period2Course2);
@@ -317,16 +380,22 @@ public class EventListActivityTest extends
         mCourses.add(course2);
 
         // Add events
-        Event event1 = new Event("event1", "27.11.2034 08:00",
-                "27.11.2034 18:00", "exercises", App.NO_COURSE, "Event 1",
-                false, DBQuester.NO_ID);
-        Event event2 = new Event("event2", "28.11.2014 08:00",
-                "28.11.2014 18:00", "project", App.NO_COURSE, "Event 2", false,
-                DBQuester.NO_ID);
-
+        Event event1 = new Event("event1",
+                App.calendarToBasicFormatString(calendar1),
+                App.calendarToBasicFormatString(calendar2), "exercises",
+                App.NO_COURSE, "Event 1", false, DBQuester.NO_ID);
+        Event event2 = new Event("event2",
+                App.calendarToBasicFormatString(calendar5),
+                App.calendarToBasicFormatString(calendar6), "project",
+                App.NO_COURSE, "Event 2", false, DBQuester.NO_ID);
+        Event event3 = new Event("event3",
+                App.calendarToBasicFormatString(calendar9),
+                App.calendarToBasicFormatString(calendar10), "lecture",
+                App.NO_COURSE, "Event 3", false, DBQuester.NO_ID);
         mEvents = new ArrayList<Event>();
         mEvents.add(event1);
         mEvents.add(event2);
+        mEvents.add(event3);
     }
 
     private void waitOnInsertionInDB() {
