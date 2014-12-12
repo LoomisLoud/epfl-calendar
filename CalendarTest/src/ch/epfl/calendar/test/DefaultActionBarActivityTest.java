@@ -40,7 +40,7 @@ public class DefaultActionBarActivityTest extends
     private DBQuester mDB;
     private static final int SLEEP_TIME = 250;
     private static final int AUTH_ACTIVITY_CODE = 1;
-    private static final int RESULT_OK = 1;
+    private static final int RESULT_OK = -1;
 
     public DefaultActionBarActivityTest() {
         super(CourseDetailsActivity.class);
@@ -153,7 +153,7 @@ public class DefaultActionBarActivityTest extends
         onActivityResult.setAccessible(true);
         
         onActivityResult.invoke(mActivity, new Object[] {AUTH_ACTIVITY_CODE, RESULT_OK, null});
-//        assertNotSame(mActivity.getClass(), getCurrentActivity().getClass());
+        assertNotSame(mActivity.getClass(), getCurrentActivity().getClass());
     }
 
     @Override
