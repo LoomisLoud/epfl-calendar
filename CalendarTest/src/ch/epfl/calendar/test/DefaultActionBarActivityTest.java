@@ -12,6 +12,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import ch.epfl.calendar.App;
+import ch.epfl.calendar.MainActivity;
 import ch.epfl.calendar.R;
 import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Event;
@@ -25,12 +26,13 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author fouchepi
- *
+ * 
  */
 public class DefaultActionBarActivityTest extends
         ActivityInstrumentationTestCase2<CourseDetailsActivity> {
 
     private CourseDetailsActivity mActivity;
+    private DBQuester mDB;
     private static final int SLEEP_TIME = 250;
 
     public DefaultActionBarActivityTest() {
@@ -38,14 +40,22 @@ public class DefaultActionBarActivityTest extends
     }
 
     @Override
-	public void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
 
         App.setDBHelper("calendar_test.db");
         getInstrumentation().getTargetContext().deleteDatabase(
                 App.getDBHelper().getDatabaseName());
+        
+        mDB = new DBQuester();
+
+        mDB.deleteAllTables();
+        mDB.createTables();
 
         mActivity = getActivity();
+        
+        App.setActionBar(mActivity);
+        mActivity.setUdpateData(mActivity);
     }
 
     public void testSwitchToCoursesList() {
@@ -64,28 +74,30 @@ public class DefaultActionBarActivityTest extends
 
     public void testSwitchToAddBlockActivity() {
         openContextualActionModeOverflowMenu();
-        onView(withText("Add blocks of credits")).perform(click()).check(doesNotExist());
+        onView(withText("Add blocks of credits")).perform(click()).check(
+                doesNotExist());
     }
 
     public void testSwitchToListEvent() throws Throwable {
         openContextualActionModeOverflowMenu();
-        Class<? extends CourseDetailsActivity> oldActivity = getActivity().getClass();
+        Class<? extends CourseDetailsActivity> oldActivity = getActivity()
+                .getClass();
         onView(withText("Planning")).perform(click());
         assertNotSame(oldActivity, getCurrentActivity().getClass());
     }
 
-
     public void testSwitchToEditActivity() throws Throwable {
-        Event event = new Event("event", "27.11.2034 08:00",
-                "27.11.2034 18:00", "exercises", App.NO_COURSE, "Event",
-                false, DBQuester.NO_ID);
+        Event event = new Event("event", "27.12.2014 08:00",
+                "27.12.2014 18:00", "lecture", App.NO_COURSE, "Event", false,
+                DBQuester.NO_ID);
 
-        DBQuester db = new DBQuester();
-        db.storeEvent(event);
+        mDB.storeEvent(event);
         waitOnInsertionInDB();
 
-        Class<? extends CourseDetailsActivity> oldActivity = getActivity().getClass();
-        mActivity.switchToEditActivity(db.getAllEvents().get(0));
+        Class<? extends CourseDetailsActivity> oldActivity = mActivity
+                .getClass();
+        System.out.println(mDB.getAllEvents().size());
+        mActivity.switchToEditActivity(mDB.getAllEvents().get(0));
         assertNotSame(oldActivity, getCurrentActivity().getClass());
     }
 
@@ -108,11 +120,12 @@ public class DefaultActionBarActivityTest extends
 
         App.setActionBar(mActivity);
         mActivity.setUdpateData(mActivity);
-        onView(withId(R.id.action_calendar)).perform(click()).check(doesNotExist());
+        onView(withId(R.id.action_calendar)).perform(click()).check(
+                doesNotExist());
     }
 
     @Override
-	protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception {
         try {
             Utils.pressBack(getCurrentActivity());
         } catch (Throwable e) {
@@ -136,12 +149,12 @@ public class DefaultActionBarActivityTest extends
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         runTestOnUiThread(new Runnable() {
-        	@Override
-        	public void run() {
-        		java.util.Collection<Activity> activites =
-        				ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-        		activity[0] = Iterables.getOnlyElement(activites);
-        	}
+            @Override
+            public void run() {
+                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry
+                        .getInstance().getActivitiesInStage(Stage.RESUMED);
+                activity[0] = Iterables.getOnlyElement(activites);
+            }
         });
         return activity[0];
     }
