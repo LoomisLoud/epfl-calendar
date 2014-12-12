@@ -162,7 +162,7 @@ public class EventListActivityTest extends
 
         onData(is(instanceOf(ListViewItem.class)))
                 // Every entry in the ListView is a HashMap
-                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(6)
                 .perform(longClick());
         onView(withText("Edit")).perform(click()).check(doesNotExist());
     }
@@ -172,8 +172,14 @@ public class EventListActivityTest extends
 
         onData(is(instanceOf(ListViewItem.class)))
                 // Every entry in the ListView is a HashMap
-                .inAdapterView(withId(R.id.list_event_view)).atPosition(5)
+                .inAdapterView(withId(R.id.list_event_view)).atPosition(6)
                 .perform(longClick());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         onView(withText("Delete")).perform(click());
         onData(is(instanceOf(ListViewItem.class)))
                 // Every entry in the ListView is a HashMap
@@ -232,7 +238,7 @@ public class EventListActivityTest extends
                     eventForList
                 });
 
-        assertEquals(2, ((List<ListViewItem>) listViewEvents).size());
+        assertEquals(4, ((List<ListViewItem>) listViewEvents).size());
     }
 
     @SuppressWarnings("unchecked")
@@ -252,7 +258,7 @@ public class EventListActivityTest extends
                         mCourses, mEvents
                 });
         // One event and one period are deleted because they are in the past
-        assertEquals(44, listViewEvents.size());
+        assertEquals(47, listViewEvents.size());
     }
 
     public final void testCreateAdapter() throws IllegalAccessException,
