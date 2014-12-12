@@ -18,7 +18,7 @@ import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
  * @author Maxime
  * 
  */
-public final class ConstructListCourse {
+public class ConstructListCourse {
 
     private static ConstructListCourse mConstructCourse;
     private AppEngineTask mTask;

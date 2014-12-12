@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mockito.Mockito;
+import org.mockito.internal.matchers.Null;
 
 import android.content.Context;
 import ch.epfl.calendar.data.Course;
@@ -64,19 +65,24 @@ public class ConstructListCourseTest extends MockTestCase {
         
         Method callback;
         callback = (ConstructListCourse.class).getDeclaredMethod("callback",
-                Void[].class);
+                new Class[] {});
 
         Method setCourse;
         setCourse = (AppEngineTask.class).getDeclaredMethod("setCourse",
                 Course.class);
 
         Method setCourses;
-        setCourses = (ConstructListCourse.class).getDeclaredMethod("addCourse",
-                Void[].class);
+        setCourses = (ConstructListCourse.class).getDeclaredMethod("setCourses",
+               ArrayList.class);
 
         Method setTasks;
-        setTasks = (ConstructListCourse.class).getDeclaredMethod("setTask",
-                AppEngineTask.class);
+        setTasks = (ConstructListCourse.class).getDeclaredMethod("setTasks",
+                ArrayList.class);
+        
+        callback.setAccessible(true);
+        setCourse.setAccessible(true);
+        setCourses.setAccessible(true);
+        setTasks.setAccessible(true);
 
         setCourse.invoke(task1, course1);
         
@@ -85,12 +91,51 @@ public class ConstructListCourseTest extends MockTestCase {
        
         setCourses.invoke(instance, courses);
 
-        callback.invoke(instance, new Object[] { new Void[] {} });
+        callback.invoke(instance, new Object[] {});
 
         assertEquals(COURSE_CREDITS, instance.getCourses().get(0).getCredits());
         assertEquals(COURSE_TEACHER, instance.getCourses().get(0).getTeacher());
         assertEquals(COURSE_DESCRIPTION, instance.getCourses().get(0)
                 .getDescription());
 
+    }
+    
+    public void testCallbackWithCourseNull() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Course course1 = null;
+        
+        Method callback;
+        callback = (ConstructListCourse.class).getDeclaredMethod("callback",
+                new Class[] {});
+
+        Method setCourse;
+        setCourse = (AppEngineTask.class).getDeclaredMethod("setCourse",
+                Course.class);
+
+        Method setCourses;
+        setCourses = (ConstructListCourse.class).getDeclaredMethod("setCourses",
+               ArrayList.class);
+
+        Method setTasks;
+        setTasks = (ConstructListCourse.class).getDeclaredMethod("setTasks",
+                ArrayList.class);
+        
+        callback.setAccessible(true);
+        setCourse.setAccessible(true);
+        setCourses.setAccessible(true);
+        setTasks.setAccessible(true);
+
+        setCourse.invoke(task1, course1);
+        
+        tasks.add(task1);
+        setTasks.invoke(instance, tasks);
+       
+        setCourses.invoke(instance, courses);
+
+        callback.invoke(instance, new Object[] {});
+
+        assertEquals(0, instance.getCourses().get(0).getCredits());
+        assertEquals("Can't find a teacher", instance.getCourses().get(0).getTeacher());
+        assertEquals("No description", instance.getCourses().get(0)
+                .getDescription());
     }
 }
