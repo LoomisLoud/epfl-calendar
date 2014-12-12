@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Calendar</string>
+    <string name="app_name">Student Blocks</string>
     <string name="title_activity_authentication">AuthenticationActivity</string>
     <string name="login_username_hint">GASPAR username</string>
     <string name="login_password_hint">GASPAR password</string>
