@@ -70,6 +70,10 @@ public class AppEngineTask extends AsyncTask<String, Void, Course> {
         return retrieveCourse(courseName[0]);
     }
 
+    private void setCourse(Course course) {
+        mCourse = course;
+    }
+
     private Course retrieveCourse(String courseName) {
         Course result = new Course(courseName);
 

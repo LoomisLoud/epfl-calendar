@@ -27,9 +27,10 @@ public class ConstructListCourse {
     private List<Course> mCourses;
     private int mCountOfCallbackCalls = 0;
     private int mNumberOfCourse = 0;
-    
+
     /**
-     * @param objectActivity a class implementing {@link AppEngineDownloadInterface}
+     * @param objectActivity
+     *            a class implementing {@link AppEngineDownloadInterface}
      * @return the instance of this class
      */
     public static ConstructListCourse getInstance(
@@ -42,8 +43,11 @@ public class ConstructListCourse {
 
     /**
      * Completes courses get from ISA with informations from AppEngine
-     * @param courses the courses to complete
-     * @param context the context of the {@link Activity} calling this method
+     * 
+     * @param courses
+     *            the courses to complete
+     * @param context
+     *            the context of the {@link Activity} calling this method
      */
     public void completeCourse(List<Course> courses, Context context) {
         mCourses = new ArrayList<Course>();
@@ -55,13 +59,31 @@ public class ConstructListCourse {
             mTasks.add(mTask);
         }
     }
-    
+
     public List<Course> getCourses() {
         return mCourses;
     }
-    
+
     public List<AppEngineTask> getTasks() {
         return mTasks;
+    }
+
+    /**
+     * Used for the tests
+     * 
+     * @param tasks
+     */
+    private void setTasks(ArrayList<AppEngineTask> tasks) {
+        mTasks = tasks;
+    }
+
+    /**
+     * Used for the tests
+     * 
+     * @param courses
+     */
+    private void setCourses(ArrayList<Course> courses) {
+        mCourses = courses;
     }
 
     private ConstructListCourse(AppEngineDownloadInterface objectActivity) {
