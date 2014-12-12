@@ -3,10 +3,13 @@
  */
 package ch.epfl.calendar.test;
 
-import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.longClick;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -14,7 +17,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.UiThreadTest;
 import ch.epfl.calendar.App;
 import ch.epfl.calendar.MainActivity;
 import ch.epfl.calendar.R;
@@ -22,22 +24,9 @@ import ch.epfl.calendar.authentication.TequilaAuthenticationAPI;
 import ch.epfl.calendar.data.Course;
 import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.test.utils.MockActivity;
-import ch.epfl.calendar.test.utils.Utils;
 import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
-
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
-import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
-import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.longClick;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
-import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isEnabled;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
 import com.google.android.apps.common.testing.testrunner.Stage;
@@ -57,8 +46,6 @@ public class MainActivityTest extends
     private List<Event> mEvents;
 
     private static final int SLEEP_TIME = 250;
-    private static final int NB_CREDITS_200 = 200;
-    private static final int NB_CREDITS_5 = 5;
 
     public MainActivityTest() {
         super(MainActivity.class);
@@ -123,7 +110,8 @@ public class MainActivityTest extends
 
     /**
      * Test method for
-     * {@link ch.epfl.calendar.MainActivity#onEventClick(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent, android.graphics.RectF)}
+     * {@link ch.epfl.calendar.MainActivity#onEventClick(ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent,
+     * android.graphics.RectF)}
      * .
      * 
      * @throws Throwable
@@ -170,6 +158,13 @@ public class MainActivityTest extends
         mActivity.onEventLongPress(weekEvents.get(0), null);
         assertFalse(getCurrentActivity().getClass()
                 .equals(mActivity.getClass()));
+    }
+
+    public final void testGoToToday() {
+        setUser();
+        onView(withId(R.id.action_today)).check(matches(isDisplayed()));
+        onView(withId(R.id.action_today)).check(matches(isEnabled()));
+        onView(withId(R.id.action_today)).perform(click());
     }
 
     // Tests unstable
