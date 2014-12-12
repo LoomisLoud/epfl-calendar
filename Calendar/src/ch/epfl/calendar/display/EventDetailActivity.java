@@ -46,7 +46,7 @@ public class EventDetailActivity extends DefaultActionBarActivity implements
     }
     
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         // Do nothing
     }
     

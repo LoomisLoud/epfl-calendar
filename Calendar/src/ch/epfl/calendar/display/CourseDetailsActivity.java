@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.method.ScrollingMovementMethod;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -32,7 +31,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
     private static final float SIZE_OF_TITLE = 1.5f;
-    
+
     private String mCourseName;
     private Course mCourse;
 
@@ -49,20 +48,11 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
 
         mCourseName = startingIntent.getStringExtra("course");
 
-        updateData();
-    }
-    
-    /**
-     * Switch to {@link AddEventActivity} in edit mode.
-     */
-    public void switchToEditActivity(Event event) {
-        Intent editActivityIntent = new Intent(this, AddEventActivity.class);
-        editActivityIntent.putExtra("Id", event.getId());
-        startActivity(editActivityIntent);
+        updateFromDatabase();
     }
     
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         mCourse = getDBQuester().getCourse(mCourseName);
         if (mCourse == null) {
             TextView textView = (TextView) findViewById(R.id.courseName);
@@ -75,7 +65,7 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        updateData();
+        updateFromDatabase();
     }
 
     private void courseDetailsActionBar() {
@@ -105,27 +95,43 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
             textView = (TextView) findViewById(R.id.courseDescription);
             textView.setText(bodyToSpannableConcatAndBold("Description: ",
                     courseDescription));
-            textView.setMovementMethod(new ScrollingMovementMethod());
+            // textView.setMovementMethod(new ScrollingMovementMethod());
         }
-        
+
         textView = (TextView) findViewById(R.id.coursePeriod);
         textView.setText(mCourse.toDisplayPeriod());
         if (!linkedEvents.isEmpty()) {
+            System.out.println("Linked event num : "
+                    + String.valueOf(linkedEvents.size()));
             TextView textView2 = (TextView) findViewById(R.id.linkedEvents);
-            textView2.setText(bodyToSpannableConcatAndBold("Event related:", ""));
+            textView2
+                    .setText(bodyToSpannableConcatAndBold("Event related:", ""));
+            // set view as visible
+            textView2.setVisibility(View.VISIBLE);
             // find the layout of activity to add view at the end
-            RelativeLayout relativeLayout = (RelativeLayout) this.findViewById(R.id.courseDetailsLayout);
+            RelativeLayout relativeLayout = (RelativeLayout) this
+                    .findViewById(R.id.courseDetailsLayout);
             ArrayList<TextView> myTextViews = new ArrayList<TextView>();
-            //ArrayList mIDEvents = new ArrayList<Integer>();
             int precedantEvents = 0;
-            for (int i=0; i<linkedEvents.size(); i++) {
-                
+            for (int i = 0; i < linkedEvents.size(); i++) {
                 Event event = linkedEvents.get(i);
-                
-                TextView eventTextView = new TextView(this);
+
+                // check if event already exist
+                TextView eventTextView;
+                View view = findViewById(event.getId());
+                if (view == null) {
+                    eventTextView = new TextView(this);
+                } else {
+                    // text view already exist, update data and break
+                    eventTextView = (TextView) view;
+                    eventTextView.setText(titleBoldEventToDisplay(event
+                            .toDisplay()));
+                    break;
+                }
 
                 // set some properties
-                eventTextView.setText(titleBoldEventToDisplay(event.toDisplay()));
+                eventTextView
+                        .setText(titleBoldEventToDisplay(event.toDisplay()));
                 eventTextView.setId(event.getId());
                 OnClickListener onClickListenerEvent = new OnClickListener() {
 
@@ -134,14 +140,12 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
                         Event event = getDBQuester().getEvent(v.getId());
                         switchToEditActivity(event);
                     }
-                    
+
                 };
                 eventTextView.setOnClickListener(onClickListenerEvent);
 
-                
-
-                if (i==0) {
-                  // create layout rule to set textview below event title
+                if (i == 0) {
+                    // create layout rule to set textview below event title
                     RelativeLayout.LayoutParams lparams = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.WRAP_CONTENT,
                             RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -151,22 +155,22 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
                     RelativeLayout.LayoutParams newParams = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.WRAP_CONTENT,
                             RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    //below precedent event view
+                    // below precedent event view
                     newParams.addRule(RelativeLayout.BELOW, precedantEvents);
-                    newParams.setMargins(0, (int) this.getResources().getDimension(R.dimen.activity_top_margin_small),
+                    newParams.setMargins(0, (int) this.getResources()
+                            .getDimension(R.dimen.activity_top_margin_small),
                             0, 0);
                     eventTextView.setLayoutParams(newParams);
                 }
 
                 // add to layout
                 relativeLayout.addView(eventTextView);
-                //record id of precedant event for relative layout
+                // record id of precedant event for relative layout
                 precedantEvents = event.getId();
                 // save view in array
                 myTextViews.add(eventTextView);
             }
 
-            
         }
     }
 
@@ -183,20 +187,21 @@ public class CourseDetailsActivity extends DefaultActionBarActivity implements
     private SpannableStringBuilder bodyToSpannableConcatAndBold(
             String bodyBold, String body) {
         SpannableStringBuilder sb = new SpannableStringBuilder(bodyBold + body);
-        //span to make string bold
+        // span to make string bold
         StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
         // make first characters bold
         sb.setSpan(bss, 0, bodyBold.length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return sb;
     }
-    
+
     private Spannable titleBoldEventToDisplay(String displayString) {
         String[] splitNameDescrpt = displayString.split(": ");
         String[] splittedName = splitNameDescrpt[1].split("\n");
         StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
         SpannableStringBuilder sb = new SpannableStringBuilder(displayString);
-        sb.setSpan(bss, splitNameDescrpt[0].length() + 1, splitNameDescrpt[0].length() + 2 + splittedName[0].length(),
+        sb.setSpan(bss, splitNameDescrpt[0].length() + 1,
+                splitNameDescrpt[0].length() + 2 + splittedName[0].length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return sb;
     }

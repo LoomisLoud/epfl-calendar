@@ -112,7 +112,7 @@ public class AddEventBlockActivity extends DefaultActionBarActivity implements
 
     // This method has to be defined, even if it does nothing !
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         // Do nothing
     }
 

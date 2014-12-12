@@ -27,9 +27,9 @@
         android:title="@string/action_logout"/>
     
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_credits"
         android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_credits"/>
     
     <item
         android:id="@+id/add_event"

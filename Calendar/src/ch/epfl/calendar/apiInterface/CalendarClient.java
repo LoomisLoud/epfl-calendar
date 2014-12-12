@@ -72,11 +72,35 @@ public class CalendarClient implements CalendarClientInterface {
     }
     
     /**
+     * Calls the onError method of the inner class TequilaAuthenticationHandler, used for test purpose.
+     * @param msg the error message to show
+     */
+    public void tequilaAuthenticationHandlerOnError(String msg) {
+        new TequilaAuthenticationHandler().onError(msg);
+    }
+    
+    /**
+     * Calls the onSuccess method of the inner class TequilaAuthenticationHandler, used for test purpose.
+     * @param msg the sessionID to store
+     */
+    public void tequilaAuthenticationHandlerOnSuccess(String sessionID) {
+        new TequilaAuthenticationHandler().onSuccess(sessionID);
+    }
+    
+    /**
      * 
      * @return the list of courses of this object, needed for tests.
      */
     public List<Course> getCourseListForTests() {
         return mCourseListForTests;
+    }
+    
+    /**
+     * 
+     * @return the parent (calling) activity of this class.
+     */
+    public Activity getParentActivity() {
+        return mParentActivity;
     }
 
     private void callback(boolean success) throws TequilaAuthenticationException, CalendarClientException {
@@ -97,7 +121,7 @@ public class CalendarClient implements CalendarClientInterface {
             }
         }
         mCourseListForTests = new ArrayList<Course>(coursesList);
-        mDownloadInterface.callbackDownload(success, coursesList);
+        mDownloadInterface.callbackISAcademia(success, coursesList);
     }
     
     /**
@@ -110,7 +134,9 @@ public class CalendarClient implements CalendarClientInterface {
         public void onError(String msg) {
             boolean exceptionOccured = false;
             String errMessage = "";
-            Toast.makeText(mParentActivity, msg, Toast.LENGTH_LONG).show();
+            if (mParentActivity != null) {
+                Toast.makeText(mParentActivity, msg, Toast.LENGTH_LONG).show();
+            }
             try {
                 callback(false);
             } catch (TequilaAuthenticationException e) {
@@ -126,7 +152,9 @@ public class CalendarClient implements CalendarClientInterface {
         @Override
         public void onSuccess(String sessionID) {
             // store the sessionID in the preferences
-            TequilaAuthenticationAPI.getInstance().setSessionID(mParentActivity, sessionID);
+            if (mParentActivity != null) {
+                TequilaAuthenticationAPI.getInstance().setSessionID(mParentActivity, sessionID);
+            }
             
             boolean exceptionOccured = false;
             String errMessage = "";

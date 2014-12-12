@@ -482,8 +482,7 @@ public class WeekView extends View {
             mLastVisibleDay.add(Calendar.DATE, dayNumber - 2);
             boolean sameDay = isSameDay(day, mToday);
 
-            // Get more events if necessary. We want to store the events 3
-            // months beforehand. Get
+            // Get
             // events only when it is the first iteration of the loop.
             if (mEventRects == null || mRefreshEvents
             // || (dayNumber == leftDaysWithGaps + 1
@@ -627,7 +626,7 @@ public class WeekView extends View {
                                 : mEventRects.get(i).event.getColor());
                         canvas.drawRect(mEventRects.get(i).rectF,
                                 mEventBackgroundPaint);
-                        drawText(mEventRects.get(i).event.getName(),
+                        drawText(mEventRects.get(i).event.getEventTitle(),
                                 mEventRects.get(i).rectF, canvas, originalTop,
                                 originalLeft);
                     } else {
@@ -822,7 +821,6 @@ public class WeekView extends View {
                 collisionGroups.add(newGroup);
             }
         }
-
         for (List<EventRect> collisionGroup : collisionGroups) {
             expandEventsToMaxWidth(collisionGroup);
         }
@@ -890,14 +888,24 @@ public class WeekView extends View {
         }
 
         // Calculate left and right position for all the events.
-        int maxRowCount = columns.get(0).size();
+        int maxRowCount = 0;
+        for (List<EventRect> l : columns) {
+            if (l.size() > maxRowCount) {
+                maxRowCount = l.size();
+            }
+        }
         for (int i = 0; i < maxRowCount; i++) {
             // Set the left and right values of the event.
             float j = 0;
+            int index = 0;
             for (List<EventRect> column : columns) {
                 if (column.size() >= i + 1) {
                     EventRect eventRect = column.get(i);
-                    eventRect.width = 1f / columns.size();
+                    if (index == columns.size() - 1) {
+                        eventRect.width = 1f - index * (1f / columns.size());
+                    } else {
+                        eventRect.width = 1f / columns.size();
+                    }
                     eventRect.left = j / columns.size();
                     eventRect.top = eventRect.event.getStartTime().get(
                             Calendar.HOUR_OF_DAY)
@@ -911,6 +919,7 @@ public class WeekView extends View {
                     mEventRects.add(eventRect);
                 }
                 j++;
+                index++;
             }
         }
     }

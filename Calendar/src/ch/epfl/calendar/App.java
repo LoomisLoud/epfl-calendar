@@ -15,10 +15,10 @@ import android.content.Context;
 import ch.epfl.calendar.persistence.DBHelper;
 
 /**
- * This class contains methods and static values used in all the app.
- * 
+ * This class contains methods and static values used in all the application.
+ *
  * @author lweingart
- * 
+ *
  */
 public class App extends Application {
 
@@ -85,7 +85,7 @@ public class App extends Application {
      */
     private static final int DAY_MAX = 31;
 
-    // In a gregorian java calendar, a month starts at 0 and ends at 11
+    /* In a gregorian java calendar, a month starts at 0 and ends at 11 */
     /**
      * Smallest index of a month in a year.
      */
@@ -120,9 +120,9 @@ public class App extends Application {
      * Last minute in an hour.
      */
     private static final int MINUTE_MAX = 59;
-    
+
     private static final String DATE_FORMAT = "dd.MM.yyyy";
-    
+
     private static final String HOUR_12_FORMAT = "hh:mm aa";
 
     private static final String HOUR_24_FORMAT = "HH:mm";
@@ -141,7 +141,7 @@ public class App extends Application {
      * DefaultActionBarActivity
      */
     private static DefaultActionBarActivity mActionBar;
-    
+
     /**
      * The username of the current user.
      */
@@ -155,7 +155,7 @@ public class App extends Application {
     }
 
     /**
-     * 
+     *
      * @return The {@link DBHelper} of the application.
      */
     public static DBHelper getDBHelper() {
@@ -171,7 +171,7 @@ public class App extends Application {
     }
 
     /**
-     * 
+     *
      * @return the context of this class.
      */
     public static Context getAppContext() {
@@ -180,7 +180,7 @@ public class App extends Application {
 
     /**
      * Parse a csv string into an array list of strings.
-     * 
+     *
      * @param csv
      * @return an {@link ArrayList} of {@link String} containing the elements parsed from the csv.
      */
@@ -195,7 +195,7 @@ public class App extends Application {
 
     /**
      * Transform an array list of string into a csv string.
-     * 
+     *
      * @param array
      * @return a csv {@link String} constructed from the {@link List} given as parameter.
      */
@@ -208,7 +208,7 @@ public class App extends Application {
     /**
      * Create a calendar object from two strings. date must be of format
      * dd.mm.yyy hourArg must be of format hh:mm
-     * 
+     *
      * @param date format : dd.mm.yy
      * @param hourArg format : hh:mm
      * @return a {@link Calendar} object corresponding to the date define by the two parameters.
@@ -257,21 +257,21 @@ public class App extends Application {
 
     /**
      * Method to create a {@link String} of the form 'dd.mm.yyy hh:mm' from a {@link Calendar}
-     * 
+     *
      * @param date
      * @return a {@link String} of the form 'dd.mm.yyy hh:mm' create from the {@link Calendar} object date.
      */
-    public static String calendarToBasicFormatString(Calendar date) {        
+    public static String calendarToBasicFormatString(Calendar date) {
         if (date == null) {
             return null;
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT + " " + HOUR_24_FORMAT);        
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT + " " + HOUR_24_FORMAT);
         return sdf.format(date.getTime());
     }
-    
+
     /**
      * Method to write a calendar in the form 'dd.mm.yyy hh:mm-hh2:mm2' if they are on the same day
-     * 
+     *
      * @param date
      * @return
      */
@@ -283,7 +283,7 @@ public class App extends Application {
         String stringHourFormat = HOUR_12_FORMAT;
         SimpleDateFormat sdfDate = new SimpleDateFormat(stringDateFormat, Locale.US);
         SimpleDateFormat sdfTime = new SimpleDateFormat(stringHourFormat, Locale.US);
-        
+
         String datesToReturn = null;
         // compare to see if both date are on the same days
         if (date.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
@@ -294,12 +294,12 @@ public class App extends Application {
         }
 
         String hoursToReturn = sdfTime.format(date.getTime()) + "-" + sdfTime.format(date2.getTime());
-        
+
         return new String[] {datesToReturn, hoursToReturn};
     }
 
     /**
-     * 
+     *
      * @param date
      * @return a String representing the calendar in  format "hh:mm"
      */
@@ -310,7 +310,7 @@ public class App extends Application {
         SimpleDateFormat sdf = new SimpleDateFormat(HOUR_24_FORMAT);
         return sdf.format(date.getTime());
     }
-    
+
     /**
      * @param date
      * @return the hour contained in the Calendar in a String formated "hh:mm aa" where aa parses to AM/PM.
@@ -325,7 +325,7 @@ public class App extends Application {
     }
 
     /**
-     * 
+     *
      * @param bool
      * @return "true" if bool == true, "false" otherwise.
      */
@@ -336,9 +336,9 @@ public class App extends Application {
             return App.FALSE;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param strBool
      * @return true if strBool.equals("true"), false otherwise.
      */
@@ -350,7 +350,7 @@ public class App extends Application {
     }
 
     /**
-     * 
+     *
      * @return The action bar corresponding to the application.
      */
     public static DefaultActionBarActivity getActionBar() {
@@ -366,7 +366,7 @@ public class App extends Application {
     }
 
     /**
-     * 
+     *
      * @return the username of the currently connected user
      */
     public static String getCurrentUsername() {

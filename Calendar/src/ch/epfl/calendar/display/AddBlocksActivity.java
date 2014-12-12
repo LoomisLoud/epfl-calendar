@@ -65,11 +65,11 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
         mGreeter = (TextView) findViewById(R.id.greeter);
         mListView = (ListView) findViewById(R.id.credits_blocks_list);
 
-        updateData();
+        updateFromDatabase();
     }
     
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         mCourses = getDBQuester().getAllCourses();
         blockList = constructBlockList(mCourses);
         createAdapterAndListView();
@@ -207,8 +207,7 @@ public class AddBlocksActivity extends DefaultActionBarActivity implements
             double timeToRemove = 0;
             if (!eventList.isEmpty()) {
                 for (Event e : eventList) {
-                	if (e.getStartDate().compareTo(today) < 0
-                			&& e.getEndDate().compareTo(today) > 0) {
+                	if (e.getStartDate().compareTo(today) < 0 && e.getEndDate().compareTo(today) > 0) {
                 		today.add(Calendar.DAY_OF_MONTH, 1);
                 		nextWeek.add(Calendar.DAY_OF_MONTH, 1);
                 	} 

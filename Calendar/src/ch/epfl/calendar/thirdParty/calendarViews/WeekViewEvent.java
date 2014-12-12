@@ -1,4 +1,5 @@
 package ch.epfl.calendar.thirdParty.calendarViews;
+
 /**
  * Code imported from:
  * https://github.com/alamkanak/Android-Week-View/tree/master/library/src/main/java/com/alamkanak/weekview
@@ -6,20 +7,21 @@ package ch.epfl.calendar.thirdParty.calendarViews;
 import java.util.Calendar;
 
 import android.graphics.Color;
+import ch.epfl.calendar.App;
 import ch.epfl.calendar.data.PeriodType;
 
 /**
  * @author LoomisLoud
- *
+ * 
  */
 public class WeekViewEvent {
-    
+
     private static final String COLOR_BLUE = "#33B5E5";
-    //private static final String COLOR_MAGENTA = "#AA66CC";
+    // private static final String COLOR_MAGENTA = "#AA66CC";
     private static final String COLOR_GREEN = "#99CC00";
     private static final String COLOR_RED = "#FF4444";
     private static final String COLOR_ORANGE = "#FFBB33";
-    
+
     private long mId;
     private Calendar mStartTime;
     private Calendar mEndTime;
@@ -97,7 +99,7 @@ public class WeekViewEvent {
         this.mStartTime = startTime;
         this.mEndTime = endTime;
         this.mType = type;
-        this.mDescription=description;
+        this.mDescription = description;
         setColorWithType(type);
 
     }
@@ -153,7 +155,7 @@ public class WeekViewEvent {
     public void setId(long id) {
         this.mId = id;
     }
-    
+
     public PeriodType getmType() {
         return mType;
     }
@@ -161,12 +163,32 @@ public class WeekViewEvent {
     public void setmType(PeriodType mType) {
         this.mType = mType;
     }
-    
+
     public String getmDescription() {
         return mDescription;
     }
 
     public void setmDescription(String mDescription) {
         this.mDescription = mDescription;
+    }
+
+    public String getEventTitle() {
+
+        String startHour = App.calendarTo12HoursString(mStartTime);
+        String endHour = App.calendarTo12HoursString(mEndTime);
+
+        String hour = startHour + " - " + endHour;
+        String result = mName + "\n";
+        // int i = p.getRooms().size();
+
+        /*
+         * for (String r : p.getRooms()) { if (i > 1) { result += r + ","; }
+         * else { result += r; } i--; }
+         */
+        if (mType == PeriodType.DEFAULT) {
+            return hour + "\n" + result;
+        } else {
+            return hour + "\n" + result + mType;
+        }
     }
 }

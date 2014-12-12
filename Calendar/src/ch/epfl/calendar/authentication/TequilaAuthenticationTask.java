@@ -230,7 +230,7 @@ public class TequilaAuthenticationTask extends AsyncTask<Void, Void, String> {
                 firstTry = false;
             } else {
                 httpCode = getAccessToIsa(null, null);
-                // FIXME : Should Never happen !
+                // Should Never happen !
                 if (httpCode == TequilaAuthenticationAPI.STATUS_CODE_OK) {
                     mSessionID = "fake";
                 }

@@ -2,6 +2,7 @@ package ch.epfl.calendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -29,6 +30,7 @@ import ch.epfl.calendar.thirdParty.calendarViews.WeekViewEvent;
 
 /**
  * The Main activity (calendar view) of the application.
+ * 
  * @author lweingart
  * 
  */
@@ -41,6 +43,7 @@ public class MainActivity extends DefaultActionBarActivity implements
     private static final int TYPE_WEEK_VIEW = 3;
     private static final int HOUR_23 = 23;
     private static final int MINUTE_59 = 59;
+    private static final int NB_DAY_IN_ONE_MONTH = 31;
 
     private static final int SIZE_COLUMN_GAP_DAY = 8;
     private static final int SIZE_FRONT_DAY = 12;
@@ -58,7 +61,7 @@ public class MainActivity extends DefaultActionBarActivity implements
 
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
-    private List<WeekViewEvent> mMListEvents = new ArrayList<WeekViewEvent>();
+    private List<WeekViewEvent> mListEvents = new ArrayList<WeekViewEvent>();
     private long mIdEvent = 0;
     private List<Course> mListCourses = new ArrayList<Course>();
     private List<Event> mListEventWithoutCourse = new ArrayList<Event>();
@@ -109,7 +112,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         mWeekView.notifyDatasetChanged();
         activateRotation();
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean retour = super.onCreateOptionsMenu(menu);
@@ -135,73 +138,37 @@ public class MainActivity extends DefaultActionBarActivity implements
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     @Override
     public List<WeekViewEvent> onMonthChange() {
 
         // Populate the week view with some events.
-        mMListEvents = new ArrayList<WeekViewEvent>();
+        mListEvents = new ArrayList<WeekViewEvent>();
 
         for (Course c : mListCourses) {
             for (Period p : c.getPeriods()) {
-                mMListEvents.add(new WeekViewEvent(mIdEvent++, getEventTitle(c,
-                        p), p.getStartDate(), p.getEndDate(), p.getType(), c
+                mListEvents.add(new WeekViewEvent(mIdEvent++, c.getName(), p
+                        .getStartDate(), p.getEndDate(), p.getType(), c
                         .getDescription()));
             }
             for (Event event : c.getEvents()) {
-                mMListEvents.add(new WeekViewEvent(event.getId(), event
-                        .getTitle(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getDescription()));
+                addEvent(event);
             }
 
         }
         for (Event event : mListEventWithoutCourse) {
-
-
-            int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
-                    - event.getStartDate().get(Calendar.DAY_OF_MONTH);
-            int monthDuaration = event.getEndDate().get(Calendar.MONTH)
-                    - event.getStartDate().get(Calendar.MONTH);
-            int yearDuration = event.getEndDate().get(Calendar.YEAR)
-                    - event.getStartDate().get(Calendar.YEAR);
-
-            if (dayDuration != 0 && monthDuaration == 0 && yearDuration == 0) {
-                List<Calendar> startList = new ArrayList<Calendar>();
-                Calendar start = (Calendar) event.getStartDate().clone();
-                startList.add(start);
-                for (int i = 0; i <= dayDuration; i++) {
-                    Calendar end = event.getEndDate();
-                    if (i != dayDuration) {
-                        end = (Calendar) start.clone();
-                        end.set(Calendar.HOUR_OF_DAY, HOUR_23);
-                        end.set(Calendar.MINUTE, MINUTE_59);
-                    }
-                    mMListEvents.add(new WeekViewEvent(event.getId(), event
-                            .getTitle(), startList.get(i), end,
-                            PeriodType.DEFAULT, event.getDescription()));
-
-                    Calendar newStart = (Calendar) startList.get(i).clone();
-                    newStart.add(Calendar.DAY_OF_MONTH, 1);
-                    newStart.set(Calendar.HOUR_OF_DAY, 0);
-                    newStart.set(Calendar.MINUTE, 0);
-                    startList.add(newStart);
-                }
-            } else {
-                mMListEvents.add(new WeekViewEvent(event.getId(), event
-                        .getName(), event.getStartDate(), event.getEndDate(),
-                        PeriodType.DEFAULT, event.getDescription()));
-            }
+            addEvent(event);
         }
 
-        return mMListEvents;
+        return mListEvents;
     }
-    
+
     @Override
     public void onEventClick(WeekViewEvent weekEvent, RectF eventRect) {
         if (weekEvent.getmType().equals(PeriodType.LECTURE)
                 || weekEvent.getmType().equals(PeriodType.PROJECT)
                 || weekEvent.getmType().equals(PeriodType.EXERCISES)) {
-            String cours = weekEvent.getName().split("\n")[1];
+            String cours = weekEvent.getName();
             switchToCourseDetails(cours);
         } else {
             Event event = getDBQuester().getEvent(weekEvent.getId());
@@ -214,7 +181,7 @@ public class MainActivity extends DefaultActionBarActivity implements
         if (event.getmType() == PeriodType.EXERCISES
                 || event.getmType() == PeriodType.LECTURE
                 || event.getmType() == PeriodType.PROJECT) {
-            String cours = event.getName().split("\n")[1];
+            String cours = event.getName();
             switchToCourseDetails(cours);
 
         } else {
@@ -239,31 +206,33 @@ public class MainActivity extends DefaultActionBarActivity implements
                                     } else {
                                         getDBQuester().deleteEvent(eventFromDB);
                                     }
-                                    updateData();
+                                    updateFromDatabase();
                                     dialog.cancel();
                                     break;
                                 case 2:
-                                    if (event.getmType().equals(PeriodType.LECTURE)
+                                    if (event.getmType().equals(
+                                            PeriodType.LECTURE)
                                             || event.getmType().equals(
                                                     PeriodType.PROJECT)
                                             || event.getmType().equals(
                                                     PeriodType.EXERCISES)) {
-                                        String cours = event.getName().split("\n")[0];
+                                        String cours = event.getName();
                                         switchToCourseDetails(cours);
                                     } else {
-    
-                                        if (eventFromDB.getLinkedCourse().equals(
-                                                App.NO_COURSE)) {
+
+                                        if (eventFromDB.getLinkedCourse()
+                                                .equals(App.NO_COURSE)) {
                                             String description = event
                                                     .getmDescription();
-                                            switchToEventDetail(event.getName(),
+                                            switchToEventDetail(
+                                                    event.getName(),
                                                     description);
                                         } else {
                                             String coursName = eventFromDB
                                                     .getLinkedCourse();
                                             switchToCourseDetails(coursName);
                                         }
-    
+
                                     }
                                     dialog.cancel();
                                     break;
@@ -278,16 +247,64 @@ public class MainActivity extends DefaultActionBarActivity implements
             choiceDialog.show();
         }
     }
-    
+
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         updateListsFromDB();
         mWeekView.notifyDatasetChanged();
     }
-    
+
     private void updateListsFromDB() {
         mListCourses = getDBQuester().getAllCourses();
         mListEventWithoutCourse = getDBQuester().getAllEventsWithoutCourse();
+    }
+
+    private void addEvent(Event event) {
+        int dayDuration = event.getEndDate().get(Calendar.DAY_OF_YEAR)
+                - event.getStartDate().get(Calendar.DAY_OF_YEAR);
+        int monthDuration = event.getEndDate().get(Calendar.MONTH)
+                - event.getStartDate().get(Calendar.MONTH);
+        int yearDuration = event.getEndDate().get(Calendar.YEAR)
+                - event.getStartDate().get(Calendar.YEAR);
+
+        if (dayDuration != 0
+                && ((monthDuration >= 0 && yearDuration == 0) || (monthDuration <= 0 && yearDuration == 1))) {
+            List<Calendar> startList = new ArrayList<Calendar>();
+            Calendar start = (Calendar) event.getStartDate().clone();
+            startList.add(start);
+            if (yearDuration == 1) {
+                Calendar cal = new GregorianCalendar();
+                cal.set(cal.get(Calendar.YEAR), Calendar.DECEMBER,
+                        NB_DAY_IN_ONE_MONTH);
+                int nbDaysCurrentYear = cal.get(Calendar.DAY_OF_YEAR)
+                        - event.getStartDate().get(Calendar.DAY_OF_YEAR);
+                int nbDaysNextYear = event.getEndDate().get(
+                        Calendar.DAY_OF_YEAR);
+                dayDuration = nbDaysCurrentYear + nbDaysNextYear;
+            }
+            for (int i = 0; i <= dayDuration; i++) {
+                Calendar end = event.getEndDate();
+                if (i != dayDuration) {
+                    end = (Calendar) startList.get(i).clone();
+                    end.set(Calendar.HOUR_OF_DAY, HOUR_23);
+                    end.set(Calendar.MINUTE, MINUTE_59);
+                }
+
+                mListEvents.add(new WeekViewEvent(event.getId(), event
+                        .getName(), startList.get(i), end, PeriodType.DEFAULT,
+                        event.getDescription()));
+
+                Calendar newStart = (Calendar) startList.get(i).clone();
+                newStart.add(Calendar.DAY_OF_YEAR, 1);
+                newStart.set(Calendar.HOUR_OF_DAY, 0);
+                newStart.set(Calendar.MINUTE, 0);
+                startList.add(newStart);
+            }
+        } else {
+            mListEvents.add(new WeekViewEvent(event.getId(), event.getName(),
+                    event.getStartDate(), event.getEndDate(),
+                    PeriodType.DEFAULT, event.getDescription()));
+        }
     }
 
     private ArrayList<String> spinnerList() {
@@ -369,31 +386,8 @@ public class MainActivity extends DefaultActionBarActivity implements
         mDialog.show();
     }
 
-    private String getEventTitle(Course c, Period p) {
-
-        String startHour = App
-                .calendarTo12HoursString(p.getStartDate());
-        String endHour = App.calendarTo12HoursString(p.getEndDate());
-
-
-        String hour = startHour + " - " + endHour;
-        String result = c.getName() + "\n";
-       // int i = p.getRooms().size();
-        
-          /*  for (String r : p.getRooms()) {
-                if (i > 1) {
-                    result += r + ",";
-                } else {
-                    result += r;
-                }
-                i--;
-            }*/
-        
-        return hour + "\n" + result + "\n" + p.getType();
-    }
-
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         super.setUdpateData(this);

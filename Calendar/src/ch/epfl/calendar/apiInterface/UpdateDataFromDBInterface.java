@@ -12,5 +12,5 @@ public interface UpdateDataFromDBInterface {
     /**
      * Method to call when all the storage or update of local database has finished.
      */
-    void updateData();
+    void updateFromDatabase();
 }

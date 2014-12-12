@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -34,13 +35,17 @@ import ch.epfl.calendar.persistence.DBQuester;
 
 /**
  * The list of the events and periods (planning view)
- * @author MatthiasLeroyEPFL 
+ *
+ * @author MatthiasLeroyEPFL
  */
 public class EventListActivity extends DefaultActionBarActivity implements
         UpdateDataFromDBInterface {
 
     private static final int HEIGHT_DIVIDER = 10;
     private static final int SEPARATOR_ID = -2;
+    private static final int HOUR_23 = 23;
+    private static final int MINUTE_59 = 59;
+    private static final int NB_DAY_IN_ONE_MONTH = 31;
 
     private ListView mListView;
     private Context context = this;
@@ -119,6 +124,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                                 context);
                                         createAdapter(list, adap);
                                         mListView.setAdapter(adap);
+                                        updateFromDatabase();
 
                                         dialog.cancel();
 
@@ -142,6 +148,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
 
                                 /*
                                  * (non-Javadoc)
+                                 *
                                  * @see
                                  * android.content.DialogInterface.OnClickListener
                                  * #onClick (android.content.DialogInterface,
@@ -158,8 +165,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                                 App.NO_COURSE)) {
                                             String description = item
                                                     .getDescription();
-                                            switchToEventDetail(
-                                                    item.getName(),
+                                            switchToEventDetail(item.getName(),
                                                     description);
                                         } else {
                                             String coursName = item
@@ -192,7 +198,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
         this.invalidateOptionsMenu();
         return retour;
     }
-    
+
     @Override
     public void switchToAddEventsActivity() {
         editEvent = true;
@@ -204,19 +210,19 @@ public class EventListActivity extends DefaultActionBarActivity implements
     /**
      * Switch to {@link AddEventBlockActivity}
      */
-    public void switchToAddBlockActivity() {
+    @Override
+	public void switchToAddBlockActivity() {
         editEvent = true;
         Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
         startActivity(blockActivityIntent);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (editEvent) {
-            mEventForList = eventToEventForList(
-                    getDBQuester().getAllCourses(), getDBQuester()
-                            .getAllEvents());
+            mEventForList = eventToEventForList(getDBQuester().getAllCourses(),
+                    getDBQuester().getAllEvents());
             CustomAdapter editAdapter = new CustomAdapter(context);
             createAdapter(mEventForList, editAdapter);
             mListView.setAdapter(editAdapter);
@@ -227,7 +233,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         editEvent = true;
         onResume();
     }
@@ -254,26 +260,11 @@ public class EventListActivity extends DefaultActionBarActivity implements
         });
     }
 
-    private PeriodType stringToPeriodType(String type) {
-        if (type.equalsIgnoreCase("exercices")
-                || type.equalsIgnoreCase("exercises")) {
-            return PeriodType.EXERCISES;
-        } else if (type.equalsIgnoreCase("cours")
-                || type.equalsIgnoreCase("lecture")) {
-            return PeriodType.LECTURE;
-        } else if (type.equalsIgnoreCase("projet")
-                || type.equalsIgnoreCase("project")) {
-            return PeriodType.PROJECT;
-        } else {
-            return PeriodType.DEFAULT;
-        }
-    }
-
     private List<ListViewItem> removePastEvents(List<EventForList> list) {
         List<ListViewItem> result = new ArrayList<ListViewItem>();
         Calendar today = Calendar.getInstance();
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getmStart().getTimeInMillis() > today
+            if (list.get(i).getEnd().getTimeInMillis() > today
                     .getTimeInMillis()) {
                 result.add(list.get(i));
 
@@ -300,9 +291,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
             }
         }
         for (Event e : event) {
-            eventForList.add(new EventForList(e.getName(), e.getStartDate(), e
-                    .getEndDate(), stringToPeriodType(e.getType()), e.getId(),
-                    e.getLinkedCourse(), e.getDescription()));
+            addEvent(e, eventForList);
         }
         sort(eventForList);
 
@@ -313,18 +302,69 @@ public class EventListActivity extends DefaultActionBarActivity implements
 
     private CustomAdapter createAdapter(List<ListViewItem> eventForList,
             CustomAdapter adapter) {
-        adapter.addSectionHeaderItem(new EventSeparator(eventForList.get(0)
-                .getmStart()));
-        adapter.addItem(eventForList.get(0));
-        for (int i = 1; i < eventForList.size(); i++) {
-            if (eventForList.get(i).getmStart().get(Calendar.DAY_OF_MONTH) != eventForList
-                    .get(i - 1).getmStart().get(Calendar.DAY_OF_MONTH)) {
-                adapter.addSectionHeaderItem(new EventSeparator(eventForList
-                        .get(i).getmStart()));
+        if (eventForList.size() > 0) {
+            adapter.addSectionHeaderItem(new EventSeparator(eventForList.get(0)
+                    .getmStart()));
+            adapter.addItem(eventForList.get(0));
+            for (int i = 1; i < eventForList.size(); i++) {
+                if (eventForList.get(i).getmStart().get(Calendar.DAY_OF_MONTH) != eventForList
+                        .get(i - 1).getmStart().get(Calendar.DAY_OF_MONTH)) {
+                    adapter.addSectionHeaderItem(new EventSeparator(
+                            eventForList.get(i).getmStart()));
+                }
+                adapter.addItem(eventForList.get(i));
             }
-            adapter.addItem(eventForList.get(i));
         }
         return adapter;
 
+    }
+
+    private void addEvent(Event event, List<EventForList> list) {
+        int dayDuration = event.getEndDate().get(Calendar.DAY_OF_MONTH)
+                - event.getStartDate().get(Calendar.DAY_OF_MONTH);
+        int monthDuration = event.getEndDate().get(Calendar.MONTH)
+                - event.getStartDate().get(Calendar.MONTH);
+        int yearDuration = event.getEndDate().get(Calendar.YEAR)
+                - event.getStartDate().get(Calendar.YEAR);
+
+        if (dayDuration != 0
+                && ((monthDuration >= 0 && yearDuration == 0) || (monthDuration <= 0 && yearDuration == 1))) {
+            List<Calendar> startList = new ArrayList<Calendar>();
+            Calendar start = (Calendar) event.getStartDate().clone();
+            startList.add(start);
+            if (yearDuration == 1) {
+                Calendar cal = new GregorianCalendar();
+                cal.set(cal.get(Calendar.YEAR), Calendar.DECEMBER,
+                        NB_DAY_IN_ONE_MONTH);
+                int nbDaysCurrentYear = cal.get(Calendar.DAY_OF_YEAR)
+                        - event.getStartDate().get(Calendar.DAY_OF_YEAR);
+                int nbDaysNextYear = event.getEndDate().get(
+                        Calendar.DAY_OF_YEAR);
+                dayDuration = nbDaysCurrentYear + nbDaysNextYear;
+            }
+            for (int i = 0; i <= dayDuration; i++) {
+                Calendar end = event.getEndDate();
+                if (i != dayDuration) {
+                    end = (Calendar) startList.get(i).clone();
+                    end.set(Calendar.HOUR_OF_DAY, HOUR_23);
+                    end.set(Calendar.MINUTE, MINUTE_59);
+                }
+
+                list.add(new EventForList(event.getName(), startList.get(i),
+                        end, PeriodType.DEFAULT, event.getId(), event
+                                .getLinkedCourse(), event.getDescription()));
+
+
+                Calendar newStart = (Calendar) startList.get(i).clone();
+                newStart.add(Calendar.DAY_OF_YEAR, 1);
+                newStart.set(Calendar.HOUR_OF_DAY, 0);
+                newStart.set(Calendar.MINUTE, 0);
+                startList.add(newStart);
+            }
+        } else {
+            list.add(new EventForList(event.getName(), event.getStartDate(),
+                    event.getEndDate(), PeriodType.DEFAULT, event.getId(),
+                    event.getLinkedCourse(), event.getDescription()));
+        }
     }
 }

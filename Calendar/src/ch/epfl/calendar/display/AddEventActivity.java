@@ -127,7 +127,7 @@ public class AddEventActivity extends DefaultActionBarActivity implements
     }
 
     @Override
-    public void updateData() {
+    public void updateFromDatabase() {
         mCoursesNames = getDBQuester().getAllCoursesNames();
     }
 

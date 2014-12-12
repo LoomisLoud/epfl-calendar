@@ -4,10 +4,7 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -35,7 +32,7 @@ import ch.epfl.calendar.utils.ConstructListCourse;
 /**
  * This class is the parent activity of all the other activities.
  * Contains, for exemple, the number of running {@link AsyncTask} at any point of the application
- * @author fouchepi * 
+ * @author fouchepi *
  */
 public abstract class DefaultActionBarActivity extends Activity implements
         CalendarClientDownloadInterface, AppEngineDownloadInterface,
@@ -47,14 +44,14 @@ public abstract class DefaultActionBarActivity extends Activity implements
     private AuthenticationUtils mAuthUtils;
     private int mNbOfAsyncTaskDB = 0;
     private ProgressDialog mDialog;
-    
+
     private String mCurrentDBName;
 
     /**
      * The code representing the {@link AuthenticationActivity}.
      */
     public static final int AUTH_ACTIVITY_CODE = 1;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +62,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         defaultActionBar();
         mCurrentDBName = App.getDBHelper().getDatabaseName();
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -82,7 +79,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             case R.id.add_event_block:
                 switchToAddBlockActivity();
                 return true;
-            case R.id.action_settings:
+            case R.id.action_credits:
                 switchToCreditsActivity();
                 return true;
             case R.id.add_event:
@@ -103,7 +100,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     /**
      * Switches to {@link AddEventActivity}
      */
@@ -112,12 +109,12 @@ public abstract class DefaultActionBarActivity extends Activity implements
                 AddEventActivity.class);
         startActivity(addEventsActivityIntent);
     }
-    
+
     public void switchToAddBlockActivity() {
         Intent blockActivityIntent = new Intent(this, AddBlocksActivity.class);
         startActivity(blockActivityIntent);
     }
-    
+
     /**
      * Switch to {@link EventDetailActivity}
      * @param name name of the event
@@ -127,11 +124,10 @@ public abstract class DefaultActionBarActivity extends Activity implements
         Intent eventDetailActivityIntent = new Intent(this,
                 EventDetailActivity.class);
 
-        eventDetailActivityIntent.putExtra("description", new String[] {name,
-            description});
+        eventDetailActivityIntent.putExtra("description", new String[] {name, description});
         startActivity(eventDetailActivityIntent);
     }
-    
+
     /**
      * Switches to {@link AddEventActivity} (will be an activity to edit event if an ID is passed in intent).
      */
@@ -140,7 +136,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         editActivityIntent.putExtra("Id", event.getId());
         startActivity(editActivityIntent);
     }
-    
+
     /**
      * Switches to {@link AuthenticationActivity}
      */
@@ -151,7 +147,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mThisActivity.startActivityForResult(
                 displayAuthenticationActivtyIntent, AUTH_ACTIVITY_CODE);
     }
-    
+
     /**
      * Gets the courses from ISA and populates the database.
      */
@@ -184,20 +180,24 @@ public abstract class DefaultActionBarActivity extends Activity implements
 
     @Override
     public void logout(boolean isLogoutDoneByUser) {
-        if (isLogoutDoneByUser) {
-            // Menu to delete DB
-            createMenuDeleteDB();
-        } else {
-            App.setDBHelper(App.DATABASE_NAME);
-            DBQuester.close();
-            TequilaAuthenticationAPI.getInstance().clearStoredData(
-                    getApplicationContext());
-            populateCalendarFromISA();
-        }
+        /*
+         * if (isLogoutDoneByUser) { Menu to delete DB createMenuDeleteDB(); }
+         * else { App.setDBHelper(App.DATABASE_NAME); DBQuester.close();
+         * TequilaAuthenticationAPI.getInstance().clearStoredData(
+         * getApplicationContext()); populateCalendarFromISA(); }
+         */
+        App.setDBHelper(App.DATABASE_NAME);
+        mCurrentDBName = "none";
+        App.setCurrentUsername("noUser");
+        DBQuester.close();
+        TequilaAuthenticationAPI.getInstance().clearStoredData(
+                getApplicationContext());
+        populateCalendarFromISA();
+
     }
-    
+
     @Override
-    public void callbackDownload(boolean success, List<Course> courses) {
+    public void callbackISAcademia(boolean success, List<Course> courses) {
         if (success) {
             completeCalendarFromAppEngine(courses);
         } else {
@@ -223,7 +223,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @return the {@link UpdateDataFromDBInterface} of the application.
      */
     public UpdateDataFromDBInterface getUdpateData() {
@@ -231,7 +231,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @param udpateData sets the {@link UpdateDataFromDBInterface} of this class.
      */
     public void setUdpateData(UpdateDataFromDBInterface udpateData) {
@@ -254,7 +254,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
         mNbOfAsyncTaskDB = mNbOfAsyncTaskDB - 1;
         if (mNbOfAsyncTaskDB <= 0) {
             DBQuester.close();
-            mUdpateData.updateData();
+            mUdpateData.updateFromDatabase();
             if (mDialog != null) {
                 mDialog.dismiss();
             }
@@ -264,7 +264,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @return the number of AsyncTasks actually running.
      */
     public synchronized int getNbOfAsyncTaskDB() {
@@ -272,12 +272,12 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     @Override
-    public void callbackDBUpload() {
-        mUdpateData.updateData();
+    public void callbackUploadDatabase() {
+        mUdpateData.updateFromDatabase();
     }
 
     /**
-     * 
+     *
      * @return the {@link AuthenticationUtils} object of this class
      */
     public AuthenticationUtils getAuthUtils() {
@@ -293,7 +293,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
     }
 
     /**
-     * 
+     *
      * @return a reference to this {@link DefaultActionBarActivity}
      */
     public Activity getThisActivity() {
@@ -319,7 +319,7 @@ public abstract class DefaultActionBarActivity extends Activity implements
             populateCalendarFromISA();
         }
     }
-    
+
     protected void activateRotation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
@@ -350,49 +350,49 @@ public abstract class DefaultActionBarActivity extends Activity implements
         startActivity(i);
     }
 
-    private void createMenuDeleteDB() {
-        AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
-        choiceDialog
-                .setTitle("Do you want do delete the data for the user "
-                        + TequilaAuthenticationAPI.getInstance().getUsername(
-                                mThisActivity.getApplicationContext()) + " ?");
-        choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        // Yes
-                        getDBQuester().deleteAllTables();
-                        getApplicationContext().deleteDatabase(
-                                App.getDBHelper().getDatabaseName());
-                        App.setDBHelper(App.DATABASE_NAME);
-                        mCurrentDBName = "none";
-                        App.setCurrentUsername("noUser");
-                        DBQuester.close();
-                        dialog.cancel();
-                        TequilaAuthenticationAPI.getInstance().clearStoredData(
-                                getApplicationContext());
-                        populateCalendarFromISA();
-                        break;
-                    case 1:
-                        // No
-                        App.setDBHelper(App.DATABASE_NAME);
-                        App.setCurrentUsername("noUser");
-                        mCurrentDBName = "none";
-                        DBQuester.close();
-                        dialog.cancel();
-                        TequilaAuthenticationAPI.getInstance().clearStoredData(
-                                getApplicationContext());
-                        populateCalendarFromISA();
-                        break;
-                    default:
-                        // Cancel
-                        dialog.cancel();
-                        break;
-                }
-            }
-        });
-        choiceDialog.create();
-        choiceDialog.show();
-    }
+//    private void createMenuDeleteDB() {
+//        AlertDialog.Builder choiceDialog = new AlertDialog.Builder(this);
+//        choiceDialog
+//                .setTitle("Do you want do delete the data for the user "
+//                        + TequilaAuthenticationAPI.getInstance().getUsername(
+//                                mThisActivity.getApplicationContext()) + " ?");
+//        choiceDialog.setItems(R.array.yes_or_no, new OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                switch (which) {
+//                    case 0:
+//                        // Yes
+//                        getDBQuester().deleteAllTables();
+//                        getApplicationContext().deleteDatabase(
+//                                App.getDBHelper().getDatabaseName());
+//                        App.setDBHelper(App.DATABASE_NAME);
+//                        mCurrentDBName = "none";
+//                        App.setCurrentUsername("noUser");
+//                        DBQuester.close();
+//                        dialog.cancel();
+//                        TequilaAuthenticationAPI.getInstance().clearStoredData(
+//                                getApplicationContext());
+//                        populateCalendarFromISA();
+//                        break;
+//                    case 1:
+//                        // No
+//                        App.setDBHelper(App.DATABASE_NAME);
+//                        App.setCurrentUsername("noUser");
+//                        mCurrentDBName = "none";
+//                        DBQuester.close();
+//                        dialog.cancel();
+//                        TequilaAuthenticationAPI.getInstance().clearStoredData(
+//                                getApplicationContext());
+//                        populateCalendarFromISA();
+//                        break;
+//                    default:
+//                        // Cancel
+//                        dialog.cancel();
+//                        break;
+//                }
+//            }
+//        });
+//        choiceDialog.create();
+//        choiceDialog.show();
+//    }
 }
