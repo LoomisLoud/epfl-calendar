@@ -174,12 +174,6 @@ public class EventListActivityTest extends
                 // Every entry in the ListView is a HashMap
                 .inAdapterView(withId(R.id.list_event_view)).atPosition(6)
                 .perform(longClick());
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         onView(withText("Delete")).perform(click());
         onData(is(instanceOf(ListViewItem.class)))
                 // Every entry in the ListView is a HashMap
