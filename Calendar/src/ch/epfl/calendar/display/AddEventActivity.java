@@ -258,6 +258,8 @@ public class AddEventActivity extends DefaultActionBarActivity implements
 
     private void initializeValue(Intent intent) {
         if (intent.hasExtra("Id")) {
+            editEventActionBar();
+            
             eventId = intent.getIntExtra("Id", DBQuester.NO_ID);
             Event event = new DBQuester().getEvent(eventId);
 
@@ -309,6 +311,10 @@ public class AddEventActivity extends DefaultActionBarActivity implements
         actionBar.setTitle("New Event");
     }
 
+    private void editEventActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("Edit Event");
+    }
 
     private void setView() {
         mCoursesNames.add(0, "No connection with courses");
