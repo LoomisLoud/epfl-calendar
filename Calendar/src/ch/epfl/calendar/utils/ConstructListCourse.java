@@ -15,7 +15,7 @@ import ch.epfl.calendar.display.AppEngineTask.AppEngineListener;
  * from the appEngine. To use it create a ConstructCourse and call
  * completeCourse on the ConstructCourse.
  * 
- * @author Maxime
+ * @author winni74
  * 
  */
 public class ConstructListCourse {
@@ -122,7 +122,7 @@ public class ConstructListCourse {
 
     /**
      * 
-     * @author Maxime
+     * @author winni74
      * 
      */
     private class AppEngineHandler implements AppEngineListener {

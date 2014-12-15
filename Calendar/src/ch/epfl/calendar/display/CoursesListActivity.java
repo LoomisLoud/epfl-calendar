@@ -25,7 +25,7 @@ import ch.epfl.calendar.data.Period;
 
 /**
  * This activity shows the list of {@link Course} a student is enrolled into.
- * @author Maxime
+ * @author winni74
  * 
  */
 public class CoursesListActivity extends DefaultActionBarActivity implements

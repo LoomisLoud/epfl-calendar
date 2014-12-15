@@ -5,6 +5,7 @@ package ch.epfl.calendar.test;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.openContextualActionModeOverflowMenu;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
@@ -65,12 +66,12 @@ public class DefaultActionBarActivityTest extends
     }
 
     public void testSwitchToCoursesList() {
-        openContextualActionModeOverflowMenu();
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText("Courses")).perform(click()).check(doesNotExist());
     }
 
     public void testSwitchToCreditsActivity() {
-        openContextualActionModeOverflowMenu();
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText("Credits")).perform(click()).check(doesNotExist());
     }
 
@@ -79,13 +80,13 @@ public class DefaultActionBarActivityTest extends
     }
 
     public void testSwitchToAddBlockActivity() {
-        openContextualActionModeOverflowMenu();
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText("Add blocks of credits")).perform(click()).check(
                 doesNotExist());
     }
 
     public void testSwitchToListEvent() throws Throwable {
-        openContextualActionModeOverflowMenu();
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         Class<? extends CourseDetailsActivity> oldActivity = getActivity()
                 .getClass();
         onView(withText("Planning")).perform(click());
@@ -107,7 +108,7 @@ public class DefaultActionBarActivityTest extends
     }
 
     public void testLogout() {
-        openContextualActionModeOverflowMenu();
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText("Logout")).perform(click()).check(doesNotExist());
     }
 
