@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="10dp" >
 
     <ImageView
         android:id="@+id/credit_image"
@@ -11,24 +12,27 @@
         android:contentDescription="@string/ok"
         android:paddingBottom="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="10dp" />
+        android:paddingTop="10dp" 
+        android:layout_marginLeft="10dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <RelativeLayout
+        android:layout_toRightOf="@id/credit_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/course"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp" />
+            android:textSize="15sp" />
 
         <TextView
+            android:layout_below="@id/course"
             android:id="@+id/info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10dp" />
-    </LinearLayout>
+            android:textSize="10sp" />
+    </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
