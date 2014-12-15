@@ -6,7 +6,7 @@ import ch.epfl.calendar.data.Course;
 
 /**
  * An interface with a calback method to implement when data from AppEngine is fetched
- * @author Maxime
+ * @author winni74
  *
  */
 public interface AppEngineDownloadInterface {

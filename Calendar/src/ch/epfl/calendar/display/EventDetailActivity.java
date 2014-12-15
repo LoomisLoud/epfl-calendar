@@ -16,7 +16,7 @@ import ch.epfl.calendar.apiInterface.UpdateDataFromDBInterface;
 
 /**
  * This activity shows the details of an {@link Event}
- * @author Maxime
+ * @author winni74
  * 
  */
 public class EventDetailActivity extends DefaultActionBarActivity implements

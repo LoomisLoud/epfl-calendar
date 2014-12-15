@@ -10,7 +10,7 @@ import ch.epfl.calendar.data.Course;
 /**
  * Extends {@link AsyncTask} and fetches data on the AppEngine.
  * 
- * @author Maxime
+ * @author winni74
  * 
  */
 public class AppEngineTask extends AsyncTask<String, Void, Course> {
