@@ -15,9 +15,11 @@ import ch.epfl.calendar.data.ListViewItem;
 /**
  * An adapter for the planning view.
  * @author MatthiasLeroyEPFL
+ * source: http://www.codelearn.org/android-tutorial/android-listview
+ * The source helps me to create this adapter
  * 
  */
-public class CustomAdapter extends BaseAdapter {
+public class EventAdapter extends BaseAdapter {
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
     private static final int HEIGHT_VIEW = 150;
@@ -37,7 +39,7 @@ public class CustomAdapter extends BaseAdapter {
      * Creates a custom adapter.
      * @param context the context of the {@link Activity} using this adapter.
      */
-    public CustomAdapter(Context context) {
+    public EventAdapter(Context context) {
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         colorBlue = context.getResources().getColor(R.color.blue10);

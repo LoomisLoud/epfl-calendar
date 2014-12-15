@@ -32,7 +32,7 @@ import ch.epfl.calendar.data.Event;
 import ch.epfl.calendar.data.EventForList;
 import ch.epfl.calendar.data.ListViewItem;
 import ch.epfl.calendar.data.Period;
-import ch.epfl.calendar.display.CustomAdapter;
+import ch.epfl.calendar.display.EventAdapter;
 import ch.epfl.calendar.display.EventListActivity;
 import ch.epfl.calendar.persistence.DBQuester;
 import ch.epfl.calendar.test.utils.MockActivity;
@@ -262,15 +262,15 @@ public class EventListActivityTest extends
         Method createAdapter;
         createAdapter = (EventListActivity.class).getDeclaredMethod(
                 "createAdapter", new Class[] {
-                        List.class, CustomAdapter.class
+                        List.class, EventAdapter.class
                 });
         createAdapter.setAccessible(true);
 
         List<EventForList> eventForList = createEventForListFromCourses(mCourses);
 
-        CustomAdapter adapter = (CustomAdapter) createAdapter.invoke(mActivity,
+        EventAdapter adapter = (EventAdapter) createAdapter.invoke(mActivity,
                 new Object[] {
-                        eventForList, new CustomAdapter(mActivity)
+                        eventForList, new EventAdapter(mActivity)
                 });
         // We have 5 eventForList :
         // 1 Header Item per day : 3

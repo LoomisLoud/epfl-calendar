@@ -120,7 +120,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
                                         onResume();
                                         List<ListViewItem> list = mEventForList;
                                         list.remove(item);
-                                        CustomAdapter adap = new CustomAdapter(
+                                        EventAdapter adap = new EventAdapter(
                                                 context);
                                         createAdapter(list, adap);
                                         mListView.setAdapter(adap);
@@ -223,7 +223,7 @@ public class EventListActivity extends DefaultActionBarActivity implements
         if (editEvent) {
             mEventForList = eventToEventForList(getDBQuester().getAllCourses(),
                     getDBQuester().getAllEvents());
-            CustomAdapter editAdapter = new CustomAdapter(context);
+            EventAdapter editAdapter = new EventAdapter(context);
             createAdapter(mEventForList, editAdapter);
             mListView.setAdapter(editAdapter);
 
@@ -300,8 +300,8 @@ public class EventListActivity extends DefaultActionBarActivity implements
         return result;
     }
 
-    private CustomAdapter createAdapter(List<ListViewItem> eventForList,
-            CustomAdapter adapter) {
+    private EventAdapter createAdapter(List<ListViewItem> eventForList,
+            EventAdapter adapter) {
         if (eventForList.size() > 0) {
             adapter.addSectionHeaderItem(new EventSeparator(eventForList.get(0)
                     .getmStart()));

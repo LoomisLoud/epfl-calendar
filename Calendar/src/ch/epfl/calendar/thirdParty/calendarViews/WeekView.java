@@ -65,7 +65,6 @@ public class WeekView extends View {
     private float mHeaderColumnWidth;
     private Paint mHeaderColumnBackgroundPaint;
     private Scroller mStickyScroller;
-    private int[] mFetchedMonths = new int[3];
     private boolean mRefreshEvents = false;
     private float mDistanceY = 0;
     private float mDistanceX = 0;
@@ -484,11 +483,7 @@ public class WeekView extends View {
 
             // Get
             // events only when it is the first iteration of the loop.
-            if (mEventRects == null || mRefreshEvents
-            // || (dayNumber == leftDaysWithGaps + 1
-            // && mFetchedMonths[1] != day.get(Calendar.MONTH) + 1 && day
-            // .get(Calendar.DAY_OF_MONTH) == 15)
-            ) {
+            if (mEventRects == null || mRefreshEvents) {
                 getMoreEvents(day);
                 mRefreshEvents = false;
             }
@@ -734,7 +729,6 @@ public class WeekView extends View {
         // If a refresh was requested then reset some variables.
         if (mRefreshEvents) {
             mEventRects.clear();
-            mFetchedMonths = new int[3];
         }
 
         List<WeekViewEvent> events = mMonthChangeListener.onMonthChange();
@@ -743,7 +737,6 @@ public class WeekView extends View {
         for (WeekViewEvent event : events) {
             mEventRects.add(new EventRect(event, null));
         }
-        mFetchedMonths[1] = day.get(Calendar.MONTH) + 1;
 
         // Prepare to calculate positions of each events.
         ArrayList<EventRect> tempEvents = new ArrayList<EventRect>(mEventRects);
