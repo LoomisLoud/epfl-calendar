@@ -179,7 +179,6 @@ public class WeekViewEvent {
 
         String hour = startHour + " - " + endHour;
         String result = mName + "\n";
-        // int i = p.getRooms().size();
 
         /*
          * for (String r : p.getRooms()) { if (i > 1) { result += r + ","; }
