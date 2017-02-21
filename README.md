@@ -1,4 +1,4 @@
-lameAppInc
+EPFL Calendar Android Application
 ==========
 # Authors:
 - Romain Choukroun
